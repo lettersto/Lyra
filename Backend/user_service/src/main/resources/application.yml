@@ -1,0 +1,36 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: user-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/security?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true&useLegacyDatetimeCode=false
+    username: cos
+    password: cos1234
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    generate-ddl: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 679402942294-piour8km9qojcntfbm7h3n54qt63d1d9.apps.googleusercontent.com
+            client-secret: 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
+            scope: profile, email
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    server-url:
+      defaultZone: http://localhost:8761/eureka
+
+greeting:
+  message: Welcome to the Simple E-commerce.
