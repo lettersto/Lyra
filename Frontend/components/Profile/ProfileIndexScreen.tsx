@@ -1,12 +1,12 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
-const FeedIndexScreen = () => {
+const ProfileIndexScreen = () => {
   return (
     <View>
-      <Text>feed index screen</Text>
+      <Text>profile index screen</Text>
     </View>
   );
 };
 
-export default FeedIndexScreen;
+export default ProfileIndexScreen;
