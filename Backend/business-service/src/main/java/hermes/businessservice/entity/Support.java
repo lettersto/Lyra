@@ -1,10 +1,12 @@
 package hermes.businessservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.sql.Timestamp;
 
 @Data
 @Entity
@@ -21,11 +23,13 @@ public class Support {
     private Long buskerId;
 
     @Column(nullable = false)
-    private Integer coin;
+    private Long coin;
 
+    @Column
     private String content;
 
-    @Column(nullable = false, updatable = false, insertable = false)
-    @ColumnDefault(value = "CURRENT_TIMESTAMP")
-    private Date time;
+    @Column
+    @CreationTimestamp
+    @JsonFormat(timezone = "Asia/Seoul", pattern = "yyyy-MM-dd HH:mm")
+    private Timestamp time;
 }
