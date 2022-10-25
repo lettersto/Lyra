@@ -3,14 +3,12 @@ package hermes.businessservice.service;
 import hermes.businessservice.dto.WalletDto;
 import hermes.businessservice.entity.Wallet;
 import hermes.businessservice.repository.WalletRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 
@@ -42,15 +40,19 @@ public class WalletServiceImpl implements WalletService {
         return returnValue;
     }
 
-//    @Override
-    // walletid로 삭제가 아니라 userid로 삭제되길 원함
-//    public int deleteWallet(Long walletId) {
-//        walletRepository.delete(walletId);
-//        return 0;
-//    }
+    @Override
+    public void deleteWallet(Long userId) {
+        walletRepository.deleteByUserId(userId);
+    }
 
     @Override
-    public Iterable<Wallet> getWalletByUserId(Long userId) {
+    public void updateWallet(Wallet wallet, Long coin) {
+        wallet.setCoin(coin);
+        walletRepository.save(wallet);
+    }
+
+    @Override
+    public Wallet getWalletByUserId(Long userId) {
         return walletRepository.findByUserId(userId);
     }
 }

@@ -7,7 +7,9 @@ public interface WalletService {
 
     WalletDto createWallet(WalletDto walletDto);
 
-    Iterable<Wallet> getWalletByUserId(Long userId);
+    Wallet getWalletByUserId(Long userId);
 
-//    int deleteWallet(Long walletId);
+    void deleteWallet(Long userId);
+
+    void updateWallet(Wallet wallet, Long coin);
 }
