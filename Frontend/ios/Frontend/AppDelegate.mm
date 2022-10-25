@@ -5,7 +5,7 @@
 #import <React/RCTRootView.h>
 
 #import <React/RCTAppSetupUtils.h>
-
+#import <GoogleMaps/GoogleMaps.h>
 #if RCT_NEW_ARCH_ENABLED
 #import <React/CoreModulesPlugins.h>
 #import <React/RCTCxxBridgeDelegate.h>
@@ -16,7 +16,7 @@
 
 #import <react/config/ReactNativeConfig.h>
 
-#import <GoogleMaps/GoogleMaps.h>
+
 
 @interface AppDelegate () <RCTCxxBridgeDelegate, RCTTurboModuleManagerDelegate> {
   RCTTurboModuleManager *_turboModuleManager;
@@ -31,7 +31,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  [GMSServices provideAPIKey:@"[AIzaSyA23wCc-9bIbIYkyWGJ3m9rnsZvecORXS0]"];
+  [GMSServices provideAPIKey:@"AIzaSyA23wCc-9bIbIYkyWGJ3m9rnsZvecORXS0"];
 
   RCTAppSetupPrepareApp(application);
 
