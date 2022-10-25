@@ -3,10 +3,14 @@ package hermes.businessservice.repository;
 import hermes.businessservice.entity.Wallet;
 import org.springframework.data.repository.CrudRepository;
 
+import javax.transaction.Transactional;
+
 public interface WalletRepository extends CrudRepository<Wallet, Long> {
 
-    Iterable<Wallet> findByUserId(Long userId);
+    Wallet findByUserId(Long userId);
 
+    @Transactional
+    void deleteByUserId(Long userId);
 
-//    int delete(Long walletId);
+//    void updateByUserId(Long userId, Long coin);
 }

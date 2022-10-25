@@ -47,15 +47,15 @@ public class WalletController {
 
     //    @ApiOperation(value = "지갑 조회", response = String.class)
     @GetMapping("/{id}/wallet")
-    public ResponseEntity<List<ResponseWallet>> getWallet(@PathVariable("id") Long userId) throws Exception {
+    public ResponseEntity<Wallet> getWallet(@PathVariable("id") Long userId) throws Exception {
 
         log.info("Before get wallet data");
-        Iterable<Wallet> walletList = walletService.getWalletByUserId(userId);
-
-        List<ResponseWallet> result = new ArrayList<>();
-        walletList.forEach(v -> {
-            result.add(new ModelMapper().map(v, ResponseWallet.class));
-        });
+        Wallet result = walletService.getWalletByUserId(userId);
+//
+//        List<ResponseWallet> result = new ArrayList<>();
+//        walletList.forEach(v -> {
+//            result.add(new ModelMapper().map(v, ResponseWallet.class));
+//        });
 
 //
 //        try {
@@ -72,23 +72,18 @@ public class WalletController {
 
 
     //    @ApiOperation(value = "코인 수량 변경", response = String.class)
-//    @PutMapping("/{id}/wallet")
-//    public ResponseEntity<ResponseWallet> updateWallet(@PathVariable("id") Long userId, @RequestBody RequestWallet wallet) {
-//
-//        log.info("Before update wallet data");
-//        ModelMapper mapper = new ModelMapper();
-//        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-//
-//        WalletDto walletDto = mapper.map(wallet, WalletDto.class);
-//        walletDto.setUserId(userId);
-//
-//        WalletDto createWallet = walletService.createWallet(walletDto);
-//        ResponseWallet responseWallet = mapper.map(createWallet, ResponseWallet.class);
-//
-//        log.info("After updated wallet data");
-//
-//        return ResponseEntity.status(HttpStatus.CREATED).body(responseWallet);
-//    }
+    @PatchMapping("/{id}/wallet")
+    public ResponseEntity<String> updateWallet(@PathVariable("id") Long userId, @RequestParam Long coin) {
+
+        log.info("Before update wallet data");
+
+        Wallet wallet = walletService.getWalletByUserId(userId);
+        walletService.updateWallet(wallet, coin);
+
+        log.info("After updated wallet data");
+
+        return new ResponseEntity<String>("success", HttpStatus.OK);
+    }
 
 
 //    @ApiOperation(value = "지갑 삭제", response = String.class)
@@ -97,14 +92,7 @@ public class WalletController {
 
         log.info("Before delete wallet data");
 
-        Iterable<Wallet> walletList = walletService.getWalletByUserId(userId);
-
-        List<Wallet> result = new ArrayList<>();
-        walletList.forEach(v -> {
-            result.add(v);
-        });
-
-//        walletService.deleteWallet(result.get(0).getId());
+        walletService.deleteWallet(userId);
 
         log.info("After deleted wallet data");
 
