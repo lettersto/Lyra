@@ -3,42 +3,56 @@ package hermes.businessservice.service;
 import hermes.businessservice.dto.WalletDto;
 import hermes.businessservice.entity.Wallet;
 import hermes.businessservice.repository.WalletRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import javax.transaction.Transactional;
+import java.util.List;
+
 
 @Service
+@Slf4j
 public class WalletServiceImpl implements WalletService {
 
-    WalletRepository walletRepository;
+    private final WalletRepository walletRepository;
 
     @Autowired
     public WalletServiceImpl(WalletRepository walletRepository) {
         this.walletRepository = walletRepository;
     }
 
-    @Override
-    public WalletDto getWallet(Long userId) {
-        return null;
-    }
 
     @Override
     public WalletDto createWallet(WalletDto walletDto) {
-        walletDto.setUserId(UUID.randomUUID().getMostSignificantBits());
 
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         Wallet wallet = mapper.map(walletDto, Wallet.class);
 
+        wallet.setCoin(0L);
+
         walletRepository.save(wallet);
 
-        WalletDto returnWalletDto = mapper.map(wallet, WalletDto.class);
+        WalletDto returnValue = mapper.map(wallet, WalletDto.class);
 
-        return returnWalletDto;
+        return returnValue;
     }
 
+//    @Override
+    // walletid로 삭제가 아니라 userid로 삭제되길 원함
+//    public int deleteWallet(Long walletId) {
+//        walletRepository.delete(walletId);
+//        return 0;
+//    }
 
+    @Override
+    public Iterable<Wallet> getWalletByUserId(Long userId) {
+        return walletRepository.findByUserId(userId);
+    }
 }
+
+
