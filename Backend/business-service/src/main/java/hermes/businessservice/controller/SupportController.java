@@ -2,6 +2,8 @@ package hermes.businessservice.controller;
 
 import hermes.businessservice.dto.SupportDto;
 import hermes.businessservice.dto.WalletDto;
+import hermes.businessservice.entity.Support;
+import hermes.businessservice.entity.Wallet;
 import hermes.businessservice.service.SupportService;
 import hermes.businessservice.vo.RequestSupport;
 import hermes.businessservice.vo.RequestWallet;
@@ -13,6 +15,9 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/business-service")
@@ -42,5 +47,41 @@ public class SupportController {
         log.info("After added support data");
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseSupport);
+    }
+
+    //    @ApiOperation(value = "내가 한 후원", response = String.class)
+    @GetMapping("/{user_id}/support/give")
+    public ResponseEntity<List<ResponseSupport>> getGiveSupport(@PathVariable("user_id") Long userId) throws Exception {
+
+        log.info("Before get give support data");
+
+        Iterable<Support> giveSupportList = supportService.getSupportBySupporterId(userId);
+
+        List<ResponseSupport> result = new ArrayList<>();
+        giveSupportList.forEach(v -> {
+            result.add(new ModelMapper().map(v, ResponseSupport.class));
+        });
+
+        log.info("After got give support data");
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    //    @ApiOperation(value = "내가 받은 후원", response = String.class)
+    @GetMapping("/{user_id}/support/supported")
+    public ResponseEntity<List<ResponseSupport>> getSupported(@PathVariable("user_id") Long userId) throws Exception {
+
+        log.info("Before get supported data");
+
+        Iterable<Support> supportedList = supportService.getSupportByBuskerId(userId);
+
+        List<ResponseSupport> result = new ArrayList<>();
+        supportedList.forEach(v -> {
+            result.add(new ModelMapper().map(v, ResponseSupport.class));
+        });
+
+        log.info("After got supported data");
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

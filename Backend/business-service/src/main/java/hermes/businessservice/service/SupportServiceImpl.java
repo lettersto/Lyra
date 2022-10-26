@@ -34,4 +34,14 @@ public class SupportServiceImpl implements SupportService{
 
         return returnValue;
     }
+
+    @Override
+    public Iterable<Support> getSupportBySupporterId(Long userId) {
+        return supportRepository.findBySupporterId(userId);
+    }
+
+    @Override
+    public Iterable<Support> getSupportByBuskerId(Long userId) {
+        return supportRepository.findByBuskerId(userId);
+    }
 }
