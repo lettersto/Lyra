@@ -6,6 +6,15 @@ import FeedIndexScreen from '../Feed/FeedIndexScreen';
 import MapIndexScreen from '../Map/MapIndexScreen';
 import ChatIndexScreen from '../Chat/ChatIndexScreen';
 import ProfileIndexScreen from '../Profile/ProfileIndexScreen';
+import LocationTitle from './TopNavBar/LocationTitle';
+import Logo from './TopNavBar/Logo';
+import FeedButtons from './TopNavBar/FeedButtons';
+import MapButtons from './TopNavBar/MapButtons';
+import BuskerTitle from './TopNavBar/BuskerTitle';
+import UserChatButtons from './TopNavBar/UserChatButtons';
+// import BuskerChatButtons from './TopNavBar/BuskerChatButtons';
+import ProfileTitle from './TopNavBar/ProfileTitle';
+import ProfileButtons from './TopNavBar/ProfileButtons';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon2 from 'react-native-vector-icons/Ionicons';
@@ -34,6 +43,15 @@ const Footer = () => {
             paddingTop: 10,
             position: 'absolute',
           },
+          headerStyle: {
+            backgroundColor: Colors.black500,
+          },
+          headerTintColor: Colors.gray300,
+          headerTitleStyle: {
+            fontFamily: 'NanumSquareRoundR',
+            fontSize: 20,
+          },
+          headerTitleAlign: 'center',
         }}>
         <Stack.Screen
           name={StackScreens.Home}
@@ -43,6 +61,9 @@ const Footer = () => {
             tabBarIcon: ({color, size}) => (
               <Icon2 name="home-outline" color={color} size={size} />
             ),
+            headerTitle: () => <LocationTitle />,
+            headerLeft: () => <Logo />,
+            headerRight: () => <FeedButtons />,
           }}
         />
         <Stack.Screen
@@ -53,6 +74,8 @@ const Footer = () => {
             tabBarIcon: ({color, size}) => (
               <Icon name="map-marker-outline" color={color} size={size} />
             ),
+            headerTitle: () => <LocationTitle />,
+            headerRight: () => <MapButtons />,
           }}
         />
         <Stack.Screen
@@ -67,6 +90,10 @@ const Footer = () => {
                 size={size}
               />
             ),
+            headerTitle: () => <BuskerTitle />,
+            // TODO differentiate user & busker
+            headerRight: () => <UserChatButtons />,
+            // headerRight: () => <BuskerChatButtons />,
           }}
         />
         <Stack.Screen
@@ -77,6 +104,8 @@ const Footer = () => {
             tabBarIcon: ({color, size}) => (
               <Icon2 name="person-outline" color={color} size={size} />
             ),
+            headerTitle: () => <ProfileTitle />,
+            headerRight: () => <ProfileButtons />,
           }}
         />
       </Stack.Navigator>
