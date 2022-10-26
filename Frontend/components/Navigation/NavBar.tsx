@@ -2,10 +2,11 @@ import React from 'react';
 import {Button, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import FeedIndexScreen from '../Feed/FeedIndexScreen';
-import MapIndexScreen from '../Map/MapIndexScreen';
-import ChatIndexScreen from '../Chat/ChatIndexScreen';
-import ProfileIndexScreen from '../Profile/ProfileIndexScreen';
+import MainFeedScreen from '../../screens/Home/Feed/MainFeedScreen';
+import MainChatScreen from '../../screens/Chat/MainChatScreen';
+import MainMapScreen from '../../screens/Map/MainMapScreen';
+import MainProfileScreen from '../../screens/Profile/MainProfileScreen';
+
 import LocationTitle from './TopNavBar/LocationTitle';
 import Logo from './TopNavBar/Logo';
 import FeedButtons from './TopNavBar/FeedButtons';
@@ -55,7 +56,7 @@ const Footer = () => {
         }}>
         <Stack.Screen
           name={StackScreens.Home}
-          component={FeedIndexScreen}
+          component={MainFeedScreen}
           options={{
             tabBarLabel: 'Home',
             tabBarIcon: ({color, size}) => (
@@ -68,7 +69,7 @@ const Footer = () => {
         />
         <Stack.Screen
           name={StackScreens.Map}
-          component={MapIndexScreen}
+          component={MainMapScreen}
           options={{
             tabBarLabel: 'Map',
             tabBarIcon: ({color, size}) => (
@@ -80,7 +81,7 @@ const Footer = () => {
         />
         <Stack.Screen
           name={StackScreens.Chat}
-          component={ChatIndexScreen}
+          component={MainChatScreen}
           options={{
             tabBarLabel: 'Chat',
             tabBarIcon: ({color, size}) => (
@@ -98,7 +99,7 @@ const Footer = () => {
         />
         <Stack.Screen
           name={StackScreens.Profile}
-          component={ProfileIndexScreen}
+          component={MainProfileScreen}
           options={{
             tabBarLabel: 'Profile',
             tabBarIcon: ({color, size}) => (
