@@ -3,7 +3,7 @@ import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 
 const Button = () => {
   return (
-    <TouchableOpacity style={styles.button} onPress={() => alert('Click!')}>
+    <TouchableOpacity style={styles.button} onPress={() => console.log()}>
       <Text style={styles.text}>확인</Text>
     </TouchableOpacity>
   );
