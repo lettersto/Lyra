@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {StyleSheet, ScrollView} from 'react-native';
 
 import ProfileBody from '../../components/Profile/MyPage/ProfileBody';
 import WalletBody from '../../components/Profile/MyPage/WalletBody';
@@ -10,13 +10,14 @@ import Colors from '../../constants/Colors';
 
 const MainProfileScreen = () => {
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <ProfileBody />
       <GradientLine />
       <WalletBody />
       <GradientLine />
       <Gallery />
-    </View>
+      <GradientLine />
+    </ScrollView>
   );
 };
 
@@ -24,6 +25,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.black500,
+    marginBottom: '15%',
   },
 });
 
