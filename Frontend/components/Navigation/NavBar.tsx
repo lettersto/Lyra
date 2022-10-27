@@ -1,12 +1,11 @@
 import React from 'react';
+import {Button, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import MainFeedScreen from '../../screens/Home/Feed/MainFeedScreen';
+import MainPheedScreen from '../../screens/Home/Pheed/MainPheedScreen';
 import MainChatScreen from '../../screens/Chat/MainChatScreen';
 import MainMapScreen from '../../screens/Map/MainMapScreen';
 import MainProfileScreen from '../../screens/Profile/MainProfileScreen';
-import EditProfileScreen from '../../screens/Profile/EditProfileScreen';
 
 import LocationTitle from './TopNavBar/LocationTitle';
 import Logo from './TopNavBar/Logo';
@@ -22,57 +21,20 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 import Colors from '../../constants/Colors';
 
-const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
+const Stack = createBottomTabNavigator();
 
-export enum TabScreens {
+export enum StackScreens {
   Home = 'Home',
   Map = 'Map',
   Chat = 'Chat',
-  ProfileTab = 'ProfileTab',
+  Profile = 'Profile',
 }
 
-export enum StackScreens {
-  MainProfile = 'MainProfile',
-  EditProfile = 'EditProfile',
-}
-
-const NavBar = () => {
-  const ProfileStack = () => {
-    return (
-      <Stack.Navigator
-        initialRouteName={StackScreens.MainProfile}
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: Colors.black500,
-          },
-          headerTintColor: Colors.gray300,
-          headerTitleStyle: {
-            fontFamily: 'NanumSquareRoundR',
-            fontSize: 20,
-          },
-          headerTitleAlign: 'center',
-        }}>
-        <Stack.Screen
-          name={StackScreens.MainProfile}
-          component={MainProfileScreen}
-          options={{
-            headerTitle: () => <ProfileTitle />,
-            headerRight: () => <ProfileButtons />,
-          }}
-        />
-        <Stack.Screen
-          name={StackScreens.EditProfile}
-          component={EditProfileScreen}
-        />
-      </Stack.Navigator>
-    );
-  };
-
+const Footer = () => {
   return (
     <>
-      <Tab.Navigator
-        initialRouteName={TabScreens.Home}
+      <Stack.Navigator
+        initialRouteName={StackScreens.Home}
         screenOptions={{
           tabBarActiveTintColor: Colors.purple300,
           tabBarStyle: {
@@ -92,9 +54,9 @@ const NavBar = () => {
           },
           headerTitleAlign: 'center',
         }}>
-        <Tab.Screen
-          name={TabScreens.Home}
-          component={MainFeedScreen}
+        <Stack.Screen
+          name={StackScreens.Home}
+          component={MainPheedScreen}
           options={{
             tabBarLabel: 'Home',
             tabBarIcon: ({color, size}) => (
@@ -105,8 +67,8 @@ const NavBar = () => {
             headerRight: () => <FeedButtons />,
           }}
         />
-        <Tab.Screen
-          name={TabScreens.Map}
+        <Stack.Screen
+          name={StackScreens.Map}
           component={MainMapScreen}
           options={{
             tabBarLabel: 'Map',
@@ -117,8 +79,8 @@ const NavBar = () => {
             headerRight: () => <MapButtons />,
           }}
         />
-        <Tab.Screen
-          name={TabScreens.Chat}
+        <Stack.Screen
+          name={StackScreens.Chat}
           component={MainChatScreen}
           options={{
             tabBarLabel: 'Chat',
@@ -135,20 +97,23 @@ const NavBar = () => {
             // headerRight: () => <BuskerChatButtons />,
           }}
         />
-        <Tab.Screen
-          name={TabScreens.ProfileTab}
-          component={ProfileStack}
+        <Stack.Screen
+          name={StackScreens.Profile}
+          component={MainProfileScreen}
           options={{
-            headerShown: false,
             tabBarLabel: 'Profile',
             tabBarIcon: ({color, size}) => (
               <Icon2 name="person-outline" color={color} size={size} />
             ),
+            headerTitle: () => <ProfileTitle />,
+            headerRight: () => <ProfileButtons />,
           }}
         />
-      </Tab.Navigator>
+      </Stack.Navigator>
     </>
   );
 };
 
-export default NavBar;
+const styles = StyleSheet.create({});
+
+export default Footer;
