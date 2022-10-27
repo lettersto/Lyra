@@ -1,17 +1,14 @@
 package hermes.businessservice.vo;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import hermes.businessservice.entity.Category;
-import hermes.businessservice.entity.CategoryConverter;
-import hermes.businessservice.entity.PheedImg;
 import hermes.businessservice.entity.PheedTag;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.Data;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
+@Data
 public class RequestPheed {
 
     private String title;
@@ -26,8 +23,7 @@ public class RequestPheed {
 
     private Category category;
 
-    private List<PheedTag> pheedTag;
+    private List<String> pheedTag;
 
-    private Long userId;
 
 }

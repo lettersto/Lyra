@@ -16,7 +16,7 @@ public class PheedImg {
     private String path;
 
     @ManyToOne
-    @JoinColumn(name = "no")
+    @JoinColumn(name = "pheed_id")
     @JsonIgnore
     private Pheed pheedId;
 

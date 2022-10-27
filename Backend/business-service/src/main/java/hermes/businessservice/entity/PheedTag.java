@@ -10,20 +10,20 @@ import javax.persistence.*;
 public class PheedTag {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pheed_tag_id")
-    private int id;
+    private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pheed_id")
     @JsonIgnore
     private Pheed pheed;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_id")
     @JsonIgnore
     private Tag tag;
 
-//    private String name;
+    private String name;
 
 }

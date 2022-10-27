@@ -9,13 +9,13 @@ import java.util.List;
 @Entity
 public class Tag {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_id")
-    private int id;
+    private Long id;
 
     private String name;
 
-    @OneToMany(mappedBy = "tag",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
     private List<PheedTag> pheedTags;
 
 }
