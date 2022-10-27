@@ -1,12 +1,12 @@
 import React from 'react';
 import {Text} from 'react-native';
-import DetailFeed from './DetailFeed';
+import CreateFeed from './CreateFeed';
 
 const MainFeedScreen = () => {
   return (
     <>
       <Text>index</Text>
-      <DetailFeed />
+      <CreateFeed />
     </>
   );
 };
