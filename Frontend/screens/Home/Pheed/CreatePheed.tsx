@@ -2,11 +2,11 @@ import React from 'react';
 import {SafeAreaView, Text} from 'react-native';
 import Input from '../../../components/Utils/Input';
 
-const CreateFeed = () => {
+const CreatePheed = () => {
   return (
     <>
       <SafeAreaView>
-        <Text>Create Feed</Text>
+        <Text>Create Pheed</Text>
         <Text>Title</Text>
         <Input height={0.05} width={0.8} keyboard={1} />
         <Text>Content</Text>
@@ -16,4 +16,4 @@ const CreateFeed = () => {
   );
 };
 
-export default CreateFeed;
+export default CreatePheed;

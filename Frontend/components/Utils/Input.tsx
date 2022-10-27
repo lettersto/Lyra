@@ -12,17 +12,17 @@ type InputProps = {
 const Input: React.FC<InputProps> = ({width, height, keyboard}) => {
   var styles = StyleSheet.create({
     input: {
-      width: width * Dimensions.get('screen').width - 2,
-      height: height * Dimensions.get('screen').height - 2,
+      width: width * Dimensions.get('window').width - 2,
+      height: height * Dimensions.get('window').height - 2,
       borderRadius: 20,
       backgroundColor: '#fff',
       alignSelf: 'center',
       justifyContent: 'center',
       fontFamily: 'NanumSquareRoundR',
     },
-    grediant: {
-      width: width * Dimensions.get('screen').width,
-      height: height * Dimensions.get('screen').height,
+    gradient: {
+      width: width * Dimensions.get('window').width,
+      height: height * Dimensions.get('window').height,
       borderRadius: 20,
       justifyContent: 'center',
       alignSelf: 'center',
@@ -38,7 +38,7 @@ const Input: React.FC<InputProps> = ({width, height, keyboard}) => {
         angle={135}
         angleCenter={{x: 0.5, y: 0.5}}
         colors={[Colors.purple300, Colors.pink500]}
-        style={styles.grediant}>
+        style={styles.gradient}>
         <TextInput
           style={{
             ...styles.input,
