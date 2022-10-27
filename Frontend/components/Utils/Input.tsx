@@ -9,6 +9,9 @@ type InputProps = {
   height: number;
   keyboard: number;
   borderRadius: number;
+  placeholder?: string;
+  customStyle?: any;
+  maxLength?: number;
 };
 
 const Input: React.FC<InputProps> = ({
@@ -16,13 +19,17 @@ const Input: React.FC<InputProps> = ({
   height,
   keyboard,
   borderRadius,
+  placeholder,
+  customStyle,
+  maxLength,
 }) => {
   var styles = StyleSheet.create({
     input: {
       width: width * Dimensions.get('window').width - 2,
       height: height * Dimensions.get('window').height - 2,
       borderRadius: borderRadius,
-      backgroundColor: '#fff',
+      backgroundColor: Colors.black500,
+      color: Colors.gray300,
       alignSelf: 'center',
       justifyContent: 'center',
       fontFamily: 'NanumSquareRoundR',
@@ -45,15 +52,16 @@ const Input: React.FC<InputProps> = ({
         angle={135}
         angleCenter={{x: 0.5, y: 0.5}}
         colors={[Colors.purple300, Colors.pink500]}
-        style={styles.gradient}>
+        style={[styles.gradient, customStyle]}>
         <TextInput
-          style={{
-            ...styles.input,
-          }}
+          style={{...styles.input}}
+          multiline={true}
           blurOnSubmit
           autoCorrect={false}
           keyboardType={keyboard === 1 ? 'ascii-capable' : 'numeric'}
-          maxLength={100}
+          placeholder={placeholder}
+          placeholderTextColor={Colors.gray300}
+          maxLength={maxLength}
         />
       </LinearGradient>
     </>

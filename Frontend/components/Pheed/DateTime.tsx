@@ -63,7 +63,10 @@ const DateTime = () => {
                 <Text> 시간</Text>
               </>
             ) : (
-              text
+              <>
+                <Icon name="clock" color={Colors.gray300} size={16} />
+                <Text> {text}</Text>
+              </>
             )}
           </Text>
           <DateTimePickerModal
