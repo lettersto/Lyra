@@ -11,10 +11,18 @@
 
 import React from 'react';
 import {SafeAreaView} from 'react-native';
-
-import NavBar from './components/Navigation/NavBar';
 import {NavigationContainer} from '@react-navigation/native';
+
+import {RootStackParamList} from './components/Navigation/NavBar';
+// import StackBar from './components/Navigation/StackBar';
+import NavBar from './components/Navigation/NavBar';
 import Colors from './constants/Colors';
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
 
 const App = () => {
   const backgroundStyle = {

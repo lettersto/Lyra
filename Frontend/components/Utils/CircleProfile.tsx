@@ -19,7 +19,7 @@ const CircleProfile = ({
   isGradient: boolean;
 }) => {
   const imageSizes = {
-    extraSmall: 40,
+    extraSmall: 32,
     small: 48,
     medium: 56,
     large: 64,

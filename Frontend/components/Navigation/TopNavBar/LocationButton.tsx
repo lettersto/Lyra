@@ -4,14 +4,14 @@ import MIcon from 'react-native-vector-icons/MaterialIcons';
 
 import Colors from '../../../constants/Colors';
 
-const LocationTitle = () => {
+const LocationButton = () => {
   // TODO
   // 1. get Location from context API or something else. + setCurrentLocation
   // 2. onPress function to find location.
-  const [currentLocation, setCurrentLocation] = useState('수완동');
+  const [currentLocation, setCurrentLocation] = useState('오선동');
 
   return (
-    <Pressable style={styles.outerContainer}>
+    <Pressable>
       <View style={styles.innerContainer}>
         <MIcon name="keyboard-arrow-down" size={25} color={Colors.gray300} />
         <Text style={styles.title}>{currentLocation}</Text>
@@ -21,13 +21,9 @@ const LocationTitle = () => {
 };
 
 const styles = StyleSheet.create({
-  outerContainer: {
-    flex: 1,
-  },
   innerContainer: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
   },
   title: {
@@ -37,4 +33,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LocationTitle;
+export default LocationButton;
