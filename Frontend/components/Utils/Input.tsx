@@ -3,18 +3,25 @@ import {StyleSheet, TextInput, Dimensions} from 'react-native';
 import Colors from '../../constants/Colors';
 import LinearGradient from 'react-native-linear-gradient';
 
+//너비, 높이, 키보드타입(1이면 ascii[기본키패드], 2면 numberpad), borderRadius
 type InputProps = {
   width: number;
   height: number;
   keyboard: number;
+  borderRadius: number;
 };
 
-const Input: React.FC<InputProps> = ({width, height, keyboard}) => {
+const Input: React.FC<InputProps> = ({
+  width,
+  height,
+  keyboard,
+  borderRadius,
+}) => {
   var styles = StyleSheet.create({
     input: {
       width: width * Dimensions.get('window').width - 2,
       height: height * Dimensions.get('window').height - 2,
-      borderRadius: 20,
+      borderRadius: borderRadius,
       backgroundColor: '#fff',
       alignSelf: 'center',
       justifyContent: 'center',
@@ -23,7 +30,7 @@ const Input: React.FC<InputProps> = ({width, height, keyboard}) => {
     gradient: {
       width: width * Dimensions.get('window').width,
       height: height * Dimensions.get('window').height,
-      borderRadius: 20,
+      borderRadius: borderRadius,
       justifyContent: 'center',
       alignSelf: 'center',
     },
