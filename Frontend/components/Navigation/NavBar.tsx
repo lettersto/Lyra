@@ -1,11 +1,12 @@
 import React from 'react';
-import {Button, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import MainFeedScreen from '../../screens/Home/Feed/MainFeedScreen';
 import MainChatScreen from '../../screens/Chat/MainChatScreen';
 import MainMapScreen from '../../screens/Map/MainMapScreen';
 import MainProfileScreen from '../../screens/Profile/MainProfileScreen';
+import EditProfileScreen from '../../screens/Profile/EditProfileScreen';
 
 import LocationTitle from './TopNavBar/LocationTitle';
 import Logo from './TopNavBar/Logo';
@@ -21,20 +22,57 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 import Colors from '../../constants/Colors';
 
-const Stack = createBottomTabNavigator();
+const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
-export enum StackScreens {
+export enum TabScreens {
   Home = 'Home',
   Map = 'Map',
   Chat = 'Chat',
-  Profile = 'Profile',
+  ProfileTab = 'ProfileTab',
 }
 
-const Footer = () => {
+export enum StackScreens {
+  MainProfile = 'MainProfile',
+  EditProfile = 'EditProfile',
+}
+
+const NavBar = () => {
+  const ProfileStack = () => {
+    return (
+      <Stack.Navigator
+        initialRouteName={StackScreens.MainProfile}
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: Colors.black500,
+          },
+          headerTintColor: Colors.gray300,
+          headerTitleStyle: {
+            fontFamily: 'NanumSquareRoundR',
+            fontSize: 20,
+          },
+          headerTitleAlign: 'center',
+        }}>
+        <Stack.Screen
+          name={StackScreens.MainProfile}
+          component={MainProfileScreen}
+          options={{
+            headerTitle: () => <ProfileTitle />,
+            headerRight: () => <ProfileButtons />,
+          }}
+        />
+        <Stack.Screen
+          name={StackScreens.EditProfile}
+          component={EditProfileScreen}
+        />
+      </Stack.Navigator>
+    );
+  };
+
   return (
     <>
-      <Stack.Navigator
-        initialRouteName={StackScreens.Home}
+      <Tab.Navigator
+        initialRouteName={TabScreens.Home}
         screenOptions={{
           tabBarActiveTintColor: Colors.purple300,
           tabBarStyle: {
@@ -54,8 +92,8 @@ const Footer = () => {
           },
           headerTitleAlign: 'center',
         }}>
-        <Stack.Screen
-          name={StackScreens.Home}
+        <Tab.Screen
+          name={TabScreens.Home}
           component={MainFeedScreen}
           options={{
             tabBarLabel: 'Home',
@@ -67,8 +105,8 @@ const Footer = () => {
             headerRight: () => <FeedButtons />,
           }}
         />
-        <Stack.Screen
-          name={StackScreens.Map}
+        <Tab.Screen
+          name={TabScreens.Map}
           component={MainMapScreen}
           options={{
             tabBarLabel: 'Map',
@@ -79,8 +117,8 @@ const Footer = () => {
             headerRight: () => <MapButtons />,
           }}
         />
-        <Stack.Screen
-          name={StackScreens.Chat}
+        <Tab.Screen
+          name={TabScreens.Chat}
           component={MainChatScreen}
           options={{
             tabBarLabel: 'Chat',
@@ -97,23 +135,20 @@ const Footer = () => {
             // headerRight: () => <BuskerChatButtons />,
           }}
         />
-        <Stack.Screen
-          name={StackScreens.Profile}
-          component={MainProfileScreen}
+        <Tab.Screen
+          name={TabScreens.ProfileTab}
+          component={ProfileStack}
           options={{
+            headerShown: false,
             tabBarLabel: 'Profile',
             tabBarIcon: ({color, size}) => (
               <Icon2 name="person-outline" color={color} size={size} />
             ),
-            headerTitle: () => <ProfileTitle />,
-            headerRight: () => <ProfileButtons />,
           }}
         />
-      </Stack.Navigator>
+      </Tab.Navigator>
     </>
   );
 };
 
-const styles = StyleSheet.create({});
-
-export default Footer;
+export default NavBar;
