@@ -1,5 +1,4 @@
 import React from 'react';
-import {Button, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import MainPheedScreen from '../../screens/Home/Pheed/MainPheedScreen';
@@ -30,7 +29,7 @@ export enum StackScreens {
   Profile = 'Profile',
 }
 
-const Footer = () => {
+const NavBar = () => {
   return (
     <>
       <Stack.Navigator
@@ -114,6 +113,4 @@ const Footer = () => {
   );
 };
 
-const styles = StyleSheet.create({});
-
-export default Footer;
+export default NavBar;
