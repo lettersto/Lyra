@@ -18,4 +18,7 @@ public class RequestSupport {
 
     private String content;
 
+    @NotNull(message = "contract address cannot be null")
+    private String ca;
+
 }

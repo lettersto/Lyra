@@ -25,6 +25,9 @@ public class Support {
     @Column(nullable = false)
     private Long coin;
 
+    @Column(nullable = false)
+    private String ca;
+
     @Column
     private String content;
 

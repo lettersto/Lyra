@@ -10,6 +10,8 @@ public class SupportDto {
 
     private Integer coin;
 
+    private String ca;
+
     private Long supporterId;
 
     private Long buskerId;

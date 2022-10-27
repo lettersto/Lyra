@@ -16,4 +16,6 @@ public class ResponseSupport {
 
     private String content;
 
+    private String ca;
+
 }
