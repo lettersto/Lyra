@@ -1,0 +1,30 @@
+package hermes.businessservice.entity;
+
+import lombok.extern.slf4j.Slf4j;
+
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
+
+@Converter
+@Slf4j
+public class CategoryConverter implements AttributeConverter<Category, String> {
+
+    @Override
+    public String convertToDatabaseColumn(Category pheedCategory) {
+        if (pheedCategory == null) return null;
+        return pheedCategory.getValue();
+    }
+
+    @Override
+    public Category convertToEntityAttribute(String dbData) {
+        if (dbData == null) {
+            return null;
+        }
+        try {
+            return Category.fromCode(dbData);
+        } catch (IllegalArgumentException e) {
+            log.error(dbData, e);
+            throw e;
+        }
+    }
+}
