@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, Text, Pressable, StyleSheet, Dimensions} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 import LinearGradient from 'react-native-linear-gradient';
 import IIcon from 'react-native-vector-icons/Ionicons';
@@ -7,7 +8,12 @@ import IIcon from 'react-native-vector-icons/Ionicons';
 import Colors from '../../../constants/Colors';
 
 const WalletBody = () => {
-  const gradientColors = [Colors.pink300, Colors.purple500];
+  const gradientColors = [Colors.pink300, Colors.purple300];
+  const navigation = useNavigation();
+
+  const pressHandler = () => {
+    navigation.navigate('Wallet');
+  };
 
   return (
     <View style={styles.container}>
@@ -17,8 +23,7 @@ const WalletBody = () => {
         end={{x: 1.0, y: 1.0}}
         style={styles.gradientContainer}>
         <View style={styles.walletContainer}>
-          {/* TODO onPress */}
-          <Pressable style={styles.flex}>
+          <Pressable style={styles.flex} onPress={pressHandler}>
             <View style={styles.walletContent}>
               <View style={styles.headerContainer}>
                 <Text style={[styles.text, styles.walletHeader]}>지갑</Text>

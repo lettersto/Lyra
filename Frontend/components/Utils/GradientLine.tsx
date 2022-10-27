@@ -8,7 +8,7 @@ import Colors from '../../constants/Colors';
 const GradientLine = () => {
   return (
     <LinearGradient
-      colors={[Colors.pink300, Colors.purple500]}
+      colors={[Colors.pink300, Colors.purple300]}
       start={{x: 0.0, y: 0.0}}
       end={{x: 1.0, y: 1.0}}
       style={styles.line}
