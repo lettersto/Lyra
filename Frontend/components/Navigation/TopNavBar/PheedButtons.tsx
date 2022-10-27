@@ -1,12 +1,18 @@
 import React from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Colors from '../../../constants/Colors';
 
-const FeedButtons = () => {
+const PheedButtons = () => {
+  const navigation = useNavigation();
+  const alarmPressHandler = () => {
+    navigation.navigate('Alarm');
+  };
+
   return (
     <View style={styles.container}>
       <Pressable>
@@ -14,7 +20,7 @@ const FeedButtons = () => {
           <IIcon name="ios-search-outline" size={25} color={Colors.gray300} />
         </View>
       </Pressable>
-      <Pressable>
+      <Pressable onPress={alarmPressHandler}>
         <View style={styles.innerContainer}>
           <MCIcon name="bell-outline" size={25} color={Colors.gray300} />
         </View>
@@ -25,17 +31,13 @@ const FeedButtons = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     flexDirection: 'row',
-    marginRight: '8%',
   },
   innerContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
     marginLeft: 12,
   },
 });
 
-export default FeedButtons;
+export default PheedButtons;

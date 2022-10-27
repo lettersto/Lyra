@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
-import {Text, Pressable, StyleSheet, View} from 'react-native';
+import {Text, Pressable, StyleSheet, View, Dimensions} from 'react-native';
+
+import ProfileButtons from './ProfileButtons';
 
 import Colors from '../../../constants/Colors';
 
@@ -7,23 +9,23 @@ const ProfileTitle = () => {
   const [userName, setUserName] = useState('주혜');
 
   return (
-    <Pressable style={styles.outerContainer}>
-      <View style={styles.innerContainer}>
+    <View style={styles.container}>
+      <View />
+      <Pressable>
         <Text style={styles.title}>{userName}</Text>
-      </View>
-    </Pressable>
+      </Pressable>
+      <ProfileButtons />
+    </View>
   );
 };
 
+const deviceWidth = Dimensions.get('window').width;
+
 const styles = StyleSheet.create({
-  outerContainer: {
-    flex: 1,
-  },
-  innerContainer: {
-    flex: 1,
+  container: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: deviceWidth * 0.93,
+    justifyContent: 'space-between',
   },
   title: {
     fontFamily: 'NanumSquareRoundR',

@@ -23,7 +23,7 @@ const CircleGradient = ({
   };
 
   const gradientSize = {
-    extraSmall: 48,
+    extraSmall: 38,
     small: 56,
     medium: 64,
     large: 72,

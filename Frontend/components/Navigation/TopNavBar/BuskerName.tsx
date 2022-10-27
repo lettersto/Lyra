@@ -1,15 +1,16 @@
 import React, {useState} from 'react';
 import {Text, Pressable, StyleSheet, View} from 'react-native';
 
+import CircleProfile from '../../Utils/CircleProfile';
 import Colors from '../../../constants/Colors';
 
-const BuskerTitle = () => {
+const BuskerName = () => {
   const [buskerName, setBuskerName] = useState('APOLLON');
 
   return (
-    <Pressable style={styles.outerContainer}>
-      <View style={styles.innerContainer}>
-        {/* Image 추가 */}
+    <Pressable>
+      <View style={styles.container}>
+        <CircleProfile size="extraSmall" grade="normal" isGradient={true} />
         <Text style={styles.title}>{buskerName}</Text>
       </View>
     </Pressable>
@@ -17,21 +18,16 @@ const BuskerTitle = () => {
 };
 
 const styles = StyleSheet.create({
-  outerContainer: {
-    flex: 1,
-  },
-  innerContainer: {
-    flex: 1,
+  container: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
   },
   title: {
     fontFamily: 'NanumSquareRoundR',
     fontSize: 20,
     color: Colors.gray300,
-    // fontWeight: 'bold',
+    marginLeft: 8,
   },
 });
 
-export default BuskerTitle;
+export default BuskerName;
