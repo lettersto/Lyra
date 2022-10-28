@@ -29,7 +29,7 @@ const Map = () => {
   const [location, setLocation] = useState<ILocation | undefined>(undefined);
   useEffect(() => {
     requestPermission().then(result => {
-      console.log({result});
+      // console.log({result});
       if (result === 'granted') {
         Geolocation.getCurrentPosition(
           pos => {
@@ -69,6 +69,8 @@ const Map = () => {
             longitudeDelta: 0.005,
           }}
           customMapStyle={mapStyle}
+          showsUserLocation={true}
+          showsMyLocationButton={true}
         />
       </View>
     </>
