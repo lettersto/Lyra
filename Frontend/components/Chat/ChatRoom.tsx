@@ -5,11 +5,11 @@ import {GiftedChat, IMessage} from 'react-native-gifted-chat';
 const ChatRoom = () => {
   const [totalMessages, setMessages] = useState<IMessage[]>([
     {
-      _id: 2,
+      _id: 1,
       text: 'Hello developer',
       createdAt: new Date(Date.UTC(2016, 5, 12, 17, 20, 0)),
       user: {
-        _id: 2,
+        _id: 1,
         name: 'React Native',
         avatar: 'https://placeimg.com/140/140/any',
       },
@@ -23,12 +23,12 @@ const ChatRoom = () => {
   }, []);
 
   return (
-    <View style={{height: 700}}>
+    <View style={{height: 600}}>
       <GiftedChat
         messages={totalMessages}
         onSend={messages => onSend(messages)}
         user={{
-          _id: 1,
+          _id: 2,
         }}
         // showAvatarForEveryMessage={true}
       />
