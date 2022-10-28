@@ -1,6 +1,6 @@
 import React, {useState, useCallback} from 'react';
-import {View} from 'react-native';
-import {GiftedChat, IMessage} from 'react-native-gifted-chat';
+import {ImageBackground, View} from 'react-native';
+import {Bubble, GiftedChat, IMessage} from 'react-native-gifted-chat';
 
 const ChatRoom = () => {
   const [totalMessages, setMessages] = useState<IMessage[]>([
@@ -23,16 +23,37 @@ const ChatRoom = () => {
   }, []);
 
   return (
-    <View style={{height: 600}}>
-      <GiftedChat
-        messages={totalMessages}
-        onSend={messages => onSend(messages)}
-        user={{
-          _id: 2,
-        }}
-        // showAvatarForEveryMessage={true}
-      />
-    </View>
+    <ImageBackground
+      source={require('../../assets/image/chatBackGroundImg.png')}>
+      <View style={{height: 600}}>
+        <GiftedChat
+          messages={totalMessages}
+          onSend={messages => onSend(messages)}
+          renderBubble={props => {
+            return (
+              <Bubble
+                {...props}
+                textStyle={{
+                  right: {
+                    // color: '',
+                  },
+                }}
+                wrapperStyle={{
+                  left: {
+                    // backgroundColor: 'yellow',
+                  },
+                }}
+              />
+            );
+          }}
+          user={{
+            _id: 3,
+          }}
+          // messagesContainerStyle={{}}
+          // showAvatarForEveryMessage={true}
+        />
+      </View>
+    </ImageBackground>
   );
 };
 
