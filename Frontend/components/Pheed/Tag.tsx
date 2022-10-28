@@ -1,29 +1,23 @@
 import React, {useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Text,
-  Modal as ReactModal,
-  KeyboardAvoidingView,
-} from 'react-native';
+import {View, StyleSheet, Text, Alert, ScrollView} from 'react-native';
 import Input from '../Utils/Input';
 import Button from '../Utils/Button';
-
-interface ITodo {
-  text: string;
-}
+import Colors from '../../constants/Colors';
 
 const Tag = () => {
-  const [value, setValue] = useState<string>('');
-  const [tags, setTag] = useState<ITodo[]>([]);
+  const [enteredValue, setEnteredValue] = useState<string>('');
+  const [tags, setTag] = useState<string[]>([]);
   const [show, setShow] = useState<boolean>(false);
 
   const submit = () => {
-    if (value.trim()) {
-      setTag([...tags, {text: value}]);
+    if (enteredValue.trim()) {
+      setTag(prevTags => {
+        return [...prevTags, enteredValue];
+      });
+    } else {
+      Alert.alert('태그를 입력해주세요.');
     }
-    setValue('');
+    setEnteredValue('');
   };
 
   const removeTag = (index: number): void => {
@@ -42,23 +36,36 @@ const Tag = () => {
 
   return (
     <View style={styles.container}>
-      {tags.length === 0 && (
-        <Text style={styles.text}>#태그를 입력해주세요.</Text>
-      )}
-      {tags.map((tag: ITodo, index: number) => {
-        <View key={index}>
-          <Text> {tag.text}</Text>
-        </View>;
-      })}
+      <ScrollView horizontal style={styles.tagCt}>
+        {tags.length === 0 ? (
+          <Text style={styles.text}> #태그를 입력해주세요.</Text>
+        ) : (
+          tags.map((tag, index: number) => {
+            return (
+              <View key={index} style={styles.tag}>
+                <Button
+                  title={'#' + tag}
+                  textSize="small"
+                  btnSize="small"
+                  isGradient={true}
+                  isOutlined={true}
+                  onPress={() => removeTag(index)}
+                />
+              </View>
+            );
+          })
+        )}
+      </ScrollView>
       {show === true ? (
         <View style={styles.inputCt}>
           <Input
-            width={0.4}
+            width={0.3}
             height={0.05}
-            borderRadius={10}
+            borderRadius={20}
             keyboard={1}
-            placeholder="태그"
-            value={value}
+            placeholder="  #태그"
+            enteredValue={enteredValue}
+            setEnteredValue={setEnteredValue}
           />
           <View style={styles.btn}>
             <Button
@@ -67,9 +74,7 @@ const Tag = () => {
               textSize="small"
               isGradient={true}
               isOutlined={false}
-              onPress={() => {
-                submit;
-              }}
+              onPress={submit}
             />
           </View>
         </View>
@@ -77,7 +82,7 @@ const Tag = () => {
         <></>
       )}
       <Button
-        title="+"
+        title="태그 +"
         btnSize="small"
         textSize="medium"
         isGradient={true}
@@ -103,6 +108,18 @@ const styles = StyleSheet.create({
   },
   btn: {
     marginLeft: 10,
+  },
+  tagCt: {
+    flexDirection: 'row',
+    marginLeft: '5%',
+    marginRight: '5%',
+    marginBottom: 10,
+  },
+  tag: {
+    marginLeft: 5,
+  },
+  detailtag: {
+    color: Colors.purple300,
   },
 });
 

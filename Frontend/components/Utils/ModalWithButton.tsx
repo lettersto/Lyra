@@ -6,7 +6,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Button from './Button';
 import Colors from '../../constants/Colors';
 
-const TwoButtonModal = ({
+const ModalWithButton = ({
   isModalVisible,
   setIsModalVisible,
   children,
@@ -104,4 +104,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TwoButtonModal;
+export default ModalWithButton;
