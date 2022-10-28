@@ -13,8 +13,7 @@ import React from 'react';
 import {SafeAreaView} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 
-import {RootStackParamList} from './components/Navigation/NavBar';
-// import StackBar from './components/Navigation/StackBar';
+import {RootStackParamList} from './constants/types';
 import NavBar from './components/Navigation/NavBar';
 import Colors from './constants/Colors';
 

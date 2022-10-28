@@ -21,9 +21,10 @@ import UserChatTitle from './TopNavBar/UserChatTitle';
 // import BuskerChatButtons from './TopNavBar/BuskerChatButtons';
 
 import {TabScreens} from './NavBar';
+import {RootStackParamList} from '../../constants/types';
 import Colors from '../../constants/Colors';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const PheedStack = () => {
   return (
@@ -134,7 +135,14 @@ export const ProfileStack = () => {
           headerTitleAlign: 'center',
         }}
       />
-      <Stack.Screen name="EditProfileItem" component={EditProfileItemScreen} />
+      <Stack.Screen
+        name="EditProfileItem"
+        component={EditProfileItemScreen}
+        initialParams={{editProfileMode: 'nickname'}}
+        options={{
+          headerTitleAlign: 'center',
+        }}
+      />
       <Stack.Screen name="Wallet" component={WalletScreen} />
     </Stack.Navigator>
   );

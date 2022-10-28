@@ -1,37 +1,11 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import {PheedStack, MapStack, ChatStack, ProfileStack} from './Stack';
-
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon2 from 'react-native-vector-icons/Ionicons';
+
+import {PheedStack, MapStack, ChatStack, ProfileStack} from './Stack';
 import Colors from '../../constants/Colors';
-
-/**
- * NOTE
- * We needs RootTabParamList to resolve typescript error
- * when using navigation.navigate()
- *
- * <example for RootTabParamList>
- *
- * Home: undefined;
- * Profile: { userId: string };
- * Feed: { sort: 'latest' | 'top' } | undefined;
- *
- * <How to use RootTabParamList>
- */
-
-export type RootStackParamList = {
-  Home: undefined;
-  Map: undefined;
-  Chat: undefined;
-  Profile: undefined;
-  CreatePheed: undefined;
-  EditProfile: undefined;
-  EditProfileItem: undefined;
-  Wallet: undefined;
-  Alarm: undefined;
-};
 
 const Tab = createBottomTabNavigator();
 
