@@ -12,6 +12,7 @@ type InputProps = {
   placeholder?: string;
   customStyle?: any;
   maxLength?: number;
+  value?: string;
 };
 
 const Input: React.FC<InputProps> = ({
@@ -22,6 +23,7 @@ const Input: React.FC<InputProps> = ({
   placeholder,
   customStyle,
   maxLength,
+  value,
 }) => {
   var styles = StyleSheet.create({
     input: {
@@ -62,6 +64,7 @@ const Input: React.FC<InputProps> = ({
           placeholder={placeholder}
           placeholderTextColor={Colors.gray300}
           maxLength={maxLength}
+          value={value}
         />
       </LinearGradient>
     </>

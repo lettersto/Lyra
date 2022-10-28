@@ -56,6 +56,7 @@ const NavBar = () => {
             position: 'absolute',
           },
           headerShown: false,
+          tabBarHideOnKeyboard: true,
         }}>
         <Tab.Screen
           name={TabScreens.Home}
