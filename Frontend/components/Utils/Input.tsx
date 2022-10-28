@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, Dispatch, SetStateAction} from 'react';
 import {StyleSheet, TextInput, Dimensions} from 'react-native';
 import Colors from '../../constants/Colors';
 import LinearGradient from 'react-native-linear-gradient';
@@ -12,7 +12,8 @@ type InputProps = {
   placeholder?: string;
   customStyle?: any;
   maxLength?: number;
-  value?: string;
+  enteredValue?: string;
+  setEnteredValue?: Dispatch<SetStateAction<string>>;
 };
 
 const Input: React.FC<InputProps> = ({
@@ -23,9 +24,10 @@ const Input: React.FC<InputProps> = ({
   placeholder,
   customStyle,
   maxLength,
-  value,
+  enteredValue,
+  setEnteredValue,
 }) => {
-  var styles = StyleSheet.create({
+  const styles = StyleSheet.create({
     input: {
       width: width * Dimensions.get('window').width - 2,
       height: height * Dimensions.get('window').height - 2,
@@ -45,6 +47,8 @@ const Input: React.FC<InputProps> = ({
     },
   });
 
+  // const [value, setValue] = useState<string>('');
+
   return (
     <>
       <LinearGradient
@@ -55,17 +59,33 @@ const Input: React.FC<InputProps> = ({
         angleCenter={{x: 0.5, y: 0.5}}
         colors={[Colors.purple300, Colors.pink500]}
         style={[styles.gradient, customStyle]}>
-        <TextInput
-          style={{...styles.input}}
-          multiline={true}
-          blurOnSubmit
-          autoCorrect={false}
-          keyboardType={keyboard === 1 ? 'ascii-capable' : 'numeric'}
-          placeholder={placeholder}
-          placeholderTextColor={Colors.gray300}
-          maxLength={maxLength}
-          value={value}
-        />
+        {setEnteredValue && (
+          <TextInput
+            style={{...styles.input}}
+            multiline={true}
+            blurOnSubmit
+            autoCorrect={false}
+            keyboardType={keyboard === 1 ? 'ascii-capable' : 'numeric'}
+            placeholder={placeholder}
+            placeholderTextColor={Colors.gray300}
+            maxLength={maxLength}
+            value={enteredValue}
+            onChangeText={setEnteredValue}
+          />
+        )}
+        {!setEnteredValue && (
+          <TextInput
+            style={{...styles.input}}
+            multiline={true}
+            blurOnSubmit
+            autoCorrect={false}
+            keyboardType={keyboard === 1 ? 'ascii-capable' : 'numeric'}
+            placeholder={placeholder}
+            placeholderTextColor={Colors.gray300}
+            maxLength={maxLength}
+            value={enteredValue}
+          />
+        )}
       </LinearGradient>
     </>
   );
