@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
+import {View, StyleSheet, ScrollView, ViewStyle} from 'react-native';
 import CategoryBtn from './CategoryBtn';
 
 const PHEED_CATEGORY = [
@@ -10,10 +10,10 @@ const PHEED_CATEGORY = [
   {label: '기타', code: 5},
 ];
 
-const PheedCategory = () => {
+const PheedCategory = ({CustomStyle}: {CustomStyle?: ViewStyle}) => {
   const [isactive, setIsActive] = useState<number>(1);
   return (
-    <View style={styles.buttons}>
+    <View style={[styles.buttons, CustomStyle]}>
       <ScrollView horizontal>
         {PHEED_CATEGORY.map(category => {
           return (
