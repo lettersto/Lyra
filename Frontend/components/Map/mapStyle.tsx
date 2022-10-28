@@ -1,4 +1,4 @@
-const mapStyle = [
+const MapStyle = [
   {
     elementType: 'geometry',
     stylers: [
@@ -203,4 +203,4 @@ const mapStyle = [
   },
 ];
 
-export default mapStyle;
+export default MapStyle;
