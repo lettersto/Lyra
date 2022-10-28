@@ -9,7 +9,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 public interface PheedRepository extends CrudRepository<Pheed, Long> {
-    Iterable<Pheed> findByPheedTag(PheedTag pt);
 
 
     Iterable<Pheed> findByCategory(@Param(value="category") Category category);

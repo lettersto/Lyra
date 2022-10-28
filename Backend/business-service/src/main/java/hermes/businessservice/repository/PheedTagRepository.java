@@ -10,4 +10,6 @@ public interface PheedTagRepository extends CrudRepository<PheedTag, Long> {
     Iterable<PheedTag> findByTagId(Long t);
 
     PheedTag findByName(String tag);
+
+    PheedTag[] findByPheedId(Long pheedId);
 }

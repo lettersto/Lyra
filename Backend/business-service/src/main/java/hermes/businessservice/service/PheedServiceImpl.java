@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -116,5 +117,66 @@ public class PheedServiceImpl implements PheedService{
         }
         return result;
     }
+
+    @Override
+    public PheedDto updatePheed(Long pheedId, PheedDto pheedDto, List<String> pheedTagList) {
+
+        Optional<Pheed> p = pheedRepository.findById(pheedId);
+        pheedDto.setUserId(p.get().getUserId());
+
+
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        Pheed pheed = mapper.map(pheedDto, Pheed.class);
+
+        pheed.setId(pheedId);
+        pheed.setTime(p.get().getTime());
+        log.info(String.valueOf(pheed));
+
+        pheedRepository.save(pheed);
+
+
+        for(PheedTag pheedTag :pheedTagRepository.findByPheedId(pheedId)){
+            pheedTagRepository.delete(pheedTag);
+        }
+
+
+        if(pheedTagList != null) {
+            for (String tag : pheedTagList) {
+                Tag t = tagRepository.findByName(tag);
+                if (t == null) {
+                    t = new Tag();
+                    t.setName(tag);
+                    t = tagRepository.getOne(tagRepository.save(t).getId());
+                }
+
+                PheedTag pt = new PheedTag();
+                pt.setPheed(pheedRepository.getOne(pheedId));
+                pt.setTag(t);
+                pt.setName(tag);
+                pheedTagRepository.save(pt);
+            }
+        }
+
+        PheedDto returnValue = mapper.map(pheed, PheedDto.class);
+        return returnValue;
+    }
+
+    @Override
+    public void deletePheed(Long pheedId) {
+
+
+        for(PheedTag pheedTag :pheedTagRepository.findByPheedId(pheedId)){
+            pheedTagRepository.delete(pheedTag);
+        }
+
+        pheedRepository.deleteById(pheedId);
+    }
+
+    @Override
+    public Optional<Pheed> getPheedById(Long pheedId) {
+        return pheedRepository.findById(pheedId);
+    }
+
 
 }

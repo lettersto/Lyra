@@ -2,7 +2,6 @@ package hermes.businessservice.controller;
 
 import hermes.businessservice.dto.PheedDto;
 import hermes.businessservice.entity.Pheed;
-import hermes.businessservice.entity.PheedTag;
 import hermes.businessservice.service.PheedService;
 import hermes.businessservice.vo.RequestPheed;
 import hermes.businessservice.vo.ResponsePheed;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/business-service")
@@ -56,9 +56,9 @@ public class PheedController {
 
     //    @ApiOperation(value = "전체 피드 확인", response = String.class)
     @GetMapping("/pheed")
-    public ResponseEntity<List<ResponsePheed>> getPheed() throws Exception {
+    public ResponseEntity<List<ResponsePheed>> getPheeds() throws Exception {
 
-        log.info("Before get pheed data");
+        log.info("Before get pheeds data");
         Iterable<Pheed> pheedList = pheedService.getPheedByAll();
 
         List<ResponsePheed> result = new ArrayList<>();
@@ -67,13 +67,64 @@ public class PheedController {
             result.add(new ModelMapper().map(v, ResponsePheed.class));
         });
 
-        log.info("After got pheed data");
+        log.info("After got pheeds data");
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    //    @ApiOperation(value = "피드 상세 확인", response = String.class)
+    @GetMapping("/pheed/{pheed_id}")
+    public ResponseEntity<Optional<Pheed>> getPheed(@PathVariable("pheed_id") Long pheedId) throws Exception {
+
+        log.info("Before get pheed data");
+
+        Optional<Pheed> pheed = pheedService.getPheedById(pheedId);
+
+
+        log.info("After got pheed data");
+
+        return ResponseEntity.status(HttpStatus.OK).body(pheed);
+    }
+
+    //    @ApiOperation(value = "피드 수정", response = String.class)
+    @PatchMapping("/pheed/{pheed_id}")
+    public ResponseEntity<String> updatePheed(@PathVariable("pheed_id") Long pheedId, @RequestBody RequestPheed pheed) throws Exception {
+
+        log.info("Before update pheed data");
+
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+        List<String> pheedTagList = pheed.getPheedTag();
+        log.info(String.valueOf(pheedTagList));
+
+        PheedDto pheedDto = mapper.map(pheed, PheedDto.class);
+
+
+
+        PheedDto updatePheed = pheedService.updatePheed(pheedId, pheedDto, pheedTagList);
+
+
+        log.info("After updated pheed data");
+
+        return new ResponseEntity<String>("success", HttpStatus.OK);
+    }
+
+    //    @ApiOperation(value = "피드 삭제", response = String.class)
+    @DeleteMapping("/pheed/{pheed_id}")
+    public ResponseEntity<String> deletePheed(@PathVariable("pheed_id") Long pheedId) {
+
+        log.info("Before delete pheed data");
+
+        pheedService.deletePheed(pheedId);
+
+        log.info("After deleted pheed data");
+
+        return new ResponseEntity<String>("success", HttpStatus.OK);
+    }
+
     //    @ApiOperation(value = "카테고리 별 피드 확인", response = String.class)
-    @GetMapping("/pheed/{category}")
+    @GetMapping("/pheed/category/{category}")
     public ResponseEntity<List<ResponsePheed>> getPheedByCategory(@PathVariable String category) throws Exception {
 
         log.info("Before get pheed by category data");
@@ -158,5 +209,6 @@ public class PheedController {
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+
 
 }
