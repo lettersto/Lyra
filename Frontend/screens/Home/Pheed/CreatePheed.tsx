@@ -23,7 +23,6 @@ const CreatePheed = () => {
       <KeyboardAwareScrollView>
         <SafeAreaView>
           <View style={styles.container}>
-            <Text style={styles.text}>Create Pheed</Text>
             <Gallery />
             <PheedCategory />
             <View style={styles.inputCt}>
@@ -62,9 +61,8 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: Colors.black500,
-    // height: 500,
     height: Dimensions.get('window').height,
-    paddingTop: 10,
+    paddingTop: 20,
   },
   text: {
     color: 'white',
