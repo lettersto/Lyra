@@ -2,7 +2,12 @@ import React, {useEffect, useState} from 'react';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import mapStyle from './mapStyle';
 import Geolocation from 'react-native-geolocation-service';
-import {View, Platform, PermissionsAndroid} from 'react-native';
+import {View, Platform, PermissionsAndroid, Text} from 'react-native';
+
+interface ILocation {
+  latitude: number;
+  longitude: number;
+}
 
 async function requestPermission() {
   try {
@@ -21,7 +26,7 @@ async function requestPermission() {
 }
 
 const Map = () => {
-  const [location, setLocation] = useState();
+  const [location, setLocation] = useState<ILocation | undefined>(undefined);
   useEffect(() => {
     requestPermission().then(result => {
       console.log({result});
@@ -42,6 +47,15 @@ const Map = () => {
       }
     });
   }, []);
+
+  if (!location) {
+    return (
+      <View>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
   return (
     <>
       <View style={{flex: 1}}>
