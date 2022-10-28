@@ -8,10 +8,10 @@ import PheedTitle from './TopNavBar/PheedTitle';
 import AlarmScreen from '../../screens/Others/AlarmScreen';
 // Profile
 import MainProfileScreen from '../../screens/Profile/MainProfileScreen';
-import EditProfileScreen from '../../screens/Profile/EditProfileScreen';
+import ProfileDetailScreen from '../../screens/Profile/ProfileDetailScreen';
+import EditProfileItemScreen from '../../screens/Profile/EditProfileItemScreen';
 import WalletScreen from '../../screens/Profile/WalletScreen';
 import ProfileTitle from './TopNavBar/ProfileTitle';
-import EditProfileButton from './TopNavBar/EditProfileButton';
 // MAP
 import MainMapScreen from '../../screens/Map/MainMapScreen';
 import MapTitle from './TopNavBar/MapTitle';
@@ -127,14 +127,14 @@ export const ProfileStack = () => {
         }}
       />
       <Stack.Screen
-        name="EditProfile"
-        component={EditProfileScreen}
+        name="ProfileDetail"
+        component={ProfileDetailScreen}
         options={{
-          title: '내 정보 수정',
+          title: '내 정보',
           headerTitleAlign: 'center',
-          headerRight: () => <EditProfileButton />,
         }}
       />
+      <Stack.Screen name="EditProfileItem" component={EditProfileItemScreen} />
       <Stack.Screen name="Wallet" component={WalletScreen} />
     </Stack.Navigator>
   );

@@ -28,6 +28,7 @@ export type RootStackParamList = {
   Profile: undefined;
   CreatePheed: undefined;
   EditProfile: undefined;
+  EditProfileItem: undefined;
   Wallet: undefined;
   Alarm: undefined;
 };
