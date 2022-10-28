@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  Text,
-  View,
-  StyleSheet,
-  Dimensions,
-  KeyboardAvoidingView,
-  ScrollView,
-  TextInput,
-} from 'react-native';
+import {SafeAreaView, View, StyleSheet, Dimensions} from 'react-native';
 import Input from '../../../components/Utils/Input';
 import DateTime from '../../../components/Pheed/DateTime';
 import Colors from '../../../constants/Colors';
@@ -24,8 +15,10 @@ const CreatePheed = () => {
         <SafeAreaView>
           <View style={styles.container}>
             <Gallery />
-            <PheedCategory />
-            <View style={styles.inputCt}>
+            <View style={styles.category}>
+              <PheedCategory Category="phead" />
+            </View>
+            <View>
               <Input
                 height={0.05}
                 width={0.9}
@@ -62,22 +55,23 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.black500,
     height: Dimensions.get('window').height,
-    paddingTop: 20,
+    paddingTop: 15,
   },
   text: {
     color: 'white',
   },
-  inputCt: {
-    margin: 15,
-  },
   inputMargin: {
-    marginTop: 15,
+    marginTop: 10,
+    marginBottom: 15,
   },
   dateplace: {
     flexDirection: 'row',
     width: '90%',
     marginLeft: '5%',
     justifyContent: 'space-between',
+  },
+  category: {
+    marginBottom: 15,
   },
 });
 
