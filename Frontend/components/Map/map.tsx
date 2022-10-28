@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
-import mapStyle from './MapStyle';
 import Geolocation from 'react-native-geolocation-service';
 import {View, Platform, PermissionsAndroid, Text} from 'react-native';
+import MapStyle from './mapStyle';
 
 interface ILocation {
   latitude: number;
@@ -68,7 +68,7 @@ const Map = () => {
             latitudeDelta: 0.005,
             longitudeDelta: 0.005,
           }}
-          customMapStyle={mapStyle}
+          customMapStyle={MapStyle}
           showsUserLocation={true}
           showsMyLocationButton={true}
         />
