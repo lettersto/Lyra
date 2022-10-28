@@ -1,14 +1,15 @@
 import React from 'react';
-import {Text} from 'react-native';
-import EventModal from './EventModal';
+import ChatRoom from '../../components/Chat/ChatRoom';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+// import EventModal from './EventModal';
 
 const MainChatScreen = () => {
   return (
-    <>
-      <Text>MainChatScreen</Text>
+    <KeyboardAwareScrollView>
+      <ChatRoom />
       {/* LinearGradient 확인용 */}
-      <EventModal />
-    </>
+      {/* <EventModal /> */}
+    </KeyboardAwareScrollView>
   );
 };
 
