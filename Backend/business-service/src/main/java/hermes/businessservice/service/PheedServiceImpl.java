@@ -101,22 +101,20 @@ public class PheedServiceImpl implements PheedService{
     }
 
     @Override
-    public Iterable<Pheed> getPheedByPheedTag(String tag) {
-        log.info(tag);
-        List<PheedTag> lpt = pheedTagRepository.findByName(tag);
-        log.info(String.valueOf(lpt));
+    public List<Pheed> getPheedByTag(String tag) {
+        Long ti = tagRepository.findByName(tag).getId();
+        Iterable<PheedTag> pt = pheedTagRepository.findByTagId(ti);
 
-        List<Pheed> pheedList = new ArrayList<>();
-//        if(t == null){
-//            return null;
-//        }else{
-//            List<PheedTag> lpt = pheedTagRepository.findByTag(t);
-//            for(PheedTag pt : lpt){
-//                log.info(String.valueOf(pt));
-//                pheedList.add(pt.getPheed());
-//            }
-//        }
-        return null;
+        List<Pheed> result = new ArrayList<>();
+
+        if(pt == null){
+            return null;
+        }else{
+            pt.forEach(v -> {
+                result.add(v.getPheed());
+            });
+        }
+        return result;
     }
 
 }

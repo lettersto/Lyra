@@ -2,6 +2,7 @@ package hermes.businessservice.controller;
 
 import hermes.businessservice.dto.PheedDto;
 import hermes.businessservice.entity.Pheed;
+import hermes.businessservice.entity.PheedTag;
 import hermes.businessservice.service.PheedService;
 import hermes.businessservice.vo.RequestPheed;
 import hermes.businessservice.vo.ResponsePheed;
@@ -116,7 +117,7 @@ public class PheedController {
 
         try {
 
-            Iterable<Pheed> pheedList = pheedService.getPheedByPheedTag(tag);
+            List<Pheed> pheedList = pheedService.getPheedByTag(tag);
 
             List<ResponsePheed> result = new ArrayList<>();
 

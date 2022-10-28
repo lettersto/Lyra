@@ -18,5 +18,6 @@ public interface PheedService {
 
     Iterable<Pheed> getPheedByUserId(Long userId);
 
-    Iterable<Pheed> getPheedByPheedTag(String tag);
+    List<Pheed> getPheedByTag(String tag);
+
 }
