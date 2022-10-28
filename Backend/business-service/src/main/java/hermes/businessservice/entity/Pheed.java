@@ -1,7 +1,10 @@
 package hermes.businessservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import hermes.businessservice.config.CategoryConverter;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -10,7 +13,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
 public class Pheed {
     @Id
@@ -42,6 +46,7 @@ public class Pheed {
     private Category category;
 
     @OneToMany(mappedBy = "pheed",cascade = CascadeType.ALL)
+    @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     List<PheedTag> pheedTag = new ArrayList<>();
 
     @Column

@@ -1,16 +1,18 @@
 package hermes.businessservice.entity;
 
+import lombok.Data;
 import lombok.Getter;
 
+import javax.persistence.Entity;
 import java.util.Arrays;
 
 @Getter
 public enum Category {
-    SONG("노래"),
-    DANCE("춤"),
-    INSTRUMENT("악기"),
-    ART("미술"),
-    ETC("기타");
+    song("song"),
+    dance("dance"),
+    instrument("instrument"),
+    art("art"),
+    etc("etc");
 
     private String value;
 
