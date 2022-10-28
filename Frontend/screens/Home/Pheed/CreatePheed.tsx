@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {SafeAreaView, Text, View, StyleSheet, Dimensions} from 'react-native';
 import Input from '../../../components/Utils/Input';
 import DateTime from '../../../components/Pheed/DateTime';
 import Colors from '../../../constants/Colors';
 import Gallery from '../../../components/Pheed/Gallery';
+import PheedCategory from '../../../components/Pheed/Category/PheedCategory';
 
 const CreatePheed = () => {
   return (
@@ -12,6 +13,7 @@ const CreatePheed = () => {
         <View style={styles.container}>
           <Text style={styles.text}>Create Pheed</Text>
           <Gallery />
+          <PheedCategory />
           <View style={styles.inputCt}>
             <Input
               height={0.05}
