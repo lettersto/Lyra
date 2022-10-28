@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
-import mapStyle from './mapStyle';
+import mapStyle from './MapStyle';
 import Geolocation from 'react-native-geolocation-service';
 import {View, Platform, PermissionsAndroid, Text} from 'react-native';
 
