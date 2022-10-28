@@ -36,10 +36,9 @@ const styles = StyleSheet.create({
   buttons: {
     flexDirection: 'row',
     width: '90%',
-    height: 50,
     textAlign: 'center',
     marginLeft: '5%',
-    marginTop: 10,
+    marginTop: 15,
   },
   button: {
     marginRight: 10,
