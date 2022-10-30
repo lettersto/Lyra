@@ -60,11 +60,14 @@ public class CommentServiceImpl implements CommentService {
         Optional<Comment> c = commentRepository.findById(commentId);
         commentDto.setUserId(c.get().getUserId());
         commentDto.setPheed(pheedRepository.findById(pheedId).get());
+        commentDto.setTime(c.get().getTime());
 
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         Comment comment = mapper.map(commentDto, Comment.class);
+
+        comment.setId(commentId);
 
         commentRepository.save(comment);
 
@@ -77,7 +80,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(Long commentId) {
 
-        commentRepository.findById(commentId);
+        commentRepository.deleteById(commentId);
 
     }
 
