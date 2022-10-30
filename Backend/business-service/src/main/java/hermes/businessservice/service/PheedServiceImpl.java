@@ -5,6 +5,7 @@ import hermes.businessservice.entity.Category;
 import hermes.businessservice.entity.Pheed;
 import hermes.businessservice.entity.PheedTag;
 import hermes.businessservice.entity.Tag;
+import hermes.businessservice.repository.CommentRepository;
 import hermes.businessservice.repository.PheedRepository;
 import hermes.businessservice.repository.PheedTagRepository;
 import hermes.businessservice.repository.TagRepository;
@@ -35,11 +36,14 @@ public class PheedServiceImpl implements PheedService{
 
     private final PheedTagRepository pheedTagRepository;
 
+    private final CommentRepository commentRepository;
+
     @Autowired
-    public PheedServiceImpl(PheedRepository pheedRepository, TagRepository tagRepository, PheedTagRepository pheedTagRepository) {
+    public PheedServiceImpl(PheedRepository pheedRepository, TagRepository tagRepository, PheedTagRepository pheedTagRepository, CommentRepository commentRepository) {
         this.pheedRepository = pheedRepository;
         this.tagRepository = tagRepository;
         this.pheedTagRepository = pheedTagRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Override
@@ -169,7 +173,7 @@ public class PheedServiceImpl implements PheedService{
         for(PheedTag pheedTag :pheedTagRepository.findByPheedId(pheedId)){
             pheedTagRepository.delete(pheedTag);
         }
-
+        commentRepository.deleteByPheedId(pheedId);
         pheedRepository.deleteById(pheedId);
     }
 
