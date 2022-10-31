@@ -1,4 +1,4 @@
-package hermes.user_service.Controller;
+package hermes.user_service.controller;
 
 import hermes.user_service.configuration.Service.UserService;
 import hermes.user_service.dto.Message;
@@ -14,6 +14,7 @@ import java.nio.charset.Charset;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/user-service")
 public class UserController {
 
     private final UserService userService;
@@ -259,7 +260,7 @@ public class UserController {
 //    }
 
 //    @ApiOperation(value = "소셜로그인 - 멤버정보 요청",notes = "발급받은 accessToken으로 멤버정보를 요청한다.")
-    @GetMapping("/api/social")
+    @GetMapping("/me")
     public ResponseEntity<?> getMember(
             @RequestHeader(value="X-AUTH-TOKEN") String token) throws Exception {
         Message message = new Message();
@@ -274,7 +275,7 @@ public class UserController {
     }
 
 //    @ApiOperation(value = "access token 재발급 요청",notes = "refresh 토큰으로 access 토큰을 재발급 신청한다.")
-//    @PostMapping(value = "/api/refresh")
+//    @PostMapping(value = "/refresh")
 //    public ResponseEntity<?> refreshToken(
 //            @RequestHeader(value="X-AUTH-TOKEN") String token,
 //            @RequestHeader(value="REFRESH-TOKEN") String refreshToken ) {
