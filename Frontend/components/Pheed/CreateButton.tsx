@@ -94,7 +94,7 @@ const CreateButton = () => {
 const styles = StyleSheet.create({
   buttonContainer: {
     position: 'absolute',
-    bottom: 80,
+    bottom: 30,
     right: 10,
   },
   button: {
