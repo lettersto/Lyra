@@ -23,7 +23,10 @@ const CreatePheedScreen = () => {
           <View style={styles.container}>
             <Gallery />
             <View style={styles.category}>
-              <PheedCategory Category="phead" />
+              <PheedCategory
+                Category="phead"
+                CustomStyle={styles.pheedcategory}
+              />
             </View>
             <View>
               <Input
@@ -92,6 +95,9 @@ const styles = StyleSheet.create({
   },
   registerBtn: {
     marginTop: 10,
+  },
+  pheedcategory: {
+    marginLeft: '4%',
   },
 });
 
