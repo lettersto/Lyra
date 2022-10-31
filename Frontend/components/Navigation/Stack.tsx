@@ -12,6 +12,7 @@ import ProfileDetailScreen from '../../screens/Profile/ProfileDetailScreen';
 import EditProfileScreen from '../../screens/Profile/EditProfileScreen';
 import WalletScreen from '../../screens/Profile/WalletScreen';
 import ProfileTitle from './TopNavBar/ProfileTitle';
+import FollowerScreen from '../../screens/Profile/FollowerScreen';
 // MAP
 import MainMapScreen from '../../screens/Map/MainMapScreen';
 import MapTitle from './TopNavBar/MapTitle';
@@ -144,6 +145,14 @@ export const ProfileStack = () => {
         }}
       />
       <Stack.Screen name="Wallet" component={WalletScreen} />
+      <Stack.Screen
+        name="Follower"
+        component={FollowerScreen}
+        initialParams={{followerMode: 'follower'}}
+        options={{
+          headerTitleAlign: 'center',
+        }}
+      />
     </Stack.Navigator>
   );
 };

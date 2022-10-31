@@ -1,12 +1,16 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, StyleSheet, Dimensions} from 'react-native';
 
 import ProfileItem from './ProfileItem';
 import CircleProfile from '../../Utils/CircleProfile';
 
+import Button from '../../Utils/Button';
 import MoreInfo from '../../Utils/MoreInfo';
 
 const ProfileBody = () => {
+  const [isFollowing, setIsFollowing] = useState(false);
+  const buttonCustomStyle = {width: 236};
+
   const dummyIntroduction = `안녕하세요!
 버스커 주혜입니다.\n
 어릴 때 영화 <어거스트 러쉬>를 보고 기타에 깊은 감명을 받아 버스킹을 시작하게 되었습니다.\n
@@ -20,9 +24,22 @@ const ProfileBody = () => {
     <View style={styles.profileContainer}>
       <View style={styles.profileTop}>
         <CircleProfile size="extraLarge" isGradient={false} />
-        <ProfileItem count={1} description="내 버스킹" />
-        <ProfileItem count={256} description="팔로워" />
-        <ProfileItem count={14} description="팔로우" />
+        <View style={styles.profileInfoContainer}>
+          <View style={styles.profileInfo}>
+            <ProfileItem count={1} description="내 버스킹" />
+            <ProfileItem count={256} description="팔로워" />
+            <ProfileItem count={14} description="팔로우" />
+          </View>
+          <Button
+            title={isFollowing ? '팔로우 끊기' : '팔로우 하기'}
+            btnSize="small"
+            textSize="small"
+            customStyle={buttonCustomStyle}
+            isGradient={true}
+            isOutlined={true}
+            onPress={() => setIsFollowing(preV => !preV)}
+          />
+        </View>
       </View>
       <View>
         <MoreInfo content={dummyIntroduction} />
@@ -44,9 +61,20 @@ const styles = StyleSheet.create({
   },
   profileTop: {
     width: '100%',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+  },
+  profileInfoContainer: {
+    width: '75%',
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  profileInfo: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingVertical: 16,
+    marginBottom: 16,
   },
 });
 
