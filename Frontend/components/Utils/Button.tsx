@@ -18,6 +18,7 @@ const Button = ({
   isGradient,
   isOutlined,
   onPress,
+  ...rest
 }: {
   title: string;
   btnSize: sizeType;
@@ -26,6 +27,7 @@ const Button = ({
   isGradient: boolean;
   isOutlined: boolean;
   onPress: (event: GestureResponderEvent) => void;
+  [x: string]: any;
 }) => {
   const btnHeightSizes = {
     extraSmall: 24,
@@ -77,13 +79,15 @@ const Button = ({
         {isOutlined ? (
           <TouchableOpacity
             style={[styles.buttonContainer, btnStyle, outlined, customStyle]}
-            onPress={onPress}>
+            onPress={onPress}
+            {...rest}>
             <Text style={[styles.text, btnTextStyle]}>{title}</Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
             style={[styles.buttonContainer, btnStyle, customStyle]}
-            onPress={onPress}>
+            onPress={onPress}
+            {...rest}>
             <Text style={[styles.text, btnTextStyle]}>{title}</Text>
           </TouchableOpacity>
         )}
@@ -93,7 +97,8 @@ const Button = ({
   return (
     <TouchableOpacity
       style={[styles.buttonContainer, normal, btnStyle, customStyle]}
-      onPress={onPress}>
+      onPress={onPress}
+      {...rest}>
       <Text style={[styles.text, btnTextStyle]}>{title}</Text>
     </TouchableOpacity>
   );
