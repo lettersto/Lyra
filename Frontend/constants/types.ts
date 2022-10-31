@@ -20,6 +20,7 @@ export type RootStackParamList = {
   Profile: undefined;
   CreatePheed: undefined;
   EditProfile: {editProfileMode: EditProfileType};
+  Follower: {followerMode: FollowerType};
   Wallet: undefined;
   Alarm: undefined;
   MainPheed: undefined;
@@ -42,3 +43,5 @@ export type EditProfileType =
   | 'bank'
   | 'account'
   | 'holder';
+
+export type FollowerType = 'follower' | 'follow';
