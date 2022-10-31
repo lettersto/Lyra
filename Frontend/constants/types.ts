@@ -45,3 +45,5 @@ export type EditProfileType =
   | 'holder';
 
 export type FollowerType = 'follower' | 'follow';
+
+export type walletTabType = 'give' | 'receive' | 'charge';
