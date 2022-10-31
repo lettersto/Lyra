@@ -144,7 +144,11 @@ export const ProfileStack = () => {
           headerTitleAlign: 'center',
         }}
       />
-      <Stack.Screen name="Wallet" component={WalletScreen} />
+      <Stack.Screen
+        name="Wallet"
+        component={WalletScreen}
+        options={{title: '지갑', headerTitleAlign: 'center'}}
+      />
       <Stack.Screen
         name="Follower"
         component={FollowerScreen}

@@ -4,7 +4,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 import {RootStackParamList} from '../../constants/types';
 import {FollowerType} from '../../constants/types';
-import FollwerListItem from '../../components/Profile/Follower/FollwerListItem';
+import FollowerListItem from '../../components/Profile/Follower/FollowerListItem';
 import Colors from '../../constants/Colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Follower'>;
@@ -46,7 +46,7 @@ const FollowerScreen = ({navigation, route}: Props) => {
     <View style={styles.container}>
       <ScrollView style={styles.list}>
         {dummyUserList.map(item => (
-          <FollwerListItem key={item.id} nickname={item.nickname} />
+          <FollowerListItem key={item.id} nickname={item.nickname} />
         ))}
       </ScrollView>
     </View>

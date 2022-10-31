@@ -5,7 +5,7 @@ import CircleProfile from '../../Utils/CircleProfile';
 import Button from '../../Utils/Button';
 import Colors from '../../../constants/Colors';
 
-const FollwerListItem = ({nickname}: {nickname: string}) => {
+const FollowerListItem = ({nickname}: {nickname: string}) => {
   const [isFollowing, setIsFollowing] = useState(true);
 
   return (
@@ -52,4 +52,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FollwerListItem;
+export default FollowerListItem;
