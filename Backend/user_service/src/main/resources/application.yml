@@ -1,19 +1,21 @@
 server:
-  port: 0
+  port: 10
 
 spring:
   application:
     name: user-service
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/security?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true&useLegacyDatetimeCode=false
-    username: cos
-    password: cos1234
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3307/lyra?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true&useLegacyDatetimeCode=false
+    username: root
+    password: yeobo
   jpa:
     hibernate:
       ddl-auto: create
     show-sql: true
     generate-ddl: true
+  profiles:
+    include: oauth
   security:
     oauth2:
       client:
@@ -22,6 +24,34 @@ spring:
             client-id: 679402942294-piour8km9qojcntfbm7h3n54qt63d1d9.apps.googleusercontent.com
             client-secret: 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
             scope: profile, email
+            redirect-uri: http://localhost:10/login/oauth2/code/google
+          kakao:
+            client-id: f42a76675ed8066de07e5cc3498f5c11
+            client-secret: w0jxYoFytctR9tVqwTPh9tp90b5aEtsj
+            client-authentication-method: post
+            redirect-uri: http://localhost:10/login/oauth2/code/kakao
+            authorization-grant-type: authorization_code
+            scope: profile_nickname, account_email, profile_image
+            client-name: Kakao
+#          naver:
+#            client-id:
+#            client-secret:
+#            client-authentication-method:
+#            redirect-uri:
+#            authorization-grant-type: authorization_code
+#            scope:
+#            client-name: Naver
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+#          naver:
+#            authorization-uri:
+#            token-uri:
+#            user-info-uri:
+#            user-name-attribute:
 
 eureka:
   instance:
@@ -32,5 +62,13 @@ eureka:
     server-url:
       defaultZone: http://localhost:8761/eureka
 
-greeting:
-  message: Welcome to the Simple E-commerce.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans
+
+
+#token:
+#  expiration_time: 86400000
+#  secret: user_token

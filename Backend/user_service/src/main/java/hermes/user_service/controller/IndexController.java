@@ -1,4 +1,4 @@
-package hermes.user_service.Controller;
+package hermes.user_service.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

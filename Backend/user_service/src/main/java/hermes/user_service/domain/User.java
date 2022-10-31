@@ -19,11 +19,12 @@ import java.util.stream.Collectors;
 @Builder
 @Table(name = "user")
 public class User implements UserDetails {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private long id;
 
-    @Column(length = 10)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private Long id;
+
     private String email;
 
     @Column(length = 10)
@@ -38,9 +39,6 @@ public class User implements UserDetails {
 
     private String refreshToken;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
     @Column(length = 10)
     private String bank;
 
@@ -52,10 +50,10 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-//        return this.roles.stream()
-//                .map(SimpleGrantedAuthority::new)
-//                .collect(Collectors.toList());
+//        return null;
+        return this.roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
     @Override

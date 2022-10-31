@@ -1,4 +1,4 @@
-package hermes.user_service.Service;
+package hermes.user_service.configuration.Service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,7 +15,6 @@ import java.util.Collections;
 @Slf4j
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
-
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         // DefaultOAuth2UserService 객체를 성공 정보를 바탕으로 만듦
@@ -33,10 +32,10 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuth2Attribute oAuth2Attribute =
                 OAuth2Attribute.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
-        var memberAttribute = oAuth2Attribute.covertToMap();
+        var userAttribute = oAuth2Attribute.covertToMap();
         // DefaultOAuth2User 객체를 성공 정보를 바탕으로 만듦
         return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority("USER")),
-                memberAttribute, "email");
+                userAttribute, "email");
 
     }
 }
