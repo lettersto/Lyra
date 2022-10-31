@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {SafeAreaView, View, StyleSheet, Dimensions} from 'react-native';
 import Input from '../../../components/Utils/Input';
 import DateTime from '../../../components/Pheed/DateTime';
@@ -7,8 +7,15 @@ import Gallery from '../../../components/Pheed/Gallery';
 import PheedCategory from '../../../components/Pheed/Category/PheedCategory';
 import Tag from '../../../components/Pheed/Tag';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import Button from '../../../components/Utils/Button';
 
-const CreatePheed = () => {
+const CreatePheedScreen = () => {
+  const [userData, setUserData] = useState('');
+
+  const register = () => {
+    setUserData(userData);
+  };
+
   return (
     <>
       <KeyboardAwareScrollView>
@@ -41,6 +48,16 @@ const CreatePheed = () => {
               <DateTime />
             </View>
             <Tag />
+            <View style={styles.registerBtn}>
+              <Button
+                title="등록"
+                textSize="large"
+                btnSize="medium"
+                isGradient={true}
+                isOutlined={false}
+                onPress={register}
+              />
+            </View>
           </View>
         </SafeAreaView>
       </KeyboardAwareScrollView>
@@ -73,6 +90,9 @@ const styles = StyleSheet.create({
   category: {
     marginBottom: 15,
   },
+  registerBtn: {
+    marginTop: 10,
+  },
 });
 
-export default CreatePheed;
+export default CreatePheedScreen;

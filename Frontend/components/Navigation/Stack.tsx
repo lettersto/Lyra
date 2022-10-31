@@ -3,7 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 // Pheed
 import MainPheedScreen from '../../screens/Home/Pheed/MainPheedScreen';
-import CreatePheed from '../../screens/Home/Pheed/CreatePheed';
+import CreatePheedScreen from '../../screens/Home/Pheed/CreatePheedScreen';
 import PheedTitle from './TopNavBar/PheedTitle';
 import AlarmScreen from '../../screens/Others/AlarmScreen';
 // Profile
@@ -47,7 +47,7 @@ export const PheedStack = () => {
           headerTitle: () => <PheedTitle />,
         }}
       />
-      <Stack.Screen name="CreatePheed" component={CreatePheed} />
+      <Stack.Screen name="CreatePheed" component={CreatePheedScreen} />
       <Stack.Screen name="Alarm" component={AlarmScreen} />
     </Stack.Navigator>
   );
