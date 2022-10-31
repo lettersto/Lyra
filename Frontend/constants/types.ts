@@ -21,8 +21,8 @@ export type RootStackParamList = {
   Chat: undefined;
   Profile: undefined;
   CreatePheed: undefined;
-  EditProfile: undefined;
-  EditProfileItem: {editProfileMode: EditProfileType};
+  EditProfile: {editProfileMode: EditProfileType};
+  Follower: {followerMode: FollowerType};
   Wallet: undefined;
   Alarm: undefined;
   MainPheed: undefined;
@@ -30,9 +30,32 @@ export type RootStackParamList = {
   MainChat: undefined;
   MainProfile: undefined;
   ProfileDetail: undefined;
+  DetailPheed: PheedDetailParamList;
 };
 
 // Pheed
+export type PheedDetailParamList = {
+  name: string | undefined;
+  profileImg: string | undefined;
+  datetime: string | undefined;
+  location: string;
+  title: string | undefined;
+  content: string;
+  comment: number | undefined;
+  comments: Array<CommentParamList>;
+  like: number | undefined;
+  isLive: boolean | undefined;
+  imgUrl: string[] | undefined;
+  tags: Array<string>;
+};
+
+export type CommentParamList = {
+  content: string;
+  pheedId: string;
+  time: string;
+  userId: string;
+  name: string;
+};
 
 // Map
 
@@ -54,3 +77,7 @@ export type EditProfileType =
   | 'bank'
   | 'account'
   | 'holder';
+
+export type FollowerType = 'follower' | 'follow';
+
+export type walletTabType = 'give' | 'receive' | 'charge';
