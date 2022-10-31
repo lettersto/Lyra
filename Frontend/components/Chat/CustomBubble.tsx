@@ -1,26 +1,24 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Text,
   StyleSheet,
   TouchableWithoutFeedback,
   View,
-  StyleProp,
-  ViewStyle,
   TextStyle,
 } from 'react-native';
 
+import {GiftedChatContext} from 'react-native-gifted-chat/lib/GiftedChatContext';
 import {
-  MessageTextProps,
-  User,
-  IMessage,
-  LeftRightStyle,
-  Reply,
-  Omit,
-  Bubble,
   Avatar,
+  BubbleProps,
+  MessageTextProps,
+  StylePropType,
+  MessageText,
 } from 'react-native-gifted-chat';
 import LinearGradient from 'react-native-linear-gradient';
 import Colors from '../../constants/Colors';
+import {IMessage} from '../../constants/types';
 
 const styles = {
   left: StyleSheet.create({
@@ -30,16 +28,11 @@ const styles = {
     },
     wrapper: {
       borderRadius: 15,
+      borderBottomLeftRadius: 0,
       backgroundColor: '#f0f0f0',
       marginRight: 60,
       minHeight: 20,
       justifyContent: 'flex-end',
-    },
-    containerToNext: {
-      borderBottomLeftRadius: 3,
-    },
-    containerToPrevious: {
-      borderTopLeftRadius: 3,
     },
     bottom: {
       flexDirection: 'row',
@@ -58,40 +51,50 @@ const styles = {
       minHeight: 20,
       justifyContent: 'flex-end',
     },
-    containerToNext: {
-      borderBottomRightRadius: 3,
-    },
-    containerToPrevious: {
-      borderTopRightRadius: 3,
-    },
     bottom: {
       flexDirection: 'row',
       justifyContent: 'flex-end',
     },
   }),
   content: StyleSheet.create({
-    tick: {
-      fontSize: 10,
-      backgroundColor: 'transparent',
-      color: '#fff',
-    },
-    tickView: {
-      flexDirection: 'row',
-      marginRight: 10,
-    },
     username: {
       top: -3,
       left: 0,
-      fontSize: 12,
+      fontSize: 15,
+      fontWeight: 'bold',
       backgroundColor: 'transparent',
-      color: 'white',
+      color: 'black',
     },
     usernameView: {
       flexDirection: 'row',
-      marginHorizontal: 10,
+      marginHorizontal: 3,
+    },
+    userInfo: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    donation: {
+      color: 'white',
+    },
+    bubbleContainer: {
+      margin: 10,
+    },
+    donationContainer: {
+      borderRadius: 15,
+      borderBottomLeftRadius: 0,
+    },
+    donationFont: {
+      top: -3,
+      left: 0,
+      fontSize: 15,
+      fontWeight: 'bold',
+      backgroundColor: 'transparent',
+      color: 'white',
     },
   }),
 };
+
+const DEFAULT_OPTION_TITLES = ['Copy Text', 'Cancel'];
 
 export type RenderMessageTextProps<TMessage extends IMessage> = Omit<
   BubbleProps<TMessage>,
@@ -99,36 +102,85 @@ export type RenderMessageTextProps<TMessage extends IMessage> = Omit<
 > &
   MessageTextProps<TMessage>;
 
-export interface BubbleProps<TMessage extends IMessage> {
-  user?: User;
-  touchableProps?: object;
-  renderUsernameOnMessage?: boolean;
-  isCustomViewBottom?: boolean;
-  inverted?: boolean;
-  position: 'left' | 'right';
-  currentMessage?: TMessage;
-  nextMessage?: TMessage;
-  previousMessage?: TMessage;
-  optionTitles?: string[];
-  containerStyle?: LeftRightStyle<ViewStyle>;
-  wrapperStyle?: LeftRightStyle<ViewStyle>;
-  textStyle?: LeftRightStyle<TextStyle>;
-  bottomContainerStyle?: LeftRightStyle<ViewStyle>;
-  tickStyle?: StyleProp<TextStyle>;
-  containerToNextStyle?: LeftRightStyle<ViewStyle>;
-  containerToPreviousStyle?: LeftRightStyle<ViewStyle>;
-  usernameStyle?: TextStyle;
-  quickReplyStyle?: StyleProp<ViewStyle>;
-  quickReplyTextStyle?: StyleProp<TextStyle>;
-  onPress?(context?: any, message?: any): void;
-  onLongPress?(context?: any, message?: any): void;
-  onQuickReply?(replies: Reply[]): void;
-  renderMessageText?(props: RenderMessageTextProps<TMessage>): React.ReactNode;
-  renderCustomView?(bubbleProps: BubbleProps<TMessage>): React.ReactNode;
-  renderUsername?(): React.ReactNode;
-}
+interface CustomBubbleProps<TMessage extends IMessage>
+  extends BubbleProps<TMessage> {}
 
-export default class CustomBubble extends Bubble {
+export default class CustomBubble<
+  TMessage extends IMessage = IMessage,
+> extends React.Component<CustomBubbleProps<TMessage>> {
+  static contextType = GiftedChatContext;
+
+  static defaultProps = {
+    touchableProps: {},
+    onPress: null,
+    onLongPress: null,
+    renderMessageText: null,
+    renderCustomView: null,
+    renderUsername: null,
+    position: 'left',
+    optionTitles: DEFAULT_OPTION_TITLES,
+    currentMessage: {
+      text: null,
+      createdAt: null,
+      image: null,
+    },
+    containerStyle: {},
+    wrapperStyle: {},
+    bottomContainerStyle: {},
+    tickStyle: {},
+    usernameStyle: {},
+    containerToNextStyle: {},
+    containerToPreviousStyle: {},
+  };
+
+  static propTypes = {
+    user: PropTypes.object.isRequired,
+    touchableProps: PropTypes.object,
+    onLongPress: PropTypes.func,
+    renderMessageText: PropTypes.func,
+    renderCustomView: PropTypes.func,
+    isCustomViewBottom: PropTypes.bool,
+    renderUsernameOnMessage: PropTypes.bool,
+    renderUsername: PropTypes.func,
+    position: PropTypes.oneOf(['left', 'right']),
+    optionTitles: PropTypes.arrayOf(PropTypes.string),
+    currentMessage: PropTypes.object,
+    containerStyle: PropTypes.shape({
+      left: StylePropType,
+      right: StylePropType,
+    }),
+    wrapperStyle: PropTypes.shape({
+      left: StylePropType,
+      right: StylePropType,
+    }),
+    bottomContainerStyle: PropTypes.shape({
+      left: StylePropType,
+      right: StylePropType,
+    }),
+    tickStyle: StylePropType,
+    usernameStyle: StylePropType,
+    containerToNextStyle: PropTypes.shape({
+      left: StylePropType,
+      right: StylePropType,
+    }),
+    containerToPreviousStyle: PropTypes.shape({
+      left: StylePropType,
+      right: StylePropType,
+    }),
+  };
+
+  renderMessageText() {
+    if (this.props.currentMessage && this.props.currentMessage.text) {
+      const {containerStyle, wrapperStyle, optionTitles, ...messageTextProps} =
+        this.props;
+      if (this.props.renderMessageText) {
+        return this.props.renderMessageText(messageTextProps);
+      }
+      return <MessageText {...messageTextProps} />;
+    }
+    return null;
+  }
+
   renderUsername() {
     const {currentMessage, user} = this.props;
     if (this.props.renderUsernameOnMessage && currentMessage) {
@@ -139,7 +191,16 @@ export default class CustomBubble extends Bubble {
         <View style={styles.content.usernameView}>
           <Text
             style={
-              [styles.content.username, this.props.usernameStyle] as TextStyle
+              this.props.currentMessage!.donation
+                ? ([
+                    styles.content.username,
+                    this.props.usernameStyle,
+                    styles.content.donation,
+                  ] as TextStyle)
+                : ([
+                    styles.content.username,
+                    this.props.usernameStyle,
+                  ] as TextStyle)
             }>
             {currentMessage.user.name}
           </Text>
@@ -159,23 +220,40 @@ export default class CustomBubble extends Bubble {
   renderBubbleContent() {
     return this.props.isCustomViewBottom ? (
       <View>
-        {this.renderMessageImage()}
-        {this.renderMessageVideo()}
-        {this.renderMessageAudio()}
         {this.renderMessageText()}
         {this.renderCustomView()}
       </View>
     ) : (
       <View>
         {this.renderCustomView()}
-        {this.renderMessageImage()}
-        {this.renderMessageVideo()}
-        {this.renderMessageAudio()}
         {this.renderMessageText()}
       </View>
     );
   }
+  renderAvatar() {
+    const {user, currentMessage} = this.props;
 
+    if (
+      user &&
+      user._id &&
+      currentMessage &&
+      currentMessage.user &&
+      user._id === currentMessage.user._id
+    ) {
+      return null;
+    }
+
+    if (
+      currentMessage &&
+      currentMessage.user &&
+      currentMessage.user.avatar === null
+    ) {
+      return null;
+    }
+
+    const {...props} = this.props;
+    return <Avatar {...props} />;
+  }
   render() {
     const {position, containerStyle, wrapperStyle, bottomContainerStyle} =
       this.props;
@@ -188,37 +266,53 @@ export default class CustomBubble extends Bubble {
         <View
           style={[
             styles[position].wrapper,
-            this.styledBubbleToNext(),
-            this.styledBubbleToPrevious(),
             wrapperStyle && wrapperStyle[position],
           ]}>
           <TouchableWithoutFeedback
-            onPress={this.onPress}
-            onLongPress={this.onLongPress}
             accessibilityRole="text"
             {...this.props.touchableProps}>
-            <LinearGradient
-              start={{x: 0.25, y: 0}}
-              end={{x: 1, y: 0.75}}
-              colors={[Colors.pink300, Colors.purple300]}
-              style={{borderRadius: 10}}>
-              <View>
-                <Avatar />
-                {this.renderBubbleContent()}
-                <View
-                  style={[
-                    styles[position].bottom,
-                    bottomContainerStyle && bottomContainerStyle[position],
-                  ]}>
-                  {this.renderUsername()}
-                  {this.renderTime()}
-                  {this.renderTicks()}
+            {this.props.currentMessage!.donation ? (
+              <LinearGradient
+                start={{x: 0.25, y: 0}}
+                end={{x: 1, y: 0.75}}
+                colors={[Colors.pink300, Colors.purple300]}
+                style={styles.content.donationContainer}>
+                <View style={styles.content.bubbleContainer}>
+                  <View
+                    style={[
+                      styles[position].bottom,
+                      bottomContainerStyle && bottomContainerStyle[position],
+                      styles.content.userInfo,
+                      {justifyContent: 'space-around'},
+                    ]}>
+                    <View style={styles.content.userInfo}>
+                      {this.renderAvatar()}
+                      {this.renderUsername()}
+                    </View>
+                    <View style={{marginLeft: '30%'}}>
+                      <Text style={styles.content.donationFont}>
+                        ${this.props.currentMessage!.donation}
+                      </Text>
+                    </View>
+                  </View>
+                  {this.renderBubbleContent()}
                 </View>
+              </LinearGradient>
+            ) : (
+              <View
+                style={[
+                  styles[position].bottom,
+                  bottomContainerStyle && bottomContainerStyle[position],
+                  styles.content.userInfo,
+                  styles.content.bubbleContainer,
+                ]}>
+                {this.renderAvatar()}
+                {this.renderUsername()}
+                {this.renderBubbleContent()}
               </View>
-            </LinearGradient>
+            )}
           </TouchableWithoutFeedback>
         </View>
-        {this.renderQuickReplies()}
       </View>
     );
   }
