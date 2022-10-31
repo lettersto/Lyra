@@ -4,20 +4,37 @@ import hermes.user_service.configuration.Service.UserService;
 import hermes.user_service.dto.Message;
 import hermes.user_service.dto.StatusEnum;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.Charset;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user-service")
+@RequestMapping("/")
 public class UserController {
-
+    private Environment env;
     private final UserService userService;
+
+    @Autowired
+    public UserController(Environment env, UserService userService) {
+        this.env = env;
+        this.userService = userService;
+    }
+
+
+
+    @GetMapping("/welcome")
+    public String welcome(HttpServletRequest request, HttpServletResponse response) {
+        return "welcome";
+    }
 
 //    @ApiOperation(value = "회원가입",notes = "email과 password를 받아서 회원가입한다.")
 //    @PostMapping("/api/auth/user/signUp")
@@ -304,6 +321,15 @@ public class UserController {
 //        }
 //
 //    }
+
+    @GetMapping("/health_check")
+    public String status() {
+        return String.format("It's Working in User Service"
+                + ", port(local.server.port)=" + env.getProperty("local.server.port")
+                + ", port(server.port)=" + env.getProperty("server.port")
+                + ", token secret=" + env.getProperty("token.secret")
+                + ", token expiration time=" + env.getProperty("token.expiration_time"));
+    }
 
 }
 
