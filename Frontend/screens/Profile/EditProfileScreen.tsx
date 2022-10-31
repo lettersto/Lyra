@@ -1,67 +1,116 @@
-import React from 'react';
-import {View, Text, Pressable, StyleSheet, ScrollView} from 'react-native';
+import React, {useLayoutEffect} from 'react';
+import {View, StyleSheet, Pressable, Text, TextInput} from 'react-native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {KeyboardTypeOptions} from 'react-native';
 
-import CircleProfile from '../../components/Utils/CircleProfile';
-import ProfileInfoItem from '../../components/Profile/EditProfile/ProfileInfoItem';
-import GradientLine from '../../components/Utils/GradientLine';
+import {RootStackParamList} from '../../constants/types';
+import {EditProfileType} from '../../constants/types';
 import Colors from '../../constants/Colors';
 
-const EditProfileScreen = () => {
+type Props = NativeStackScreenProps<RootStackParamList, 'EditProfile'>;
+
+interface editProfileObj {
+  [key: string]: {
+    title: string;
+    placeholder: string;
+    keyboardType: KeyboardTypeOptions;
+  };
+}
+
+const EditProfileScreen = ({route, navigation}: Props) => {
+  const editProfileMode: EditProfileType = route.params.editProfileMode;
+
+  const modeToScreenTitle: editProfileObj = {
+    nickname: {
+      title: '닉네임 변경',
+      placeholder: '새 닉네임을 작성하세요.',
+      keyboardType: 'default',
+    },
+    introduction: {
+      title: '소개 변경',
+      placeholder: '새 소개글을 작성하세요.',
+      keyboardType: 'default',
+    },
+    bank: {
+      title: '은행 변경',
+      placeholder: '은행 이름을 작성하세요.',
+      keyboardType: 'default',
+    },
+    account: {
+      title: '계좌번호 변경',
+      placeholder: '새 계좌번호를 작성하세요.',
+      keyboardType: 'decimal-pad',
+    },
+    holder: {
+      title: '예금주 변경',
+      placeholder: '새 예금주 이름을 작성하세요.',
+      keyboardType: 'default',
+    },
+  };
+
+  const {title, placeholder, keyboardType} = modeToScreenTitle[editProfileMode];
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: title,
+    });
+  }, [title, navigation]);
+
   return (
-    <ScrollView style={styles.screen}>
-      <View style={styles.profileImageContainer}>
-        <CircleProfile size="extraLarge" grade="normal" isGradient={true} />
-        <Pressable>
-          <Text style={styles.text}>사진 바꾸기</Text>
+    <View style={styles.container}>
+      <View style={styles.innerContainer}>
+        <TextInput
+          multiline={true}
+          placeholder={placeholder}
+          placeholderTextColor={Colors.white300}
+          style={[styles.text, styles.input]}
+          keyboardType={keyboardType}
+        />
+        <Pressable
+          style={({pressed}) => {
+            return pressed ? [styles.button, styles.pressed] : styles.button;
+          }}>
+          <Text style={[styles.text, styles.buttonText]}>변경</Text>
         </Pressable>
       </View>
-      <GradientLine />
-      <View style={styles.itemContainer}>
-        <ProfileInfoItem title="닉네임" content="주혜" />
-        <ProfileInfoItem
-          title="소개"
-          content=""
-          placeHolder="소개를 작성해주세요."
-        />
-        <ProfileInfoItem
-          title="계좌"
-          content=""
-          placeHolder="은행을 선택하세요."
-        />
-        <ProfileInfoItem
-          title=""
-          content=""
-          placeHolder="계좌 번호를 입력하세요."
-        />
-        <ProfileInfoItem
-          title=""
-          content=""
-          placeHolder="예금주를 선택하세요."
-        />
-      </View>
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: {
+  container: {
     flex: 1,
     backgroundColor: Colors.black500,
   },
-  text: {
-    marginTop: 8,
-    fontFamily: 'NanumSquareRoundR',
-    fontSize: 16,
-    color: Colors.gray300,
-  },
-  profileImageContainer: {
+  innerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     width: '100%',
-    height: 150,
+    padding: 8,
+  },
+  input: {
+    justifyContent: 'flex-start',
+    flexBasis: '83%',
+    borderBottomColor: Colors.pink500,
+    borderBottomWidth: 1,
+  },
+  button: {
+    flexBasis: '15%',
     justifyContent: 'center',
     alignItems: 'center',
+    height: 40,
+    marginVertical: 4,
+    borderRadius: 8,
   },
-  itemContainer: {
-    paddingVertical: 8,
+  text: {
+    fontFamily: 'NanumSquareRoundR',
+    fontSize: 20,
+  },
+  buttonText: {
+    color: Colors.pink500,
+  },
+  pressed: {
+    backgroundColor: Colors.white300,
   },
 });
 

@@ -1,12 +1,44 @@
 import React from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 import CircleProfile from '../../components/Utils/CircleProfile';
 import ProfileInfoItem from '../../components/Profile/EditProfile/ProfileInfoItem';
-// import GradientLine from '../../components/Utils/GradientLine';
 import Colors from '../../constants/Colors';
 
 const ProfileDetailScreen = () => {
+  const navigation = useNavigation();
+
+  const nicknamePressHandler = () => {
+    navigation.navigate('EditProfile', {
+      editProfileMode: 'nickname',
+    });
+  };
+
+  const introductionPressHandler = () => {
+    navigation.navigate('EditProfile', {
+      editProfileMode: 'introduction',
+    });
+  };
+
+  const bankPressHandler = () => {
+    navigation.navigate('EditProfile', {
+      editProfileMode: 'bank',
+    });
+  };
+
+  const accountPressHandler = () => {
+    navigation.navigate('EditProfile', {
+      editProfileMode: 'account',
+    });
+  };
+
+  const holderPressHandler = () => {
+    navigation.navigate('EditProfile', {
+      editProfileMode: 'holder',
+    });
+  };
+
   return (
     <ScrollView style={styles.screen}>
       <View style={styles.profileImageContainer}>
@@ -14,26 +46,34 @@ const ProfileDetailScreen = () => {
       </View>
       {/* <GradientLine /> */}
       <View style={styles.itemContainer}>
-        <ProfileInfoItem title="닉네임" content="주혜" />
+        <ProfileInfoItem
+          title="닉네임"
+          content="주혜"
+          onLongPress={nicknamePressHandler}
+        />
         <ProfileInfoItem
           title="소개"
           content=""
           placeHolder="소개를 작성해주세요."
+          onLongPress={introductionPressHandler}
         />
         <ProfileInfoItem
           title="계좌"
           content=""
           placeHolder="은행을 선택하세요."
+          onLongPress={bankPressHandler}
         />
         <ProfileInfoItem
           title=""
           content=""
           placeHolder="계좌 번호를 입력하세요."
+          onLongPress={accountPressHandler}
         />
         <ProfileInfoItem
           title=""
           content=""
           placeHolder="예금주를 입력하세요."
+          onLongPress={holderPressHandler}
         />
       </View>
     </ScrollView>
