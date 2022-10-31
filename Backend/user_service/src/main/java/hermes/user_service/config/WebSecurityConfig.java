@@ -75,6 +75,7 @@ public class WebSecurityConfig {
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll() // 추가
                 .antMatchers(AUTH_WHITELIST).permitAll()
                 .antMatchers("/token/**").authenticated()
+                .antMatchers("/actuator/**").permitAll()
                 .anyRequest().permitAll()  // 그 외 나머지 요청은 누구나 접근 가능
                 .and()
                 .cors()

@@ -39,9 +39,6 @@ public class User implements UserDetails {
 
     private String refreshToken;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
     @Column(length = 10)
     private String bank;
 
