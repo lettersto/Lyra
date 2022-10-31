@@ -6,6 +6,7 @@ import MainPheedScreen from '../../screens/Home/Pheed/MainPheedScreen';
 import CreatePheedScreen from '../../screens/Home/Pheed/CreatePheedScreen';
 import PheedTitle from './TopNavBar/PheedTitle';
 import AlarmScreen from '../../screens/Others/AlarmScreen';
+import DetailPheedScreen from '../../screens/Home/Pheed/DetailPheedScreen';
 // Profile
 import MainProfileScreen from '../../screens/Profile/MainProfileScreen';
 import ProfileDetailScreen from '../../screens/Profile/ProfileDetailScreen';
@@ -49,6 +50,11 @@ export const PheedStack = () => {
         }}
       />
       <Stack.Screen name="CreatePheed" component={CreatePheedScreen} />
+      <Stack.Screen
+        name="DetailPheed"
+        component={DetailPheedScreen}
+        // initialParams={}
+      />
       <Stack.Screen name="Alarm" component={AlarmScreen} />
     </Stack.Navigator>
   );

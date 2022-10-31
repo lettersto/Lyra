@@ -28,9 +28,30 @@ export type RootStackParamList = {
   MainChat: undefined;
   MainProfile: undefined;
   ProfileDetail: undefined;
+  DetailPheed: PheedDetailParamList;
 };
 
 // Pheed
+export type PheedDetailParamList = {
+  name: string | undefined;
+  profileImg: string | undefined;
+  datetime: string | undefined;
+  location: string;
+  title: string | undefined;
+  content: string | undefined;
+  comment: number | undefined;
+  comments: Array<CommentParamList>;
+  like: number | undefined;
+  isLive: boolean | undefined;
+  imgUrl: string[] | undefined;
+};
+
+export type CommentParamList = {
+  content: string;
+  pheedId: string;
+  time: string;
+  userId: string;
+};
 
 // Map
 
