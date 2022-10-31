@@ -1,9 +1,6 @@
 # OSX
-### macOS ###
-# General
+#
 .DS_Store
-.AppleDouble
-.LSOverride
 
 # Xcode
 #
