@@ -1,6 +1,13 @@
 import React from 'react';
-import {View, Text, StyleSheet, Dimensions} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
 
+import Clipboard from '@react-native-clipboard/clipboard';
 import IIcons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -12,6 +19,10 @@ const Wallet = () => {
   const dummyCoin = 2000000;
 
   const gradientColors = [Colors.pink300, Colors.purple300];
+
+  const copyToClipboard = () => {
+    Clipboard.setString(dummyHashCode);
+  };
 
   return (
     <View style={styles.container}>
@@ -30,7 +41,13 @@ const Wallet = () => {
                 styles.text,
                 styles.textMargin,
               ]}>{`${dummyHashCode.substring(0, 20)}...`}</Text>
-            <IIcons name="ios-copy-outline" size={25} color={Colors.pink300} />
+            <TouchableOpacity onPress={copyToClipboard}>
+              <IIcons
+                name="ios-copy-outline"
+                size={25}
+                color={Colors.pink300}
+              />
+            </TouchableOpacity>
           </View>
           <View style={styles.walletBottom}>
             <View style={styles.coinContainer}>
