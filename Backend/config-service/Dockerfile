@@ -1,5 +1,5 @@
 FROM openjdk:11-jdk
-WORKDIR /var/jenkins_home/workspace/lyra/backend/config-service
+WORKDIR /var/jenkins_home/workspace/lyra/Backend/config-service
 EXPOSE 8888
 CMD ["./gradlew", "clean", "build"]
 VOLUME /tmp
