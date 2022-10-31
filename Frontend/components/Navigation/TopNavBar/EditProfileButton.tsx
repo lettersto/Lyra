@@ -1,12 +1,18 @@
 import React from 'react';
 import {Pressable, Text, StyleSheet} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 import Colors from '../../../constants/Colors';
 
 const EditProfileButton = () => {
+  const navigation = useNavigation();
+  const pressHandler = () => {
+    navigation.navigate('EditProfile');
+  };
+
   return (
-    <Pressable>
-      <Text style={styles.text}>완료</Text>
+    <Pressable onPress={pressHandler}>
+      <Text style={styles.text}>수정</Text>
     </Pressable>
   );
 };

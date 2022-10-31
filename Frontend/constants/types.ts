@@ -19,8 +19,7 @@ export type RootStackParamList = {
   Chat: undefined;
   Profile: undefined;
   CreatePheed: undefined;
-  EditProfile: undefined;
-  EditProfileItem: {editProfileMode: EditProfileType};
+  EditProfile: {editProfileMode: EditProfileType};
   Wallet: undefined;
   Alarm: undefined;
   MainPheed: undefined;

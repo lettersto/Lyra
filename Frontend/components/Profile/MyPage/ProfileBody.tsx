@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Dimensions} from 'react-native';
 
 import ProfileItem from './ProfileItem';
 import CircleProfile from '../../Utils/CircleProfile';
@@ -20,7 +20,6 @@ const ProfileBody = () => {
     <View style={styles.profileContainer}>
       <View style={styles.profileTop}>
         <CircleProfile size="extraLarge" isGradient={false} />
-        {/* <Image source={require('../../../assets/image/basicProfile.png')} /> */}
         <ProfileItem count={1} description="내 버스킹" />
         <ProfileItem count={256} description="팔로워" />
         <ProfileItem count={14} description="팔로우" />
@@ -32,10 +31,16 @@ const ProfileBody = () => {
   );
 };
 
+const deviceWidth = Dimensions.get('window').width;
+
 const styles = StyleSheet.create({
   profileContainer: {
     width: '100%',
     paddingHorizontal: 8,
+  },
+  fullImage: {
+    width: deviceWidth,
+    height: deviceWidth,
   },
   profileTop: {
     width: '100%',

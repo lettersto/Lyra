@@ -9,7 +9,7 @@ import Colors from '../../../constants/Colors';
 const ProfileButtons = () => {
   const navigation = useNavigation();
   const pressHander = () => {
-    navigation.navigate('EditProfile');
+    navigation.navigate('ProfileDetail');
   };
 
   return (

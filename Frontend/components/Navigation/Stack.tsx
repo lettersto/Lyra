@@ -9,7 +9,7 @@ import AlarmScreen from '../../screens/Others/AlarmScreen';
 // Profile
 import MainProfileScreen from '../../screens/Profile/MainProfileScreen';
 import ProfileDetailScreen from '../../screens/Profile/ProfileDetailScreen';
-import EditProfileItemScreen from '../../screens/Profile/EditProfileItemScreen';
+import EditProfileScreen from '../../screens/Profile/EditProfileScreen';
 import WalletScreen from '../../screens/Profile/WalletScreen';
 import ProfileTitle from './TopNavBar/ProfileTitle';
 // MAP
@@ -136,8 +136,8 @@ export const ProfileStack = () => {
         }}
       />
       <Stack.Screen
-        name="EditProfileItem"
-        component={EditProfileItemScreen}
+        name="EditProfile"
+        component={EditProfileScreen}
         initialParams={{editProfileMode: 'nickname'}}
         options={{
           headerTitleAlign: 'center',
