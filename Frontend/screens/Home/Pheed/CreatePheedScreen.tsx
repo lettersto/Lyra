@@ -9,7 +9,7 @@ import Tag from '../../../components/Pheed/Tag';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Button from '../../../components/Utils/Button';
 
-const CreatePheed = () => {
+const CreatePheedScreen = () => {
   const [userData, setUserData] = useState('');
 
   const register = () => {
@@ -95,4 +95,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreatePheed;
+export default CreatePheedScreen;
