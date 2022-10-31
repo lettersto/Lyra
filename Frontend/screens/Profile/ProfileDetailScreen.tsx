@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
+import {View, StyleSheet, ScrollView, Text, Pressable} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
 import CircleProfile from '../../components/Utils/CircleProfile';
@@ -43,6 +43,9 @@ const ProfileDetailScreen = () => {
     <ScrollView style={styles.screen}>
       <View style={styles.profileImageContainer}>
         <CircleProfile size="extraLarge" grade="normal" isGradient={true} />
+        <Pressable style={styles.changePhoto}>
+          <Text style={styles.text}>사진 바꾸기</Text>
+        </Pressable>
       </View>
       {/* <GradientLine /> */}
       <View style={styles.itemContainer}>
@@ -84,6 +87,9 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: Colors.black500,
+  },
+  changePhoto: {
+    marginBottom: 8,
   },
   text: {
     marginTop: 8,
