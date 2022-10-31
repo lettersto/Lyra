@@ -38,12 +38,13 @@ export type PheedDetailParamList = {
   datetime: string | undefined;
   location: string;
   title: string | undefined;
-  content: string | undefined;
+  content: string;
   comment: number | undefined;
   comments: Array<CommentParamList>;
   like: number | undefined;
   isLive: boolean | undefined;
   imgUrl: string[] | undefined;
+  tags: Array<string>;
 };
 
 export type CommentParamList = {
@@ -51,6 +52,7 @@ export type CommentParamList = {
   pheedId: string;
   time: string;
   userId: string;
+  name: string;
 };
 
 // Map

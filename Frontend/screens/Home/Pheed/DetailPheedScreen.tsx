@@ -19,6 +19,7 @@ import Icon4 from 'react-native-vector-icons/Ionicons';
 import GradientLine from '../../../components/Utils/GradientLine';
 import Button from '../../../components/Utils/Button';
 import {useNavigation} from '@react-navigation/native';
+import MoreInfo from './MoreInfo';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DetailPheed'>;
 
@@ -34,6 +35,7 @@ const DetailPheedScreen = ({route}: Props) => {
   const like = route.params.like;
   const isLive = route.params.isLive;
   const imgUrl = route.params.imgUrl;
+  const tags = route.params.tags;
 
   const navigation = useNavigation();
   const goChat = () => {
@@ -41,7 +43,8 @@ const DetailPheedScreen = ({route}: Props) => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView style={styles.detailpheed}>
+      <View style={styles.emptyContainer} />
       <View style={styles.background}>
         <LinearGradient
           start={{x: 0, y: 0}}
@@ -121,39 +124,67 @@ const DetailPheedScreen = ({route}: Props) => {
                   />
                 </View>
               </ScrollView>
-              <Text style={styles.boldtext}>{title}</Text>
-              <Text style={styles.text}>{content}</Text>
             </View>
+            <Text style={styles.titleText}>{title}</Text>
             <GradientLine />
-            <View style={styles.bottomContainer}>
-              <View style={styles.commentContainer}>
-                <Icon2
-                  name="comment-text-outline"
-                  color={Colors.gray300}
-                  size={16}
-                  style={styles.clock}
-                />
-                <Text style={styles.text}>댓글 {comment}</Text>
-              </View>
-              <View style={styles.likeContainer}>
-                <Icon3
-                  name="staro"
-                  color={Colors.gray300}
-                  size={16}
-                  style={styles.clock}
-                />
-                <Text style={styles.text}>{like}</Text>
-              </View>
+            <View style={styles.contentText}>
+              <MoreInfo content={content} />
             </View>
-            <View style={styles.commentsContainer}>
+          </View>
+        </LinearGradient>
+        {/* tag */}
+        <ScrollView horizontal>
+          <View style={styles.tagsContainer}>
+            {tags.map((tag, idx) => {
+              return (
+                <View key={idx} style={styles.tag}>
+                  <Button
+                    title={tag}
+                    btnSize="small"
+                    textSize="small"
+                    isGradient={true}
+                    isOutlined={true}
+                    onPress={goChat}
+                    disabled
+                  />
+                </View>
+              );
+            })}
+          </View>
+        </ScrollView>
+
+        {/* comment */}
+        <View style={styles.commentContainer}>
+          <Icon2
+            name="comment-text-outline"
+            color={Colors.gray300}
+            size={16}
+            style={styles.clock}
+          />
+          <Text style={styles.text}>댓글 ({comment})</Text>
+        </View>
+        <LinearGradient
+          start={{x: 0, y: 0}}
+          end={{x: 0, y: 1}}
+          useAngle={true}
+          angle={135}
+          angleCenter={{x: 0.5, y: 0.5}}
+          colors={[Colors.purple300, Colors.pink500]}
+          style={styles.gradientContainer2}>
+          <View style={styles.Container2}>
+            <ScrollView style={styles.commentsContainer}>
               {comments.map((value, idx) => {
                 return (
-                  <Text style={styles.text} key={idx}>
-                    {value.content}
-                  </Text>
+                  <View style={styles.commentCt} key={idx}>
+                    <CircleProfile size="extraSmall" isGradient={false} />
+                    <View style={styles.commentTextContainer}>
+                      <Text style={styles.boldtext}>{value.name}</Text>
+                      <Text style={styles.text}>{value.content}</Text>
+                    </View>
+                  </View>
                 );
               })}
-            </View>
+            </ScrollView>
           </View>
         </LinearGradient>
       </View>
@@ -162,20 +193,38 @@ const DetailPheedScreen = ({route}: Props) => {
 };
 
 const styles = StyleSheet.create({
+  detailpheed: {
+    backgroundColor: Colors.black500,
+  },
+  emptyContainer: {
+    // height: 50,
+  },
   name: {
     color: Colors.gray300,
   },
   background: {
-    backgroundColor: Colors.black500,
-    height: Dimensions.get('window').height,
+    flex: 1,
+    backgroundColor: Colors.purple500,
     alignItems: 'center',
-  },
-  pheedCotainer: {
-    marginTop: 20,
+    marginBottom: 50,
+    paddingTop: 10,
   },
   text: {
     color: Colors.gray300,
     fontFamily: 'NanumSquareRoundR',
+  },
+  titleText: {
+    color: Colors.gray300,
+    fontFamily: 'NanumSquareRoundR',
+    fontWeight: 'bold',
+    fontSize: 15,
+    marginLeft: 10,
+    marginBottom: 5,
+  },
+  contentText: {
+    color: Colors.gray300,
+    fontFamily: 'NanumSquareRoundR',
+    margin: 5,
   },
   boldtext: {
     color: Colors.gray300,
@@ -184,7 +233,7 @@ const styles = StyleSheet.create({
   },
   gradientContainer: {
     width: Dimensions.get('window').width * 0.9,
-    minHeight: Dimensions.get('window').height,
+    minHeight: 200,
     textAlignVertical: 'center',
     justifyContent: 'center',
     borderRadius: 20,
@@ -193,7 +242,23 @@ const styles = StyleSheet.create({
   Container: {
     backgroundColor: Colors.black500,
     width: Dimensions.get('window').width * 0.9 - 2,
-    minHeight: Dimensions.get('window').height - 2,
+    minHeight: 200 - 2,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+  },
+  gradientContainer2: {
+    width: Dimensions.get('window').width * 0.9,
+    height: Dimensions.get('screen').height * 0.5,
+    textAlignVertical: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+    marginBottom: 20,
+  },
+  Container2: {
+    backgroundColor: Colors.black500,
+    width: Dimensions.get('window').width * 0.9 - 2,
+    height: Dimensions.get('screen').height * 0.5 - 2,
     alignSelf: 'center',
     justifyContent: 'center',
     borderRadius: 20,
@@ -205,7 +270,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10,
+    marginTop: 20,
+    height: 30,
   },
   dateContainer: {
     flexDirection: 'row',
@@ -230,11 +296,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   contentContainer: {
-    // flex: 1,
     justifyContent: 'center',
     marginLeft: 5,
     marginRight: 5,
     marginBottom: 10,
+  },
+  tagsContainer: {
+    flexDirection: 'row',
+    width: Dimensions.get('window').width,
+    marginLeft: 25,
+    marginBottom: 20,
+  },
+  tag: {
+    marginRight: 5,
   },
   bottomContainer: {
     flexDirection: 'row',
@@ -243,6 +317,9 @@ const styles = StyleSheet.create({
   },
   commentContainer: {
     flexDirection: 'row',
+    width: '90%',
+    marginLeft: 5,
+    marginBottom: 10,
   },
   likeContainer: {
     flexDirection: 'row',
@@ -257,11 +334,16 @@ const styles = StyleSheet.create({
   },
   imgContainer: {
     flexDirection: 'row',
-    marginTop: 10,
-    marginBottom: 10,
   },
   commentsContainer: {
-    // flex: 1,
+    flex: 1,
+  },
+  commentTextContainer: {
+    marginLeft: 10,
+  },
+  commentCt: {
+    margin: 10,
+    flexDirection: 'row',
   },
 });
 
