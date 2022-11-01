@@ -1,12 +1,38 @@
 import React, {useState, useCallback} from 'react';
-import {ImageBackground, View, Dimensions} from 'react-native';
-import {GiftedChat} from 'react-native-gifted-chat';
+import {
+  ImageBackground,
+  View,
+  Dimensions,
+  KeyboardAvoidingView,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  GestureResponderEvent,
+} from 'react-native';
+import {GiftedChat, InputToolbar} from 'react-native-gifted-chat';
 import {IMessage} from '../../constants/types';
+import CircleGradient from '../Utils/CircleGradient';
 import CustomBubble from './CustomBubble';
 import CustomMessage from './CustomMessage';
+import 'react-native-get-random-values';
+import {v4 as uuidv4} from 'uuid';
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
+
+const styles = StyleSheet.create({
+  donationBtn: {
+    position: 'absolute',
+    bottom: 60,
+    right: 20,
+  },
+  inputToolbar: {
+    left: '5%',
+    right: '5%',
+    borderRadius: 25,
+  },
+  chatContainer: {height: deviceHeight - 80, bottom: 80},
+});
 
 const my_user = {
   _id: 2,
@@ -44,20 +70,16 @@ const ChatRoom = () => {
   // 채팅 전송
   const onSend = useCallback((messages = []) => {
     const message = messages[0];
-
-    setMessages(previousMessages =>
-      GiftedChat.append(previousMessages, [{...message, user: my_user}]),
-    );
+    setMessages(prvMessages => [{...message, user: my_user}, ...prvMessages]);
   }, []);
 
   // 후원 채팅
   const sendDonation = useCallback((messages = [], donation: number) => {
     const message = messages[0];
-    setMessages(previousMessages =>
-      GiftedChat.append(previousMessages, [
-        {...message, user: my_user, donation: 30},
-      ]),
-    );
+    setMessages(prvMessages => [
+      {...message, user: my_user, donation},
+      ...prvMessages,
+    ]);
     // donation 금액 전송!
   }, []);
 
@@ -82,31 +104,59 @@ const ChatRoom = () => {
     );
   };
 
+  const renderInputToolbar = (props: any) => {
+    return <InputToolbar {...props} containerStyle={styles.inputToolbar} />;
+  };
+
   const renderMessage = (props: any) => {
     return <CustomMessage {...props} />;
+  };
+
+  const clickDonationHandler = (event: GestureResponderEvent) => {
+    event.preventDefault();
+    // console.log(uuidv4);
+    sendDonation(
+      [
+        {
+          text: '후원!',
+          user: my_user,
+          createAt: new Date(),
+          _id: uuidv4(),
+        },
+      ],
+      30,
+    );
   };
 
   return (
     <ImageBackground
       resizeMode="cover"
       source={require('../../assets/image/chatBackGroundImg.png')}>
-      <View style={{height: deviceHeight * 0.8}}>
+      <View style={styles.chatContainer}>
         <GiftedChat
           messages={totalMessages}
-          onSend={messages => {
-            onSend(messages);
-            // sendDonation(messages, 30)   기부 보내짐
-            // console.log(totalMessages);
-          }}
-          // loadEarlier={true}
+          onSend={onSend}
           showUserAvatar={true}
           showAvatarForEveryMessage={true}
           renderUsernameOnMessage={true}
           renderBubble={renderBubble}
+          renderInputToolbar={renderInputToolbar}
           user={{
             _id: -1,
           }}
           renderMessage={renderMessage}
+          placeholder={''}
+        />
+        <View style={styles.donationBtn}>
+          <TouchableOpacity onPress={clickDonationHandler}>
+            <CircleGradient grade="normal" size="medium">
+              <Image source={require('../../assets/image/donationImg.png')} />
+            </CircleGradient>
+          </TouchableOpacity>
+        </View>
+        <KeyboardAvoidingView
+          behavior={'padding'}
+          keyboardVerticalOffset={30}
         />
       </View>
     </ImageBackground>
