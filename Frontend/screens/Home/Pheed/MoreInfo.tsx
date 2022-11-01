@@ -11,7 +11,7 @@ const MoreInfo = ({content}: {content: string}) => {
   let cuttedText = content;
   let isCutted = false;
 
-  if (content.length > 100) {
+  if (content?.length > 100) {
     isCutted = true;
     cuttedText = content.substring(0, 100);
   }

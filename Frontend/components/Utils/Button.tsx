@@ -109,6 +109,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'center',
     borderRadius: 20,
+    paddingTop: 1,
+    paddingBottom: 1,
   },
   buttonContainer: {
     alignSelf: 'center',

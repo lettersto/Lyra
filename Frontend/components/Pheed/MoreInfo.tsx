@@ -13,9 +13,9 @@ const MoreInfo = ({content}: {content: string}) => {
   let cuttedText = content;
   let isCutted = false;
 
-  if (content.length > 30) {
+  if (content.length > 35) {
     isCutted = true;
-    cuttedText = content.substring(0, 30);
+    cuttedText = content.substring(0, 35);
   }
 
   const goDetail = () => {
