@@ -13,6 +13,8 @@ import React from 'react';
 import {SafeAreaView} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 
+import {QueryClient, QueryClientProvider} from 'react-query';
+
 import {RootStackParamList} from './constants/types';
 import NavBar from './components/Navigation/NavBar';
 import Colors from './constants/Colors';
@@ -23,6 +25,8 @@ declare global {
   }
 }
 
+const queryClient = new QueryClient();
+
 const App = () => {
   const backgroundStyle = {
     backgroundColor: Colors.purple300,
@@ -30,11 +34,13 @@ const App = () => {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <NavigationContainer>
-        <NavBar />
-      </NavigationContainer>
-    </SafeAreaView>
+    <QueryClientProvider client={queryClient}>
+      <SafeAreaView style={backgroundStyle}>
+        <NavigationContainer>
+          <NavBar />
+        </NavigationContainer>
+      </SafeAreaView>
+    </QueryClientProvider>
   );
 };
 
