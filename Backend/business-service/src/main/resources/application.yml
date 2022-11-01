@@ -10,8 +10,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://k7c105.p.ssafy.io:3306/business-service?serverTimezone=Asia/Seoul
-    username: root
-    password: root
+    username: hermes
+    password: Lyra@hanam^!3
 
 #cloud:
 #  aws:
