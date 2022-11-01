@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
   },
   pheedContent: {
     flex: 1,
-    width: '90%',
     alignSelf: 'center',
     height: Dimensions.get('window').height * 0.83,
   },

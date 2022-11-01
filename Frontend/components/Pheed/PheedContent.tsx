@@ -1,11 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   StyleSheet,
   View,
   Dimensions,
   ScrollView,
-  Image,
   Pressable,
 } from 'react-native';
 import Colors from '../../constants/Colors';
@@ -15,6 +14,7 @@ import CircleProfile from '../Utils/CircleProfile';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon3 from 'react-native-vector-icons/AntDesign';
+import Icon4 from 'react-native-vector-icons/Ionicons';
 import Button from '../Utils/Button';
 import {useNavigation} from '@react-navigation/native';
 import GradientLine from '../Utils/GradientLine';
@@ -26,28 +26,37 @@ const PheedContent = () => {
     navigation.navigate('Chat');
   };
 
+  const [isLike, setIsLike] = useState(false);
+  const activeLike = () => {
+    if (isLike === true) {
+      setIsLike(false);
+    } else {
+      setIsLike(true);
+    }
+  };
+
   return (
     <ScrollView style={styles.pheedCotainer}>
       {data.map((content, i) => {
         return (
           <View key={i}>
-            {content.imgUrl.length === 0 ? (
-              <LinearGradient
-                start={{x: 0, y: 0}}
-                end={{x: 0, y: 1}}
-                useAngle={true}
-                angle={135}
-                angleCenter={{x: 0.5, y: 0.5}}
-                colors={[Colors.purple300, Colors.pink500]}
-                style={styles.gradientContainer}>
-                <View style={styles.Container}>
-                  <View style={styles.profileContainer}>
-                    <View style={styles.profileDatetime}>
-                      <View style={styles.profileImg}>
-                        <CircleProfile size="small" isGradient={false} />
-                      </View>
+            <LinearGradient
+              start={{x: 0, y: 0}}
+              end={{x: 0, y: 1}}
+              useAngle={true}
+              angle={135}
+              angleCenter={{x: 0.5, y: 0.5}}
+              colors={[Colors.purple300, Colors.pink500]}
+              style={styles.gradientContainer}>
+              <View style={styles.Container}>
+                <View style={styles.profileContainer}>
+                  <View style={styles.profileDatetime}>
+                    <View style={styles.profileImg}>
+                      <CircleProfile size="small" isGradient={false} />
+                    </View>
+                    <View>
+                      <Text style={styles.boldtext}>{content.name}</Text>
                       <View>
-                        <Text style={styles.boldtext}>{content.name}</Text>
                         <View style={styles.dateContainer}>
                           <Icon
                             name="clock"
@@ -57,155 +66,92 @@ const PheedContent = () => {
                           />
                           <Text style={styles.text}>{content.datetime}</Text>
                         </View>
-                      </View>
-                    </View>
-                    <View style={styles.liveContainer}>
-                      {content.isLive ? (
-                        <Button
-                          title="LIVE"
-                          btnSize="medium"
-                          textSize="medium"
-                          isGradient={true}
-                          isOutlined={false}
-                          onPress={goChat}
-                        />
-                      ) : (
-                        <Button
-                          title="예정"
-                          btnSize="medium"
-                          textSize="medium"
-                          isGradient={true}
-                          isOutlined={true}
-                          onPress={goChat}
-                        />
-                      )}
-                    </View>
-                  </View>
-                  <View style={styles.lineContainer}>
-                    <GradientLine />
-                  </View>
-                  <Pressable
-                    onPress={() => navigation.navigate('DetailPheed', content)}>
-                    <View style={styles.contentContainer}>
-                      <Text style={styles.boldtext}>{content.title}</Text>
-                      <MoreInfo content={content.content} />
-                    </View>
-                  </Pressable>
-                  <GradientLine />
-                  <View style={styles.bottomContainer}>
-                    <View style={styles.commentContainer}>
-                      <Icon2
-                        name="comment-text-outline"
-                        color={Colors.gray300}
-                        size={16}
-                        style={styles.clock}
-                      />
-                      <Text style={styles.text}>댓글 {content.comment}</Text>
-                    </View>
-                    <View style={styles.likeContainer}>
-                      <Icon3
-                        name="staro"
-                        color={Colors.gray300}
-                        size={16}
-                        style={styles.clock}
-                      />
-                      <Text style={styles.text}>{content.like}</Text>
-                    </View>
-                  </View>
-                </View>
-              </LinearGradient>
-            ) : (
-              <LinearGradient
-                start={{x: 0, y: 0}}
-                end={{x: 0, y: 1}}
-                useAngle={true}
-                angle={135}
-                angleCenter={{x: 0.5, y: 0.5}}
-                colors={[Colors.purple300, Colors.pink500]}
-                style={styles.gradientContainer2}>
-                <View style={styles.Container2}>
-                  <View style={styles.profileContainer}>
-                    <View style={styles.profileDatetime}>
-                      <View style={styles.profileImg}>
-                        <CircleProfile size="small" isGradient={false} />
-                      </View>
-                      <View>
-                        <Text style={styles.boldtext}>{content.name}</Text>
                         <View style={styles.dateContainer}>
-                          <Icon
-                            name="clock"
+                          <Icon4
+                            name="location-outline"
                             color={Colors.gray300}
                             size={16}
                             style={styles.clock}
                           />
-                          <Text style={styles.text}>{content.datetime}</Text>
+                          <Text style={styles.text}>{content.location}</Text>
                         </View>
                       </View>
                     </View>
-                    <View style={styles.liveContainer}>
-                      {content.isLive ? (
-                        <Button
-                          title="LIVE"
-                          btnSize="medium"
-                          textSize="medium"
-                          isGradient={true}
-                          isOutlined={false}
-                          onPress={goChat}
-                        />
-                      ) : (
-                        <Button
-                          title="예정"
-                          btnSize="medium"
-                          textSize="medium"
-                          isGradient={true}
-                          isOutlined={true}
-                          onPress={goChat}
-                        />
-                      )}
-                    </View>
                   </View>
-                  <View style={styles.lineContainer}>
-                    <GradientLine />
-                  </View>
-                  <Pressable
-                    onPress={() => navigation.navigate('DetailPheed', content)}>
-                    <View style={styles.contentContainer}>
-                      {content.imgUrl.map((img, index) => {
-                        return (
-                          <View key={index}>
-                            {/* <Image source={require(img)} /> */}
-                            <Text>{img}</Text>
-                          </View>
-                        );
-                      })}
-                      <Text style={styles.boldtext}>{content.title}</Text>
-                      <MoreInfo content={content.content} />
-                    </View>
-                  </Pressable>
-                  <GradientLine />
-                  <View style={styles.bottomContainer}>
-                    <View style={styles.commentContainer}>
-                      <Icon2
-                        name="comment-text-outline"
-                        color={Colors.gray300}
-                        size={16}
-                        style={styles.clock}
+                  <View style={styles.liveContainer}>
+                    {content.isLive ? (
+                      <Button
+                        title="LIVE"
+                        btnSize="medium"
+                        textSize="medium"
+                        isGradient={true}
+                        isOutlined={false}
+                        onPress={goChat}
                       />
-                      <Text style={styles.text}>댓글 {content.comment}</Text>
-                    </View>
-                    <View style={styles.likeContainer}>
-                      <Icon3
-                        name="staro"
-                        color={Colors.gray300}
-                        size={16}
-                        style={styles.clock}
+                    ) : (
+                      <Button
+                        title="예정"
+                        btnSize="medium"
+                        textSize="medium"
+                        isGradient={true}
+                        isOutlined={true}
+                        onPress={goChat}
+                        disabled
                       />
-                      <Text style={styles.text}>{content.like}</Text>
-                    </View>
+                    )}
                   </View>
                 </View>
-              </LinearGradient>
-            )}
+                <View style={styles.lineContainer}>
+                  <GradientLine />
+                </View>
+                <Pressable
+                  onPress={() => navigation.navigate('DetailPheed', content)}>
+                  <View style={styles.contentContainer}>
+                    {content.imgUrl.length !== 0 ? (
+                      <Text style={styles.text}>{content.imgUrl}</Text>
+                    ) : (
+                      <></>
+                    )}
+                    <Text style={styles.boldtext}>{content.title}</Text>
+                    <MoreInfo content={content.content} />
+                  </View>
+                </Pressable>
+                <GradientLine />
+                <View style={styles.bottomContainer}>
+                  <View style={styles.commentContainer}>
+                    <Icon2
+                      name="comment-text-outline"
+                      color={Colors.gray300}
+                      size={16}
+                      style={styles.clock}
+                    />
+                    <Text style={styles.text}>
+                      댓글 ({content.comments?.length})
+                    </Text>
+                  </View>
+                  <Pressable onPress={activeLike}>
+                    <View style={styles.likeContainer}>
+                      {isLike ? (
+                        <Icon3
+                          name="star"
+                          color={Colors.gray300}
+                          size={16}
+                          style={styles.clock}
+                        />
+                      ) : (
+                        <Icon3
+                          name="staro"
+                          color={Colors.gray300}
+                          size={16}
+                          style={styles.clock}
+                        />
+                      )}
+                      <Text style={styles.text}>{content.like}</Text>
+                    </View>
+                  </Pressable>
+                </View>
+              </View>
+            </LinearGradient>
           </View>
         );
       })}
@@ -227,36 +173,22 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   gradientContainer: {
-    width: Dimensions.get('window').width * 0.9,
-    minHeight: Dimensions.get('window').height * 0.25,
+    width: Dimensions.get('window').width * 0.95,
+    minHeight: Dimensions.get('window').height * 0.01,
     textAlignVertical: 'center',
     justifyContent: 'center',
-    borderRadius: 20,
+    borderRadius: 10,
     marginBottom: 20,
+    paddingTop: 1,
+    paddingBottom: 1,
   },
   Container: {
     backgroundColor: Colors.black500,
-    width: Dimensions.get('window').width * 0.9 - 2,
-    minHeight: Dimensions.get('window').height * 0.25 - 2,
+    width: Dimensions.get('window').width * 0.95 - 2,
+    minHeight: Dimensions.get('window').height * 0.01,
     alignSelf: 'center',
     justifyContent: 'center',
-    borderRadius: 20,
-  },
-  gradientContainer2: {
-    width: Dimensions.get('window').width * 0.9,
-    minHeight: Dimensions.get('window').height * 0.4,
-    textAlignVertical: 'center',
-    justifyContent: 'center',
-    borderRadius: 20,
-    marginBottom: 20,
-  },
-  Container2: {
-    backgroundColor: Colors.black500,
-    width: Dimensions.get('window').width * 0.9 - 2,
-    minHeight: Dimensions.get('window').height * 0.4 - 2,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    borderRadius: 20,
+    borderRadius: 10,
   },
   profileImg: {
     marginRight: 5,
@@ -267,9 +199,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 30,
+    paddingVertical: 2,
   },
   dateContainer: {
     flexDirection: 'row',
+    marginVertical: 1.5,
   },
   clock: {
     marginRight: 5,
@@ -277,11 +211,11 @@ const styles = StyleSheet.create({
   liveContainer: {
     justifyContent: 'flex-end',
     position: 'absolute',
-    right: 10,
+    right: 5,
   },
   profileDatetime: {
     flexDirection: 'row',
-    left: 10,
+    left: 5,
     position: 'absolute',
     alignItems: 'center',
   },

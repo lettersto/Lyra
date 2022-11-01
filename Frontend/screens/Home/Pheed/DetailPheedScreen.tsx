@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {RootStackParamList} from '../../../constants/types';
 import {
   StyleSheet,
@@ -7,6 +7,7 @@ import {
   Dimensions,
   ScrollView,
   Image,
+  Pressable,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import Colors from '../../../constants/Colors';
@@ -19,32 +20,42 @@ import Icon4 from 'react-native-vector-icons/Ionicons';
 import GradientLine from '../../../components/Utils/GradientLine';
 import Button from '../../../components/Utils/Button';
 import {useNavigation} from '@react-navigation/native';
+import Input from '../../../components/Utils/Input';
 import MoreInfo from './MoreInfo';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DetailPheed'>;
 
 const DetailPheedScreen = ({route}: Props) => {
-  const name = route.params.name;
-  const profileImg = route.params.profileImg;
-  const datetime = route.params.datetime;
-  const location = route.params.location;
-  const title = route.params.title;
-  const content = route.params.content;
-  const comment = route.params.comment;
-  const comments = route.params.comments;
-  const like = route.params.like;
-  const isLive = route.params.isLive;
-  const imgUrl = route.params.imgUrl;
-  const tags = route.params.tags;
+  const name = route.params?.name;
+  const profileImg = route.params?.profileImg;
+  const datetime = route.params?.datetime;
+  const location = route.params?.location;
+  const title = route.params?.title;
+  const content = route.params?.content;
+  const comment = route.params?.comment;
+  // const comments = route.params?.comments;
+  const like = route.params?.like;
+  const isLive = route.params?.isLive;
+  const imgUrl = route.params?.imgUrl;
+  const tags = route.params?.tags;
 
   const navigation = useNavigation();
   const goChat = () => {
     navigation.navigate('Chat');
   };
 
+  const [registerComment, setRegisterComment] = useState('');
+  const [comments, setComments] = useState<any[]>(route.params?.comments);
+
+  const register = () => {
+    setComments(prevComments => {
+      return [...prevComments, registerComment];
+    });
+    setRegisterComment('');
+  };
+
   return (
     <ScrollView style={styles.detailpheed}>
-      <View style={styles.emptyContainer} />
       <View style={styles.background}>
         <LinearGradient
           start={{x: 0, y: 0}}
@@ -100,8 +111,17 @@ const DetailPheedScreen = ({route}: Props) => {
                     isGradient={true}
                     isOutlined={true}
                     onPress={goChat}
+                    disabled
                   />
                 )}
+                <Pressable>
+                  <Icon2
+                    name="dots-vertical"
+                    color={Colors.gray300}
+                    size={20}
+                    style={styles.dots}
+                  />
+                </Pressable>
               </View>
             </View>
             <View style={styles.lineContainer}>
@@ -125,7 +145,15 @@ const DetailPheedScreen = ({route}: Props) => {
                 </View>
               </ScrollView>
             </View>
-            <Text style={styles.titleText}>{title}</Text>
+            <View style={styles.titleContainer}>
+              <Text style={styles.titleText}>{title}</Text>
+              <Icon2
+                name="play-box-multiple-outline"
+                color={Colors.gray300}
+                size={25}
+                style={styles.clock}
+              />
+            </View>
             <GradientLine />
             <View style={styles.contentText}>
               <MoreInfo content={content} />
@@ -133,9 +161,9 @@ const DetailPheedScreen = ({route}: Props) => {
           </View>
         </LinearGradient>
         {/* tag */}
-        <ScrollView horizontal>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <View style={styles.tagsContainer}>
-            {tags.map((tag, idx) => {
+            {tags?.map((tag, idx) => {
               return (
                 <View key={idx} style={styles.tag}>
                   <Button
@@ -161,7 +189,26 @@ const DetailPheedScreen = ({route}: Props) => {
             size={16}
             style={styles.clock}
           />
-          <Text style={styles.text}>댓글 ({comment})</Text>
+          <Text style={styles.text}>댓글 ({comments?.length})</Text>
+        </View>
+        <View style={styles.commentWriteContainer}>
+          <Input
+            width={0.8}
+            height={0.05}
+            keyboard={1}
+            borderRadius={15}
+            placeholder="  댓글을 입력해주세요."
+            enteredValue={registerComment}
+            setEnteredValue={setRegisterComment}
+          />
+          <Button
+            title="작성"
+            btnSize="medium"
+            textSize="medium"
+            isGradient={true}
+            isOutlined={false}
+            onPress={register}
+          />
         </View>
         <LinearGradient
           start={{x: 0, y: 0}}
@@ -172,8 +219,8 @@ const DetailPheedScreen = ({route}: Props) => {
           colors={[Colors.purple300, Colors.pink500]}
           style={styles.gradientContainer2}>
           <View style={styles.Container2}>
-            <ScrollView style={styles.commentsContainer}>
-              {comments.map((value, idx) => {
+            <View style={styles.commentsContainer}>
+              {comments?.map((value, idx) => {
                 return (
                   <View style={styles.commentCt} key={idx}>
                     <CircleProfile size="extraSmall" isGradient={false} />
@@ -184,7 +231,7 @@ const DetailPheedScreen = ({route}: Props) => {
                   </View>
                 );
               })}
-            </ScrollView>
+            </View>
           </View>
         </LinearGradient>
       </View>
@@ -196,15 +243,10 @@ const styles = StyleSheet.create({
   detailpheed: {
     backgroundColor: Colors.black500,
   },
-  emptyContainer: {
-    // height: 50,
-  },
   name: {
     color: Colors.gray300,
   },
   background: {
-    flex: 1,
-    backgroundColor: Colors.purple500,
     alignItems: 'center',
     marginBottom: 50,
     paddingTop: 10,
@@ -213,18 +255,23 @@ const styles = StyleSheet.create({
     color: Colors.gray300,
     fontFamily: 'NanumSquareRoundR',
   },
+  titleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
   titleText: {
     color: Colors.gray300,
     fontFamily: 'NanumSquareRoundR',
     fontWeight: 'bold',
     fontSize: 15,
-    marginLeft: 10,
-    marginBottom: 5,
+    marginHorizontal: 10,
   },
   contentText: {
     color: Colors.gray300,
     fontFamily: 'NanumSquareRoundR',
-    margin: 5,
+    marginVertical: 10,
   },
   boldtext: {
     color: Colors.gray300,
@@ -232,46 +279,55 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   gradientContainer: {
-    width: Dimensions.get('window').width * 0.9,
-    minHeight: 200,
+    width: Dimensions.get('window').width * 0.95,
+    minHeight: Dimensions.get('window').height * 0.1,
     textAlignVertical: 'center',
     justifyContent: 'center',
-    borderRadius: 20,
+    borderRadius: 10,
     marginBottom: 20,
+    paddingTop: 1,
+    paddingBottom: 1,
   },
   Container: {
     backgroundColor: Colors.black500,
-    width: Dimensions.get('window').width * 0.9 - 2,
-    minHeight: 200 - 2,
+    width: Dimensions.get('window').width * 0.95 - 2,
+    minHeight: Dimensions.get('window').height * 0.1,
     alignSelf: 'center',
     justifyContent: 'center',
-    borderRadius: 20,
+    borderRadius: 10,
+    marginBottom: 0.5,
   },
   gradientContainer2: {
-    width: Dimensions.get('window').width * 0.9,
-    height: Dimensions.get('screen').height * 0.5,
+    width: Dimensions.get('window').width * 0.95,
+    minHeight: Dimensions.get('window').height * 0.1,
     textAlignVertical: 'center',
     justifyContent: 'center',
-    borderRadius: 20,
+    borderRadius: 10,
     marginBottom: 20,
+    paddingTop: 1,
+    paddingBottom: 1,
   },
-  Container2: {
+  commentsContainer: {
     backgroundColor: Colors.black500,
-    width: Dimensions.get('window').width * 0.9 - 2,
-    height: Dimensions.get('screen').height * 0.5 - 2,
+    width: Dimensions.get('window').width * 0.95 - 2,
+    minHeight: Dimensions.get('window').height * 0.1,
     alignSelf: 'center',
     justifyContent: 'center',
-    borderRadius: 20,
+    borderRadius: 10,
+  },
+  Container2: {
+    flex: 1,
   },
   profileImg: {
     marginRight: 5,
   },
   profileContainer: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
-    height: 30,
+    marginTop: 30,
+    paddingVertical: 5,
   },
   dateContainer: {
     flexDirection: 'row',
@@ -285,9 +341,14 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   liveContainer: {
+    flexDirection: 'row',
     justifyContent: 'flex-end',
+    alignItems: 'center',
     position: 'absolute',
     right: 10,
+  },
+  dots: {
+    marginLeft: 3,
   },
   profileDatetime: {
     flexDirection: 'row',
@@ -304,7 +365,7 @@ const styles = StyleSheet.create({
   tagsContainer: {
     flexDirection: 'row',
     width: Dimensions.get('window').width,
-    marginLeft: 25,
+    marginLeft: 10,
     marginBottom: 20,
   },
   tag: {
@@ -321,23 +382,24 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginBottom: 10,
   },
-  likeContainer: {
+  commentWriteContainer: {
+    width: Dimensions.get('window').width * 0.95,
+    justifyContent: 'space-between',
     flexDirection: 'row',
+    marginBottom: 10,
   },
   lineContainer: {
     marginTop: 30,
     marginBottom: 10,
   },
   image: {
-    width: 200,
-    height: 200,
+    width: 300,
+    height: 300,
   },
   imgContainer: {
     flexDirection: 'row',
   },
-  commentsContainer: {
-    flex: 1,
-  },
+
   commentTextContainer: {
     marginLeft: 10,
   },

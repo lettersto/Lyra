@@ -1,13 +1,22 @@
-import React from 'react';
-import {View, StyleSheet, ScrollView, Text, Pressable} from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Text,
+  Pressable,
+  Image,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
+import ImagePicker, {ImageOrVideo} from 'react-native-image-crop-picker';
 import CircleProfile from '../../components/Utils/CircleProfile';
 import ProfileInfoItem from '../../components/Profile/EditProfile/ProfileInfoItem';
 import Colors from '../../constants/Colors';
 
 const ProfileDetailScreen = () => {
   const navigation = useNavigation();
+  const [ImageUri, setImageUri] = useState<string>();
 
   const nicknamePressHandler = () => {
     navigation.navigate('EditProfile', {
@@ -39,11 +48,31 @@ const ProfileDetailScreen = () => {
     });
   };
 
+  const ChangeProfileImagePressHandler = async () => {
+    let newProfileImage: ImageOrVideo;
+    try {
+      newProfileImage = await ImagePicker.openPicker({
+        width: 300,
+        height: 300,
+        cropping: true,
+        mediaType: 'photo',
+      });
+      setImageUri(newProfileImage.path);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <ScrollView style={styles.screen}>
       <View style={styles.profileImageContainer}>
-        <CircleProfile size="extraLarge" grade="normal" isGradient={true} />
-        <Pressable style={styles.changePhoto}>
+        {ImageUri && <Image style={styles.image} source={{uri: ImageUri}} />}
+        {!ImageUri && (
+          <CircleProfile size="extraLarge" grade="normal" isGradient={true} />
+        )}
+        <Pressable
+          style={styles.changePhoto}
+          onPress={ChangeProfileImagePressHandler}>
           <Text style={styles.text}>사진 바꾸기</Text>
         </Pressable>
       </View>
@@ -90,6 +119,10 @@ const styles = StyleSheet.create({
   },
   changePhoto: {
     marginBottom: 8,
+  },
+  image: {
+    width: 150,
+    height: 150,
   },
   text: {
     marginTop: 8,
