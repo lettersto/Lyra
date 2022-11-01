@@ -4,16 +4,19 @@ import Colors from '../../constants/Colors';
 import Button from '../Utils/Button';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 
 const Gallery = () => {
   const [Photos, SetPhotos] = useState<any[]>([]);
   const openPicker = async () => {
     try {
-      const response = await MultipleImagePicker.openPicker({
-        usedCameraButton: false,
-        selectedAssets: [],
-        maxSelectedAssets: 5,
+      const response = await ImagePicker.openPicker({
+        mediaType: 'photo',
+        width: 300,
+        height: 300,
+        cropping: true,
+        multiple: true,
+        maxFiles: 5,
       });
       SetPhotos(response);
     } catch (e) {
