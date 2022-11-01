@@ -4,6 +4,9 @@ import CreateButton from '../../../components/Pheed/CreateButton';
 import PheedContent from '../../../components/Pheed/PheedContent';
 import Colors from '../../../constants/Colors';
 import MainBanner from '../../../components/Pheed/MainBanner';
+import GradientLine from '../../../components/Utils/GradientLine';
+import PheedCategory from '../../../components/Pheed/Category/PheedCategory';
+import Shorts from '../../../components/Pheed/Shorts';
 
 const MainPheedScreen = () => {
   return (
@@ -12,6 +15,14 @@ const MainPheedScreen = () => {
         <View style={styles.bannerContainer}>
           <MainBanner />
         </View>
+        <View style={styles.videoContainer}>
+          <Shorts />
+        </View>
+        <GradientLine />
+        <View style={styles.categoryContainer}>
+          <PheedCategory Category="main" />
+        </View>
+        <GradientLine />
         <View style={styles.pheedContent}>
           <PheedContent />
         </View>
@@ -29,10 +40,16 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   mainContainer: {
-    height: Dimensions.get('window').height * 0.83,
+    height: Dimensions.get('window').height * 0.92,
   },
   bannerContainer: {
     height: 80,
+  },
+  videoContainer: {
+    height: 80,
+  },
+  categoryContainer: {
+    marginBottom: 8,
   },
   pheedContent: {
     flex: 1,

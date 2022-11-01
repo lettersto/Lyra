@@ -31,6 +31,7 @@ export type RootStackParamList = {
   MainProfile: undefined;
   ProfileDetail: undefined;
   DetailPheed: PheedDetailParamList;
+  ShortsDetail: ShortsDetailParamList;
 };
 
 // Pheed
@@ -47,6 +48,12 @@ export type PheedDetailParamList = {
   isLive: boolean | undefined;
   imgUrl: string[] | undefined;
   tags: Array<string>;
+};
+
+export type ShortsDetailParamList = {
+  name: string;
+  index: number;
+  show: boolean;
 };
 
 export type CommentParamList = {
