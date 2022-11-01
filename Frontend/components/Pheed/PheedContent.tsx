@@ -161,7 +161,7 @@ const PheedContent = () => {
 
 const styles = StyleSheet.create({
   pheedCotainer: {
-    marginTop: 20,
+    marginTop: 12,
   },
   text: {
     color: Colors.gray300,

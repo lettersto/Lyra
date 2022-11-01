@@ -7,6 +7,8 @@ import CreatePheedScreen from '../../screens/Home/Pheed/CreatePheedScreen';
 import PheedTitle from './TopNavBar/PheedTitle';
 import AlarmScreen from '../../screens/Others/AlarmScreen';
 import DetailPheedScreen from '../../screens/Home/Pheed/DetailPheedScreen';
+import ShortsDetailScreen from '../../screens/Home/Shorts/ShortsDetailScreen';
+
 // Profile
 import MainProfileScreen from '../../screens/Profile/MainProfileScreen';
 import ProfileDetailScreen from '../../screens/Profile/ProfileDetailScreen';
@@ -50,6 +52,7 @@ export const PheedStack = () => {
         }}
       />
       <Stack.Screen name="CreatePheed" component={CreatePheedScreen} />
+      <Stack.Screen name="ShortsDetail" component={ShortsDetailScreen} />
       <Stack.Screen
         name="DetailPheed"
         component={DetailPheedScreen}
