@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.purple300,
     borderRadius: 20,
+    marginRight: 5,
   },
   imgIcon: {
     alignSelf: 'center',
