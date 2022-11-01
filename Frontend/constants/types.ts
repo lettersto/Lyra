@@ -13,6 +13,8 @@
  * <How to use RootTabParamList>
  */
 
+import {User} from 'react-native-gifted-chat';
+
 export type RootStackParamList = {
   Home: undefined;
   Map: undefined;
@@ -58,7 +60,16 @@ export type CommentParamList = {
 // Map
 
 // Chat
-
+export interface IMessage {
+  _id: string | number;
+  text: string;
+  createdAt: Date | number;
+  user: User;
+  sent?: boolean;
+  received?: boolean;
+  pending?: boolean;
+  donation?: number;
+}
 // Profile
 export type EditProfileType =
   | 'nickname'
