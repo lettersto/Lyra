@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import Colors from '../../constants/Colors';
-import {MAP_KEY} from '../../.env';
 
 const LocationSearchScreen = () => {
   const [location, setLocation] = useState({
@@ -18,7 +17,7 @@ const LocationSearchScreen = () => {
             <GooglePlacesAutocomplete
               placeholder={'Location'}
               query={{
-                key: MAP_KEY,
+                key: '',
                 language: 'en',
               }}
               onPress={(data, details = null) => {
