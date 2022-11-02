@@ -39,6 +39,8 @@ export type RootStackParamList = {
   Login: undefined;
   Onboarding: undefined;
   CreateShorts: VideoParamList;
+  LocationPermission: undefined;
+  WalletCreation: undefined;
 };
 
 export type RootTabParamList = {
