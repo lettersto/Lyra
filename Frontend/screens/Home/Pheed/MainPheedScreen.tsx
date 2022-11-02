@@ -10,27 +10,29 @@ import Shorts from '../../../components/Pheed/Shorts';
 
 const MainPheedScreen = () => {
   return (
-    <ScrollView style={styles.scroll}>
-      <View style={styles.mainContainer}>
-        <View style={styles.bannerContainer}>
-          <MainBanner />
+    <>
+      <ScrollView style={styles.scroll}>
+        <View style={styles.mainContainer}>
+          <View style={styles.bannerContainer}>
+            <MainBanner />
+          </View>
+          <View style={styles.videoContainer}>
+            <Shorts />
+          </View>
+          <GradientLine />
+          <View style={styles.categoryContainer}>
+            <PheedCategory Category="main" />
+          </View>
+          <GradientLine />
+          <View style={styles.pheedContent}>
+            <PheedContent />
+          </View>
         </View>
-        <View style={styles.videoContainer}>
-          <Shorts />
-        </View>
-        <GradientLine />
-        <View style={styles.categoryContainer}>
-          <PheedCategory Category="main" />
-        </View>
-        <GradientLine />
-        <View style={styles.pheedContent}>
-          <PheedContent />
-        </View>
-        <View style={styles.createBtn}>
-          <CreateButton />
-        </View>
+      </ScrollView>
+      <View style={styles.createBtn}>
+        <CreateButton />
       </View>
-    </ScrollView>
+    </>
   );
 };
 
@@ -40,7 +42,7 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   mainContainer: {
-    height: Dimensions.get('window').height * 0.92,
+    marginBottom: '5%',
   },
   bannerContainer: {
     height: 80,
@@ -59,7 +61,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.black500,
   },
-  createBtn: {},
+  createBtn: {
+    marginBottom: '10%',
+  },
 });
 
 export default MainPheedScreen;
