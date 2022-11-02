@@ -55,7 +55,7 @@ dependencies {
 =======
 >>>>>>> 42fbc41009bb584918b2ecda9930bf8fbc4ef0a0
 	// s3
-	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.281'
+//	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.281'
 	implementation 'org.modelmapper:modelmapper:2.3.8'
 }
 
