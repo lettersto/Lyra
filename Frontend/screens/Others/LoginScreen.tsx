@@ -6,30 +6,46 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 
 import AuthContext from '../../store/auth-context';
-import {RootStackParamList} from '../../constants/types';
+import {RootStackParamList, RootTabParamList} from '../../constants/types';
 import Colors from '../../constants/Colors';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
+type LoginNavigationProps = CompositeNavigationProp<
+  BottomTabNavigationProp<RootTabParamList, 'Home'>,
+  NativeStackNavigationProp<RootStackParamList>
+>;
 
-const LoginButton = ({title}: {title: string}) => {
-  const {setIsLoggedIn} = useContext(AuthContext);
-  return (
-    <TouchableOpacity
-      style={styles.buttonContainer}
-      activeOpacity={0.7}
-      onPress={() => setIsLoggedIn(true)}>
-      <Text style={styles.buttonText}>{title}</Text>
-    </TouchableOpacity>
-  );
-};
+const LoginScreen = () => {
+  const navigation = useNavigation<LoginNavigationProps>();
 
-const LoginScreen = ({navigation}: Props) => {
   useLayoutEffect(() => {
     navigation.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
   }, [navigation]);
+
+  const LoginButton = ({title}: {title: string}) => {
+    const {locationPermitted, walletCreated} = useContext(AuthContext);
+
+    const onLoginPress = () => {
+      if (locationPermitted && walletCreated) {
+        navigation.navigate('Home');
+      } else {
+        navigation.navigate('LocationPermission');
+      }
+    };
+
+    return (
+      <TouchableOpacity
+        style={styles.buttonContainer}
+        activeOpacity={0.7}
+        onPress={onLoginPress}>
+        <Text style={styles.buttonText}>{title}</Text>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -60,7 +76,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(9, 9, 25, .8)',
+    backgroundColor: Colors.blackTransparent,
     borderRadius: 150,
     borderColor: Colors.pink300,
     borderWidth: 1,

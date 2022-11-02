@@ -32,10 +32,16 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [walletCreated, setWalletCreated] = useState(false);
+  const [locationPermitted, setLocationPermitted] = useState(false);
 
   const authValue = {
     isLoggedIn,
     setIsLoggedIn,
+    walletCreated,
+    setWalletCreated,
+    locationPermitted,
+    setLocationPermitted,
   };
 
   useEffect(() => {

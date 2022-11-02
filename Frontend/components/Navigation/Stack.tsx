@@ -26,6 +26,8 @@ import UserChatTitle from './TopNavBar/UserChatTitle';
 // import BuskerChatButtons from './TopNavBar/BuskerChatButtons';
 // Onboarding
 import LoginScreen from '../../screens/Others/LoginScreen';
+import WalletCreationScreen from '../../screens/Others/WalletCreationScreen';
+import LocationPermissionScreen from '../../screens/Others/LocationPermissionScreen';
 // import SplashScreen from '../../screens/Others/SplashScreen';
 
 import AuthContext from '../../store/auth-context';
@@ -99,6 +101,20 @@ export const PheedStack = () => {
           <Stack.Screen
             name="Login"
             component={LoginScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="WalletCreation"
+            component={WalletCreationScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="LocationPermission"
+            component={LocationPermissionScreen}
             options={{
               headerShown: false,
             }}
