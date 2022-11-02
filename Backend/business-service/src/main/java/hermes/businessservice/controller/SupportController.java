@@ -9,6 +9,7 @@ import hermes.businessservice.vo.RequestSupport;
 import hermes.businessservice.vo.RequestWallet;
 import hermes.businessservice.vo.ResponseSupport;
 import hermes.businessservice.vo.ResponseWallet;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -30,7 +31,7 @@ public class SupportController {
 
     SupportService supportService;
 
-    //    @ApiOperation(value = "새로운 후원 등록", response = String.class)
+    @ApiOperation(value = "새로운 후원 등록", response = String.class)
     @PostMapping("/{userId}/support")
     public ResponseEntity<ResponseSupport> createSupport(@PathVariable("userId") Long supporterId, @RequestBody RequestSupport support) {
 
@@ -49,7 +50,7 @@ public class SupportController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseSupport);
     }
 
-    //    @ApiOperation(value = "내가 한 후원", response = String.class)
+    @ApiOperation(value = "내가 한 후원", response = String.class)
     @GetMapping("/{user_id}/support/give")
     public ResponseEntity<List<ResponseSupport>> getGiveSupport(@PathVariable("user_id") Long userId) throws Exception {
 
@@ -67,7 +68,7 @@ public class SupportController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    //    @ApiOperation(value = "내가 받은 후원", response = String.class)
+    @ApiOperation(value = "내가 받은 후원", response = String.class)
     @GetMapping("/{user_id}/support/supported")
     public ResponseEntity<List<ResponseSupport>> getSupported(@PathVariable("user_id") Long userId) throws Exception {
 
