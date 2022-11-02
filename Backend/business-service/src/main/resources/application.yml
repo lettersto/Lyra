@@ -30,7 +30,6 @@ spring:
 eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-    hostname: k7c105.p.ssafy.io
   client:
     register-with-eureka: true
     fetch-registry: true
