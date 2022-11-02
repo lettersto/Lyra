@@ -3,6 +3,7 @@ import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import {View, Platform, PermissionsAndroid, Text} from 'react-native';
 import MapStyle from './mapStyle';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 
 interface ILocation {
   latitude: number;
@@ -60,7 +61,7 @@ const Map = () => {
     <>
       <View style={{flex: 1}}>
         <MapView
-          style={{flex: 1}}
+          style={{flex: 1, zIndex: -1}}
           provider={PROVIDER_GOOGLE}
           initialRegion={{
             latitude: location.latitude,
@@ -72,6 +73,20 @@ const Map = () => {
           showsUserLocation={true}
           showsMyLocationButton={true}
         />
+        <View style={{flex: 1, zIndex: 1}}>
+          <GooglePlacesAutocomplete
+            placeholder={'Location'}
+            query={{
+              key: '',
+              language: 'en',
+            }}
+            onPress={(data, details = null) => {
+              // 'details' is provided when fetchDetails = true
+              console.log(data, details);
+            }}
+            styles={{container: {flex: 0}}}
+          />
+        </View>
       </View>
     </>
   );

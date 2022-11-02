@@ -1,3 +1,4 @@
+import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {Text, Pressable, StyleSheet, View} from 'react-native';
 import MIcon from 'react-native-vector-icons/MaterialIcons';
@@ -10,13 +11,20 @@ const LocationButton = () => {
   // 2. onPress function to find location.
   const [currentLocation, setCurrentLocation] = useState('오선동');
 
+  const navigation = useNavigation();
+  const pressHandler = () => {
+    navigation.navigate('LocationModal');
+  };
+
   return (
-    <Pressable>
-      <View style={styles.innerContainer}>
-        <MIcon name="keyboard-arrow-down" size={25} color={Colors.gray300} />
-        <Text style={styles.title}>{currentLocation}</Text>
-      </View>
-    </Pressable>
+    <>
+      <Pressable onPress={pressHandler}>
+        <View style={styles.innerContainer}>
+          <MIcon name="keyboard-arrow-down" size={25} color={Colors.gray300} />
+          <Text style={styles.title}>{currentLocation}</Text>
+        </View>
+      </Pressable>
+    </>
   );
 };
 
