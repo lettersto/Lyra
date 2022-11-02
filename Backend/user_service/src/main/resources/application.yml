@@ -14,6 +14,9 @@ spring:
       ddl-auto: create
     show-sql: true
     generate-ddl: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   profiles:
     include: oauth
   security:
