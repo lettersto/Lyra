@@ -9,12 +9,15 @@
  * @format
  */
 
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 
 import {QueryClient, QueryClientProvider} from 'react-query';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// NOTE temporary implementation of auth state.
+import AuthContext from './store/auth-context';
 import {RootStackParamList} from './constants/types';
 import NavBar from './components/Navigation/NavBar';
 import Colors from './constants/Colors';
@@ -28,6 +31,32 @@ declare global {
 const queryClient = new QueryClient();
 
 const App = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const authValue = {
+    isLoggedIn,
+    setIsLoggedIn,
+  };
+
+  useEffect(() => {
+    let appData: string | null = null;
+
+    (async () => {
+      try {
+        appData = await AsyncStorage.getItem('isLoggedIn');
+      } catch (error) {
+        console.error(error);
+      }
+    })();
+
+    if (appData === null) {
+      // setIsLoggedIn(true);
+      // AsyncStorage.setItem('isLoggedIn', 'false');
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
+
   const backgroundStyle = {
     backgroundColor: Colors.purple300,
     height: '100%',
@@ -35,11 +64,13 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SafeAreaView style={backgroundStyle}>
-        <NavigationContainer>
-          <NavBar />
-        </NavigationContainer>
-      </SafeAreaView>
+      <AuthContext.Provider value={authValue}>
+        <SafeAreaView style={backgroundStyle}>
+          <NavigationContainer>
+            <NavBar />
+          </NavigationContainer>
+        </SafeAreaView>
+      </AuthContext.Provider>
     </QueryClientProvider>
   );
 };
