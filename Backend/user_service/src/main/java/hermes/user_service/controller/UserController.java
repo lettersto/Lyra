@@ -31,8 +31,6 @@ public class UserController {
         this.userService = userService;
     }
 
-
-
     @GetMapping("/welcome")
     public String welcome(HttpServletRequest request, HttpServletResponse response) {
         return "welcome";
