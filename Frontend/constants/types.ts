@@ -34,6 +34,7 @@ export type RootStackParamList = {
   ProfileDetail: undefined;
   DetailPheed: PheedDetailParamList;
   ShortsDetail: ShortsDetailParamList;
+  StoryDetail: Array<ShortsDetailParamList>;
   Splash: undefined;
   Onboarding: undefined;
 };
@@ -64,6 +65,19 @@ export type PheedDetailParamList = {
 export type ShortsDetailParamList = {
   name: string;
   index: number;
+  show: boolean;
+};
+
+export type StorysParamList = {
+  username: string;
+  stories: Array<StoryDetailParamList>;
+};
+
+export type StoryDetailParamList = {
+  id: number;
+  url: string;
+  type: string;
+  duration: number;
   show: boolean;
 };
 
