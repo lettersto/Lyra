@@ -22,49 +22,41 @@ import java.util.List;
 @RequiredArgsConstructor
 @EnableWebMvc
 public class SwaggerConfig {
-
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.OAS_30)
+                .apiInfo(apiInfo())
                 .securityContexts(Arrays.asList(securityContext()))
                 .securitySchemes(Arrays.asList(apiKey()))
-                .useDefaultResponseMessages(false)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("hermes.user_service.controller"))
+                .apis(RequestHandlerSelectors.basePackage("hermes"))
                 .paths(PathSelectors.any())
-                .build()
-                .apiInfo(apiInfo());
-    }
-
-    private ApiInfo apiInfo() {
-        return new ApiInfoBuilder()
-                .title("Lyra Swagger")
-                .description("Welcome Lyra SwaggerConfig")
-                .version("3.0")
                 .build();
     }
 
-
-    // 인증 방식 설정
     private SecurityContext securityContext() {
         return SecurityContext.builder()
                 .securityReferences(defaultAuth())
                 .build();
     }
 
-    private List<SecurityReference> defaultAuth(){
+    private List<SecurityReference> defaultAuth() {
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope;
-        return Arrays.asList(new SecurityReference("X-AUTH-TOKEN", authorizationScopes));
+        return Arrays.asList(new SecurityReference("Authorization", authorizationScopes));
     }
 
-    // 버튼 클릭 시 입력 값 설정
-    private ApiKey apiKey(){
-        return new ApiKey("X-AUTH-TOKEN", "JWT", "header");
+    private ApiKey apiKey() {
+        return new ApiKey("Authorization", "Authorization", "header");
     }
 
-
-
+    private ApiInfo apiInfo() {
+        return new ApiInfoBuilder()
+                .title("Lyra - Hermes Swagger")
+                .description("Lyra - Hermes")
+                .version("1.0.0")
+                .build();
+    }
 }
 
