@@ -18,67 +18,65 @@ export enum TabScreens {
 
 const NavBar = () => {
   return (
-    <>
-      <Tab.Navigator
-        initialRouteName={TabScreens.Home}
-        screenOptions={{
-          tabBarActiveTintColor: Colors.purple300,
-          tabBarStyle: {
-            backgroundColor: Colors.black500,
-            height: 62,
-            paddingBottom: 8,
-            paddingTop: 10,
-            position: 'absolute',
-          },
-          headerShown: false,
-          tabBarHideOnKeyboard: true,
-        }}>
-        <Tab.Screen
-          name={TabScreens.Home}
-          component={PheedStack}
-          options={{
-            tabBarLabel: 'Home',
-            tabBarIcon: ({color, size}) => (
-              <Icon2 name="home-outline" color={color} size={size} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name={TabScreens.Map}
-          component={MapStack}
-          options={{
-            tabBarLabel: 'Map',
-            tabBarIcon: ({color, size}) => (
-              <Icon name="map-marker-outline" color={color} size={size} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name={TabScreens.Chat}
-          component={ChatStack}
-          options={{
-            tabBarLabel: 'Chat',
-            tabBarIcon: ({color, size}) => (
-              <Icon2
-                name="chatbubble-ellipses-outline"
-                color={color}
-                size={size}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name={TabScreens.Profile}
-          component={ProfileStack}
-          options={{
-            tabBarLabel: 'Profile',
-            tabBarIcon: ({color, size}) => (
-              <Icon2 name="person-outline" color={color} size={size} />
-            ),
-          }}
-        />
-      </Tab.Navigator>
-    </>
+    <Tab.Navigator
+      initialRouteName={TabScreens.Home}
+      screenOptions={{
+        tabBarActiveTintColor: Colors.purple300,
+        tabBarStyle: {
+          backgroundColor: Colors.black500,
+          height: 62,
+          paddingBottom: 8,
+          paddingTop: 10,
+          position: 'absolute',
+        },
+        headerShown: false,
+        tabBarHideOnKeyboard: true,
+      }}>
+      <Tab.Screen
+        name={TabScreens.Home}
+        component={PheedStack}
+        options={{
+          tabBarLabel: 'Home',
+          tabBarIcon: ({color, size}) => (
+            <Icon2 name="home-outline" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name={TabScreens.Map}
+        component={MapStack}
+        options={{
+          tabBarLabel: 'Map',
+          tabBarIcon: ({color, size}) => (
+            <Icon name="map-marker-outline" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name={TabScreens.Chat}
+        component={ChatStack}
+        options={{
+          tabBarLabel: 'Chat',
+          tabBarIcon: ({color, size}) => (
+            <Icon2
+              name="chatbubble-ellipses-outline"
+              color={color}
+              size={size}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name={TabScreens.Profile}
+        component={ProfileStack}
+        options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({color, size}) => (
+            <Icon2 name="person-outline" color={color} size={size} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
 };
 

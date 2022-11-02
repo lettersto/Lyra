@@ -34,6 +34,15 @@ export type RootStackParamList = {
   ProfileDetail: undefined;
   DetailPheed: PheedDetailParamList;
   ShortsDetail: ShortsDetailParamList;
+  Splash: undefined;
+  Onboarding: undefined;
+};
+
+export type RootTabParamList = {
+  Home: undefined;
+  Map: undefined;
+  Chat: undefined;
+  Profile: undefined;
 };
 
 // Pheed
