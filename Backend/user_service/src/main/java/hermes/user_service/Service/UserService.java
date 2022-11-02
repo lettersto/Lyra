@@ -32,7 +32,7 @@ public class UserService {
     }
     @Transactional
     public int updateUserNick(Long userId, String nickname){
-        return userRepository.updateUserNickname(userId,nickname);
+        return userRepository.updateUserNickname(userId, nickname);
     }
 
     @Transactional
