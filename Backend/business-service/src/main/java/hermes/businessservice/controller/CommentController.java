@@ -5,14 +5,6 @@ import hermes.businessservice.entity.Comment;
 import hermes.businessservice.service.CommentService;
 import hermes.businessservice.vo.RequestComment;
 import hermes.businessservice.vo.ResponseComment;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-//import io.swagger.annotations.ApiOperation;
->>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
-=======
-//import io.swagger.annotations.ApiOperation;
->>>>>>> 42fbc41009bb584918b2ecda9930bf8fbc4ef0a0
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -35,14 +27,6 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-//    @ApiOperation(value = "피드 댓글 전체 확인", response = String.class)
->>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
-=======
-//    @ApiOperation(value = "피드 댓글 전체 확인", response = String.class)
->>>>>>> 42fbc41009bb584918b2ecda9930bf8fbc4ef0a0
     @GetMapping("/pheed/{pheed_id}/comment")
     public ResponseEntity<List<ResponseComment>> getComments(@PathVariable("pheed_id") Long pheedId) throws Exception {
 
@@ -60,14 +44,6 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-//    @ApiOperation(value = "댓글 상세 확인", response = String.class)
->>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
-=======
-//    @ApiOperation(value = "댓글 상세 확인", response = String.class)
->>>>>>> 42fbc41009bb584918b2ecda9930bf8fbc4ef0a0
     @GetMapping("/pheed/{pheed_id}/comment/{comment_id}")
     public ResponseEntity<Optional<Comment>> getComment(@PathVariable("pheed_id") Long pheedId, @PathVariable("comment_id") Long commentId) throws Exception {
 
@@ -81,14 +57,7 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(comment);
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-//    @ApiOperation(value = "댓글 수정", response = String.class)
->>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
-=======
-//    @ApiOperation(value = "댓글 수정", response = String.class)
->>>>>>> 42fbc41009bb584918b2ecda9930bf8fbc4ef0a0
+
     @PatchMapping("/pheed/{pheed_id}/comment/{comment_id}")
     public ResponseEntity<String> updateComment(@PathVariable("pheed_id") Long pheedId, @PathVariable("comment_id") Long commentId, @RequestBody RequestComment comment) throws Exception {
 
@@ -106,14 +75,6 @@ public class CommentController {
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-//    @ApiOperation(value = "댓글 삭제", response = String.class)
->>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
-=======
-//    @ApiOperation(value = "댓글 삭제", response = String.class)
->>>>>>> 42fbc41009bb584918b2ecda9930bf8fbc4ef0a0
     @DeleteMapping("/pheed/{pheed_id}/comment/{comment_id}")
     public ResponseEntity<String> deleteComment(@PathVariable("pheed_id") Long pheedId, @PathVariable("comment_id") Long commentId) throws Exception {
 
@@ -126,14 +87,6 @@ public class CommentController {
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-//    @ApiOperation(value = "댓글 등록", response = String.class)
->>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
-=======
-//    @ApiOperation(value = "댓글 등록", response = String.class)
->>>>>>> 42fbc41009bb584918b2ecda9930bf8fbc4ef0a0
     @PostMapping("/{user_id}/pheed/{pheed_id}/comment")
     public ResponseEntity<String> createComment(@PathVariable("user_id") Long userId, @PathVariable("pheed_id") Long pheedId, @RequestBody RequestComment comment) throws Exception {
 
