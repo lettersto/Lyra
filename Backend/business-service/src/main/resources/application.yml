@@ -5,11 +5,15 @@ spring:
   application:
     name: business-service
   jpa:
+    database: mysql
+#    database-platform: org.hibernate.dialect.MySQL8InnoDBDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
+    show-sql: true
+    generate-ddl: true
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://k7c105.p.ssafy.io:3306/business-service?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://k7c105.p.ssafy.io:3306/lyra?serverTimezone=Asia/Seoul
     username: hermes
     password: Lyra@hanam^!3
 
