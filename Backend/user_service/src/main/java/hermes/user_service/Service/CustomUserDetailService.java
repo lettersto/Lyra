@@ -1,4 +1,4 @@
-package hermes.user_service.configuration.Service;
+package hermes.user_service.Service;
 
 import hermes.user_service.domain.Repository.UserRepository2;
 import lombok.RequiredArgsConstructor;

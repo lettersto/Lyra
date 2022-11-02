@@ -1,4 +1,4 @@
-package hermes.user_service.configuration.Service;
+package hermes.user_service.Service;
 
 import lombok.AccessLevel;
 import lombok.Builder;

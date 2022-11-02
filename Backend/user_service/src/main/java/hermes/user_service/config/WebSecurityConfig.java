@@ -1,6 +1,6 @@
 package hermes.user_service.config;
 
-import hermes.user_service.configuration.Service.CustomOAuth2UserService;
+import hermes.user_service.Service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
