@@ -14,9 +14,6 @@ spring:
       ddl-auto: create
     show-sql: true
     generate-ddl: true
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
   profiles:
     include: oauth
   security:
@@ -50,6 +47,9 @@ spring:
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
+#  mvc:
+#    pathmatch:
+#      matching-strategy: ant_path_matcher
 #          naver:
 #            authorization-uri:
 #            token-uri:
@@ -59,6 +59,7 @@ spring:
 eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    hostname: k7c105.p.ssafy.io
   client:
     register-with-eureka: true
     fetch-registry: true

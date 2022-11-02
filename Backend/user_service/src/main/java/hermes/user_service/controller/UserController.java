@@ -4,7 +4,7 @@ import hermes.user_service.Service.UserService;
 import hermes.user_service.dto.Message;
 import hermes.user_service.dto.StatusEnum;
 import hermes.user_service.dto.UserDto;
-import io.swagger.annotations.ApiOperation;
+//import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -88,7 +88,7 @@ public class UserController {
 //        }
 //    }
 
-    @ApiOperation(value = "로그아웃을 요청한다.",notes = "refresh 토큰으로 로그아웃을 요청한다.") //리프레쉬토큰으로
+//    @ApiOperation(value = "로그아웃을 요청한다.",notes = "refresh 토큰으로 로그아웃을 요청한다.") //리프레쉬토큰으로
     @GetMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader(value="REFRESH-TOKEN") String refreshToken) {
         Message message = new Message();
@@ -106,7 +106,7 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "회원정보를 얻어온다.",notes = "userId에 해당하는 회원 정보를 얻어온다.")
+//    @ApiOperation(value = "회원정보를 얻어온다.",notes = "userId에 해당하는 회원 정보를 얻어온다.")
     @GetMapping("/{userId}")
     public ResponseEntity<?> searchUser(@PathVariable("userId") Long userId){
         Message message = new Message();
@@ -131,7 +131,7 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "회원의 닉네임 정보를 수정한다.",notes = "userId에 해당하는 회원 정보를 수정한다.(닉네임)")
+//    @ApiOperation(value = "회원의 닉네임 정보를 수정한다.",notes = "userId에 해당하는 회원 정보를 수정한다.(닉네임)")
     @PutMapping("/update/{userId}")
     public ResponseEntity<?> updateUserNick(@PathVariable("userId") Long userId, @RequestParam String nickname){
         Message message = new Message();
@@ -162,7 +162,7 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "회원정보를 삭제한다.",notes = "userId에 해당하는 회원 정보를 삭제한다.")
+//    @ApiOperation(value = "회원정보를 삭제한다.",notes = "userId에 해당하는 회원 정보를 삭제한다.")
     @DeleteMapping("/api/user/{userId}")
     public ResponseEntity<?> deleteUser(@PathVariable("userId") Long userId){
         Message message = new Message();
@@ -279,7 +279,7 @@ public class UserController {
 //        return new ResponseEntity<>(message, headers, HttpStatus.OK);
 //    }
 
-    @ApiOperation(value = "소셜로그인 - 멤버정보 요청",notes = "발급받은 accessToken으로 멤버정보를 요청한다.")
+//    @ApiOperation(value = "소셜로그인 - 멤버정보 요청",notes = "발급받은 accessToken으로 멤버정보를 요청한다.")
     @GetMapping("/me")
     public ResponseEntity<?> getMember(
             @RequestHeader(value="X-AUTH-TOKEN") String token) throws Exception {
