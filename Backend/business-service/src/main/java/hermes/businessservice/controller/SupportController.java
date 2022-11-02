@@ -1,14 +1,15 @@
 package hermes.businessservice.controller;
 
 import hermes.businessservice.dto.SupportDto;
-import hermes.businessservice.dto.WalletDto;
 import hermes.businessservice.entity.Support;
-import hermes.businessservice.entity.Wallet;
 import hermes.businessservice.service.SupportService;
 import hermes.businessservice.vo.RequestSupport;
-import hermes.businessservice.vo.RequestWallet;
 import hermes.businessservice.vo.ResponseSupport;
+<<<<<<< HEAD
 import hermes.businessservice.vo.ResponseWallet;
+=======
+//import io.swagger.annotations.ApiOperation;
+>>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -30,6 +31,10 @@ public class SupportController {
 
     SupportService supportService;
 
+<<<<<<< HEAD
+=======
+//    @ApiOperation(value = "새로운 후원 등록", response = String.class)
+>>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
     @PostMapping("/{userId}/support")
     public ResponseEntity<ResponseSupport> createSupport(@PathVariable("userId") Long supporterId, @RequestBody RequestSupport support) {
 
@@ -48,6 +53,10 @@ public class SupportController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseSupport);
     }
 
+<<<<<<< HEAD
+=======
+//    @ApiOperation(value = "내가 한 후원", response = String.class)
+>>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
     @GetMapping("/{user_id}/support/give")
     public ResponseEntity<List<ResponseSupport>> getGiveSupport(@PathVariable("user_id") Long userId) throws Exception {
 
@@ -65,6 +74,10 @@ public class SupportController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+<<<<<<< HEAD
+=======
+//    @ApiOperation(value = "내가 받은 후원", response = String.class)
+>>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
     @GetMapping("/{user_id}/support/supported")
     public ResponseEntity<List<ResponseSupport>> getSupported(@PathVariable("user_id") Long userId) throws Exception {
 

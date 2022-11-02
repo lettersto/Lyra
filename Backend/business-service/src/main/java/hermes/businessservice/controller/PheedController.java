@@ -5,6 +5,10 @@ import hermes.businessservice.entity.Pheed;
 import hermes.businessservice.service.PheedService;
 import hermes.businessservice.vo.RequestPheed;
 import hermes.businessservice.vo.ResponsePheed;
+<<<<<<< HEAD
+=======
+//import io.swagger.annotations.ApiOperation;
+>>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -28,6 +32,10 @@ public class PheedController {
         this.pheedService = pheedService;
     }
 
+<<<<<<< HEAD
+=======
+//    @ApiOperation(value = "피드 등록", response = String.class)
+>>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
     @PostMapping("/{user_id}/pheed")
     public ResponseEntity<String> createPheed(@PathVariable("user_id") Long userId, @RequestBody RequestPheed pheed) {
 
@@ -53,6 +61,10 @@ public class PheedController {
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
+<<<<<<< HEAD
+=======
+//    @ApiOperation(value = "전체 피드 확인", response = String.class)
+>>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
     @GetMapping("/pheed")
     public ResponseEntity<List<ResponsePheed>> getPheeds() throws Exception {
 
@@ -70,6 +82,10 @@ public class PheedController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+<<<<<<< HEAD
+=======
+//    @ApiOperation(value = "피드 상세 확인", response = String.class)
+>>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
     @GetMapping("/pheed/{pheed_id}")
     public ResponseEntity<Optional<Pheed>> getPheed(@PathVariable("pheed_id") Long pheedId) throws Exception {
 
@@ -83,6 +99,10 @@ public class PheedController {
         return ResponseEntity.status(HttpStatus.OK).body(pheed);
     }
 
+<<<<<<< HEAD
+=======
+//    @ApiOperation(value = "피드 수정", response = String.class)
+>>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
     @PatchMapping("/pheed/{pheed_id}")
     public ResponseEntity<String> updatePheed(@PathVariable("pheed_id") Long pheedId, @RequestBody RequestPheed pheed) throws Exception {
 
@@ -106,6 +126,10 @@ public class PheedController {
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
+<<<<<<< HEAD
+=======
+//    @ApiOperation(value = "피드 삭제", response = String.class)
+>>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
     @DeleteMapping("/pheed/{pheed_id}")
     public ResponseEntity<String> deletePheed(@PathVariable("pheed_id") Long pheedId) {
 
@@ -118,6 +142,10 @@ public class PheedController {
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
+<<<<<<< HEAD
+=======
+//    @ApiOperation(value = "카테고리 별 피드 확인", response = String.class)
+>>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
     @GetMapping("/pheed/category/{category}")
     public ResponseEntity<List<ResponsePheed>> getPheedByCategory(@PathVariable String category) throws Exception {
 
@@ -135,6 +163,10 @@ public class PheedController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+<<<<<<< HEAD
+=======
+//    @ApiOperation(value = "제목, 내용으로 피드 검색", response = String.class)
+>>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
     @GetMapping("/pheed/search")
     public ResponseEntity<List<ResponsePheed>> getPheedBySearch(@RequestParam(value="keyword") String keyword) {
 
@@ -153,6 +185,10 @@ public class PheedController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+<<<<<<< HEAD
+=======
+//    @ApiOperation(value = "태그로 피드 검색", response = String.class)
+>>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
     @GetMapping("/pheed/tag")
     public ResponseEntity<?> getPheedbyTag(@RequestParam String tag) throws Exception {
 
@@ -184,6 +220,10 @@ public class PheedController {
 
     }
 
+<<<<<<< HEAD
+=======
+//    @ApiOperation(value = "작성자별 피드 검색", response = String.class)
+>>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
     @GetMapping("/{user_id}/pheed")
     public ResponseEntity<List<ResponsePheed>> getPheedbyUser(@PathVariable("user_id") Long userId) throws Exception {
 

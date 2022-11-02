@@ -5,6 +5,10 @@ import hermes.businessservice.entity.Wallet;
 import hermes.businessservice.service.WalletService;
 import hermes.businessservice.vo.RequestWallet;
 import hermes.businessservice.vo.ResponseWallet;
+<<<<<<< HEAD
+=======
+//import io.swagger.annotations.ApiOperation;
+>>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -26,6 +30,10 @@ public class WalletController {
         this.walletService = walletService;
     }
 
+<<<<<<< HEAD
+=======
+//    @ApiOperation(value = "새로운 지갑 등록", response = String.class)
+>>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
     @PostMapping("/{id}/wallet")
     public ResponseEntity<ResponseWallet> createWallet(@PathVariable("id") Long userId, @RequestBody RequestWallet wallet) {
 
@@ -44,6 +52,10 @@ public class WalletController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseWallet);
     }
 
+<<<<<<< HEAD
+=======
+//    @ApiOperation(value = "지갑 조회", response = String.class)
+>>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
     @GetMapping("/{id}/wallet")
     public ResponseEntity<Wallet> getWallet(@PathVariable("id") Long userId) throws Exception {
 
@@ -69,6 +81,10 @@ public class WalletController {
     }
 
 
+<<<<<<< HEAD
+=======
+//    @ApiOperation(value = "코인 수량 변경", response = String.class)
+>>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
     @PatchMapping("/{id}/wallet")
     public ResponseEntity<String> updateWallet(@PathVariable("id") Long userId, @RequestParam Long coin) {
 
@@ -83,6 +99,10 @@ public class WalletController {
     }
 
 
+<<<<<<< HEAD
+=======
+//    @ApiOperation(value = "지갑 삭제", response = String.class)
+>>>>>>> b8667fae1e4b9ea6b38d4f335d388c62d31ede02
     @DeleteMapping("/{id}/wallet")
     public ResponseEntity<String> deleteWallet(@PathVariable("id") Long userId) {
 
