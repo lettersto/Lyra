@@ -66,6 +66,9 @@ spring:
           uri: lb://BUSINESS-SERVICE
           predicates:
             - Path=/business-service/**
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/business-service/(?<segment>.*), /$\{segment}
 
 token:
   secret: user_token
