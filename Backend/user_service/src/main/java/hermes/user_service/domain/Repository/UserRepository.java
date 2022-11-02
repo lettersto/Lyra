@@ -1,6 +1,7 @@
 package hermes.user_service.domain.Repository;
 
 import hermes.user_service.domain.User;
+import hermes.user_service.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -66,7 +67,42 @@ public class UserRepository {
         return userList;
     }
 
+    public User searchOne(Long id){
+        User findUser = em.find(User.class, id);
+        if(findUser == null)throw new NullPointerException();
+        return findUser;
+    }
 
 
+    public int updateUserNickname(Long id, String nickname) {
+        User user = searchOne(id);
+        user.setNickname(nickname);
+        em.persist(user);
+
+        User finduser = searchOne(id);
+        if(finduser.getNickname()==nickname) return 1;
+        else return 0;
+    }
+
+    public int deleteById(Long id){
+        User user = searchOne(id);
+        em.remove(user);
+        User find = em.find(User.class, id);
+        if (find == null) return 1;
+        else return 0;
+    }
+
+    public UserDto searchUser(Long id){
+        User user = searchOne(id);
+
+        UserDto userDto = UserDto.builder()
+//                .id(id)
+                .email(user.getEmail())
+                .name(user.getName())
+//                .nickname(user.getNickname())
+//                .profilePath(user.getProfilePath())
+                .build();
+        return userDto;
+    }
 
 }
