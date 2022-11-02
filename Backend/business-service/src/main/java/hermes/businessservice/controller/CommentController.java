@@ -5,6 +5,7 @@ import hermes.businessservice.entity.Comment;
 import hermes.businessservice.service.CommentService;
 import hermes.businessservice.vo.RequestComment;
 import hermes.businessservice.vo.ResponseComment;
+//import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -27,6 +28,7 @@ public class CommentController {
         this.commentService = commentService;
     }
 
+//    @ApiOperation(value = "피드 댓글 전체 확인", response = String.class)
     @GetMapping("/pheed/{pheed_id}/comment")
     public ResponseEntity<List<ResponseComment>> getComments(@PathVariable("pheed_id") Long pheedId) throws Exception {
 
@@ -44,6 +46,7 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+//    @ApiOperation(value = "댓글 상세 확인", response = String.class)
     @GetMapping("/pheed/{pheed_id}/comment/{comment_id}")
     public ResponseEntity<Optional<Comment>> getComment(@PathVariable("pheed_id") Long pheedId, @PathVariable("comment_id") Long commentId) throws Exception {
 
@@ -57,6 +60,7 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(comment);
     }
 
+//    @ApiOperation(value = "댓글 수정", response = String.class)
     @PatchMapping("/pheed/{pheed_id}/comment/{comment_id}")
     public ResponseEntity<String> updateComment(@PathVariable("pheed_id") Long pheedId, @PathVariable("comment_id") Long commentId, @RequestBody RequestComment comment) throws Exception {
 
@@ -74,6 +78,7 @@ public class CommentController {
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
+//    @ApiOperation(value = "댓글 삭제", response = String.class)
     @DeleteMapping("/pheed/{pheed_id}/comment/{comment_id}")
     public ResponseEntity<String> deleteComment(@PathVariable("pheed_id") Long pheedId, @PathVariable("comment_id") Long commentId) throws Exception {
 
@@ -86,6 +91,7 @@ public class CommentController {
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
+//    @ApiOperation(value = "댓글 등록", response = String.class)
     @PostMapping("/{user_id}/pheed/{pheed_id}/comment")
     public ResponseEntity<String> createComment(@PathVariable("user_id") Long userId, @PathVariable("pheed_id") Long pheedId, @RequestBody RequestComment comment) throws Exception {
 
