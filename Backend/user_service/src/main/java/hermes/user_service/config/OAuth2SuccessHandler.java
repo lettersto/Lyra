@@ -1,6 +1,6 @@
 package hermes.user_service.config;
 
-import hermes.user_service.configuration.Service.UserService;
+import hermes.user_service.Service.UserService;
 import hermes.user_service.domain.Repository.UserRepository;
 import hermes.user_service.dto.UserDto;
 import lombok.RequiredArgsConstructor;
@@ -64,8 +64,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.addHeader("accessToken", accessToken);
         response.setContentType("application/json;charset=UTF-8");
         log.info("response : {}", response);
-//        targetUrl = UriComponentsBuilder.fromHttpUrl("https://j7c103.p.ssafy.io:443/oauth/redirect")
-        targetUrl = UriComponentsBuilder.fromHttpUrl("http://localhost:10")
+        targetUrl = UriComponentsBuilder.fromHttpUrl("http://k7c105.p.ssafy.io:8010/oauth/redirect")
                 .queryParam("accessToken", accessToken)
                 .build().toUriString();
         getRedirectStrategy().sendRedirect(request, response, targetUrl);

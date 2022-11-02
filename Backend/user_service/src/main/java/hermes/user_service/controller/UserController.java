@@ -1,8 +1,10 @@
 package hermes.user_service.controller;
 
-import hermes.user_service.configuration.Service.UserService;
+import hermes.user_service.Service.UserService;
 import hermes.user_service.dto.Message;
 import hermes.user_service.dto.StatusEnum;
+import hermes.user_service.dto.UserDto;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -85,111 +87,112 @@ public class UserController {
 //            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
 //        }
 //    }
-//
-//    @ApiOperation(value = "로그아웃을 요청한다.",notes = "refresh 토큰으로 로그아웃을 요청한다.") //리프레쉬토큰으로
-//    @GetMapping("/api/logout")
-//    public ResponseEntity<?> logout(@RequestHeader(value="REFRESH-TOKEN") String refreshToken) {
-//        Message message = new Message();
-//        HttpHeaders headers= new HttpHeaders();
-//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//        try {
-//            userService.logout(refreshToken);
-//            message.setStatus(StatusEnum.OK);
-//            message.setMessage("로그아웃 성공");
-//            return new ResponseEntity<>(message, headers, HttpStatus.OK);
-//        } catch (Exception e){
-//            message.setStatus(StatusEnum.BAD_REQUEST);
-//            message.setMessage("ACCESS TOKEN이 일치하지 않습니다.");
-//            return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
-//        }
-//    }
-//
-//    @ApiOperation(value = "회원정보를 얻어온다.",notes = "userId에 해당하는 회원 정보를 얻어온다.")
-//    @GetMapping("/api/user/{userId}")
-//    public ResponseEntity<?> searchUser(@PathVariable("userId") long userId){
-//        Message message = new Message();
-//        HttpHeaders headers= new HttpHeaders();
-//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//        try {
-//            UserDto user = userService.searchUser(userId);
-//            message.setStatus(StatusEnum.OK);
-//            message.setMessage("회원정보 불러오기 성공");
-//            message.setData(user);
-//            return new ResponseEntity<>(message, headers, HttpStatus.OK);
-//        } catch (IllegalArgumentException | IllegalStateException e){
-//            e.printStackTrace();
-//            message.setStatus(StatusEnum.BAD_REQUEST);
-//            message.setMessage("회원 정보가 없습니다.");
-//            return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
-//        } catch (Exception e){
-//            e.printStackTrace();
-//            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-//            message.setMessage("서버 에러 발생");
-//            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-//
-//    @ApiOperation(value = "회원의 닉네임 정보를 수정한다.",notes = "userId에 해당하는 회원 정보를 수정한다.(닉네임)")
-//    @PutMapping("/api/user/{userId}")
-//    public ResponseEntity<?> updateUserNick(@PathVariable("userId") long userId, @RequestParam String nick){
-//        Message message = new Message();
-//        HttpHeaders headers= new HttpHeaders();
-//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//        try {
-//            int result = userService.updateUserNick(userId,nick);
-//            if(result==1){
-//                message.setStatus(StatusEnum.OK);
-//                message.setMessage("회원정보 수정 성공");
-//                return new ResponseEntity<>(message, headers, HttpStatus.OK);
-//            }else{
-//                message.setStatus(StatusEnum.BAD_REQUEST);
-//                message.setMessage("회원정보 수정 실패");
-//                return new ResponseEntity<>(message, headers, HttpStatus.OK);
-//            }
-//
-//        } catch (IllegalArgumentException | IllegalStateException e){
-//            e.printStackTrace();
-//            message.setStatus(StatusEnum.BAD_REQUEST);
-//            message.setMessage("회원 정보가 없습니다.");
-//            return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
-//        } catch (Exception e){
-//            e.printStackTrace();
-//            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-//            message.setMessage("서버 에러 발생");
-//            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-//    @ApiOperation(value = "회원정보를 삭제한다.",notes = "userId에 해당하는 회원 정보를 삭제한다.")
-//    @DeleteMapping("/api/user/{userId}")
-//    public ResponseEntity<?> deleteUser(@PathVariable("userId") long userId){
-//        Message message = new Message();
-//        HttpHeaders headers= new HttpHeaders();
-//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//        try {
-//            int result = userService.deleteUser(userId);
-//            if(result==1){
-//                message.setStatus(StatusEnum.OK);
-//                message.setMessage("회원정보 삭제 성공");
-//                return new ResponseEntity<>(message, headers, HttpStatus.OK);
-//            }else{
-//                message.setStatus(StatusEnum.BAD_REQUEST);
-//                message.setMessage("회원정보 삭제 실패");
-//                return new ResponseEntity<>(message, headers, HttpStatus.OK);
-//            }
-//
-//        } catch (IllegalArgumentException | IllegalStateException e){
-//            e.printStackTrace();
-//            message.setStatus(StatusEnum.BAD_REQUEST);
-//            message.setMessage("회원 정보가 없습니다.");
-//            return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
-//        } catch (Exception e){
-//            e.printStackTrace();
-//            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-//            message.setMessage("서버 에러 발생");
-//            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-//
+
+    @ApiOperation(value = "로그아웃을 요청한다.",notes = "refresh 토큰으로 로그아웃을 요청한다.") //리프레쉬토큰으로
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader(value="REFRESH-TOKEN") String refreshToken) {
+        Message message = new Message();
+        HttpHeaders headers= new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        try {
+            userService.logout(refreshToken);
+            message.setStatus(StatusEnum.OK);
+            message.setMessage("로그아웃 성공");
+            return new ResponseEntity<>(message, headers, HttpStatus.OK);
+        } catch (Exception e){
+            message.setStatus(StatusEnum.BAD_REQUEST);
+            message.setMessage("ACCESS TOKEN이 일치하지 않습니다.");
+            return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @ApiOperation(value = "회원정보를 얻어온다.",notes = "userId에 해당하는 회원 정보를 얻어온다.")
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> searchUser(@PathVariable("userId") Long userId){
+        Message message = new Message();
+        HttpHeaders headers= new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        try {
+            UserDto user = userService.searchUser(userId);
+            message.setStatus(StatusEnum.OK);
+            message.setMessage("회원정보 불러오기 성공");
+            message.setData(user);
+            return new ResponseEntity<>(message, headers, HttpStatus.OK);
+        } catch (IllegalArgumentException | IllegalStateException e){
+            e.printStackTrace();
+            message.setStatus(StatusEnum.BAD_REQUEST);
+            message.setMessage("회원 정보가 없습니다.");
+            return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            e.printStackTrace();
+            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+            message.setMessage("서버 에러 발생");
+            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(value = "회원의 닉네임 정보를 수정한다.",notes = "userId에 해당하는 회원 정보를 수정한다.(닉네임)")
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<?> updateUserNick(@PathVariable("userId") Long userId, @RequestParam String nickname){
+        Message message = new Message();
+        HttpHeaders headers= new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        try {
+            int result = userService.updateUserNick(userId,nickname);
+            if(result==1){
+                message.setStatus(StatusEnum.OK);
+                message.setMessage("회원정보 수정 성공");
+                return new ResponseEntity<>(message, headers, HttpStatus.OK);
+            }else{
+                message.setStatus(StatusEnum.BAD_REQUEST);
+                message.setMessage("회원정보 수정 실패");
+                return new ResponseEntity<>(message, headers, HttpStatus.OK);
+            }
+
+        } catch (IllegalArgumentException | IllegalStateException e){
+            e.printStackTrace();
+            message.setStatus(StatusEnum.BAD_REQUEST);
+            message.setMessage("회원 정보가 없습니다.");
+            return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            e.printStackTrace();
+            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+            message.setMessage("서버 에러 발생");
+            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(value = "회원정보를 삭제한다.",notes = "userId에 해당하는 회원 정보를 삭제한다.")
+    @DeleteMapping("/api/user/{userId}")
+    public ResponseEntity<?> deleteUser(@PathVariable("userId") Long userId){
+        Message message = new Message();
+        HttpHeaders headers= new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        try {
+            int result = userService.deleteUser(userId);
+            if(result==1){
+                message.setStatus(StatusEnum.OK);
+                message.setMessage("회원정보 삭제 성공");
+                return new ResponseEntity<>(message, headers, HttpStatus.OK);
+            }else{
+                message.setStatus(StatusEnum.BAD_REQUEST);
+                message.setMessage("회원정보 삭제 실패");
+                return new ResponseEntity<>(message, headers, HttpStatus.OK);
+            }
+
+        } catch (IllegalArgumentException | IllegalStateException e){
+            e.printStackTrace();
+            message.setStatus(StatusEnum.BAD_REQUEST);
+            message.setMessage("회원 정보가 없습니다.");
+            return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            e.printStackTrace();
+            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+            message.setMessage("서버 에러 발생");
+            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 //    @ApiOperation(value = "닉네임으로 회원 리스트를 조회한다.",notes = "닉네임으로 회원들의 리스트를 조회한다.")
 //    @GetMapping("/api/temp/user/search/{nickname}") // /{page}
 //    public ResponseEntity<?> searchUserByNick(@PathVariable("nickname") String nickname){
@@ -276,7 +279,7 @@ public class UserController {
 //        return new ResponseEntity<>(message, headers, HttpStatus.OK);
 //    }
 
-//    @ApiOperation(value = "소셜로그인 - 멤버정보 요청",notes = "발급받은 accessToken으로 멤버정보를 요청한다.")
+    @ApiOperation(value = "소셜로그인 - 멤버정보 요청",notes = "발급받은 accessToken으로 멤버정보를 요청한다.")
     @GetMapping("/me")
     public ResponseEntity<?> getMember(
             @RequestHeader(value="X-AUTH-TOKEN") String token) throws Exception {
