@@ -7,6 +7,8 @@ import CreatePheedScreen from '../../screens/Home/Pheed/CreatePheedScreen';
 import PheedTitle from './TopNavBar/PheedTitle';
 import AlarmScreen from '../../screens/Others/AlarmScreen';
 import DetailPheedScreen from '../../screens/Home/Pheed/DetailPheedScreen';
+import ShortsDetailScreen from '../../screens/Home/Shorts/ShortsDetailScreen';
+
 // Profile
 import MainProfileScreen from '../../screens/Profile/MainProfileScreen';
 import ProfileDetailScreen from '../../screens/Profile/ProfileDetailScreen';
@@ -25,6 +27,8 @@ import UserChatTitle from './TopNavBar/UserChatTitle';
 import {TabScreens} from './NavBar';
 import {RootStackParamList} from '../../constants/types';
 import Colors from '../../constants/Colors';
+import {LocationModal} from '../Utils/LocationModal';
+import LocationSearchScreen from '../../screens/Map/LocationSearchScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -42,14 +46,29 @@ export const PheedStack = () => {
           fontSize: 20,
         },
       }}>
-      <Stack.Screen
-        name="MainPheed"
-        component={MainPheedScreen}
-        options={{
+      <Stack.Group
+        screenOptions={{
           headerTitle: () => <PheedTitle />,
-        }}
-      />
+          headerBackVisible: false,
+        }}>
+        <Stack.Group screenOptions={{presentation: 'card'}}>
+          <Stack.Screen name="MainPheed" component={MainPheedScreen} />
+        </Stack.Group>
+        <Stack.Group
+          screenOptions={{
+            headerShown: false,
+            presentation: 'transparentModal',
+          }}>
+          <Stack.Screen name="LocationModal" component={LocationModal} />
+          <Stack.Screen
+            name="LocationSearch"
+            component={LocationSearchScreen}
+          />
+        </Stack.Group>
+      </Stack.Group>
+
       <Stack.Screen name="CreatePheed" component={CreatePheedScreen} />
+      <Stack.Screen name="ShortsDetail" component={ShortsDetailScreen} />
       <Stack.Screen
         name="DetailPheed"
         component={DetailPheedScreen}
