@@ -10,7 +10,7 @@
  */
 
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView} from 'react-native';
+import {SafeAreaView, StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 
 import {QueryClient, QueryClientProvider} from 'react-query';
@@ -66,6 +66,10 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <AuthContext.Provider value={authValue}>
         <SafeAreaView style={backgroundStyle}>
+          <StatusBar
+            backgroundColor={Colors.black500}
+            barStyle={'light-content'}
+          />
           <NavigationContainer>
             <NavBar />
           </NavigationContainer>

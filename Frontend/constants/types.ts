@@ -36,7 +36,7 @@ export type RootStackParamList = {
   ShortsDetail: ShortsDetailParamList;
   StoryDetail: Array<ShortsDetailParamList>;
   Splash: undefined;
-  Onboarding: undefined;
+  Login: undefined;
 };
 
 export type RootTabParamList = {
