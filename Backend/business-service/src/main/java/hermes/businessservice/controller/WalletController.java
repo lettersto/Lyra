@@ -5,7 +5,7 @@ import hermes.businessservice.entity.Wallet;
 import hermes.businessservice.service.WalletService;
 import hermes.businessservice.vo.RequestWallet;
 import hermes.businessservice.vo.ResponseWallet;
-import io.swagger.annotations.ApiOperation;
+//import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -27,7 +27,7 @@ public class WalletController {
         this.walletService = walletService;
     }
 
-    @ApiOperation(value = "새로운 지갑 등록", response = String.class)
+//    @ApiOperation(value = "새로운 지갑 등록", response = String.class)
     @PostMapping("/{id}/wallet")
     public ResponseEntity<ResponseWallet> createWallet(@PathVariable("id") Long userId, @RequestBody RequestWallet wallet) {
 
@@ -46,7 +46,7 @@ public class WalletController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseWallet);
     }
 
-    @ApiOperation(value = "지갑 조회", response = String.class)
+//    @ApiOperation(value = "지갑 조회", response = String.class)
     @GetMapping("/{id}/wallet")
     public ResponseEntity<Wallet> getWallet(@PathVariable("id") Long userId) throws Exception {
 
@@ -72,7 +72,7 @@ public class WalletController {
     }
 
 
-    @ApiOperation(value = "코인 수량 변경", response = String.class)
+//    @ApiOperation(value = "코인 수량 변경", response = String.class)
     @PatchMapping("/{id}/wallet")
     public ResponseEntity<String> updateWallet(@PathVariable("id") Long userId, @RequestParam Long coin) {
 
@@ -87,7 +87,7 @@ public class WalletController {
     }
 
 
-    @ApiOperation(value = "지갑 삭제", response = String.class)
+//    @ApiOperation(value = "지갑 삭제", response = String.class)
     @DeleteMapping("/{id}/wallet")
     public ResponseEntity<String> deleteWallet(@PathVariable("id") Long userId) {
 
