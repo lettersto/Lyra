@@ -1,4 +1,4 @@
-package hermes.user_service.configuration.Service;
+package hermes.user_service.Service;
 
 import hermes.user_service.config.JwtTokenProvider;
 import hermes.user_service.domain.Repository.UserRepository2;
@@ -23,18 +23,16 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public void checkEmailDuplicate(String email) {
-        boolean userEmailDuplicate = userRepository.existsByEmail(email);
-        if(userEmailDuplicate) throw new IllegalStateException("이미 존재하는 회원입니다.");
-
+    public UserDto searchUser(Long userId) {
+        return userRepository.searchUser(userId);
     }
-
     @Transactional
-    public long join(User user){
-        checkEmailDuplicate(user.getEmail()); // 중복 회원 검증
-//        user.setEnable(false);
-        userRepository.save(user);
-        return user.getId();
+    public int deleteUser(Long userId) {
+        return userRepository.deleteById(userId);
+    }
+    @Transactional
+    public int updateUserNick(Long userId, String nickname){
+        return userRepository.updateUserNickname(userId,nickname);
     }
 
     @Transactional
@@ -46,17 +44,6 @@ public class UserService {
         return user;
     }
 
-    public UserLoginResponseDto userGet(long userId) throws Exception {
-        User user = userRepository.findOne(userId);
-
-        UserLoginResponseDto userLoginResponseDto = UserLoginResponseDto.builder()
-                .email(user.getEmail())
-                .id(user.getId()).nickname(user.getNickname())
-                .build();
-
-        return userLoginResponseDto;
-    }
-
     @Transactional
     public UserLoginResponseDto refreshToken(String token, String refreshToken) throws Exception {
 
@@ -66,7 +53,7 @@ public class UserService {
 
         User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(refreshToken));
         System.out.println(user.getRefreshToken());
-        if(!refreshToken.equals(user.getRefreshToken())) throw new AccessDeniedException("해당 멤버가 존재하지 않습니다.");
+        if(!refreshToken.equals(user.getRefreshToken())) throw new AccessDeniedException("해당 유저가 존재하지 않습니다.");
 
         if(!jwtTokenProvider.validateToken(user.getRefreshToken()))
             throw new IllegalStateException("다시 로그인 해주세요.");
@@ -84,7 +71,7 @@ public class UserService {
     }
 
     @Transactional
-    public void logoutMember(String token) throws IllegalStateException {
+    public void logout(String token) throws IllegalStateException {
         boolean result = jwtTokenProvider.validateToken(token);
         if(!result) throw new IllegalStateException("토큰 만료 되었습니다.");
         User user = userRepository.findByEmail(jwtTokenProvider.getUserPk(token));
@@ -96,8 +83,6 @@ public class UserService {
         User user = new User();
         user.setEmail(userDto.getEmail());
         user.setName(userDto.getName());
-//        user.setPw("social");
-//        user.setEnable(true);
         userRepository.save(user);
     }
 
@@ -120,5 +105,22 @@ public class UserService {
                 .build();
 
         return userDto;
+    }
+
+    public UserLoginResponseDto userGet(Long userId) throws Exception {
+        User user = userRepository.findOne(userId);
+
+        UserLoginResponseDto userLoginResponseDto = UserLoginResponseDto.builder()
+                .email(user.getEmail())
+                .id(user.getId()).nickname(user.getNickname())
+                .build();
+
+        return userLoginResponseDto;
+    }
+
+    @Transactional
+    public void checkEmailDuplicate(String email) {
+        boolean userEmailDuplicate = userRepository.existsByEmail(email);
+        if(userEmailDuplicate) throw new IllegalStateException("이미 존재하는 회원입니다.");
     }
 }
