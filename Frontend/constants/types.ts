@@ -37,6 +37,8 @@ export type RootStackParamList = {
   StoryDetail: Array<ShortsDetailParamList>;
   Splash: undefined;
   Login: undefined;
+  Onboarding: undefined;
+  CreateShorts: VideoParamList;
 };
 
 export type RootTabParamList = {
@@ -79,6 +81,16 @@ export type StoryDetailParamList = {
   type: string;
   duration: number;
   show: boolean;
+};
+
+export type VideoParamList = {
+  duration: number;
+  height: number;
+  mime: string;
+  modification: string;
+  path: string;
+  size: number;
+  width: number;
 };
 
 export type CommentParamList = {

@@ -8,6 +8,7 @@ import AlarmScreen from '../../screens/Others/AlarmScreen';
 import DetailPheedScreen from '../../screens/Home/Pheed/DetailPheedScreen';
 import ShortsDetailScreen from '../../screens/Home/Shorts/ShortsDetailScreen';
 import StoryDetailScreen from '../../screens/Home/Shorts/StoryDetailScreen';
+import CreateShortsScreen from '../../screens/Home/Shorts/CreateShortsScreen';
 
 // Profile
 import MainProfileScreen from '../../screens/Profile/MainProfileScreen';
@@ -77,6 +78,7 @@ export const PheedStack = () => {
           <Stack.Screen name="CreatePheed" component={CreatePheedScreen} />
           <Stack.Screen name="ShortsDetail" component={ShortsDetailScreen} />
           <Stack.Screen name="StoryDetail" component={StoryDetailScreen} />
+          <Stack.Screen name="CreateShorts" component={CreateShortsScreen} />
           <Stack.Screen
             name="DetailPheed"
             component={DetailPheedScreen}

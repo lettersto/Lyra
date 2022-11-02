@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {View, StyleSheet, Pressable, Text} from 'react-native';
+import {View, StyleSheet, Pressable, Text, Alert} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Colors from '../../constants/Colors';
+import ImagePicker from 'react-native-image-crop-picker';
 
 const CreateButton = () => {
   const navigation = useNavigation();
@@ -17,6 +18,22 @@ const CreateButton = () => {
       setActive(false);
     } else {
       setActive(true);
+    }
+  };
+
+  const [video, SetVideo] = useState<any>([]);
+
+  const openPicker = async () => {
+    try {
+      const response = await ImagePicker.openPicker({
+        mediaType: 'video',
+        width: 300,
+        height: 300,
+      });
+      console.log(response);
+      navigation.navigate('CreateShorts', response);
+    } catch (e) {
+      Alert.alert('error');
     }
   };
 
@@ -51,16 +68,18 @@ const CreateButton = () => {
               <Text style={styles.pheedText}>채팅</Text>
             </LinearGradient>
           </Pressable>
-          <LinearGradient
-            start={{x: 0, y: 0}}
-            end={{x: 0, y: 1}}
-            useAngle={true}
-            angle={135}
-            angleCenter={{x: 0.5, y: 0.5}}
-            colors={[Colors.purple300, Colors.pink500]}
-            style={styles.button2}>
-            <Text style={styles.storyText}>스토리</Text>
-          </LinearGradient>
+          <Pressable onPress={openPicker}>
+            <LinearGradient
+              start={{x: 0, y: 0}}
+              end={{x: 0, y: 1}}
+              useAngle={true}
+              angle={135}
+              angleCenter={{x: 0.5, y: 0.5}}
+              colors={[Colors.purple300, Colors.pink500]}
+              style={styles.button2}>
+              <Text style={styles.storyText}>스토리</Text>
+            </LinearGradient>
+          </Pressable>
           <Pressable onPress={goPheed}>
             <LinearGradient
               start={{x: 0, y: 0}}
