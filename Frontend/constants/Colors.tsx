@@ -10,6 +10,8 @@ const Colors: ColorObj = {
   pink300: '#D9A9CF',
   black300: '#515050',
   black500: '#2D2D2D',
+  // black500: '#09000f',
+  // black500: '#221f24',
   gray300: '#EFF0EB',
   white300: 'rgba(240, 240, 240, 0.4)',
 };
