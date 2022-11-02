@@ -1,7 +1,23 @@
 server:
-  port: 8010
+  port: 0
 
 spring:
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          "[/**]":
+            allowedOrigins: "http://k7c105.p.ssafy.io"
+            allowedHeaders:
+              - authorization
+              - content-type
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - OPTIONS
+              - HEAD
+              - DELETE
   application:
     name: user-service
   datasource:
@@ -33,38 +49,21 @@ spring:
             authorization-grant-type: authorization_code
             scope: profile_nickname, account_email, profile_image
             client-name: Kakao
-#          naver:
-#            client-id:
-#            client-secret:
-#            client-authentication-method:
-#            redirect-uri:
-#            authorization-grant-type: authorization_code
-#            scope:
-#            client-name: Naver
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
-#  mvc:
-#    pathmatch:
-#      matching-strategy: ant_path_matcher
-#          naver:
-#            authorization-uri:
-#            token-uri:
-#            user-info-uri:
-#            user-name-attribute:
 
 eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-    hostname: k7c105.p.ssafy.io
   client:
     register-with-eureka: true
     fetch-registry: true
     server-url:
-      defaultZone: http://k7c105.p.ssafy.io:8761/eureka
+      defaultZone: http://localhost:8761/eureka
 
 management:
   endpoints:
