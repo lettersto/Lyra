@@ -24,8 +24,8 @@ import MainChatScreen from '../../screens/Chat/MainChatScreen';
 import UserChatTitle from './TopNavBar/UserChatTitle';
 // import BuskerChatButtons from './TopNavBar/BuskerChatButtons';
 // Onboarding
-import OnboardingScreen from '../../screens/Others/OnboardingScreen';
-import SplashScreen from '../../screens/Others/SplashScreen';
+import LoginScreen from '../../screens/Others/LoginScreen';
+// import SplashScreen from '../../screens/Others/SplashScreen';
 
 import AuthContext from '../../store/auth-context';
 import {TabScreens} from './NavBar';
@@ -51,7 +51,7 @@ export const PheedStack = () => {
           fontSize: 20,
         },
       }}>
-      {!isLoggedIn && (
+      {isLoggedIn && (
         <>
           <Stack.Group
             screenOptions={{
@@ -85,18 +85,18 @@ export const PheedStack = () => {
           <Stack.Screen name="Alarm" component={AlarmScreen} />
         </>
       )}
-      {isLoggedIn && (
+      {!isLoggedIn && (
         <>
-          <Stack.Screen
+          {/* <Stack.Screen
             name="Splash"
             component={SplashScreen}
             options={{
               headerShown: false,
             }}
-          />
+          /> */}
           <Stack.Screen
-            name="Onboarding"
-            component={OnboardingScreen}
+            name="Login"
+            component={LoginScreen}
             options={{
               headerShown: false,
             }}
