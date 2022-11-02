@@ -1,5 +1,6 @@
 import React from 'react';
 import {Dimensions, StyleSheet} from 'react-native';
+import LiveCategory from '../../components/Map/LiveCategory';
 import Map from '../../components/Map/map';
 import PheedCategory from '../../components/Pheed/Category/PheedCategory';
 
@@ -10,9 +11,10 @@ const MainMapScreen = () => {
   return (
     <>
       <Map />
+      <LiveCategory CustomStyle={styles.liveCategory} />
       <PheedCategory
         Category="main"
-        CustomStyle={styles.category}
+        CustomStyle={styles.pheedCategory}
         scrollStyle={styles.scroll}
       />
     </>
@@ -20,11 +22,20 @@ const MainMapScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  category: {
+  liveCategory: {
     position: 'absolute',
     zIndex: 1,
     width: deviceWidth,
-    top: deviceHeight * 0.74,
+    bottom: 114,
+    backgroundColor: 'rgba(45, 45, 45, 0.9)',
+    paddingVertical: 5,
+  },
+  pheedCategory: {
+    position: 'absolute',
+    zIndex: 1,
+    width: deviceWidth,
+    // top: deviceHeight * 0.74,
+    bottom: 62,
     backgroundColor: 'rgba(45, 45, 45, 0.9)',
     paddingVertical: 5,
   },
