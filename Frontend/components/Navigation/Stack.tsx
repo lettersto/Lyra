@@ -8,6 +8,7 @@ import AlarmScreen from '../../screens/Others/AlarmScreen';
 import DetailPheedScreen from '../../screens/Home/Pheed/DetailPheedScreen';
 import ShortsDetailScreen from '../../screens/Home/Shorts/ShortsDetailScreen';
 import CreateShortsScreen from '../../screens/Home/Shorts/CreateShortsScreen';
+import PheedDetailTitle from './TopNavBar/PheedDetailTitle';
 
 // Profile
 import MainProfileScreen from '../../screens/Profile/MainProfileScreen';
@@ -89,7 +90,14 @@ export const PheedStack = () => {
               headerShown: false,
             }}
           />
-          <Stack.Screen name="DetailPheed" component={DetailPheedScreen} />
+          <Stack.Screen
+            name="DetailPheed"
+            component={DetailPheedScreen}
+            options={{
+              headerTitle: () => <PheedDetailTitle />,
+              headerBackVisible: false,
+            }}
+          />
           <Stack.Screen name="Alarm" component={AlarmScreen} />
         </>
       )}
