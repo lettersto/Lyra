@@ -1,5 +1,6 @@
 package hermes.Lyra.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -89,4 +90,17 @@ public class User implements UserDetails {
     public void changeRefreshToken(String refreshToken){
         this.refreshToken = refreshToken;
     }
+
+
+
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Pheed> pheed = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Comment> comment = new ArrayList<>();
+
 }
