@@ -95,12 +95,12 @@ public class User implements UserDetails {
 
 
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Pheed> pheed = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Comment> comment = new ArrayList<>();
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private List<Pheed> pheed = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private List<Comment> comment = new ArrayList<>();
 
 }
