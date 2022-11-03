@@ -34,7 +34,6 @@ spring:
             client-id: 679402942294-piour8km9qojcntfbm7h3n54qt63d1d9.apps.googleusercontent.com
             client-secret: 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
             scope: profile, email
-
           kakao:
             client-id: f42a76675ed8066de07e5cc3498f5c11
             client-secret: w0jxYoFytctR9tVqwTPh9tp90b5aEtsj
