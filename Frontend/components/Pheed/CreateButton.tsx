@@ -21,19 +21,28 @@ const CreateButton = () => {
     }
   };
 
-  const [video, SetVideo] = useState<any>([]);
+  // const [video, SetVideo] = useState<any>([]);
 
   const openPicker = async () => {
     try {
       const response = await ImagePicker.openPicker({
         mediaType: 'video',
-        width: 300,
-        height: 300,
       });
-      console.log(response);
-      navigation.navigate('CreateShorts', response);
+
+      if (response.duration !== null && response.duration > 30000) {
+        Alert.alert('30초 미만만 가능합니다.');
+      } else {
+        navigation.navigate('CreateShorts', {
+          duration: response.duration,
+          height: response.height,
+          mime: response.mime,
+          path: response.path,
+          size: response.size,
+          width: response.width,
+        });
+      }
     } catch (e) {
-      Alert.alert('error');
+      navigation.navigate('MainPheed');
     }
   };
 
