@@ -1,25 +1,21 @@
-package hermes.user_service.Service;
+package hermes.Lyra.Service;
 
-import hermes.user_service.config.JwtTokenProvider;
-import hermes.user_service.domain.Repository.UserRepository2;
-import hermes.user_service.domain.Repository.UserRepository;
-import hermes.user_service.domain.User;
-import hermes.user_service.dto.UserDto;
-import hermes.user_service.dto.UserLoginResponseDto;
-import hermes.user_service.error.Exception.custom.SomethingNotFoundException;
+import hermes.Lyra.config.JwtTokenProvider;
+import hermes.Lyra.domain.Repository.UserRepository;
+import hermes.Lyra.domain.User;
+import hermes.Lyra.dto.UserDto;
+import hermes.Lyra.dto.UserLoginResponseDto;
+import hermes.Lyra.error.Exception.custom.SomethingNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
 
-import static org.bouncycastle.asn1.x500.style.RFC4519Style.member;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final UserRepository2 userRepository2;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional

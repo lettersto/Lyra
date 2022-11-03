@@ -1,8 +1,8 @@
-package hermes.user_service.config;
+package hermes.Lyra.config;
 
-import hermes.user_service.Service.UserService;
-import hermes.user_service.domain.Repository.UserRepository;
-import hermes.user_service.dto.UserDto;
+import hermes.Lyra.Service.UserService;
+import hermes.Lyra.domain.Repository.UserRepository;
+import hermes.Lyra.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;

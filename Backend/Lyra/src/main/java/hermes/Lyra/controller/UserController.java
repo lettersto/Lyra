@@ -1,9 +1,9 @@
 package hermes.Lyra.controller;
 
-import hermes.user_service.Service.UserService;
-import hermes.user_service.dto.Message;
-import hermes.user_service.dto.StatusEnum;
-import hermes.user_service.dto.UserDto;
+import hermes.Lyra.Service.UserService;
+import hermes.Lyra.dto.Message;
+import hermes.Lyra.dto.StatusEnum;
+import hermes.Lyra.dto.UserDto;
 //import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
-package hermes.user_service.error;
+package hermes.Lyra.error;
 
-import hermes.user_service.error.Exception.BusinessException;
-import hermes.user_service.error.Exception.ErrorCode;
+import hermes.Lyra.error.Exception.BusinessException;
+import hermes.Lyra.error.Exception.ErrorCode;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

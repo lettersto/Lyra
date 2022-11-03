@@ -1,6 +1,6 @@
-package hermes.user_service.config;
+package hermes.Lyra.config;
 
-import hermes.user_service.Service.CustomOAuth2UserService;
+import hermes.Lyra.Service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

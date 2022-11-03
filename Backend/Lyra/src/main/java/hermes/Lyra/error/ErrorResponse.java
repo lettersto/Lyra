@@ -1,6 +1,6 @@
-package hermes.user_service.error;
+package hermes.Lyra.error;
 
-import hermes.user_service.error.Exception.ErrorCode;
+import hermes.Lyra.error.Exception.ErrorCode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

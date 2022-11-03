@@ -1,4 +1,4 @@
-package hermes.user_service.dto;
+package hermes.Lyra.dto;
 
 public enum StatusEnum {
     OK(200, "OK"),
