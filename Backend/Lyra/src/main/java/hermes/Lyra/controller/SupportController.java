@@ -5,6 +5,7 @@ import hermes.Lyra.domain.Support;
 import hermes.Lyra.dto.SupportDto;
 import hermes.Lyra.vo.RequestSupport;
 import hermes.Lyra.vo.ResponseSupport;
+import hermes.Lyra.vo.ResponseSupport2;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -26,8 +27,8 @@ public class SupportController {
 
     SupportService supportService;
 
-    @PostMapping("/")
-    public ResponseEntity<ResponseSupport> createSupport(@RequestParam("userId") Long supporterId, @RequestBody RequestSupport support) {
+    @PostMapping("")
+    public ResponseEntity<String> createSupport(@RequestParam("user_id") Long supporterId, @RequestBody RequestSupport support) {
 
         log.info("Before add support data");
         ModelMapper mapper = new ModelMapper();
@@ -41,11 +42,11 @@ public class SupportController {
 
         log.info("After added support data");
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseSupport);
+        return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
 
-    @GetMapping("/give")
+    @GetMapping("give")
     public ResponseEntity<List<ResponseSupport>> getGiveSupport(@RequestParam("user_id") Long userId) throws Exception {
 
         log.info("Before get give support data");
@@ -63,16 +64,16 @@ public class SupportController {
     }
 
 
-    @GetMapping("/receive")
-    public ResponseEntity<List<ResponseSupport>> getSupported(@RequestParam("user_id") Long userId) throws Exception {
+    @GetMapping("receive")
+    public ResponseEntity<List<ResponseSupport2>> getSupported(@RequestParam("user_id") Long userId) throws Exception {
 
         log.info("Before get receive data");
 
         Iterable<Support> supportedList = supportService.getSupportByBuskerId(userId);
 
-        List<ResponseSupport> result = new ArrayList<>();
+        List<ResponseSupport2> result = new ArrayList<>();
         supportedList.forEach(v -> {
-            result.add(new ModelMapper().map(v, ResponseSupport.class));
+            result.add(new ModelMapper().map(v, ResponseSupport2.class));
         });
 
         log.info("After got received data");

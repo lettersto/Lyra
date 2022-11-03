@@ -29,7 +29,7 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @GetMapping("/{pheed_id}/comment")
+    @GetMapping("{pheed_id}/comment")
     public ResponseEntity<List<ResponseComment>> getComments(@PathVariable("pheed_id") Long pheedId) throws Exception {
 
         log.info("Before get comments data");
@@ -46,7 +46,7 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    @GetMapping("/{pheed_id}/comment/{comment_id}")
+    @GetMapping("{pheed_id}/comment/{comment_id}")
     public ResponseEntity<ResponseComment> getComment(@PathVariable("pheed_id") Long pheedId, @PathVariable("comment_id") Long commentId) throws Exception {
 
         log.info("Before get comment data");
@@ -66,7 +66,7 @@ public class CommentController {
     }
 
 
-    @PatchMapping("/{pheed_id}/comment/{comment_id}")
+    @PatchMapping("{pheed_id}/comment/{comment_id}")
     public ResponseEntity<String> updateComment(@PathVariable("pheed_id") Long pheedId, @PathVariable("comment_id") Long commentId, @RequestBody RequestComment comment) throws Exception {
 
         log.info("Before update comment data");
@@ -83,7 +83,7 @@ public class CommentController {
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
-    @DeleteMapping("/{pheed_id}/comment/{comment_id}")
+    @DeleteMapping("{pheed_id}/comment/{comment_id}")
     public ResponseEntity<String> deleteComment(@PathVariable("pheed_id") Long pheedId, @PathVariable("comment_id") Long commentId) throws Exception {
 
         log.info("Before delete comment data");
@@ -95,7 +95,7 @@ public class CommentController {
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
-    @PostMapping("/{pheed_id}/comment")
+    @PostMapping("{pheed_id}/comment")
     public ResponseEntity<String> createComment(@RequestParam("user_id") Long userId, @PathVariable("pheed_id") Long pheedId, @RequestBody RequestComment comment) throws Exception {
 
         log.info("Before create comment data");
