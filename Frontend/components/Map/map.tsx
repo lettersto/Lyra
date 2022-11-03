@@ -4,6 +4,7 @@ import Geolocation from 'react-native-geolocation-service';
 import {View, Platform, PermissionsAndroid, Text} from 'react-native';
 import MapStyle from './mapStyle';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import Config from 'react-native-config';
 
 interface ILocation {
   latitude: number;
@@ -12,9 +13,9 @@ interface ILocation {
 
 async function requestPermission() {
   try {
-    // if (Platform.OS === "ios") {
-    //   return await Geolocation.requestAuthorization("always");
-    // }
+    if (Platform.OS === 'ios') {
+      return await Geolocation.requestAuthorization('always');
+    }
     // 안드로이드 위치 정보 수집 권한 요청
     if (Platform.OS === 'android') {
       return await PermissionsAndroid.request(
@@ -77,8 +78,8 @@ const Map = () => {
           <GooglePlacesAutocomplete
             placeholder={'Location'}
             query={{
-              key: '',
-              language: 'en',
+              key: Config.GOOGLE_API_KEY,
+              language: 'ko',
             }}
             onPress={(data, details = null) => {
               // 'details' is provided when fetchDetails = true
