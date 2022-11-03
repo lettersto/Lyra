@@ -59,7 +59,7 @@ const LocationPermissionScreen = ({navigation}: Props) => {
     requestPermission().then(result => {
       if (result === 'granted') {
         setLocationPermitted(true);
-        navigation.navigate('WalletCreation');
+        navigation.navigate('FirstTownSearch');
       } else {
         Alert.alert(
           'Lyra',

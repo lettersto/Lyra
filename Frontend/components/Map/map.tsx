@@ -4,6 +4,7 @@ import Geolocation from 'react-native-geolocation-service';
 import {View, Platform, PermissionsAndroid, Text} from 'react-native';
 import MapStyle from './mapStyle';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import Config from 'react-native-config';
 
 interface ILocation {
   latitude: number;
@@ -77,7 +78,7 @@ const Map = () => {
           <GooglePlacesAutocomplete
             placeholder={'Location'}
             query={{
-              key: 'AIzaSyCggKeXOHi8_SSLeBMH12DaN2URuvkV_yM',
+              key: Config.GOOGLE_API_KEY,
               language: 'en',
             }}
             onPress={(data, details = null) => {

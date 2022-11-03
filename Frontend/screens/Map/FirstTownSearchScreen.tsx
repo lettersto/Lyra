@@ -7,10 +7,13 @@ import LocationSearch from '../../components/Map/LocationSearch';
 import MapStyle from '../../components/Map/mapStyle';
 import Button from '../../components/Utils/Button';
 import Colors from '../../constants/Colors';
+import {RootStackParamList} from '../../constants/types';
+
+type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 const deviceWidth = Dimensions.get('window').width;
 
-const TownSearchScreen = () => {
+const FirstTownSearchScreen = ({navigation}: Props) => {
   const [location, setLocation] = useState<Region>({
     latitudeDelta: 0.005,
     longitudeDelta: 0.005,
@@ -18,13 +21,15 @@ const TownSearchScreen = () => {
     longitude: 0,
   });
   const [name, setName] = useState('');
-  const pressHandler = () => {};
+  const pressHandler = () => {
+    navigation.navigate('WalletCreation');
+  };
 
   return (
     <>
       <View style={styles.body}>
         <View style={{flex: 1}}>
-          <Text style={styles.title}>주소 찾기</Text>
+          <Text style={styles.title}>주소 설정</Text>
           <LocationSearch
             onPress={(data, detail) => {
               const {
@@ -53,25 +58,27 @@ const TownSearchScreen = () => {
               </Marker>
             </MapView>
           )}
-          <View style={{height: '25%', bottom: 0}}>
-            <Text style={styles.name}>{name}</Text>
-            <Button
-              title="선택한 위치로 설정"
-              btnSize="large"
-              textSize="medium"
-              isGradient={false}
-              isOutlined={false}
-              onPress={pressHandler}
-              customStyle={styles.button}
-            />
-          </View>
+          {location.latitude != 0 ? (
+            <View style={{height: '25%', bottom: 0}}>
+              <Text style={styles.name}>{name}</Text>
+              <Button
+                title="선택한 위치로 설정"
+                btnSize="large"
+                textSize="medium"
+                isGradient={false}
+                isOutlined={false}
+                onPress={pressHandler}
+                customStyle={styles.button}
+              />
+            </View>
+          ) : null}
         </View>
       </View>
     </>
   );
 };
 
-export default TownSearchScreen;
+export default FirstTownSearchScreen;
 
 const styles = StyleSheet.create({
   body: {
