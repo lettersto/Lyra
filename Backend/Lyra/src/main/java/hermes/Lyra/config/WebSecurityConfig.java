@@ -41,24 +41,12 @@ public class WebSecurityConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
+    // authenticationManager를 Bean으로 등록
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
             throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-
-//    // authenticationManager를 Bean으로 등록
-//    @Bean
-//    @Override
-//    public AuthenticationManager authenticationManager() throws Exception {
-//        return super.authenticationManagerBean();
-//    }
-//
-//    @Bean
-//    @Override
-//    public AuthenticationManager authenticationManagerBean() throws Exception {
-//        return super.authenticationManagerBean();
-//    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -75,7 +63,6 @@ public class WebSecurityConfig {
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll() // 추가
                 .antMatchers(AUTH_WHITELIST).permitAll()
                 .antMatchers("/token/**").authenticated()
-                .antMatchers("/actuator/**").permitAll()
                 .anyRequest().permitAll()  // 그 외 나머지 요청은 누구나 접근 가능
                 .and()
                 .cors()
@@ -93,16 +80,4 @@ public class WebSecurityConfig {
                         UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
-//
-//        http.authorizeRequests()
-//                .antMatchers("/user/**").authenticated()
-//                .antMatchers("/manager/**").access("hasAnyRole('ROLE_MANAGER','ROLE_ADMIN')")
-//                .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
-//                .anyRequest().permitAll() // 다른 요청은 전부 권한 필요X
-//                .and()
-//                .formLogin()
-//                .loginPage("/login");
-//        return http.build();
-//    }
 }

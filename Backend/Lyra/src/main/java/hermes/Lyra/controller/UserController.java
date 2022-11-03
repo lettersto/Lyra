@@ -20,7 +20,7 @@ import java.nio.charset.Charset;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping("/user")
 public class UserController {
     private Environment env;
     private final UserService userService;
@@ -105,7 +105,7 @@ public class UserController {
     }
 
 //    @ApiOperation(value = "회원정보를 얻어온다.",notes = "userId에 해당하는 회원 정보를 얻어온다.")
-    @GetMapping("/{userId}")
+    @GetMapping("info/{userId}")
     public ResponseEntity<?> searchUser(@PathVariable("userId") Long userId){
         Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
@@ -130,7 +130,7 @@ public class UserController {
     }
 
 //    @ApiOperation(value = "회원의 닉네임 정보를 수정한다.",notes = "userId에 해당하는 회원 정보를 수정한다.(닉네임)")
-    @PutMapping("/update/{userId}")
+    @PatchMapping("/update/{userId}")
     public ResponseEntity<?> updateUserNick(@PathVariable("userId") Long userId, @RequestParam String nickname){
         Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
@@ -161,7 +161,7 @@ public class UserController {
     }
 
 //    @ApiOperation(value = "회원정보를 삭제한다.",notes = "userId에 해당하는 회원 정보를 삭제한다.")
-    @DeleteMapping("/api/user/{userId}")
+    @DeleteMapping("/delete/{userId}")
     public ResponseEntity<?> deleteUser(@PathVariable("userId") Long userId){
         Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
@@ -322,15 +322,5 @@ public class UserController {
 //        }
 //
 //    }
-
-    @GetMapping("/health_check")
-    public String status() {
-        return String.format("It's Working in User Service"
-                + ", port(local.server.port)=" + env.getProperty("local.server.port")
-                + ", port(server.port)=" + env.getProperty("server.port")
-                + ", token secret=" + env.getProperty("token.secret")
-                + ", token expiration time=" + env.getProperty("token.expiration_time"));
-    }
-
 }
 
