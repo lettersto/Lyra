@@ -12,5 +12,7 @@ public interface WalletRepository extends CrudRepository<Wallet, Long> {
     @Transactional
     void deleteByUserId(Long userId);
 
+    Wallet getByUserId(Long userId);
+
 //    void updateByUserId(Long userId, Long coin);
 }
