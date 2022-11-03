@@ -1,9 +1,6 @@
 package hermes.Lyra.Service;
 
-import hermes.Lyra.domain.Repository.CommentRepository;
-import hermes.Lyra.domain.Repository.PheedRepository;
-import hermes.Lyra.domain.Repository.PheedTagRepository;
-import hermes.Lyra.domain.Repository.TagRepository;
+import hermes.Lyra.domain.Repository.*;
 import hermes.Lyra.dto.PheedDto;
 import hermes.Lyra.domain.Category;
 import hermes.Lyra.domain.Pheed;
@@ -38,12 +35,15 @@ public class PheedServiceImpl implements PheedService{
 
     private final CommentRepository commentRepository;
 
+    private final UserRepository2 userRepository2;
+
     @Autowired
-    public PheedServiceImpl(PheedRepository pheedRepository, TagRepository tagRepository, PheedTagRepository pheedTagRepository, CommentRepository commentRepository) {
+    public PheedServiceImpl(PheedRepository pheedRepository, TagRepository tagRepository, PheedTagRepository pheedTagRepository, CommentRepository commentRepository, UserRepository2 userRepository2) {
         this.pheedRepository = pheedRepository;
         this.tagRepository = tagRepository;
         this.pheedTagRepository = pheedTagRepository;
         this.commentRepository = commentRepository;
+        this.userRepository2 = userRepository2;
     }
 
     @Override
@@ -75,6 +75,8 @@ public class PheedServiceImpl implements PheedService{
         Pheed pheed = mapper.map(pheedDto, Pheed.class);
 
         log.info(String.valueOf(pheed));
+
+        pheed.setUser(userRepository2.findById(pheedDto.getUserId()).get());
 
         Long pheedId = pheedRepository.save(pheed).getId();
 
@@ -110,6 +112,8 @@ public class PheedServiceImpl implements PheedService{
         Long ti = tagRepository.findByName(tag).getId();
         Iterable<PheedTag> pt = pheedTagRepository.findByTagId(ti);
 
+//        log.info(String.valueOf(pt));
+
         List<Pheed> result = new ArrayList<>();
 
         if(pt == null){
@@ -135,7 +139,8 @@ public class PheedServiceImpl implements PheedService{
 
         pheed.setId(pheedId);
         pheed.setTime(p.get().getTime());
-        log.info(String.valueOf(pheed));
+//        log.info(String.valueOf(pheed));
+        pheed.setUser(p.get().getUser());
 
         pheedRepository.save(pheed);
 

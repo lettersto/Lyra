@@ -6,11 +6,11 @@ import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ResponseSupport {
+public class ResponseSupport2 {
 
-//    private Long supporterId;
+    private Long supporterId;
 
-    private Long buskerId;
+//    private Long buskerId;
 
     private Integer coin;
 

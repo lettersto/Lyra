@@ -2,6 +2,7 @@ package hermes.Lyra.Service;
 
 
 import hermes.Lyra.domain.Repository.ChargeRepository;
+import hermes.Lyra.domain.Repository.UserRepository2;
 import hermes.Lyra.domain.Repository.WalletRepository;
 import hermes.Lyra.domain.Wallet;
 import hermes.Lyra.dto.WalletDto;
@@ -20,10 +21,13 @@ public class WalletServiceImpl implements WalletService {
 
     private final ChargeRepository chargeRepository;
 
+    private final UserRepository2 userRepository2;
+
     @Autowired
-    public WalletServiceImpl(WalletRepository walletRepository, ChargeRepository chargeRepository) {
+    public WalletServiceImpl(WalletRepository walletRepository, ChargeRepository chargeRepository, UserRepository2 userRepository2) {
         this.walletRepository = walletRepository;
         this.chargeRepository = chargeRepository;
+        this.userRepository2 = userRepository2;
     }
 
 
@@ -33,6 +37,8 @@ public class WalletServiceImpl implements WalletService {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         Wallet wallet = mapper.map(walletDto, Wallet.class);
+
+        wallet.setUser(userRepository2.findById(walletDto.getUserId()).get());
 
         wallet.setCoin(0L);
 
@@ -60,7 +66,8 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     public Wallet getWalletByUserId(Long userId) {
-        return walletRepository.findByUserId(userId);
+
+        return walletRepository.findByUser(userRepository2.findById(userId));
     }
 }
 
