@@ -1,6 +1,5 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
 // Pheed
 import MainPheedScreen from '../../screens/Home/Pheed/MainPheedScreen';
 import CreatePheedScreen from '../../screens/Home/Pheed/CreatePheedScreen';
@@ -8,6 +7,8 @@ import PheedTitle from './TopNavBar/PheedTitle';
 import AlarmScreen from '../../screens/Others/AlarmScreen';
 import DetailPheedScreen from '../../screens/Home/Pheed/DetailPheedScreen';
 import ShortsDetailScreen from '../../screens/Home/Shorts/ShortsDetailScreen';
+import StoryDetailScreen from '../../screens/Home/Shorts/StoryDetailScreen';
+import CreateShortsScreen from '../../screens/Home/Shorts/CreateShortsScreen';
 
 // Profile
 import MainProfileScreen from '../../screens/Profile/MainProfileScreen';
@@ -23,7 +24,13 @@ import MapTitle from './TopNavBar/MapTitle';
 import MainChatScreen from '../../screens/Chat/MainChatScreen';
 import UserChatTitle from './TopNavBar/UserChatTitle';
 // import BuskerChatButtons from './TopNavBar/BuskerChatButtons';
+// Onboarding
+import LoginScreen from '../../screens/Others/LoginScreen';
+import WalletCreationScreen from '../../screens/Others/WalletCreationScreen';
+import LocationPermissionScreen from '../../screens/Others/LocationPermissionScreen';
+// import SplashScreen from '../../screens/Others/SplashScreen';
 
+import AuthContext from '../../store/auth-context';
 import {TabScreens} from './NavBar';
 import {RootStackParamList} from '../../constants/types';
 import Colors from '../../constants/Colors';
@@ -33,6 +40,7 @@ import LocationSearchScreen from '../../screens/Map/LocationSearchScreen';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const PheedStack = () => {
+  const {isLoggedIn} = useContext(AuthContext);
   return (
     <Stack.Navigator
       initialRouteName={TabScreens.Home}
@@ -46,35 +54,73 @@ export const PheedStack = () => {
           fontSize: 20,
         },
       }}>
-      <Stack.Group
-        screenOptions={{
-          headerTitle: () => <PheedTitle />,
-          headerBackVisible: false,
-        }}>
-        <Stack.Group screenOptions={{presentation: 'card'}}>
-          <Stack.Screen name="MainPheed" component={MainPheedScreen} />
-        </Stack.Group>
-        <Stack.Group
-          screenOptions={{
-            headerShown: false,
-            presentation: 'transparentModal',
-          }}>
-          <Stack.Screen name="LocationModal" component={LocationModal} />
-          <Stack.Screen
-            name="LocationSearch"
-            component={LocationSearchScreen}
-          />
-        </Stack.Group>
-      </Stack.Group>
+      {isLoggedIn && (
+        <>
+          <Stack.Group
+            screenOptions={{
+              headerTitle: () => <PheedTitle />,
+              headerBackVisible: false,
+            }}>
+            <Stack.Group screenOptions={{presentation: 'card'}}>
+              <Stack.Screen name="MainPheed" component={MainPheedScreen} />
+            </Stack.Group>
+            <Stack.Group
+              screenOptions={{
+                headerShown: false,
+                presentation: 'transparentModal',
+              }}>
+              <Stack.Screen name="LocationModal" component={LocationModal} />
+              <Stack.Screen
+                name="LocationSearch"
+                component={LocationSearchScreen}
+              />
+            </Stack.Group>
+          </Stack.Group>
 
-      <Stack.Screen name="CreatePheed" component={CreatePheedScreen} />
-      <Stack.Screen name="ShortsDetail" component={ShortsDetailScreen} />
-      <Stack.Screen
-        name="DetailPheed"
-        component={DetailPheedScreen}
-        // initialParams={}
-      />
-      <Stack.Screen name="Alarm" component={AlarmScreen} />
+          <Stack.Screen name="CreatePheed" component={CreatePheedScreen} />
+          <Stack.Screen name="ShortsDetail" component={ShortsDetailScreen} />
+          <Stack.Screen name="StoryDetail" component={StoryDetailScreen} />
+          <Stack.Screen name="CreateShorts" component={CreateShortsScreen} />
+          <Stack.Screen
+            name="DetailPheed"
+            component={DetailPheedScreen}
+            // initialParams={}
+          />
+          <Stack.Screen name="Alarm" component={AlarmScreen} />
+        </>
+      )}
+      {!isLoggedIn && (
+        <>
+          {/* <Stack.Screen
+            name="Splash"
+            component={SplashScreen}
+            options={{
+              headerShown: false,
+            }}
+          /> */}
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="WalletCreation"
+            component={WalletCreationScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="LocationPermission"
+            component={LocationPermissionScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+        </>
+      )}
     </Stack.Navigator>
   );
 };

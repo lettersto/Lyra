@@ -34,6 +34,20 @@ export type RootStackParamList = {
   ProfileDetail: undefined;
   DetailPheed: PheedDetailParamList;
   ShortsDetail: ShortsDetailParamList;
+  StoryDetail: Array<ShortsDetailParamList>;
+  Splash: undefined;
+  Login: undefined;
+  Onboarding: undefined;
+  CreateShorts: VideoParamList;
+  LocationPermission: undefined;
+  WalletCreation: undefined;
+};
+
+export type RootTabParamList = {
+  Home: undefined;
+  Map: undefined;
+  Chat: undefined;
+  Profile: undefined;
 };
 
 // Pheed
@@ -56,6 +70,29 @@ export type ShortsDetailParamList = {
   name: string;
   index: number;
   show: boolean;
+};
+
+export type StorysParamList = {
+  username: string;
+  stories: Array<StoryDetailParamList>;
+};
+
+export type StoryDetailParamList = {
+  id: number;
+  url: string;
+  type: string;
+  duration: number;
+  show: boolean;
+};
+
+export type VideoParamList = {
+  duration: number;
+  height: number;
+  mime: string;
+  modification: string;
+  path: string;
+  size: number;
+  width: number;
 };
 
 export type CommentParamList = {
