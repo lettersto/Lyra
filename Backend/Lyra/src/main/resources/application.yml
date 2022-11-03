@@ -17,7 +17,7 @@ spring:
 #    password: yeobo
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 #      use-new-id-generator-mappings: false
     show-sql: true
     generate-ddl: true
