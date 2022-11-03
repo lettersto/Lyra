@@ -8,9 +8,9 @@ const CategoryBtn = ({
   setIsActive,
 }: {
   title: string;
-  code: number;
-  isactive: number;
-  setIsActive: Dispatch<SetStateAction<number>>;
+  code: string;
+  isactive: string;
+  setIsActive: Dispatch<SetStateAction<string>>;
 }) => {
   return isactive === code ? (
     <Button
