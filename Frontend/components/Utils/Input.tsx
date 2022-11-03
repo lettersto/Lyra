@@ -37,6 +37,7 @@ const Input: React.FC<InputProps> = ({
       alignSelf: 'center',
       justifyContent: 'center',
       fontFamily: 'NanumSquareRoundR',
+      paddingHorizontal: 10,
     },
     gradient: {
       width: width * Dimensions.get('window').width,
