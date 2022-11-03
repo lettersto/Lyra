@@ -1,30 +1,67 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import MapView, {Marker, PROVIDER_GOOGLE, Region} from 'react-native-maps';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import LocationSearch from '../../components/Map/LocationSearch';
+import MapStyle from '../../components/Map/mapStyle';
+import Button from '../../components/Utils/Button';
 import Colors from '../../constants/Colors';
 
+const deviceWidth = Dimensions.get('window').width;
+
 const LocationSearchScreen = () => {
-  const [location, setLocation] = useState({
-    latitudeDelta: 0.1,
-    longitudeDelta: 0.1,
+  const [location, setLocation] = useState<Region>({
+    latitudeDelta: 0.005,
+    longitudeDelta: 0.005,
+    latitude: 0,
+    longitude: 0,
   });
+  const [name, setName] = useState('');
+  const pressHandler = () => {};
+
   return (
     <>
       <View style={styles.body}>
         <View style={{flex: 1}}>
-          <Text style={styles.title}>도로명 또는 지번으로 검색</Text>
-          <View>
-            <GooglePlacesAutocomplete
-              placeholder={'Location'}
-              query={{
-                key: '',
-                language: 'en',
-              }}
-              onPress={(data, details = null) => {
-                // 'details' is provided when fetchDetails = true
-                console.log(data, details);
-              }}
-              styles={{container: {flex: 0}}}
+          <Text style={styles.title}>주소 찾기</Text>
+          <LocationSearch
+            onPress={(data, detail) => {
+              const {
+                geometry: {
+                  location: {lat, lng},
+                },
+              } = detail!;
+              setLocation(prev => ({
+                ...prev,
+                latitude: lat,
+                longitude: lng,
+              }));
+              setName(data.description);
+            }}
+          />
+          {location && (
+            <MapView
+              style={styles.map}
+              provider={PROVIDER_GOOGLE}
+              customMapStyle={MapStyle}
+              region={
+                location.latitude && location.longitude ? location : undefined
+              }>
+              <Marker coordinate={location}>
+                <Icon name="map-marker" size={20} color="white" />
+              </Marker>
+            </MapView>
+          )}
+          <View style={{height: '25%', bottom: 0}}>
+            <Text style={styles.name}>{name}</Text>
+            <Button
+              title="선택한 위치로 설정"
+              btnSize="large"
+              textSize="medium"
+              isGradient={false}
+              isOutlined={false}
+              onPress={pressHandler}
+              customStyle={styles.button}
             />
           </View>
         </View>
@@ -51,5 +88,21 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '90%',
     borderBottomWidth: 0,
+  },
+  map: {
+    width: '100%',
+    height: '100%',
+    flex: 1,
+    zIndex: -1,
+  },
+  button: {
+    marginTop: 20,
+    width: deviceWidth * 0.8,
+  },
+  name: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 16,
+    marginTop: 20,
   },
 });

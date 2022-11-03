@@ -5,7 +5,6 @@ import Map from '../../components/Map/map';
 import PheedCategory from '../../components/Pheed/Category/PheedCategory';
 
 const deviceWidth = Dimensions.get('window').width;
-const deviceHeight = Dimensions.get('window').height;
 
 const MainMapScreen = () => {
   return (
