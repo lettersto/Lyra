@@ -1,4 +1,4 @@
-package hermes.user_service.controller;
+package hermes.Lyra.controller;
 
 import hermes.user_service.Service.UserService;
 import hermes.user_service.dto.Message;
