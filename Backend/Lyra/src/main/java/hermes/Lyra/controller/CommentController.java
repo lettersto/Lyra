@@ -88,7 +88,7 @@ public class CommentController {
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
-    @PostMapping("/pheed/{pheed_id}/comment")
+    @PostMapping("/{pheed_id}/comment")
     public ResponseEntity<String> createComment(@RequestParam("user_id") Long userId, @PathVariable("pheed_id") Long pheedId, @RequestBody RequestComment comment) throws Exception {
 
         log.info("Before create comment data");

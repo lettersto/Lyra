@@ -29,7 +29,7 @@ public class PheedController {
     }
 
 
-    @PostMapping("/pheed")
+    @PostMapping("/")
     public ResponseEntity<String> createPheed(@RequestParam("user_id") Long userId, @RequestBody RequestPheed pheed) {
 
         log.info("Before create pheed data");
@@ -55,7 +55,7 @@ public class PheedController {
     }
 
 
-    @GetMapping("/pheed")
+    @GetMapping("/all")
     public ResponseEntity<List<ResponsePheed>> getPheeds() throws Exception {
 
         log.info("Before get pheeds data");
@@ -73,7 +73,7 @@ public class PheedController {
     }
 
 
-    @GetMapping("/pheed/{pheed_id}")
+    @GetMapping("/{pheed_id}")
     public ResponseEntity<Optional<Pheed>> getPheed(@PathVariable("pheed_id") Long pheedId) throws Exception {
 
         log.info("Before get pheed data");
@@ -87,7 +87,7 @@ public class PheedController {
     }
 
 
-    @PatchMapping("/pheed/{pheed_id}")
+    @PatchMapping("/{pheed_id}")
     public ResponseEntity<String> updatePheed(@PathVariable("pheed_id") Long pheedId, @RequestBody RequestPheed pheed) throws Exception {
 
         log.info("Before update pheed data");
@@ -111,7 +111,7 @@ public class PheedController {
     }
 
 
-    @DeleteMapping("/pheed/{pheed_id}")
+    @DeleteMapping("/{pheed_id}")
     public ResponseEntity<String> deletePheed(@PathVariable("pheed_id") Long pheedId) {
 
         log.info("Before delete pheed data");
@@ -124,7 +124,7 @@ public class PheedController {
     }
 
 
-    @GetMapping("/pheed/category/{category}")
+    @GetMapping("/category/{category}")
     public ResponseEntity<List<ResponsePheed>> getPheedByCategory(@PathVariable String category) throws Exception {
 
         log.info("Before get pheed by category data");
@@ -142,7 +142,7 @@ public class PheedController {
     }
 
 
-    @GetMapping("/pheed/search")
+    @GetMapping("/search")
     public ResponseEntity<List<ResponsePheed>> getPheedBySearch(@RequestParam(value="keyword") String keyword) {
 
         log.info("Before get pheed by search data");
@@ -161,7 +161,7 @@ public class PheedController {
     }
 
 
-    @GetMapping("/pheed/tag")
+    @GetMapping("/tag")
     public ResponseEntity<?> getPheedbyTag(@RequestParam String tag) throws Exception {
 
         log.info("Before get pheed by tag data");
@@ -193,7 +193,7 @@ public class PheedController {
     }
 
 
-    @GetMapping("/pheed")
+    @GetMapping("/")
     public ResponseEntity<List<ResponsePheed>> getPheedbyUser(@RequestParam("user_id") Long userId) throws Exception {
 
         log.info("Before get pheed by user data");

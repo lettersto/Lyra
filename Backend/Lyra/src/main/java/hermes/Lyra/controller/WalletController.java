@@ -28,7 +28,7 @@ public class WalletController {
     }
 
 
-    @PostMapping("/wallet")
+    @PostMapping("/")
     public ResponseEntity<ResponseWallet> createWallet(@RequestParam("user_id") Long userId, @RequestBody RequestWallet wallet) {
 
         log.info("Before add wallet data");
@@ -46,7 +46,7 @@ public class WalletController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseWallet);
     }
 
-    @GetMapping("/wallet")
+    @GetMapping("/")
     public ResponseEntity<Wallet> getWallet(@RequestParam("user_id") Long userId) throws Exception {
 
         log.info("Before get wallet data");
@@ -71,7 +71,7 @@ public class WalletController {
     }
 
 
-    @PatchMapping("/wallet")
+    @PatchMapping("/")
     public ResponseEntity<String> updateWallet(@RequestParam("user_id") Long userId, @RequestParam Long coin) {
 
         log.info("Before update wallet data");
@@ -86,7 +86,7 @@ public class WalletController {
 
 
 
-    @DeleteMapping("/wallet")
+    @DeleteMapping("/")
     public ResponseEntity<String> deleteWallet(@RequestParam("user_id") Long userId) {
 
         log.info("Before delete wallet data");
