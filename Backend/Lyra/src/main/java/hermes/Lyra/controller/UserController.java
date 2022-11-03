@@ -4,7 +4,7 @@ import hermes.Lyra.Service.UserService;
 import hermes.Lyra.dto.Message;
 import hermes.Lyra.dto.StatusEnum;
 import hermes.Lyra.dto.UserDto;
-//import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -17,10 +17,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.Charset;
+import java.nio.file.AccessDeniedException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping("/user")
 public class UserController {
     private Environment env;
     private final UserService userService;
@@ -29,11 +30,6 @@ public class UserController {
     public UserController(Environment env, UserService userService) {
         this.env = env;
         this.userService = userService;
-    }
-
-    @GetMapping("/welcome")
-    public String welcome(HttpServletRequest request, HttpServletResponse response) {
-        return "welcome";
     }
 
 //    @ApiOperation(value = "회원가입",notes = "email과 password를 받아서 회원가입한다.")
@@ -86,7 +82,7 @@ public class UserController {
 //        }
 //    }
 
-//    @ApiOperation(value = "로그아웃을 요청한다.",notes = "refresh 토큰으로 로그아웃을 요청한다.") //리프레쉬토큰으로
+    @ApiOperation(value = "로그아웃을 요청한다.",notes = "refresh 토큰으로 로그아웃을 요청한다.") //리프레쉬토큰으로
     @GetMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader(value="REFRESH-TOKEN") String refreshToken) {
         Message message = new Message();
@@ -104,8 +100,8 @@ public class UserController {
         }
     }
 
-//    @ApiOperation(value = "회원정보를 얻어온다.",notes = "userId에 해당하는 회원 정보를 얻어온다.")
-    @GetMapping("/{userId}")
+    @ApiOperation(value = "회원정보를 얻어온다.",notes = "userId에 해당하는 회원 정보를 얻어온다.")
+    @GetMapping("info/{userId}")
     public ResponseEntity<?> searchUser(@PathVariable("userId") Long userId){
         Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
@@ -129,8 +125,8 @@ public class UserController {
         }
     }
 
-//    @ApiOperation(value = "회원의 닉네임 정보를 수정한다.",notes = "userId에 해당하는 회원 정보를 수정한다.(닉네임)")
-    @PutMapping("/update/{userId}")
+    @ApiOperation(value = "회원의 닉네임 정보를 수정한다.",notes = "userId에 해당하는 회원 정보를 수정한다.(닉네임)")
+    @PatchMapping("/update/{userId}")
     public ResponseEntity<?> updateUserNick(@PathVariable("userId") Long userId, @RequestParam String nickname){
         Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
@@ -160,8 +156,8 @@ public class UserController {
         }
     }
 
-//    @ApiOperation(value = "회원정보를 삭제한다.",notes = "userId에 해당하는 회원 정보를 삭제한다.")
-    @DeleteMapping("/api/user/{userId}")
+    @ApiOperation(value = "회원정보를 삭제한다.",notes = "userId에 해당하는 회원 정보를 삭제한다.")
+    @DeleteMapping("/delete/{userId}")
     public ResponseEntity<?> deleteUser(@PathVariable("userId") Long userId){
         Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
@@ -277,7 +273,7 @@ public class UserController {
 //        return new ResponseEntity<>(message, headers, HttpStatus.OK);
 //    }
 
-//    @ApiOperation(value = "소셜로그인 - 멤버정보 요청",notes = "발급받은 accessToken으로 멤버정보를 요청한다.")
+    @ApiOperation(value = "소셜로그인 - 멤버정보 요청",notes = "발급받은 accessToken으로 멤버정보를 요청한다.")
     @GetMapping("/me")
     public ResponseEntity<?> getMember(
             @RequestHeader(value="X-AUTH-TOKEN") String token) throws Exception {
@@ -292,45 +288,34 @@ public class UserController {
 
     }
 
-//    @ApiOperation(value = "access token 재발급 요청",notes = "refresh 토큰으로 access 토큰을 재발급 신청한다.")
-//    @PostMapping(value = "/refresh")
-//    public ResponseEntity<?> refreshToken(
-//            @RequestHeader(value="X-AUTH-TOKEN") String token,
-//            @RequestHeader(value="REFRESH-TOKEN") String refreshToken ) {
-//        Message message = new Message();
-//        HttpHeaders headers= new HttpHeaders();
-//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//
-//        try {
-//            message.setStatus(StatusEnum.OK);
-//            message.setMessage("ACCESS TOKEN 재발급 성공");
-//            message.setData(userService.refreshToken(token, refreshToken));
-//            return new ResponseEntity<>(message, headers, HttpStatus.OK);
-//        } catch (AccessDeniedException e){
-//            e.printStackTrace();
-//            message.setStatus(StatusEnum.UNAUTHORIZED);
-//            message.setMessage("REFRESH TOKEN이 일치하지 않습니다.");
-//            return new ResponseEntity<>(message, headers, HttpStatus.OK);
-//        } catch (IllegalStateException e){
-//            e.printStackTrace();
-//            return new ResponseEntity<String>("RE LOGIN", HttpStatus.PAYMENT_REQUIRED);
-//        } catch (Exception e){
-//            e.printStackTrace();
-//            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-//            message.setMessage("서버 에러 발생");
-//            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//
-//    }
+    @ApiOperation(value = "access token 재발급 요청",notes = "refresh 토큰으로 access 토큰을 재발급 신청한다.")
+    @PostMapping(value = "/refresh")
+    public ResponseEntity<?> refreshToken(
+            @RequestHeader(value="X-AUTH-TOKEN") String token,
+            @RequestHeader(value="REFRESH-TOKEN") String refreshToken ) {
+        Message message = new Message();
+        HttpHeaders headers= new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-    @GetMapping("/health_check")
-    public String status() {
-        return String.format("It's Working in User Service"
-                + ", port(local.server.port)=" + env.getProperty("local.server.port")
-                + ", port(server.port)=" + env.getProperty("server.port")
-                + ", token secret=" + env.getProperty("token.secret")
-                + ", token expiration time=" + env.getProperty("token.expiration_time"));
+        try {
+            message.setStatus(StatusEnum.OK);
+            message.setMessage("ACCESS TOKEN 재발급 성공");
+            message.setData(userService.refreshToken(token, refreshToken));
+            return new ResponseEntity<>(message, headers, HttpStatus.OK);
+        } catch (AccessDeniedException e){
+            e.printStackTrace();
+            message.setStatus(StatusEnum.UNAUTHORIZED);
+            message.setMessage("REFRESH TOKEN이 일치하지 않습니다.");
+            return new ResponseEntity<>(message, headers, HttpStatus.OK);
+        } catch (IllegalStateException e){
+            e.printStackTrace();
+            return new ResponseEntity<String>("RE LOGIN", HttpStatus.PAYMENT_REQUIRED);
+        } catch (Exception e){
+            e.printStackTrace();
+            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+            message.setMessage("서버 에러 발생");
+            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
 }
 

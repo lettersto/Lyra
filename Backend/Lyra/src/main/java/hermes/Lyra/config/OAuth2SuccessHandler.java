@@ -64,7 +64,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.addHeader("accessToken", accessToken);
         response.setContentType("application/json;charset=UTF-8");
         log.info("response : {}", response);
-        targetUrl = UriComponentsBuilder.fromHttpUrl("http://k7c105.p.ssafy.io:8010/oauth/redirect")
+//        targetUrl = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/oauth/redirect")
+        targetUrl = UriComponentsBuilder.fromHttpUrl("http://k7c105.p.ssafy.io:8080/oauth/redirect")
                 .queryParam("accessToken", accessToken)
                 .build().toUriString();
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
