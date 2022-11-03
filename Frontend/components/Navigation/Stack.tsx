@@ -7,7 +7,6 @@ import PheedTitle from './TopNavBar/PheedTitle';
 import AlarmScreen from '../../screens/Others/AlarmScreen';
 import DetailPheedScreen from '../../screens/Home/Pheed/DetailPheedScreen';
 import ShortsDetailScreen from '../../screens/Home/Shorts/ShortsDetailScreen';
-import StoryDetailScreen from '../../screens/Home/Shorts/StoryDetailScreen';
 import CreateShortsScreen from '../../screens/Home/Shorts/CreateShortsScreen';
 
 // Profile
@@ -78,14 +77,21 @@ export const PheedStack = () => {
           </Stack.Group>
 
           <Stack.Screen name="CreatePheed" component={CreatePheedScreen} />
-          <Stack.Screen name="ShortsDetail" component={ShortsDetailScreen} />
-          <Stack.Screen name="StoryDetail" component={StoryDetailScreen} />
-          <Stack.Screen name="CreateShorts" component={CreateShortsScreen} />
           <Stack.Screen
-            name="DetailPheed"
-            component={DetailPheedScreen}
-            // initialParams={}
+            name="ShortsDetail"
+            component={ShortsDetailScreen}
+            options={{
+              headerShown: false,
+            }}
           />
+          <Stack.Screen
+            name="CreateShorts"
+            component={CreateShortsScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen name="DetailPheed" component={DetailPheedScreen} />
           <Stack.Screen name="Alarm" component={AlarmScreen} />
         </>
       )}

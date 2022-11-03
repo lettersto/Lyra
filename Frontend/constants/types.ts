@@ -33,8 +33,7 @@ export type RootStackParamList = {
   MainProfile: undefined;
   ProfileDetail: undefined;
   DetailPheed: PheedDetailParamList;
-  ShortsDetail: ShortsDetailParamList;
-  StoryDetail: Array<ShortsDetailParamList>;
+  ShortsDetail: Array<ShortsDetailParamList>;
   Splash: undefined;
   Login: undefined;
   Onboarding: undefined;
@@ -66,18 +65,18 @@ export type PheedDetailParamList = {
   tags: Array<string>;
 };
 
-export type ShortsDetailParamList = {
-  name: string;
-  index: number;
-  show: boolean;
-};
+// export type ShortsDetailParamList = {
+//   name: string;
+//   index: number;
+//   show: boolean;
+// };
 
-export type StorysParamList = {
+export type ShortsParamList = {
   username: string;
-  stories: Array<StoryDetailParamList>;
+  stories: Array<ShortsDetailParamList>;
 };
 
-export type StoryDetailParamList = {
+export type ShortsDetailParamList = {
   id: number;
   url: string;
   type: string;
@@ -86,10 +85,9 @@ export type StoryDetailParamList = {
 };
 
 export type VideoParamList = {
-  duration: number;
+  duration: number | null;
   height: number;
   mime: string;
-  modification: string;
   path: string;
   size: number;
   width: number;
