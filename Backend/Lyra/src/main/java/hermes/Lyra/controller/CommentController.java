@@ -6,6 +6,7 @@ import hermes.Lyra.domain.Comment;
 import hermes.Lyra.dto.CommentDto;
 import hermes.Lyra.vo.RequestComment;
 import hermes.Lyra.vo.ResponseComment;
+import hermes.Lyra.vo.ResponseWallet;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -46,16 +47,22 @@ public class CommentController {
     }
 
     @GetMapping("/{pheed_id}/comment/{comment_id}")
-    public ResponseEntity<Optional<Comment>> getComment(@PathVariable("pheed_id") Long pheedId, @PathVariable("comment_id") Long commentId) throws Exception {
+    public ResponseEntity<ResponseComment> getComment(@PathVariable("pheed_id") Long pheedId, @PathVariable("comment_id") Long commentId) throws Exception {
 
         log.info("Before get comment data");
 
-        Optional<Comment> comment = commentService.getCommentById(commentId);
+        Comment result = commentService.getCommentById(commentId);
 
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+        ResponseComment responseComment = mapper.map(result, ResponseComment.class);
+
+        responseComment.setUserId(result.getUser().getId());
 
         log.info("After got comment data");
 
-        return ResponseEntity.status(HttpStatus.OK).body(comment);
+        return ResponseEntity.status(HttpStatus.OK).body(responseComment);
     }
 
 

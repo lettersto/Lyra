@@ -4,6 +4,7 @@ import hermes.Lyra.domain.Comment;
 import hermes.Lyra.domain.Pheed;
 import hermes.Lyra.domain.Repository.CommentRepository;
 import hermes.Lyra.domain.Repository.PheedRepository;
+import hermes.Lyra.domain.Repository.UserRepository2;
 import hermes.Lyra.dto.CommentDto;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -24,16 +25,19 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
 
+    private final UserRepository2 userRepository2;
+
     @Autowired
-    public CommentServiceImpl(PheedRepository pheedRepository, CommentRepository commentRepository) {
+    public CommentServiceImpl(PheedRepository pheedRepository, CommentRepository commentRepository, UserRepository2 userRepository2) {
         this.pheedRepository = pheedRepository;
         this.commentRepository = commentRepository;
+        this.userRepository2 = userRepository2;
     }
 
 
     @Override
-    public Optional<Comment> getCommentById(Long commentId) {
-        return commentRepository.findById(commentId);
+    public Comment getCommentById(Long commentId) {
+        return commentRepository.findById(commentId).get();
     }
 
     @Override
@@ -45,6 +49,8 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = mapper.map(commentDto, Comment.class);
 
         comment.setPheed(p.get());
+
+        comment.setUser(userRepository2.findById(commentDto.getUserId()).get());
 
         commentRepository.save(comment);
 
@@ -68,6 +74,8 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = mapper.map(commentDto, Comment.class);
 
         comment.setId(commentId);
+
+        comment.setUser(c.get().getUser());
 
         commentRepository.save(comment);
 

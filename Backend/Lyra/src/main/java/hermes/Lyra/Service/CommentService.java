@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface CommentService {
     Iterable<Comment> getCommentByAll(Long pheedId);
 
-    Optional<Comment> getCommentById(Long commentId);
+    Comment getCommentById(Long commentId);
 
     CommentDto createComment(CommentDto commentDto, Long pheedId);
 
