@@ -1,4 +1,4 @@
-package hermes.user_service.config;
+package hermes.Lyra.config;
 
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;

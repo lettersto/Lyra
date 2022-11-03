@@ -1,4 +1,4 @@
-package hermes.user_service.error.Exception;
+package hermes.Lyra.error.Exception;
 
 public class InvalidValueException extends BusinessException{
     public InvalidValueException(String value) {

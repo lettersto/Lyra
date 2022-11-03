@@ -1,6 +1,6 @@
-package hermes.user_service.domain.Repository;
+package hermes.Lyra.domain.Repository;
 
-import hermes.user_service.domain.User;
+import hermes.Lyra.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

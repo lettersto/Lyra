@@ -1,4 +1,4 @@
-package hermes.user_service.Service;
+package hermes.Lyra.Service;
 
 import lombok.AccessLevel;
 import lombok.Builder;

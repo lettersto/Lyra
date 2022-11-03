@@ -1,4 +1,4 @@
-package hermes.user_service.dto;
+package hermes.Lyra.dto;
 
 import lombok.Builder;
 import lombok.Getter;

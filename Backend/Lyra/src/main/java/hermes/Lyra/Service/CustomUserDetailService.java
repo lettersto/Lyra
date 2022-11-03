@@ -1,6 +1,6 @@
-package hermes.user_service.Service;
+package hermes.Lyra.Service;
 
-import hermes.user_service.domain.Repository.UserRepository2;
+import hermes.Lyra.domain.Repository.UserRepository2;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
