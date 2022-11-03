@@ -12,9 +12,9 @@ interface ILocation {
 
 async function requestPermission() {
   try {
-    // if (Platform.OS === "ios") {
-    //   return await Geolocation.requestAuthorization("always");
-    // }
+    if (Platform.OS === 'ios') {
+      return await Geolocation.requestAuthorization('always');
+    }
     // 안드로이드 위치 정보 수집 권한 요청
     if (Platform.OS === 'android') {
       return await PermissionsAndroid.request(
@@ -77,7 +77,7 @@ const Map = () => {
           <GooglePlacesAutocomplete
             placeholder={'Location'}
             query={{
-              key: '',
+              key: 'AIzaSyCggKeXOHi8_SSLeBMH12DaN2URuvkV_yM',
               language: 'en',
             }}
             onPress={(data, details = null) => {
