@@ -91,9 +91,8 @@ public class User implements UserDetails {
         this.refreshToken = refreshToken;
     }
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private Wallet wallet;
+
+
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
