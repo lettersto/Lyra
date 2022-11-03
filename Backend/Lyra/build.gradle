@@ -41,6 +41,7 @@ dependencies {
 	implementation 'org.springframework.session:spring-session-jdbc'
 
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+	runtimeOnly 'com.mysql:mysql-connector-j'
 }
 
 tasks.named('test') {
