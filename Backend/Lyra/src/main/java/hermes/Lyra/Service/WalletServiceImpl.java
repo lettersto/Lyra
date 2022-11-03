@@ -66,7 +66,8 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     public Wallet getWalletByUserId(Long userId) {
-        return walletRepository.findByUserId(userId);
+
+        return walletRepository.findByUser(userRepository2.findById(userId));
     }
 }
 

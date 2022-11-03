@@ -13,9 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RestController
 @RequestMapping("/wallet")
 @Slf4j
@@ -28,7 +25,7 @@ public class WalletController {
     }
 
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<ResponseWallet> createWallet(@RequestParam("user_id") Long userId, @RequestBody RequestWallet wallet) {
 
         log.info("Before add wallet data");
@@ -46,11 +43,16 @@ public class WalletController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseWallet);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<Wallet> getWallet(@RequestParam("user_id") Long userId) throws Exception {
+    @GetMapping("")
+    public ResponseEntity<ResponseWallet> getWallet(@RequestParam("user_id") Long userId) throws Exception {
 
         log.info("Before get wallet data");
         Wallet result = walletService.getWalletByUserId(userId);
+
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+        ResponseWallet responseWallet = mapper.map(result, ResponseWallet.class);
 //
 //        List<ResponseWallet> result = new ArrayList<>();
 //        walletList.forEach(v -> {
@@ -67,11 +69,11 @@ public class WalletController {
 
         log.info("After got wallet data");
 
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        return ResponseEntity.status(HttpStatus.OK).body(responseWallet);
     }
 
 
-    @PatchMapping("/")
+    @PatchMapping("")
     public ResponseEntity<String> updateWallet(@RequestParam("user_id") Long userId, @RequestParam Long coin) {
 
         log.info("Before update wallet data");
@@ -86,7 +88,7 @@ public class WalletController {
 
 
 
-    @DeleteMapping("/")
+    @DeleteMapping("")
     public ResponseEntity<String> deleteWallet(@RequestParam("user_id") Long userId) {
 
         log.info("Before delete wallet data");
@@ -98,7 +100,7 @@ public class WalletController {
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
-    @GetMapping("/welcome")
+    @GetMapping("welcome")
     public String welcome() {
         return "welcome";
     }
