@@ -1,4 +1,4 @@
-package hermes.user_service.configuration;
+package hermes.Lyra.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

@@ -1,6 +1,6 @@
-package hermes.user_service.error.Exception.custom;
+package hermes.Lyra.error.Exception.custom;
 
-import hermes.user_service.error.Exception.InvalidValueException;
+import hermes.Lyra.error.Exception.InvalidValueException;
 
 public class SomethingNullException extends InvalidValueException {
     public SomethingNullException(String r){

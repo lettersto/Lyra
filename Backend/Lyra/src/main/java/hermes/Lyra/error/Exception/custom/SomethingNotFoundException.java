@@ -1,6 +1,6 @@
-package hermes.user_service.error.Exception.custom;
+package hermes.Lyra.error.Exception.custom;
 
-import hermes.user_service.error.Exception.EntityNotFoundException;
+import hermes.Lyra.error.Exception.EntityNotFoundException;
 
 public class SomethingNotFoundException extends EntityNotFoundException {
     public SomethingNotFoundException(String value){

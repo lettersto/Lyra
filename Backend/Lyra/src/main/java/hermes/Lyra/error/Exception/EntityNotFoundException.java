@@ -1,4 +1,4 @@
-package hermes.user_service.error.Exception;
+package hermes.Lyra.error.Exception;
 
 public class EntityNotFoundException extends BusinessException{
     public EntityNotFoundException(String message) {

@@ -1,6 +1,6 @@
-package hermes.user_service.config;
+package hermes.Lyra.config;
 
-import hermes.user_service.dto.UserDto;
+import hermes.Lyra.dto.UserDto;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 

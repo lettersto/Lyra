@@ -1,4 +1,4 @@
-package hermes.user_service.domain;
+package hermes.Lyra.domain;
 
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

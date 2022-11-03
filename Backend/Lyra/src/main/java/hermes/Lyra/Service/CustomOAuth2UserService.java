@@ -1,4 +1,4 @@
-package hermes.user_service.Service;
+package hermes.Lyra.Service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

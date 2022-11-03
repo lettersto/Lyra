@@ -1,7 +1,7 @@
-package hermes.user_service.domain.Repository;
+package hermes.Lyra.domain.Repository;
 
-import hermes.user_service.domain.User;
-import hermes.user_service.dto.UserDto;
+import hermes.Lyra.domain.User;
+import hermes.Lyra.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
