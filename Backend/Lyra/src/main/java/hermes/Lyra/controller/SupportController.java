@@ -26,7 +26,7 @@ public class SupportController {
 
     SupportService supportService;
 
-    @PostMapping("/support")
+    @PostMapping("/")
     public ResponseEntity<ResponseSupport> createSupport(@RequestParam("userId") Long supporterId, @RequestBody RequestSupport support) {
 
         log.info("Before add support data");
@@ -45,7 +45,7 @@ public class SupportController {
     }
 
 
-    @GetMapping("/support/give")
+    @GetMapping("/give")
     public ResponseEntity<List<ResponseSupport>> getGiveSupport(@RequestParam("user_id") Long userId) throws Exception {
 
         log.info("Before get give support data");
@@ -63,10 +63,10 @@ public class SupportController {
     }
 
 
-    @GetMapping("/support/supported")
+    @GetMapping("/receive")
     public ResponseEntity<List<ResponseSupport>> getSupported(@RequestParam("user_id") Long userId) throws Exception {
 
-        log.info("Before get supported data");
+        log.info("Before get receive data");
 
         Iterable<Support> supportedList = supportService.getSupportByBuskerId(userId);
 
@@ -75,7 +75,7 @@ public class SupportController {
             result.add(new ModelMapper().map(v, ResponseSupport.class));
         });
 
-        log.info("After got supported data");
+        log.info("After got received data");
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
