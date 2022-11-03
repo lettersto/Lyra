@@ -95,19 +95,12 @@ public class User implements UserDetails {
     @JsonIgnore
     private Wallet wallet;
 
-    @OneToMany(mappedBy = "supporterId", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Support> support = new ArrayList<>();
 
-    @OneToMany(mappedBy = "buskerId", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Support> receive = new ArrayList<>();
-
-    @OneToMany(mappedBy = "pheedId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Pheed> pheed = new ArrayList<>();
 
-    @OneToMany(mappedBy = "commentId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Comment> comment = new ArrayList<>();
 

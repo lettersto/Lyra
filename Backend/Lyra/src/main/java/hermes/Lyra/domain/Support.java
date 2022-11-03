@@ -17,13 +17,13 @@ public class Support {
     @Column(name = "support_id")
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id")
-    private User supporterId;
+    @OneToOne(fetch = LAZY)
+    @JoinColumn
+    private User supporter;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id")
-    private User buskerId;
+    @OneToOne(fetch = LAZY)
+    @JoinColumn
+    private User busker;
 
     @Column(nullable = false)
     private Long coin;

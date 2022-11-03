@@ -1,6 +1,7 @@
 package hermes.Lyra.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import hermes.Lyra.config.CategoryConverter;
 import lombok.Getter;
 import lombok.Setter;
@@ -58,4 +59,8 @@ public class Pheed {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "pheed", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Comment> comment = new ArrayList<>();
 }

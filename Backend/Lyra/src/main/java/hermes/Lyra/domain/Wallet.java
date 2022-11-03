@@ -28,7 +28,7 @@ public class Wallet {
     @Column(nullable = false)
     private Long coin;
 
-    @OneToMany(mappedBy = "chargeId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Charge> charge = new ArrayList<>();
 }
