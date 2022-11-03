@@ -1,4 +1,4 @@
-package hermes.user_service.error.Exception;
+package hermes.Lyra.error.Exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

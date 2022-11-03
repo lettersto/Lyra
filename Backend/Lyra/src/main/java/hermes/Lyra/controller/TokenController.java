@@ -1,4 +1,4 @@
-package hermes.user_service.controller;
+package hermes.Lyra.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

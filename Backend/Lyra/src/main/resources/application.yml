@@ -1,25 +1,9 @@
 server:
-  port: 8010
+  port: 8080
 
 spring:
-  cloud:
-    gateway:
-      globalcors:
-        cors-configurations:
-          "[/**]":
-            allowedOrigins: "http://k7c105.p.ssafy.io"
-            allowedHeaders:
-              - authorization
-              - content-type
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - OPTIONS
-              - HEAD
-              - DELETE
   application:
-    name: user-service
+    name: Lyra
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://k7c105.p.ssafy.io:3307/lyra?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true&useLegacyDatetimeCode=false
@@ -28,8 +12,12 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+      use-new-id-generator-mappings: false
     show-sql: true
     generate-ddl: true
+    properties:
+      hibernate:
+        format_sql: true
   profiles:
     include: oauth
   security:
@@ -40,12 +28,11 @@ spring:
             client-id: 679402942294-piour8km9qojcntfbm7h3n54qt63d1d9.apps.googleusercontent.com
             client-secret: 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
             scope: profile, email
-            redirect-uri: http://k7c105.p.ssafy.io:8010/login/oauth2/code/google
           kakao:
             client-id: f42a76675ed8066de07e5cc3498f5c11
             client-secret: w0jxYoFytctR9tVqwTPh9tp90b5aEtsj
             client-authentication-method: post
-            redirect-uri: http://k7c105.p.ssafy.io:8010/login/oauth2/code/kakao
+            redirect-uri: {baseUrl}/{action}/oauth2/code/{registrationId}
             authorization-grant-type: authorization_code
             scope: profile_nickname, account_email, profile_image
             client-name: Kakao
@@ -55,23 +42,3 @@ spring:
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
-
-eureka:
-  instance:
-    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    server-url:
-      defaultZone: http://k7c105.p.ssafy.io:8761/eureka
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: refresh, health, beans
-
-
-#token:
-#  expiration_time: 86400000
-#  secret: user_token

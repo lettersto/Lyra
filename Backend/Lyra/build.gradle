@@ -29,6 +29,13 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	// jwt
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+	// 소셜 로그인
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.boot:spring-boot-starter-mustache'
+	implementation 'org.springframework.session:spring-session-jdbc'
 }
 
 tasks.named('test') {
