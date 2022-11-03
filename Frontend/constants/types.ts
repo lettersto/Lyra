@@ -30,6 +30,7 @@ export type RootStackParamList = {
   LocationModal: undefined;
   LocationSearch: undefined;
   FirstTownSearch: undefined;
+  TownSearch: undefined;
   MainChat: undefined;
   MainProfile: undefined;
   ProfileDetail: undefined;

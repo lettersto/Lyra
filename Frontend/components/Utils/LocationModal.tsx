@@ -12,8 +12,7 @@ export const LocationModal = () => {
   const navigation = useNavigation();
 
   const pressHandler = () => {
-    navigation.navigate('LocationSearch');
-    console.log('검색으로..');
+    navigation.navigate('TownSearch');
   };
 
   return (

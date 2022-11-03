@@ -1,6 +1,7 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useState} from 'react';
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import Config from 'react-native-config';
 import MapView, {Marker, PROVIDER_GOOGLE, Region} from 'react-native-maps';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import LocationSearch from '../../components/Map/LocationSearch';
@@ -21,6 +22,21 @@ const FirstTownSearchScreen = ({navigation}: Props) => {
     longitude: 0,
   });
   const [name, setName] = useState('');
+
+  const getTownName = async (lat: number, lng: number) => {
+    const response = await fetch(
+      `https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${lng}&y=${lat}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `KakaoAK ${Config.KAKAO_REST_API_KEY}`,
+        },
+      },
+    );
+    const result = await response.json();
+    return setName(result.documents[0].region_3depth_name);
+  };
+
   const pressHandler = () => {
     navigation.navigate('WalletCreation');
   };
@@ -29,7 +45,7 @@ const FirstTownSearchScreen = ({navigation}: Props) => {
     <>
       <View style={styles.body}>
         <View style={{flex: 1}}>
-          <Text style={styles.title}>주소 설정</Text>
+          <Text style={styles.title}>동네 설정</Text>
           <LocationSearch
             onPress={(data, detail) => {
               const {
@@ -42,7 +58,7 @@ const FirstTownSearchScreen = ({navigation}: Props) => {
                 latitude: lat,
                 longitude: lng,
               }));
-              setName(data.description);
+              getTownName(lat, lng);
             }}
           />
           {location && (
@@ -109,7 +125,7 @@ const styles = StyleSheet.create({
   },
   name: {
     textAlign: 'center',
-    color: 'white',
+    color: 'rgba(255,255,255,1)',
     fontSize: 16,
     marginTop: 20,
   },

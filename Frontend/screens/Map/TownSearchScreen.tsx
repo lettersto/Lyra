@@ -1,16 +1,20 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useState} from 'react';
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import Config from 'react-native-config';
 import MapView, {Marker, PROVIDER_GOOGLE, Region} from 'react-native-maps';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import LocationSearch from '../../components/Map/LocationSearch';
 import MapStyle from '../../components/Map/mapStyle';
 import Button from '../../components/Utils/Button';
 import Colors from '../../constants/Colors';
+import {RootStackParamList} from '../../constants/types';
+
+type Props = NativeStackScreenProps<RootStackParamList>;
 
 const deviceWidth = Dimensions.get('window').width;
 
-const TownSearchScreen = () => {
+const TownSearchScreen = ({navigation}: Props) => {
   const [location, setLocation] = useState<Region>({
     latitudeDelta: 0.005,
     longitudeDelta: 0.005,
@@ -18,13 +22,29 @@ const TownSearchScreen = () => {
     longitude: 0,
   });
   const [name, setName] = useState('');
-  const pressHandler = () => {};
+
+  const getTownName = async (lat: number, lng: number) => {
+    const response = await fetch(
+      `https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${lng}&y=${lat}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `KakaoAK ${Config.KAKAO_REST_API_KEY}`,
+        },
+      },
+    );
+    const result = await response.json();
+    return setName(result.documents[0].region_3depth_name);
+  };
+  const pressHandler = () => {
+    navigation.navigate('MainPheed');
+  };
 
   return (
     <>
       <View style={styles.body}>
         <View style={{flex: 1}}>
-          <Text style={styles.title}>주소 찾기</Text>
+          <Text style={styles.title}>동네 설정</Text>
           <LocationSearch
             onPress={(data, detail) => {
               const {
@@ -37,7 +57,7 @@ const TownSearchScreen = () => {
                 latitude: lat,
                 longitude: lng,
               }));
-              setName(data.description);
+              getTownName(lat, lng);
             }}
           />
           {location && (
@@ -53,18 +73,20 @@ const TownSearchScreen = () => {
               </Marker>
             </MapView>
           )}
-          <View style={{height: '25%', bottom: 0}}>
-            <Text style={styles.name}>{name}</Text>
-            <Button
-              title="선택한 위치로 설정"
-              btnSize="large"
-              textSize="medium"
-              isGradient={false}
-              isOutlined={false}
-              onPress={pressHandler}
-              customStyle={styles.button}
-            />
-          </View>
+          {location.latitude != 0 ? (
+            <View style={{height: '25%', bottom: 0}}>
+              <Text style={styles.name}>{name}</Text>
+              <Button
+                title="선택한 위치로 설정"
+                btnSize="large"
+                textSize="medium"
+                isGradient={false}
+                isOutlined={false}
+                onPress={pressHandler}
+                customStyle={styles.button}
+              />
+            </View>
+          ) : null}
         </View>
       </View>
     </>

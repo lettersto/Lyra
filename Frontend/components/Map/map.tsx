@@ -79,7 +79,7 @@ const Map = () => {
             placeholder={'Location'}
             query={{
               key: Config.GOOGLE_API_KEY,
-              language: 'en',
+              language: 'ko',
             }}
             onPress={(data, details = null) => {
               // 'details' is provided when fetchDetails = true
