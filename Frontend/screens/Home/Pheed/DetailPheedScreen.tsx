@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {RootStackParamList} from '../../../constants/types';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
+import {RootStackParamList, RootTabParamList} from '../../../constants/types';
 import {
   StyleSheet,
   View,
@@ -8,8 +8,12 @@ import {
   ScrollView,
   Image,
   Pressable,
+  BackHandler,
 } from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {
+  NativeStackNavigationProp,
+  NativeStackScreenProps,
+} from '@react-navigation/native-stack';
 import Colors from '../../../constants/Colors';
 import LinearGradient from 'react-native-linear-gradient';
 import CircleProfile from '../../../components/Utils/CircleProfile';
@@ -19,24 +23,37 @@ import Icon3 from 'react-native-vector-icons/AntDesign';
 import Icon4 from 'react-native-vector-icons/Ionicons';
 import GradientLine from '../../../components/Utils/GradientLine';
 import Button from '../../../components/Utils/Button';
-import {useNavigation} from '@react-navigation/native';
+import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
 import Input from '../../../components/Utils/Input';
 import MoreInfo from './MoreInfo';
+import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import GestureRecognizer from 'react-native-swipe-gestures';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DetailPheed'>;
 
+type DetailPheedNavigationProps = CompositeNavigationProp<
+  BottomTabNavigationProp<RootTabParamList, 'Home'>,
+  NativeStackNavigationProp<RootStackParamList>
+>;
+
 const DetailPheedScreen = ({route}: Props) => {
+  const navigate = useNavigation<DetailPheedNavigationProps>();
+
+  useLayoutEffect(() => {
+    navigate.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
+  }, [navigate]);
+
   const name = route.params?.name;
-  const profileImg = route.params?.profileImg;
+  // const profileImg = route.params?.profileImg;
   const datetime = route.params?.datetime;
   const location = route.params?.location;
   const title = route.params?.title;
   const content = route.params?.content;
-  const comment = route.params?.comment;
+  // const comment = route.params?.comment;
   // const comments = route.params?.comments;
-  const like = route.params?.like;
+  // const like = route.params?.like;
   const isLive = route.params?.isLive;
-  const imgUrl = route.params?.imgUrl;
+  // const imgUrl = route.params?.imgUrl;
   const tags = route.params?.tags;
 
   const navigation = useNavigation();
@@ -46,6 +63,8 @@ const DetailPheedScreen = ({route}: Props) => {
 
   const [registerComment, setRegisterComment] = useState('');
   const [comments, setComments] = useState<any[]>(route.params?.comments);
+  const [isLike, setIsLike] = useState(false);
+  const [isAlarm, setIsAlarm] = useState(false);
 
   const register = () => {
     setComments(prevComments => {
@@ -54,188 +73,294 @@ const DetailPheedScreen = ({route}: Props) => {
     setRegisterComment('');
   };
 
-  return (
-    <ScrollView style={styles.detailpheed}>
-      <View style={styles.background}>
-        <LinearGradient
-          start={{x: 0, y: 0}}
-          end={{x: 0, y: 1}}
-          useAngle={true}
-          angle={135}
-          angleCenter={{x: 0.5, y: 0.5}}
-          colors={[Colors.purple300, Colors.pink500]}
-          style={styles.gradientContainer}>
-          <View style={styles.Container}>
-            <View style={styles.profileContainer}>
-              <View style={styles.profileDatetime}>
-                <View style={styles.profileImg}>
-                  <CircleProfile size="small" isGradient={false} />
-                </View>
-                <View>
-                  <Text style={styles.boldtext}>{name}</Text>
-                  <View style={styles.dateContainer}>
-                    <Icon
-                      name="clock"
-                      color={Colors.gray300}
-                      size={16}
-                      style={styles.clock}
-                    />
-                    <Text style={styles.text}>{datetime}</Text>
-                  </View>
-                  <View style={styles.locationContainer}>
-                    <Icon4
-                      name="location-outline"
-                      color={Colors.gray300}
-                      size={16}
-                      style={styles.clock}
-                    />
-                    <Text style={styles.text}>{location}</Text>
-                  </View>
-                </View>
-              </View>
-              <View style={styles.liveContainer}>
-                {isLive ? (
-                  <Button
-                    title="LIVE"
-                    btnSize="medium"
-                    textSize="medium"
-                    isGradient={true}
-                    isOutlined={false}
-                    onPress={goChat}
-                  />
-                ) : (
-                  <Button
-                    title="예정"
-                    btnSize="medium"
-                    textSize="medium"
-                    isGradient={true}
-                    isOutlined={true}
-                    onPress={goChat}
-                    disabled
-                  />
-                )}
-                <Pressable>
-                  <Icon2
-                    name="dots-vertical"
-                    color={Colors.gray300}
-                    size={20}
-                    style={styles.dots}
-                  />
-                </Pressable>
-              </View>
-            </View>
-            <View style={styles.lineContainer}>
-              <GradientLine />
-            </View>
-            <View style={styles.contentContainer}>
-              <ScrollView horizontal>
-                <View style={styles.imgContainer}>
-                  <Image
-                    source={require('../../../assets/image/basicProfile.png')}
-                    style={styles.image}
-                  />
-                  <Image
-                    source={require('../../../assets/image/basicProfile.png')}
-                    style={styles.image}
-                  />
-                  <Image
-                    source={require('../../../assets/image/basicProfile.png')}
-                    style={styles.image}
-                  />
-                </View>
-              </ScrollView>
-            </View>
-            <View style={styles.titleContainer}>
-              <Text style={styles.titleText}>{title}</Text>
-              <Icon2
-                name="play-box-multiple-outline"
-                color={Colors.gray300}
-                size={25}
-                style={styles.clock}
-              />
-            </View>
-            <GradientLine />
-            <View style={styles.contentText}>
-              <MoreInfo content={content} />
-            </View>
-          </View>
-        </LinearGradient>
-        {/* tag */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View style={styles.tagsContainer}>
-            {tags?.map((tag, idx) => {
-              return (
-                <View key={idx} style={styles.tag}>
-                  <Button
-                    title={tag}
-                    btnSize="small"
-                    textSize="small"
-                    isGradient={true}
-                    isOutlined={true}
-                    onPress={goChat}
-                    disabled
-                  />
-                </View>
-              );
-            })}
-          </View>
-        </ScrollView>
+  const goHome = () => {
+    navigate.getParent()?.setOptions({
+      tabBarStyle: {
+        backgroundColor: Colors.black500,
+        height: 62,
+        paddingBottom: 8,
+        paddingTop: 10,
+        position: 'absolute',
+      },
+    });
+    navigation.navigate('MainPheed');
+  };
 
-        {/* comment */}
-        <View style={styles.commentContainer}>
-          <Icon2
-            name="comment-text-outline"
-            color={Colors.gray300}
-            size={16}
-            style={styles.clock}
-          />
-          <Text style={styles.text}>댓글 ({comments?.length})</Text>
-        </View>
-        <View style={styles.commentWriteContainer}>
-          <Input
-            width={0.8}
-            height={0.05}
-            keyboard={1}
-            borderRadius={15}
-            placeholder="  댓글을 입력해주세요."
-            enteredValue={registerComment}
-            setEnteredValue={setRegisterComment}
-          />
-          <Button
-            title="작성"
-            btnSize="medium"
-            textSize="medium"
-            isGradient={true}
-            isOutlined={false}
-            onPress={register}
-          />
-        </View>
-        <LinearGradient
-          start={{x: 0, y: 0}}
-          end={{x: 0, y: 1}}
-          useAngle={true}
-          angle={135}
-          angleCenter={{x: 0.5, y: 0.5}}
-          colors={[Colors.purple300, Colors.pink500]}
-          style={styles.gradientContainer2}>
-          <View style={styles.Container2}>
-            <View style={styles.commentsContainer}>
-              {comments?.map((value, idx) => {
-                return (
-                  <View style={styles.commentCt} key={idx}>
-                    <CircleProfile size="extraSmall" isGradient={false} />
-                    <View style={styles.commentTextContainer}>
-                      <Text style={styles.boldtext}>{value.name}</Text>
-                      <Text style={styles.text}>{value.content}</Text>
+  useEffect(() => {
+    const backAction = () => {
+      navigate.getParent()?.setOptions({
+        tabBarStyle: {
+          backgroundColor: Colors.black500,
+          height: 62,
+          paddingBottom: 8,
+          paddingTop: 10,
+          position: 'absolute',
+        },
+      });
+      navigation.navigate('MainPheed');
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, [navigate, navigation]);
+
+  return (
+    <GestureRecognizer onSwipeRight={goHome} style={styles.container}>
+      <ScrollView style={styles.detailpheed}>
+        <View style={styles.background}>
+          <LinearGradient
+            start={{x: 0, y: 0}}
+            end={{x: 0, y: 1}}
+            useAngle={true}
+            angle={135}
+            angleCenter={{x: 0.5, y: 0.5}}
+            colors={[Colors.purple300, Colors.pink500]}
+            style={styles.gradientContainer}>
+            <View style={styles.Container}>
+              <View style={styles.profileContainer}>
+                <View style={styles.profileDatetime}>
+                  <View style={styles.profileImg}>
+                    <CircleProfile size="small" isGradient={false} />
+                  </View>
+                  <View>
+                    <Text style={styles.boldtext}>{name}</Text>
+                    <View style={styles.dateContainer}>
+                      <Icon
+                        name="clock"
+                        color={Colors.gray300}
+                        size={16}
+                        style={styles.clock}
+                      />
+                      <Text style={styles.text}>{datetime}</Text>
                     </View>
+                    <View style={styles.locationContainer}>
+                      <Icon4
+                        name="location-outline"
+                        color={Colors.gray300}
+                        size={16}
+                        style={styles.clock}
+                      />
+                      <Text style={styles.text}>{location}</Text>
+                    </View>
+                  </View>
+                </View>
+                <View style={styles.liveContainer}>
+                  {isLive ? (
+                    <Button
+                      title="LIVE"
+                      btnSize="medium"
+                      textSize="medium"
+                      isGradient={true}
+                      isOutlined={false}
+                      onPress={goChat}
+                    />
+                  ) : (
+                    <Button
+                      title="예정"
+                      btnSize="medium"
+                      textSize="medium"
+                      isGradient={true}
+                      isOutlined={true}
+                      onPress={goChat}
+                      disabled
+                    />
+                  )}
+                  <Pressable>
+                    <Icon2
+                      name="dots-vertical"
+                      color={Colors.gray300}
+                      size={20}
+                      style={styles.dots}
+                    />
+                  </Pressable>
+                </View>
+              </View>
+              <View style={styles.lineContainer}>
+                <GradientLine />
+              </View>
+              <View style={styles.contentContainer}>
+                <ScrollView horizontal>
+                  <View style={styles.imgContainer}>
+                    <Image
+                      source={require('../../../assets/image/basicProfile.png')}
+                      style={styles.image}
+                    />
+                    <Image
+                      source={require('../../../assets/image/basicProfile.png')}
+                      style={styles.image}
+                    />
+                    <Image
+                      source={require('../../../assets/image/basicProfile.png')}
+                      style={styles.image}
+                    />
+                  </View>
+                </ScrollView>
+              </View>
+              <View style={styles.titleContainer}>
+                <Text style={styles.titleText}>{title}</Text>
+                <Icon2
+                  name="play-box-multiple-outline"
+                  color={Colors.gray300}
+                  size={25}
+                  style={styles.clock}
+                />
+              </View>
+              <GradientLine />
+              <View style={styles.contentText}>
+                <MoreInfo content={content} />
+              </View>
+            </View>
+          </LinearGradient>
+          {/* tag */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View style={styles.tagsContainer}>
+              {tags?.map((tag, idx) => {
+                return (
+                  <View key={idx} style={styles.tag}>
+                    <Button
+                      title={tag}
+                      btnSize="small"
+                      textSize="small"
+                      isGradient={true}
+                      isOutlined={true}
+                      onPress={goChat}
+                      disabled
+                    />
                   </View>
                 );
               })}
             </View>
+          </ScrollView>
+
+          {/* comment */}
+          <View style={styles.commentContainer}>
+            <Icon2
+              name="comment-text-outline"
+              color={Colors.gray300}
+              size={16}
+              style={styles.clock}
+            />
+            <Text style={styles.text}>댓글 ({comments?.length})</Text>
           </View>
-        </LinearGradient>
+          <View style={styles.commentWriteContainer}>
+            <Input
+              width={0.8}
+              height={0.05}
+              keyboard={1}
+              borderRadius={15}
+              placeholder="  댓글을 입력해주세요."
+              enteredValue={registerComment}
+              setEnteredValue={setRegisterComment}
+            />
+            <Button
+              title="작성"
+              btnSize="medium"
+              textSize="medium"
+              isGradient={true}
+              isOutlined={false}
+              onPress={register}
+            />
+          </View>
+          <LinearGradient
+            start={{x: 0, y: 0}}
+            end={{x: 0, y: 1}}
+            useAngle={true}
+            angle={135}
+            angleCenter={{x: 0.5, y: 0.5}}
+            colors={[Colors.purple300, Colors.pink500]}
+            style={styles.gradientContainer2}>
+            <View style={styles.Container2}>
+              <View style={styles.commentsContainer}>
+                {comments?.map((value, idx) => {
+                  return (
+                    <View style={styles.commentCt} key={idx}>
+                      <CircleProfile size="extraSmall" isGradient={false} />
+                      <View style={styles.commentTextContainer}>
+                        <Text style={styles.boldtext}>{value.name}</Text>
+                        <Text style={styles.text}>{value.content}</Text>
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+          </LinearGradient>
+        </View>
+      </ScrollView>
+
+      <View style={styles.textContainerBottom}>
+        <View style={styles.goPheed}>
+          {isLike ? (
+            <Pressable onPress={() => setIsLike(false)}>
+              <Icon3
+                name="star"
+                color={Colors.gray300}
+                size={25}
+                style={styles.clock}
+              />
+            </Pressable>
+          ) : (
+            <Pressable onPress={() => setIsLike(true)}>
+              <Icon3
+                name="staro"
+                color={Colors.gray300}
+                size={25}
+                style={styles.clock}
+              />
+            </Pressable>
+          )}
+
+          <View style={styles.bottomBtnContainer}>
+            <View style={styles.alarmBtn}>
+              {isAlarm ? (
+                <Button
+                  title="⏰ 알림 받기"
+                  btnSize="medium"
+                  textSize="medium"
+                  isGradient={true}
+                  isOutlined={true}
+                  onPress={() => setIsAlarm(false)}
+                />
+              ) : (
+                <Button
+                  title="⏰ 알림중"
+                  btnSize="medium"
+                  textSize="medium"
+                  isGradient={true}
+                  isOutlined={false}
+                  onPress={() => setIsAlarm(true)}
+                />
+              )}
+            </View>
+            {isLive ? (
+              <Button
+                title="채팅하기"
+                btnSize="medium"
+                textSize="medium"
+                isGradient={true}
+                isOutlined={false}
+                onPress={goChat}
+              />
+            ) : (
+              <Button
+                title="예정"
+                btnSize="medium"
+                textSize="medium"
+                isGradient={true}
+                isOutlined={true}
+                onPress={goChat}
+                disabled
+              />
+            )}
+          </View>
+        </View>
       </View>
-    </ScrollView>
+    </GestureRecognizer>
   );
 };
 
@@ -406,6 +531,32 @@ const styles = StyleSheet.create({
   commentCt: {
     margin: 10,
     flexDirection: 'row',
+  },
+  goPheed: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  textContainerBottom: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: Colors.black500,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingBottom: 10,
+    paddingTop: 10,
+    paddingHorizontal: 5,
+  },
+  bottomBtnContainer: {
+    flexDirection: 'row',
+  },
+  alarmBtn: {
+    marginRight: 5,
+  },
+  container: {
+    flex: 1,
   },
 });
 
