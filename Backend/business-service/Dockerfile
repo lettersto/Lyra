@@ -1,5 +1,6 @@
 FROM openjdk:11-jdk
 WORKDIR /var/jenkins_home/workspace/lyra/Backend/business-service
+EXPOSE 8020
 CMD ["chmod", "+x", "./gradlew"]
 CMD ["./gradlew", "clean", "build"]
 VOLUME /tmp

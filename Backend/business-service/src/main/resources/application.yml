@@ -2,6 +2,22 @@ server:
   port: 8020
 
 spring:
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          "[/**]":
+            allowedOrigins: "http://k7c105.p.ssafy.io"
+            allowedHeaders:
+              - authorization
+              - content-type
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - OPTIONS
+              - HEAD
+              - DELETE
   application:
     name: business-service
   jpa:
@@ -38,4 +54,4 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://k7c105.p.ssafy.io:8761/eureka
+      defaultZone: http://localhost:8761/eureka

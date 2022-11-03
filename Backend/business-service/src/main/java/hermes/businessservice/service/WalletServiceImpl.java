@@ -2,14 +2,13 @@ package hermes.businessservice.service;
 
 import hermes.businessservice.dto.WalletDto;
 import hermes.businessservice.entity.Wallet;
+import hermes.businessservice.repository.ChargeRepository;
 import hermes.businessservice.repository.WalletRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 
 @Service
@@ -18,9 +17,12 @@ public class WalletServiceImpl implements WalletService {
 
     private final WalletRepository walletRepository;
 
+    private final ChargeRepository chargeRepository;
+
     @Autowired
-    public WalletServiceImpl(WalletRepository walletRepository) {
+    public WalletServiceImpl(WalletRepository walletRepository, ChargeRepository chargeRepository) {
         this.walletRepository = walletRepository;
+        this.chargeRepository = chargeRepository;
     }
 
 
@@ -42,6 +44,10 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     public void deleteWallet(Long userId) {
+        Wallet w = walletRepository.getByUserId(userId);
+
+        chargeRepository.deleteByWallet(w);
+
         walletRepository.deleteByUserId(userId);
     }
 
