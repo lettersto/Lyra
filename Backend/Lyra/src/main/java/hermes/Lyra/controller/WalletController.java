@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/business-service")
+@RequestMapping("/wallet")
 @Slf4j
 public class WalletController {
 
@@ -28,8 +28,8 @@ public class WalletController {
     }
 
 
-    @PostMapping("/{id}/wallet")
-    public ResponseEntity<ResponseWallet> createWallet(@PathVariable("id") Long userId, @RequestBody RequestWallet wallet) {
+    @PostMapping("/wallet")
+    public ResponseEntity<ResponseWallet> createWallet(@RequestParam("user_id") Long userId, @RequestBody RequestWallet wallet) {
 
         log.info("Before add wallet data");
         ModelMapper mapper = new ModelMapper();
@@ -46,8 +46,8 @@ public class WalletController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseWallet);
     }
 
-    @GetMapping("/{id}/wallet")
-    public ResponseEntity<Wallet> getWallet(@PathVariable("id") Long userId) throws Exception {
+    @GetMapping("/wallet")
+    public ResponseEntity<Wallet> getWallet(@RequestParam("user_id") Long userId) throws Exception {
 
         log.info("Before get wallet data");
         Wallet result = walletService.getWalletByUserId(userId);
@@ -71,8 +71,8 @@ public class WalletController {
     }
 
 
-    @PatchMapping("/{id}/wallet")
-    public ResponseEntity<String> updateWallet(@PathVariable("id") Long userId, @RequestParam Long coin) {
+    @PatchMapping("/wallet")
+    public ResponseEntity<String> updateWallet(@RequestParam("user_id") Long userId, @RequestParam Long coin) {
 
         log.info("Before update wallet data");
 
@@ -86,8 +86,8 @@ public class WalletController {
 
 
 
-    @DeleteMapping("/{id}/wallet")
-    public ResponseEntity<String> deleteWallet(@PathVariable("id") Long userId) {
+    @DeleteMapping("/wallet")
+    public ResponseEntity<String> deleteWallet(@RequestParam("user_id") Long userId) {
 
         log.info("Before delete wallet data");
 

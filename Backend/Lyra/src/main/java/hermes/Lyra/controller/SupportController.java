@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/business-service")
+@RequestMapping("/support")
 @Slf4j
 public class SupportController {
 
@@ -26,8 +26,8 @@ public class SupportController {
 
     SupportService supportService;
 
-    @PostMapping("/{userId}/support")
-    public ResponseEntity<ResponseSupport> createSupport(@PathVariable("userId") Long supporterId, @RequestBody RequestSupport support) {
+    @PostMapping("/support")
+    public ResponseEntity<ResponseSupport> createSupport(@RequestParam("userId") Long supporterId, @RequestBody RequestSupport support) {
 
         log.info("Before add support data");
         ModelMapper mapper = new ModelMapper();
@@ -45,8 +45,8 @@ public class SupportController {
     }
 
 
-    @GetMapping("/{user_id}/support/give")
-    public ResponseEntity<List<ResponseSupport>> getGiveSupport(@PathVariable("user_id") Long userId) throws Exception {
+    @GetMapping("/support/give")
+    public ResponseEntity<List<ResponseSupport>> getGiveSupport(@RequestParam("user_id") Long userId) throws Exception {
 
         log.info("Before get give support data");
 
@@ -63,8 +63,8 @@ public class SupportController {
     }
 
 
-    @GetMapping("/{user_id}/support/supported")
-    public ResponseEntity<List<ResponseSupport>> getSupported(@PathVariable("user_id") Long userId) throws Exception {
+    @GetMapping("/support/supported")
+    public ResponseEntity<List<ResponseSupport>> getSupported(@RequestParam("user_id") Long userId) throws Exception {
 
         log.info("Before get supported data");
 

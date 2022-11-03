@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/business-service")
+@RequestMapping("/pheed")
 @Slf4j
 public class PheedController {
 
@@ -29,8 +29,8 @@ public class PheedController {
     }
 
 
-    @PostMapping("/{user_id}/pheed")
-    public ResponseEntity<String> createPheed(@PathVariable("user_id") Long userId, @RequestBody RequestPheed pheed) {
+    @PostMapping("/pheed")
+    public ResponseEntity<String> createPheed(@RequestParam("user_id") Long userId, @RequestBody RequestPheed pheed) {
 
         log.info("Before create pheed data");
         ModelMapper mapper = new ModelMapper();
@@ -193,8 +193,8 @@ public class PheedController {
     }
 
 
-    @GetMapping("/{user_id}/pheed")
-    public ResponseEntity<List<ResponsePheed>> getPheedbyUser(@PathVariable("user_id") Long userId) throws Exception {
+    @GetMapping("/pheed")
+    public ResponseEntity<List<ResponsePheed>> getPheedbyUser(@RequestParam("user_id") Long userId) throws Exception {
 
         log.info("Before get pheed by user data");
         Iterable<Pheed> pheedList = pheedService.getPheedByUserId(userId);

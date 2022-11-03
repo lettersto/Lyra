@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/business-service")
+@RequestMapping("/wallet")
 @Slf4j
 public class ChargeController {
 
@@ -27,7 +27,7 @@ public class ChargeController {
     }
 
     // 지갑 별 충전 현황
-    @GetMapping("/wallet/{wallet_id}/charge")
+    @GetMapping("/{wallet_id}/charge")
     public ResponseEntity<List<ResponseCharge>> getCharges(@PathVariable("wallet_id") Long walletId) throws Exception {
         log.info("Before get charges data");
         Iterable<Charge> chargeList = chargeService.getChargeByAll(walletId);
@@ -45,7 +45,7 @@ public class ChargeController {
     }
 
     // 충전
-    @PostMapping("/wallet/{wallet_id}/charge")
+    @PostMapping("/{wallet_id}/charge")
     public ResponseEntity<String> createCharge(@PathVariable("wallet_id") Long walletId, @RequestBody RequestCharge charge) throws Exception {
 
         log.info("Before create charge data");
