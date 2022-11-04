@@ -25,6 +25,8 @@ public class ResponsePheed {
 
     private BigDecimal longitude;
 
+    private String location;
+
     List<PheedImg> pheedImg = new ArrayList<>();
 
     private String category;
