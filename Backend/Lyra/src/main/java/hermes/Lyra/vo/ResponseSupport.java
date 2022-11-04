@@ -11,8 +11,6 @@ public class ResponseSupport {
 
     private User busker;
 
-//    private Long BuskerId;
-
     private Integer coin;
 
     private String content;

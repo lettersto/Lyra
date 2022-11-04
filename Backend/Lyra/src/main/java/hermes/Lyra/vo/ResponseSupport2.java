@@ -10,8 +10,6 @@ public class ResponseSupport2 {
 
     private User supporter;
 
-//    private Long supporterId;
-
     private Integer coin;
 
     private String content;
