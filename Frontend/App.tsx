@@ -21,6 +21,7 @@ import AuthContext from './store/auth-context';
 import {RootStackParamList} from './constants/types';
 import NavBar from './components/Navigation/NavBar';
 import Colors from './constants/Colors';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 declare global {
   namespace ReactNavigation {
@@ -69,19 +70,21 @@ const App = () => {
   };
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthContext.Provider value={authValue}>
-        <SafeAreaView style={backgroundStyle}>
-          <StatusBar
-            backgroundColor={Colors.black500}
-            barStyle={'light-content'}
-          />
-          <NavigationContainer>
-            <NavBar />
-          </NavigationContainer>
-        </SafeAreaView>
-      </AuthContext.Provider>
-    </QueryClientProvider>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <QueryClientProvider client={queryClient}>
+        <AuthContext.Provider value={authValue}>
+          <SafeAreaView style={backgroundStyle}>
+            <StatusBar
+              backgroundColor={Colors.black500}
+              barStyle={'light-content'}
+            />
+            <NavigationContainer>
+              <NavBar />
+            </NavigationContainer>
+          </SafeAreaView>
+        </AuthContext.Provider>
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 };
 
