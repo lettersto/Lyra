@@ -197,7 +197,7 @@ public class UserController {
         String accessToken = jwtTokenProvider.createToken(user.getEmail(), user.getRoles());
         String refreshToken = jwtTokenProvider.createRefreshToken(user.getEmail(), user.getRoles());
         user.changeRefreshToken(refreshToken);
-        return new ResponseEntity<>(accessToken, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(accessToken);
     }
 
 
