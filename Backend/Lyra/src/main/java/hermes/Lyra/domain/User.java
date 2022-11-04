@@ -91,9 +91,9 @@ public class User implements UserDetails {
         this.refreshToken = refreshToken;
     }
 
-
-
-
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Talk> talks = new ArrayList<>();
 
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 //    @JsonIgnore
