@@ -1,7 +1,6 @@
 package hermes.Lyra.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import hermes.Lyra.domain.Comment;
 import hermes.Lyra.domain.PheedImg;
 import hermes.Lyra.domain.PheedTag;
 import lombok.Data;
@@ -40,4 +39,5 @@ public class ResponsePheed {
     private Timestamp time;
 
     List<ResponseComment> comment = new ArrayList<>();
+
 }
