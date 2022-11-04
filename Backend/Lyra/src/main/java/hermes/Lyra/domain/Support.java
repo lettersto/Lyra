@@ -18,12 +18,11 @@ public class Support {
     @Column(name = "support_id")
     private Long id;
 
-
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne
     @JoinColumn(name = "busker_id")
     private User busker;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne
     @JoinColumn(name = "supporter_id")
     private User supporter;
 
