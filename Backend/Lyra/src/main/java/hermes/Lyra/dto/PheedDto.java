@@ -23,6 +23,8 @@ public class PheedDto {
 
     private BigDecimal longitude;
 
+    private String location;
+
     private List<PheedImg> pheedImg;
 
     private Category category;

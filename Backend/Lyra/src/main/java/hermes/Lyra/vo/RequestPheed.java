@@ -21,6 +21,8 @@ public class RequestPheed {
 
     private BigDecimal longitude;
 
+    private String location;
+
     private Category category;
 
     private List<String> pheedTag;
