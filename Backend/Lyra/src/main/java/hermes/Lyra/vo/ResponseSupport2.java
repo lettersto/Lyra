@@ -1,16 +1,16 @@
 package hermes.Lyra.vo;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+
+import hermes.Lyra.domain.User;
 import lombok.Data;
 
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseSupport2 {
 
-    private Long supporterId;
+    private User supporter;
 
-//    private Long buskerId;
+//    private Long supporterId;
 
     private Integer coin;
 
