@@ -1,9 +1,10 @@
 package hermes.Lyra.controller;
 
 import hermes.Lyra.Service.UserService;
-import hermes.Lyra.dto.Message;
-import hermes.Lyra.dto.StatusEnum;
-import hermes.Lyra.dto.UserDto;
+import hermes.Lyra.config.JwtTokenProvider;
+import hermes.Lyra.domain.User;
+import hermes.Lyra.dto.*;
+import hermes.Lyra.minjae.requestLogin;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.Charset;
 import java.nio.file.AccessDeniedException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,60 +30,13 @@ public class UserController {
     private final UserService userService;
 
     @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
     public UserController(Environment env, UserService userService) {
         this.env = env;
         this.userService = userService;
     }
-
-//    @ApiOperation(value = "회원가입",notes = "email과 password를 받아서 회원가입한다.")
-//    @PostMapping("/api/auth/user/signUp")
-//    public ResponseEntity<?> signUp(@RequestBody UserSaveDto userSaveDto){
-//        Message message = new Message();
-//        HttpHeaders headers= new HttpHeaders();
-//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//        try {
-//            long id = userService.signUp(userSaveDto.toEntity());
-//            message.setStatus(StatusEnum.OK);
-//            message.setMessage("회원가입 성공");
-//            message.setData("userId: "+ id);
-//            return new ResponseEntity<>(message, headers, HttpStatus.OK);
-//        } catch (IllegalArgumentException | IllegalStateException e){
-//            e.printStackTrace();
-//            message.setStatus(StatusEnum.BAD_REQUEST);
-//            message.setMessage("가입 이메일이 중복됩니다.--추후 변경");
-//            return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
-//        } catch (Exception e){
-//            e.printStackTrace();
-//            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-//            message.setMessage("서버 에러 발생");
-//            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-//
-//    @ApiOperation(value = "로그인 요청",notes = "email과 password로 로그인을 요청한다.")
-//    @PostMapping("/api/auth/user/login")
-//    public ResponseEntity<?> login(@RequestBody UserLoginRequestDto userLoginDto){
-//        Message message = new Message();
-//        HttpHeaders headers= new HttpHeaders();
-//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//        try {
-//            UserLoginDto user = userService.login(userLoginDto);
-//            message.setStatus(StatusEnum.OK);
-//            message.setMessage("로그인 성공");
-//            message.setData(user);
-//            return new ResponseEntity<>(message, headers, HttpStatus.OK);
-//        } catch (IllegalArgumentException | IllegalStateException e){
-//            e.printStackTrace();
-//            message.setStatus(StatusEnum.BAD_REQUEST);
-//            message.setMessage("이메일 혹은 비밀번호가 맞지 않습니다.");
-//            return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
-//        } catch (Exception e){
-//            e.printStackTrace();
-//            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-//            message.setMessage("서버 에러 발생");
-//            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
 
     @ApiOperation(value = "로그아웃을 요청한다.",notes = "refresh 토큰으로 로그아웃을 요청한다.") //리프레쉬토큰으로
     @GetMapping("/logout")
@@ -186,6 +142,64 @@ public class UserController {
             return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @ApiOperation(value = "소셜로그인 - 멤버정보 요청",notes = "발급받은 accessToken으로 멤버정보를 요청한다.")
+    @GetMapping("/me")
+    public ResponseEntity<?> getMember(
+            @RequestHeader(value="X-AUTH-TOKEN") String token) throws Exception {
+        Message message = new Message();
+        HttpHeaders headers= new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        message.setStatus(StatusEnum.OK);
+        message.setMessage("access token으로 정보 불러오기 성공");
+        message.setData(userService.getUser(token));
+        return new ResponseEntity<>(message, headers, HttpStatus.OK);
+
+    }
+
+    @ApiOperation(value = "access token 재발급 요청",notes = "refresh 토큰으로 access 토큰을 재발급 신청한다.")
+    @PostMapping(value = "/refresh")
+    public ResponseEntity<?> refreshToken(
+            @RequestHeader(value="X-AUTH-TOKEN") String token,
+            @RequestHeader(value="REFRESH-TOKEN") String refreshToken ) {
+        Message message = new Message();
+        HttpHeaders headers= new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        try {
+            message.setStatus(StatusEnum.OK);
+            message.setMessage("ACCESS TOKEN 재발급 성공");
+            message.setData(userService.refreshToken(token, refreshToken));
+            return new ResponseEntity<>(message, headers, HttpStatus.OK);
+        } catch (AccessDeniedException e){
+            e.printStackTrace();
+            message.setStatus(StatusEnum.UNAUTHORIZED);
+            message.setMessage("REFRESH TOKEN이 일치하지 않습니다.");
+            return new ResponseEntity<>(message, headers, HttpStatus.OK);
+        } catch (IllegalStateException e){
+            e.printStackTrace();
+            return new ResponseEntity<String>("RE LOGIN", HttpStatus.PAYMENT_REQUIRED);
+        } catch (Exception e){
+            e.printStackTrace();
+            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+            message.setMessage("서버 에러 발생");
+            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @ApiOperation(value = "로그인을 요청한다.",notes = "refresh 토큰으로 로그인을 요청한다.") //리프레쉬토큰으로
+    @GetMapping("/login")
+    public ResponseEntity<?> login(
+            @RequestBody UserLoginRequestDto userLoginRequestDto) {
+        // userId로 확인한 값이 DB에 저장되어 있는지 확인 있으면 User 가져오고, 없으면 만들어서 User에 할당
+        User user = userService.join(userLoginRequestDto);
+        String accessToken = jwtTokenProvider.createToken(user.getEmail(), user.getRoles());
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getEmail(), user.getRoles());
+        user.changeRefreshToken(refreshToken);
+        return new ResponseEntity<>(accessToken, HttpStatus.OK);
+    }
+
 
 //    @ApiOperation(value = "닉네임으로 회원 리스트를 조회한다.",notes = "닉네임으로 회원들의 리스트를 조회한다.")
 //    @GetMapping("/api/temp/user/search/{nickname}") // /{page}
@@ -273,49 +287,29 @@ public class UserController {
 //        return new ResponseEntity<>(message, headers, HttpStatus.OK);
 //    }
 
-    @ApiOperation(value = "소셜로그인 - 멤버정보 요청",notes = "발급받은 accessToken으로 멤버정보를 요청한다.")
-    @GetMapping("/me")
-    public ResponseEntity<?> getMember(
-            @RequestHeader(value="X-AUTH-TOKEN") String token) throws Exception {
-        Message message = new Message();
-        HttpHeaders headers= new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-
-        message.setStatus(StatusEnum.OK);
-        message.setMessage("access token으로 정보 불러오기 성공");
-        message.setData(userService.getUser(token));
-        return new ResponseEntity<>(message, headers, HttpStatus.OK);
-
-    }
-
-    @ApiOperation(value = "access token 재발급 요청",notes = "refresh 토큰으로 access 토큰을 재발급 신청한다.")
-    @PostMapping(value = "/refresh")
-    public ResponseEntity<?> refreshToken(
-            @RequestHeader(value="X-AUTH-TOKEN") String token,
-            @RequestHeader(value="REFRESH-TOKEN") String refreshToken ) {
-        Message message = new Message();
-        HttpHeaders headers= new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-
-        try {
-            message.setStatus(StatusEnum.OK);
-            message.setMessage("ACCESS TOKEN 재발급 성공");
-            message.setData(userService.refreshToken(token, refreshToken));
-            return new ResponseEntity<>(message, headers, HttpStatus.OK);
-        } catch (AccessDeniedException e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.UNAUTHORIZED);
-            message.setMessage("REFRESH TOKEN이 일치하지 않습니다.");
-            return new ResponseEntity<>(message, headers, HttpStatus.OK);
-        } catch (IllegalStateException e){
-            e.printStackTrace();
-            return new ResponseEntity<String>("RE LOGIN", HttpStatus.PAYMENT_REQUIRED);
-        } catch (Exception e){
-            e.printStackTrace();
-            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-            message.setMessage("서버 에러 발생");
-            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @ApiOperation(value = "로그인 요청",notes = "email과 password로 로그인을 요청한다.")
+//    @PostMapping("/api/auth/user/login")
+//    public ResponseEntity<?> login(@RequestBody UserLoginRequestDto userLoginDto){
+//        Message message = new Message();
+//        HttpHeaders headers= new HttpHeaders();
+//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+//        try {
+//            UserLoginDto user = userService.login(userLoginDto);
+//            message.setStatus(StatusEnum.OK);
+//            message.setMessage("로그인 성공");
+//            message.setData(user);
+//            return new ResponseEntity<>(message, headers, HttpStatus.OK);
+//        } catch (IllegalArgumentException | IllegalStateException e){
+//            e.printStackTrace();
+//            message.setStatus(StatusEnum.BAD_REQUEST);
+//            message.setMessage("이메일 혹은 비밀번호가 맞지 않습니다.");
+//            return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+//            message.setMessage("서버 에러 발생");
+//            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 }
 
