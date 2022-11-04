@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {Dispatch, SetStateAction} from 'react';
 import {View, StyleSheet, ScrollView, ViewStyle} from 'react-native';
 import CategoryBtn from './CategoryBtn';
 
@@ -23,13 +23,15 @@ const PheedCategory = ({
   CustomStyle,
   scrollStyle,
   Category,
+  currentCategory,
+  SetCurrentCategory,
 }: {
   CustomStyle?: ViewStyle;
   scrollStyle?: ViewStyle;
   Category: string;
+  currentCategory: string;
+  SetCurrentCategory: Dispatch<SetStateAction<string>>;
 }) => {
-  const [isactive, setIsActive] = useState<string>('');
-
   return (
     <View style={[styles.buttons, CustomStyle]}>
       <ScrollView horizontal style={scrollStyle}>
@@ -40,8 +42,8 @@ const PheedCategory = ({
                 <CategoryBtn
                   title={category.label}
                   code={category.code}
-                  isactive={isactive}
-                  setIsActive={setIsActive}
+                  isactive={currentCategory}
+                  setIsActive={SetCurrentCategory}
                 />
               </View>
             );
@@ -56,8 +58,8 @@ const PheedCategory = ({
                 <CategoryBtn
                   title={category.label}
                   code={category.code}
-                  isactive={isactive}
-                  setIsActive={setIsActive}
+                  isactive={currentCategory}
+                  setIsActive={SetCurrentCategory}
                 />
               </View>
             );

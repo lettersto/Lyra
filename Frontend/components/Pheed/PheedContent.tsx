@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   StyleSheet,
@@ -8,23 +8,36 @@ import {
   Pressable,
 } from 'react-native';
 import Colors from '../../constants/Colors';
-import data from './pheedData.json';
 import LinearGradient from 'react-native-linear-gradient';
 import CircleProfile from '../Utils/CircleProfile';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon3 from 'react-native-vector-icons/AntDesign';
 import Icon4 from 'react-native-vector-icons/Ionicons';
-import Button from '../Utils/Button';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import GradientLine from '../Utils/GradientLine';
 import MoreInfo from './MoreInfo';
+import axios from '../../api/axios';
 
 const PheedContent = () => {
+  const [contents, SetContents] = useState<any[]>([]);
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    axios
+      .get('/pheed/all')
+      .then(function (response) {
+        SetContents(response.data.reverse());
+        // console.log(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, [isFocused]);
+
   const navigation = useNavigation();
-  const goChat = () => {
-    navigation.navigate('Chat');
-  };
+  // const goChat = () => {
+  //   navigation.navigate('Chat');
+  // };
 
   const [isLike, setIsLike] = useState(false);
   const activeLike = () => {
@@ -35,9 +48,29 @@ const PheedContent = () => {
     }
   };
 
+  function sliceYear(num: number) {
+    return num.toString().slice(2, 4);
+  }
+  function padTo2Digits(num: number) {
+    return num.toString().padStart(2, '0');
+  }
+
   return (
     <ScrollView style={styles.pheedCotainer}>
-      {data.map((content, i) => {
+      {contents.map((content, i) => {
+        const milliseconds = content.startTime;
+        const date = new Date(milliseconds);
+        const datetime =
+          [sliceYear(date.getFullYear())] +
+          '.' +
+          [padTo2Digits(date.getMonth() + 1)] +
+          '.' +
+          [padTo2Digits(date.getDate())] +
+          ' ' +
+          [padTo2Digits(date.getHours())] +
+          ':' +
+          [padTo2Digits(date.getMinutes())];
+
         return (
           <View key={i}>
             <LinearGradient
@@ -55,7 +88,8 @@ const PheedContent = () => {
                       <CircleProfile size="small" isGradient={false} />
                     </View>
                     <View>
-                      <Text style={styles.boldtext}>{content.name}</Text>
+                      <Text style={styles.boldtext}>APOLLON</Text>
+                      {/* <Text style={styles.boldtext}>{content.name}</Text> */}
                       <View>
                         <View style={styles.dateContainer}>
                           <Icon
@@ -64,7 +98,7 @@ const PheedContent = () => {
                             size={16}
                             style={styles.clock}
                           />
-                          <Text style={styles.text}>{content.datetime}</Text>
+                          <Text style={styles.text}>{datetime}</Text>
                         </View>
                         <View style={styles.dateContainer}>
                           <Icon4
@@ -79,7 +113,7 @@ const PheedContent = () => {
                     </View>
                   </View>
                   <View style={styles.liveContainer}>
-                    {content.isLive ? (
+                    {/* {content.isLive ? (
                       <Button
                         title="LIVE"
                         btnSize="medium"
@@ -98,7 +132,7 @@ const PheedContent = () => {
                         onPress={goChat}
                         disabled
                       />
-                    )}
+                    )} */}
                   </View>
                 </View>
                 <View style={styles.lineContainer}>
@@ -107,11 +141,11 @@ const PheedContent = () => {
                 <Pressable
                   onPress={() => navigation.navigate('DetailPheed', content)}>
                   <View style={styles.contentContainer}>
-                    {content.imgUrl.length !== 0 ? (
+                    {/* {content.imgUrl.length !== 0 ? (
                       <Text style={styles.text}>{content.imgUrl}</Text>
                     ) : (
                       <></>
-                    )}
+                    )} */}
                     <Text style={styles.boldtext}>{content.title}</Text>
                     <MoreInfo content={content.content} />
                   </View>
@@ -126,7 +160,11 @@ const PheedContent = () => {
                       style={styles.clock}
                     />
                     <Text style={styles.text}>
-                      댓글 ({content.comments?.length})
+                      댓글 (
+                      {content.comment.length === 0
+                        ? 0
+                        : content.comment.length}
+                      )
                     </Text>
                   </View>
                   <Pressable onPress={activeLike}>
@@ -146,7 +184,7 @@ const PheedContent = () => {
                           style={styles.clock}
                         />
                       )}
-                      <Text style={styles.text}>{content.like}</Text>
+                      {/* <Text style={styles.text}>{content.like}</Text> */}
                     </View>
                   </Pressable>
                 </View>

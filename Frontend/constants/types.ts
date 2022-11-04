@@ -35,6 +35,7 @@ export type RootStackParamList = {
   MainProfile: undefined;
   ProfileDetail: undefined;
   DetailPheed: PheedDetailParamList;
+  UpdatePheed: PheedDetailParamList;
   ShortsDetail: Array<ShortsDetailParamList>;
   Splash: undefined;
   Login: undefined;
@@ -54,18 +55,25 @@ export type RootTabParamList = {
 
 // Pheed
 export type PheedDetailParamList = {
-  name: string | undefined;
-  profileImg: string | undefined;
-  datetime: string | undefined;
+  pheedId: number;
+  name: string;
+  profileImg: string;
+  startTime: Date;
+  time: Date;
   location: string;
-  title: string | undefined;
+  title: string;
   content: string;
-  comment: number | undefined;
   comments: Array<CommentParamList>;
   like: number | undefined;
   isLive: boolean | undefined;
-  imgUrl: string[] | undefined;
-  tags: Array<string>;
+  pheedImg: string[] | undefined;
+  pheedTag: Array<TagDetailParamList>;
+  category: string;
+};
+
+export type TagDetailParamList = {
+  id: number;
+  name: string;
 };
 
 // export type ShortsDetailParamList = {

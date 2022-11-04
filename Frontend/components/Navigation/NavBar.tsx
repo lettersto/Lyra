@@ -37,6 +37,7 @@ const NavBar = () => {
         component={PheedStack}
         options={{
           tabBarLabel: 'Home',
+          unmountOnBlur: true,
           tabBarIcon: ({color, size}) => (
             <Icon2 name="home-outline" color={color} size={size} />
           ),

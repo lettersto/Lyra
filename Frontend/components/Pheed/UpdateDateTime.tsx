@@ -6,7 +6,13 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import Icon from 'react-native-vector-icons/Feather';
 
-const DateTime = ({SetDate}: {SetDate: Dispatch<SetStateAction<Date>>}) => {
+const UpDateTime = ({
+  pheedDate,
+  SetDate,
+}: {
+  pheedDate: Date;
+  SetDate: Dispatch<SetStateAction<Date>>;
+}) => {
   const [isDatePickerVisible, setDatePickerVIsibility] = useState(false);
   const [text, onChangeText] = useState<string>('');
 
@@ -107,4 +113,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DateTime;
+export default UpDateTime;
