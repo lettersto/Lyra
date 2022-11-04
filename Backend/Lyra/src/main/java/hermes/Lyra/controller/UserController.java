@@ -189,7 +189,7 @@ public class UserController {
 
 
     @ApiOperation(value = "로그인을 요청한다.",notes = "refresh 토큰으로 로그인을 요청한다.") //리프레쉬토큰으로
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(
             @RequestBody UserLoginRequestDto userLoginRequestDto) {
         // userId로 확인한 값이 DB에 저장되어 있는지 확인 있으면 User 가져오고, 없으면 만들어서 User에 할당
