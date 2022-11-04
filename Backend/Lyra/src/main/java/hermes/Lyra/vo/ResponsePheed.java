@@ -1,5 +1,6 @@
 package hermes.Lyra.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import hermes.Lyra.domain.PheedImg;
 import hermes.Lyra.domain.PheedTag;
 import lombok.Data;
@@ -30,5 +31,6 @@ public class ResponsePheed {
 
     List<PheedTag> pheedTag = new ArrayList<>();
 
+    @JsonFormat(timezone = "Asia/Seoul", pattern = "yyyy-MM-dd HH:mm")
     private Timestamp time;
 }
