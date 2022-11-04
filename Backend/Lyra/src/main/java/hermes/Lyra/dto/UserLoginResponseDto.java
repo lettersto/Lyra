@@ -10,9 +10,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class UserLoginResponseDto {
+    Long id;
     String email;
     String accessToken;
     String refreshToken;
-    Long id;
     String nickname;
 }
