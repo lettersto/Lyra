@@ -26,19 +26,20 @@ const UpdatePheedScreen = ({route}: Props) => {
     route.params.content,
   );
   const [date, SetDate] = useState<Date>(route.params.startTime);
-  const [tags, SetTags] = useState<any[]>(route.params.pheedTag);
+  const [tags, SetTags] = useState<any[]>([]);
+  console.log(route.params.pheedTag);
 
   const register = () => {
     axios
-      .patch('/pheed/?user_id=1', {
+      .patch(`/pheed/${route.params.pheedId}`, {
         category: category,
         content: enteredContent,
-        latitude: 0,
-        longitude: 0,
+        latitude: 1,
+        longitude: 1,
         pheedTag: tags,
         startTime: date,
         title: enteredTitle,
-        location: '하남산단6번로',
+        location: '하남산단로',
       })
       .then(function (response) {
         console.log(response);
