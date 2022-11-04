@@ -2,8 +2,10 @@ package hermes.Lyra.Service;
 
 import hermes.Lyra.config.JwtTokenProvider;
 import hermes.Lyra.domain.Repository.UserRepository;
+import hermes.Lyra.domain.Repository.UserRepository2;
 import hermes.Lyra.domain.User;
 import hermes.Lyra.dto.UserDto;
+import hermes.Lyra.dto.UserLoginRequestDto;
 import hermes.Lyra.dto.UserLoginResponseDto;
 import hermes.Lyra.error.Exception.custom.SomethingNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -11,11 +13,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final UserRepository2 userRepository2;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
@@ -38,6 +44,24 @@ public class UserService {
 
         User user = userRepository.findByEmail(email);
         return user;
+    }
+
+    @Transactional
+    public User join(UserLoginRequestDto userLoginRequestDto){
+        User user = userRepository2.findByEmail(userLoginRequestDto.getEmail()).orElseGet(null);
+        if(user == null) {
+            User newUser = new User();
+            System.out.println("input db");
+            newUser.setEmail(userLoginRequestDto.getEmail());
+            newUser.setName(userLoginRequestDto.getName());
+            newUser.setImage_url(userLoginRequestDto.getImage_url());
+            List<String> roles = new ArrayList<>();
+            roles.add("ROLE_USER");
+            newUser.setRoles(roles);
+            return newUser;
+        } else {
+            return user;
+        }
     }
 
     @Transactional
