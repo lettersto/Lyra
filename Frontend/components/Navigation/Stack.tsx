@@ -35,7 +35,8 @@ import {TabScreens} from './NavBar';
 import {RootStackParamList} from '../../constants/types';
 import Colors from '../../constants/Colors';
 import {LocationModal} from '../Utils/LocationModal';
-import LocationSearchScreen from '../../screens/Map/LocationSearchScreen';
+import FirstTownSearchScreen from '../../screens/Map/FirstTownSearchScreen';
+import TownSearchScreen from '../../screens/Map/TownSearchScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -70,10 +71,7 @@ export const PheedStack = () => {
                 presentation: 'transparentModal',
               }}>
               <Stack.Screen name="LocationModal" component={LocationModal} />
-              <Stack.Screen
-                name="LocationSearch"
-                component={LocationSearchScreen}
-              />
+              <Stack.Screen name="TownSearch" component={TownSearchScreen} />
             </Stack.Group>
           </Stack.Group>
 
@@ -132,6 +130,11 @@ export const PheedStack = () => {
             options={{
               headerShown: false,
             }}
+          />
+          <Stack.Screen
+            name="FirstTownSearch"
+            component={FirstTownSearchScreen}
+            options={{headerShown: false}}
           />
         </>
       )}
