@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {Dispatch, SetStateAction, useState} from 'react';
 import {View, Alert, StyleSheet, Image, ScrollView} from 'react-native';
 import Colors from '../../constants/Colors';
 import Button from '../Utils/Button';
@@ -6,8 +6,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import ImagePicker from 'react-native-image-crop-picker';
 
-const Gallery = () => {
-  const [Photos, SetPhotos] = useState<any[]>([]);
+const Gallery = ({SetPhotos}: {SetPhotos: Dispatch<SetStateAction<any[]>>}) => {
+  const [images, SetImages] = useState<any[]>([]);
   const openPicker = async () => {
     try {
       const response = await ImagePicker.openPicker({
@@ -18,6 +18,7 @@ const Gallery = () => {
         multiple: true,
         maxFiles: 5,
       });
+      SetImages(response);
       SetPhotos(response);
     } catch (e) {
       Alert.alert('error');
@@ -45,11 +46,11 @@ const Gallery = () => {
               customStyle={styles.button}
             />
           </View>
-          {Photos.length === 0 ? (
+          {images.length === 0 ? (
             <></>
           ) : (
             <>
-              {Photos.map(photo => (
+              {images.map(photo => (
                 <Image
                   source={{uri: photo.path}}
                   style={styles.imgCnt}

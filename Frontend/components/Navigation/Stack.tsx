@@ -10,6 +10,7 @@ import ShortsDetailScreen from '../../screens/Home/Shorts/ShortsDetailScreen';
 import CreateShortsScreen from '../../screens/Home/Shorts/CreateShortsScreen';
 import PheedDetailTitle from './TopNavBar/PheedDetailTitle';
 import SearchPheedScreen from '../../screens/Home/Pheed/SearchPheedScreen';
+import UpdatePheedScreen from '../../screens/Home/Pheed/UpdatePheedScreen';
 
 // Profile
 import MainProfileScreen from '../../screens/Profile/MainProfileScreen';
@@ -81,6 +82,7 @@ export const PheedStack = () => {
             options={{title: ''}}
           />
           <Stack.Screen name="CreatePheed" component={CreatePheedScreen} />
+          <Stack.Screen name="UpdatePheed" component={UpdatePheedScreen} />
           <Stack.Screen
             name="ShortsDetail"
             component={ShortsDetailScreen}
