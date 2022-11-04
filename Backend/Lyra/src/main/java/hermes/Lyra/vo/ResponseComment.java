@@ -15,6 +15,5 @@ public class ResponseComment {
 
     private Long userId;
 
-//    private Pheed pheed;
 
 }

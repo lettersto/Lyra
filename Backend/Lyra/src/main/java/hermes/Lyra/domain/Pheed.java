@@ -40,6 +40,9 @@ public class Pheed {
     @Column(nullable = false)
     private BigDecimal longitude;
 
+    @Column(nullable = false)
+    private String location;
+
     @OneToMany(mappedBy = "id",cascade = CascadeType.ALL)
     List<PheedImg> pheedImg = new ArrayList<>();
 
