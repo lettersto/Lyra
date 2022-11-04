@@ -26,10 +26,10 @@ const LoginScreen = () => {
     navigation.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
   }, [navigation]);
 
-  const LoginButton = ({title}: {title: string}) => {
-    const {locationPermitted, walletCreated} = useContext(AuthContext);
+  const LoginButton = ({title, type}: {title: string; type: string}) => {
+    const {locationPermitted, walletCreated, setIsLoggedIn} = useContext(AuthContext);
 
-    const onLoginPress = () => {
+    const onKakaoLoginPress = () => {
       if (locationPermitted && walletCreated) {
         navigation.navigate('Home');
       } else {
@@ -37,11 +37,16 @@ const LoginScreen = () => {
       }
     };
 
+    const onGoogleLoginPress = () => {
+      setIsLoggedIn(true);
+      navigation.navigate('Home');
+    };
+
     return (
       <TouchableOpacity
         style={styles.buttonContainer}
         activeOpacity={0.7}
-        onPress={onLoginPress}>
+        onPress={type === 'Kakao' ? onKakaoLoginPress : onGoogleLoginPress}>
         <Text style={styles.buttonText}>{title}</Text>
       </TouchableOpacity>
     );
@@ -54,8 +59,8 @@ const LoginScreen = () => {
         resizeMode="cover"
         style={styles.background}>
         <View style={styles.buttons}>
-          <LoginButton title={'Google로 시작하기'} />
-          <LoginButton title={'Kakao로 시작하기'} />
+          <LoginButton title={'Google로 시작하기'} type="Google" />
+          <LoginButton title={'Kakao로 시작하기'} type="Kakao" />
         </View>
       </ImageBackground>
     </View>

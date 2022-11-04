@@ -42,6 +42,7 @@ export type RootStackParamList = {
   CreateShorts: VideoParamList;
   LocationPermission: undefined;
   WalletCreation: undefined;
+  SearchPheed: undefined;
 };
 
 export type RootTabParamList = {
