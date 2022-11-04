@@ -28,6 +28,7 @@ export type RootStackParamList = {
   MainPheed: undefined;
   MainMap: undefined;
   LocationModal: undefined;
+  TownModal: undefined;
   LocationSearch: undefined;
   FirstTownSearch: undefined;
   TownSearch: undefined;

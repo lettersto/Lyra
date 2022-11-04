@@ -39,6 +39,8 @@ import Colors from '../../constants/Colors';
 import {LocationModal} from '../Utils/LocationModal';
 import FirstTownSearchScreen from '../../screens/Map/FirstTownSearchScreen';
 import TownSearchScreen from '../../screens/Map/TownSearchScreen';
+import LocationSearchScreen from '../../screens/Map/LocationSearchScreen';
+import {TownModal} from '../Utils/TownModal';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -72,7 +74,7 @@ export const PheedStack = () => {
                 headerShown: false,
                 presentation: 'transparentModal',
               }}>
-              <Stack.Screen name="LocationModal" component={LocationModal} />
+              <Stack.Screen name="TownModal" component={TownModal} />
               <Stack.Screen name="TownSearch" component={TownSearchScreen} />
             </Stack.Group>
           </Stack.Group>
@@ -163,13 +165,29 @@ export const MapStack = () => {
           fontSize: 20,
         },
       }}>
-      <Stack.Screen
-        name="MainMap"
-        component={MainMapScreen}
-        options={{
+      <Stack.Group
+        screenOptions={{
           headerTitle: () => <MapTitle />,
-        }}
-      />
+          headerBackVisible: false,
+        }}>
+        <Stack.Group screenOptions={{presentation: 'card'}}>
+          <Stack.Screen
+            name="MainMap"
+            component={MainMapScreen}
+            // options={{
+            //   headerTitle: () => <MapTitle />,
+            // }}
+          />
+        </Stack.Group>
+        <Stack.Group
+          screenOptions={{
+            headerShown: false,
+            presentation: 'transparentModal',
+          }}>
+          <Stack.Screen name="TownModal" component={TownModal} />
+          <Stack.Screen name="TownSearch" component={TownSearchScreen} />
+        </Stack.Group>
+      </Stack.Group>
     </Stack.Navigator>
   );
 };

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import MapStyle from './mapStyle';
 import Colors from '../../constants/Colors';
 import {profileData} from './profileData';
@@ -32,8 +32,8 @@ const Map = () => {
 
   if (!location) {
     return (
-      <View>
-        <Text>Loading...</Text>
+      <View style={styles.body}>
+        <Text style={styles.loadingtext}>Loading...</Text>
       </View>
     );
   }
@@ -54,7 +54,6 @@ const Map = () => {
           showsUserLocation={true}
           showsMyLocationButton={true}>
           {profileData.map((val, i) => {
-            // return <Marker coordinate={val.coords} image={val.img} />;
             return (
               <View key={i} style={[styles.profile]}>
                 <Marker coordinate={val.coords}>
@@ -64,18 +63,23 @@ const Map = () => {
             );
           })}
         </MapView>
-        {/* <Marker coordinate={location}>
-          <Icon name="map-marker" size={20} color="white" />
-        </Marker> */}
       </View>
     </>
   );
 };
 
 const styles = StyleSheet.create({
+  body: {
+    flex: 1,
+    backgroundColor: Colors.black500,
+  },
+  loadingtext: {
+    flex: 1,
+    top: '50%',
+    textAlign: 'center',
+    color: Colors.gray300,
+  },
   profile: {
-    // position: 'absolute',
-    // zIndex: 1,
     borderWidth: 3,
     borderRadius: 100,
     borderColor: Colors.purple300,
