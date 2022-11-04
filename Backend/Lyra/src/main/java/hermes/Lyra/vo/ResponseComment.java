@@ -8,6 +8,8 @@ import java.sql.Timestamp;
 @Data
 public class ResponseComment {
 
+    private Long id;
+
     private String content;
 
     @JsonFormat(timezone = "Asia/Seoul", pattern = "yyyy-MM-dd HH:mm")

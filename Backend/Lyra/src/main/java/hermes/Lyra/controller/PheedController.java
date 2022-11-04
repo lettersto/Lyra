@@ -81,7 +81,7 @@ public class PheedController {
         Optional<Pheed> pheed = pheedService.getPheedById(pheedId);
 
         ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+//        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         ResponsePheed responsePheed = mapper.map(pheed.get(), ResponsePheed.class);
         responsePheed.setUserId(pheed.get().getUser().getId());

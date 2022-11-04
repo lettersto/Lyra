@@ -66,4 +66,8 @@ public class Pheed {
     @OneToMany(mappedBy = "pheed", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Comment> comment = new ArrayList<>();
+
+    @OneToMany(mappedBy = "pheed", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Participant> participant = new ArrayList<>();
 }
