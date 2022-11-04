@@ -3,20 +3,20 @@ import {View, StyleSheet, ScrollView, ViewStyle} from 'react-native';
 import CategoryBtn from './CategoryBtn';
 
 const PHEED_CATEGORY = [
-  {label: '음악', code: 1},
-  {label: '댄스', code: 2},
-  {label: '악기', code: 3},
-  {label: '마술', code: 4},
-  {label: '기타', code: 5},
+  {label: '음악', code: 'song'},
+  {label: '댄스', code: 'dance'},
+  {label: '악기', code: 'instrument'},
+  {label: '예술', code: 'art'},
+  {label: '기타', code: 'etc'},
 ];
 
 const MAIN_CATEGORY = [
-  {label: '전체', code: 1},
-  {label: '음악', code: 2},
-  {label: '댄스', code: 3},
-  {label: '악기', code: 4},
-  {label: '마술', code: 5},
-  {label: '기타', code: 6},
+  {label: '전체', code: 'all'},
+  {label: '음악', code: 'song'},
+  {label: '댄스', code: 'dance'},
+  {label: '악기', code: 'instrument'},
+  {label: '예술', code: 'art'},
+  {label: '기타', code: 'etc'},
 ];
 
 const PheedCategory = ({
@@ -28,7 +28,7 @@ const PheedCategory = ({
   scrollStyle?: ViewStyle;
   Category: string;
 }) => {
-  const [isactive, setIsActive] = useState<number>(1);
+  const [isactive, setIsActive] = useState<string>('');
 
   return (
     <View style={[styles.buttons, CustomStyle]}>
