@@ -5,12 +5,14 @@ import Button from '../Utils/Button';
 import Colors from '../../constants/Colors';
 
 const Tag = ({
+  PheedTags,
   SetPheedTags,
 }: {
+  PheedTags: string[];
   SetPheedTags: Dispatch<SetStateAction<string[]>>;
 }) => {
   const [enteredValue, setEnteredValue] = useState<string>('');
-  const [tags, setTag] = useState<string[]>([]);
+  const [tags, setTag] = useState<string[]>(PheedTags);
   const [show, setShow] = useState<boolean>(false);
 
   const submit = () => {
