@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ImageBackground,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -13,6 +14,7 @@ import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import AuthContext from '../../store/auth-context';
 import {RootStackParamList, RootTabParamList} from '../../constants/types';
 import Colors from '../../constants/Colors';
+import StarEffect from '../../components/Utils/StarEffect';
 
 type LoginNavigationProps = CompositeNavigationProp<
   BottomTabNavigationProp<RootTabParamList, 'Home'>,
@@ -27,7 +29,8 @@ const LoginScreen = () => {
   }, [navigation]);
 
   const LoginButton = ({title, type}: {title: string; type: string}) => {
-    const {locationPermitted, walletCreated, setIsLoggedIn} = useContext(AuthContext);
+    const {locationPermitted, walletCreated, setIsLoggedIn} =
+      useContext(AuthContext);
 
     const onKakaoLoginPress = () => {
       if (locationPermitted && walletCreated) {
@@ -55,24 +58,40 @@ const LoginScreen = () => {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require('../../assets/image/login_background.png')}
+        source={require('../../assets/image/star_background.jpg')}
         resizeMode="cover"
         style={styles.background}>
-        <View style={styles.buttons}>
-          <LoginButton title={'Google로 시작하기'} type="Google" />
-          <LoginButton title={'Kakao로 시작하기'} type="Kakao" />
+        <StarEffect />
+        <View style={styles.content}>
+          <View />
+          <Text style={styles.titleText}>Lyra</Text>
+          <View>
+            <LoginButton title={'Google로 시작하기'} type="Google" />
+            <LoginButton title={'Kakao로 시작하기'} type="Kakao" />
+          </View>
         </View>
       </ImageBackground>
     </View>
   );
 };
 
+const {width, height} = Dimensions.get('window');
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width,
+    height,
+    overflow: 'hidden',
   },
   background: {
+    width,
+    height,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: {
     flex: 1,
+    justifyContent: 'space-around',
     alignItems: 'center',
   },
   buttonContainer: {
@@ -86,13 +105,16 @@ const styles = StyleSheet.create({
     borderColor: Colors.pink300,
     borderWidth: 1,
   },
+  titleText: {
+    textAlign: 'center',
+    fontFamily: 'DancingScript-Bold',
+    fontSize: 50,
+    color: 'white',
+  },
   buttonText: {
     fontFamily: 'NanumSquareRoundR',
     fontSize: 24,
     color: Colors.pink300,
-  },
-  buttons: {
-    marginTop: 520,
   },
 });
 
