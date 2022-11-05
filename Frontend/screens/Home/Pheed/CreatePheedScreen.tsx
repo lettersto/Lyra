@@ -83,7 +83,7 @@ const CreatePheedScreen = () => {
               <DateTime SetDate={SetDate} />
               <Location />
             </View>
-            <Tag SetPheedTags={SetTags} />
+            <Tag PheedTags={[]} SetPheedTags={SetTags} />
             <View style={styles.registerBtn}>
               <Button
                 title="등록"

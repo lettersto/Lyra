@@ -26,8 +26,14 @@ const UpdatePheedScreen = ({route}: Props) => {
     route.params.content,
   );
   const [date, SetDate] = useState<Date>(route.params.startTime);
-  const [tags, SetTags] = useState<any[]>([]);
-  console.log(route.params.pheedTag);
+
+  const currentTags = [];
+
+  for (var i = 0; i < route.params.pheedTag.length; i++) {
+    currentTags.push(route.params.pheedTag[i].name);
+  }
+
+  const [tags, SetTags] = useState<any[]>(currentTags);
 
   const register = () => {
     axios
@@ -90,7 +96,7 @@ const UpdatePheedScreen = ({route}: Props) => {
               <UpDateTime pheedDate={date} SetDate={SetDate} />
               <Location />
             </View>
-            <Tag SetPheedTags={SetTags} />
+            <Tag PheedTags={tags} SetPheedTags={SetTags} />
             <View style={styles.registerBtn}>
               <Button
                 title="등록"
