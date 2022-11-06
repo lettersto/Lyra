@@ -30,10 +30,22 @@ const PheedDetailTitle = () => {
     });
     navigation.navigate('MainPheed');
   };
+  const goBack = () => {
+    navigate.getParent()?.setOptions({
+      tabBarStyle: {
+        backgroundColor: Colors.black500,
+        height: 62,
+        paddingBottom: 8,
+        paddingTop: 10,
+        position: 'absolute',
+      },
+    });
+    navigation.goBack();
+  };
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={goHome}>
+      <Pressable onPress={goBack}>
         <View style={styles.backContainer}>
           <IIcon
             name="chevron-back"
@@ -41,8 +53,10 @@ const PheedDetailTitle = () => {
             color={Colors.gray300}
             style={styles.icon}
           />
-          <Logo />
         </View>
+      </Pressable>
+      <Pressable onPress={goHome}>
+        <Logo />
       </Pressable>
     </View>
   );
@@ -53,7 +67,7 @@ const deviceWidth = Dimensions.get('window').width;
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     width: deviceWidth * 0.93,
   },

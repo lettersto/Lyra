@@ -37,7 +37,9 @@ const TownSearchScreen = ({navigation}: Props) => {
     return setName(result.documents[0].region_3depth_name);
   };
   const pressHandler = () => {
-    navigation.navigate('MainPheed');
+    console.log('타운서치');
+    // navigation.navigate('MainPheed');
+    navigation.popToTop();
   };
 
   return (

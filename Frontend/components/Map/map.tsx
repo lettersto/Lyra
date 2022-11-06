@@ -1,59 +1,41 @@
 import React, {useEffect, useState} from 'react';
-import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
-import {View, Platform, PermissionsAndroid, Text} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import MapStyle from './mapStyle';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import Config from 'react-native-config';
+import Colors from '../../constants/Colors';
+import {profileData} from './profileData';
+import CircleProfile from '../Utils/CircleProfile';
 
 interface ILocation {
   latitude: number;
   longitude: number;
 }
 
-async function requestPermission() {
-  try {
-    if (Platform.OS === 'ios') {
-      return await Geolocation.requestAuthorization('always');
-    }
-    // 안드로이드 위치 정보 수집 권한 요청
-    if (Platform.OS === 'android') {
-      return await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-    }
-  } catch (e) {
-    console.log(e);
-  }
-}
-
 const Map = () => {
   const [location, setLocation] = useState<ILocation | undefined>(undefined);
   useEffect(() => {
-    requestPermission().then(result => {
-      // console.log({result});
-      if (result === 'granted') {
-        Geolocation.getCurrentPosition(
-          pos => {
-            setLocation(pos.coords);
-          },
-          error => {
-            console.log(error);
-          },
-          {
-            enableHighAccuracy: true,
-            timeout: 3600,
-            maximumAge: 3600,
-          },
-        );
-      }
-    });
+    Geolocation.getCurrentPosition(
+      pos => {
+        setLocation(pos.coords);
+      },
+      error => {
+        console.log(error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 3600,
+        maximumAge: 3600,
+      },
+    );
   }, []);
+
+  const ProfilePressHandler = () => {};
 
   if (!location) {
     return (
-      <View>
-        <Text>Loading...</Text>
+      <View style={styles.body}>
+        <Text style={styles.loadingtext}>Loading...</Text>
       </View>
     );
   }
@@ -62,7 +44,7 @@ const Map = () => {
     <>
       <View style={{flex: 1}}>
         <MapView
-          style={{flex: 1, zIndex: -1}}
+          style={{flex: 1}}
           provider={PROVIDER_GOOGLE}
           initialRegion={{
             latitude: location.latitude,
@@ -72,25 +54,43 @@ const Map = () => {
           }}
           customMapStyle={MapStyle}
           showsUserLocation={true}
-          showsMyLocationButton={true}
-        />
-        <View style={{flex: 1, zIndex: 1}}>
-          <GooglePlacesAutocomplete
-            placeholder={'Location'}
-            query={{
-              key: Config.GOOGLE_API_KEY,
-              language: 'ko',
-            }}
-            onPress={(data, details = null) => {
-              // 'details' is provided when fetchDetails = true
-              console.log(data, details);
-            }}
-            styles={{container: {flex: 0}}}
-          />
-        </View>
+          showsMyLocationButton={true}>
+          {profileData.map((val, i) => {
+            return (
+              <View key={i} style={[styles.profile]}>
+                <Marker coordinate={val.coords} onPress={ProfilePressHandler}>
+                  <CircleProfile grade="hot" size="medium" isGradient={true} />
+                </Marker>
+              </View>
+            );
+          })}
+        </MapView>
       </View>
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  body: {
+    flex: 1,
+    backgroundColor: Colors.black500,
+  },
+  loadingtext: {
+    flex: 1,
+    top: '50%',
+    textAlign: 'center',
+    color: Colors.gray300,
+  },
+  profile: {
+    borderWidth: 3,
+    borderRadius: 100,
+    borderColor: Colors.purple300,
+  },
+  image: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+  },
+});
 
 export default Map;

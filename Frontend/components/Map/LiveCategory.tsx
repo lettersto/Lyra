@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, ViewStyle} from 'react-native';
+import {View, StyleSheet, ViewStyle, GestureResponderEvent} from 'react-native';
 import LiveStateBtn from './LiveStateBtn';
 
 const LIVE_CATEGORY = [
@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '90%',
     textAlign: 'center',
-    marginTop: 10,
     display: 'flex',
     justifyContent: 'center',
   },

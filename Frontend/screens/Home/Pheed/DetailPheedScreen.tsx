@@ -118,7 +118,8 @@ const DetailPheedScreen = ({route}: Props) => {
           position: 'absolute',
         },
       });
-      navigation.navigate('MainPheed');
+      // navigation.navigate('MainPheed');
+      navigation.goBack();
       return true;
     };
 
