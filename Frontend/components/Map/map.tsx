@@ -30,6 +30,8 @@ const Map = () => {
     );
   }, []);
 
+  const ProfilePressHandler = () => {};
+
   if (!location) {
     return (
       <View style={styles.body}>
@@ -56,7 +58,7 @@ const Map = () => {
           {profileData.map((val, i) => {
             return (
               <View key={i} style={[styles.profile]}>
-                <Marker coordinate={val.coords}>
+                <Marker coordinate={val.coords} onPress={ProfilePressHandler}>
                   <CircleProfile grade="hot" size="medium" isGradient={true} />
                 </Marker>
               </View>
