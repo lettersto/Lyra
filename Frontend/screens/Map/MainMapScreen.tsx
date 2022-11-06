@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {Button, Dimensions, StyleSheet, Text, View} from 'react-native';
 import LiveCategory from '../../components/Map/LiveCategory';
 import Map from '../../components/Map/map';
@@ -11,6 +11,7 @@ const deviceWidth = Dimensions.get('window').width;
 
 const MainMapScreen = () => {
   const modalizeRef = useRef<Modalize>(null);
+  const [currentCategory, SetCurrentCategory] = useState('');
 
   const onOpen = () => {
     modalizeRef.current?.open();
@@ -44,6 +45,8 @@ const MainMapScreen = () => {
         Category="main"
         CustomStyle={styles.pheedCategory}
         scrollStyle={styles.scroll}
+        currentCategory={currentCategory}
+        SetCurrentCategory={SetCurrentCategory}
       />
       <Modalize
         ref={modalizeRef}

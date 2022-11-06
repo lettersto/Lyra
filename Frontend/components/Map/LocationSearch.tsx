@@ -16,7 +16,7 @@ interface propsType {
 const LocationSearch = ({onPress}: propsType) => {
   const homePlace = {
     description: 'Home',
-    geometry: {location: {lat: 48.8152937, lng: 2.4597668}},
+    geometry: {location: {lat: 37.513, lng: 127.103}},
   };
   return (
     <View style={{zIndex: 1}}>

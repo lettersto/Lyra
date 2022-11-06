@@ -178,6 +178,14 @@ export const MapStack = () => {
             //   headerTitle: () => <MapTitle />,
             // }}
           />
+          <Stack.Screen
+            name="DetailPheed"
+            component={DetailPheedScreen}
+            options={{
+              headerTitle: () => <PheedDetailTitle />,
+              headerBackVisible: false,
+            }}
+          />
         </Stack.Group>
         <Stack.Group
           screenOptions={{
