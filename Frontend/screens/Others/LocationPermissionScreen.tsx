@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext} from 'react';
 import {
   View,
   ImageBackground,
@@ -8,6 +8,7 @@ import {
   Alert,
   Platform,
   PermissionsAndroid,
+  BackHandler,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../constants/types';
@@ -48,10 +49,13 @@ const LocationPermissionScreen = ({navigation}: Props) => {
   };
 
   const cancleHandler = () => {
-    // TODO specify alert behavior.
     Alert.alert(
       'Lyra',
       '위치 정보를 허용하지 않으면 앱을 쓸 수 없어요. 그래도 괜찮겠어요?',
+      [
+        {text: 'Cancel', onPress: () => {}},
+        {text: 'OK', onPress: () => BackHandler.exitApp()},
+      ],
     );
   };
 
@@ -116,7 +120,6 @@ const styles = StyleSheet.create({
   },
   permissionContainer: {
     flex: 1,
-    marginVertical: 8,
     width: deviceWidth - 8,
     justifyContent: 'center',
     alignItems: 'center',
