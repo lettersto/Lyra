@@ -14,7 +14,7 @@ interface ILocation {
   longitude: number;
 }
 
-const Map = () => {
+const MainMapView = () => {
   const [location, setLocation] = useState<ILocation | undefined>(undefined);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [userId, setUserId] = useState('');
@@ -131,4 +131,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Map;
+export default MainMapView;
