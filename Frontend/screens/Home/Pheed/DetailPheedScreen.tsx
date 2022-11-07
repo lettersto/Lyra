@@ -151,18 +151,6 @@ const DetailPheedScreen = ({route}: Props) => {
     ':' +
     [padTo2Digits(date.getMinutes())];
 
-  const commentDelete = () => {
-    axios
-      .delete(`/pheed/${route.params.pheedId}/comment/${route.params.comments}`)
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    setChange(!change);
-  };
-
   const PheedDelete = () => {
     axios
       .delete(`/pheed/${route.params.pheedId}`)
@@ -337,7 +325,7 @@ const DetailPheedScreen = ({route}: Props) => {
                 return (
                   <View key={idx} style={styles.tag}>
                     <Button
-                      title={tag.name}
+                      title={'#' + tag.name}
                       btnSize="small"
                       textSize="small"
                       isGradient={true}
@@ -396,7 +384,8 @@ const DetailPheedScreen = ({route}: Props) => {
               <View style={styles.Container2}>
                 <View style={styles.commentsContainer}>
                   {comments.map((value, idx) => {
-                    // const commentId = value.Id
+                    const commentId = value.id;
+
                     return (
                       <View style={styles.commentCt} key={idx}>
                         <View style={styles.commentContentCt}>
@@ -406,7 +395,20 @@ const DetailPheedScreen = ({route}: Props) => {
                             <Text style={styles.text}>{value.content}</Text>
                           </View>
                         </View>
-                        <Pressable onPress={commentDelete}>
+                        <Pressable
+                          onPress={() => (
+                            axios
+                              .delete(
+                                `/pheed/${route.params.pheedId}/comment/${commentId}`,
+                              )
+                              .then(function (response) {
+                                console.log(response);
+                              })
+                              .catch(function (error) {
+                                console.log(error);
+                              }),
+                            setChange(!change)
+                          )}>
                           <Icon4
                             name="trash-outline"
                             color={Colors.gray300}
