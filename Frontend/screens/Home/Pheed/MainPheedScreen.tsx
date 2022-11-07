@@ -26,7 +26,7 @@ const MainPheedScreen = ({navigation}: Props) => {
     });
   }, [navigation]);
 
-  const [currentCategory, SetCurrentCategory] = useState('');
+  const [currentCategory, SetCurrentCategory] = useState('all');
 
   return (
     <>
@@ -48,7 +48,7 @@ const MainPheedScreen = ({navigation}: Props) => {
           </View>
           <GradientLine />
           <View style={styles.pheedContent}>
-            <PheedContent />
+            <PheedContent category={currentCategory} width={0.95} />
           </View>
         </View>
       </ScrollView>
