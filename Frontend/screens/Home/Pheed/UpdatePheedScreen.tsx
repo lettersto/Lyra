@@ -30,7 +30,11 @@ const UpdatePheedScreen = ({route}: Props) => {
   const currentTags = [];
 
   for (var i = 0; i < route.params.pheedTag.length; i++) {
-    currentTags.push(route.params.pheedTag[i].name);
+    if (route.params.pheedTag[i].id === undefined) {
+      currentTags.push(route.params.pheedTag[i]);
+    } else {
+      currentTags.push(route.params.pheedTag[i].name);
+    }
   }
 
   const [tags, SetTags] = useState<any[]>(currentTags);
@@ -47,9 +51,27 @@ const UpdatePheedScreen = ({route}: Props) => {
         title: enteredTitle,
         location: '하남산단로',
       })
-      .then(function (response) {
-        console.log(response);
-        navigation.goBack();
+      .then(function () {
+        // console.log(response);
+        // navigation.goBack();
+        navigation.navigate('DetailPheed', {
+          category: category,
+          content: enteredContent,
+          latitude: 1,
+          longitude: 1,
+          pheedTag: tags,
+          startTime: date,
+          title: enteredTitle,
+          location: '하남산단로',
+          pheedId: route.params.pheedId,
+          pheedImg: route.params.pheedImg,
+          name: route.params.name,
+          profileImg: route.params.profileImg,
+          isLive: route.params.isLive,
+          time: route.params.time,
+          comments: route.params.comments,
+          like: route.params.like,
+        });
       })
       .catch(function (error) {
         console.log(error);
