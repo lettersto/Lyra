@@ -18,22 +18,12 @@ import {useIsFocused, useNavigation} from '@react-navigation/native';
 import GradientLine from '../Utils/GradientLine';
 import MoreInfo from './MoreInfo';
 import axios from '../../api/axios';
+import {useQuery} from 'react-query';
+import {PheedDetailParamList} from '../../constants/types';
 
 const PheedContent = ({category, width}: {category: string; width: number}) => {
-  const [contents, SetContents] = useState<any[]>([]);
-  const isFocused = useIsFocused();
-  useEffect(() => {
-    axios
-      .get('/pheed/all')
-      .then(function (response) {
-        SetContents(response.data.reverse());
-        // console.log(response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }, [isFocused]);
-
+  // const [contents, SetContents] = useState<any[]>([]);
+  // const isFocused = useIsFocused();
   const navigation = useNavigation();
   // const goChat = () => {
   //   navigation.navigate('Chat');
@@ -47,6 +37,49 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
       setIsLike(true);
     }
   };
+
+  const getPheedContents = async () => {
+    const res = await axios.get<PheedDetailParamList[]>('/pheed/all');
+    return res.data;
+  };
+
+  const result = useQuery('PheedContent', getPheedContents);
+  const {data, error} = result;
+
+  if (error) {
+    console.log(error);
+  }
+
+  // React.useEffect(() => {
+  //   getPheedContents();
+  //   data?.reverse();
+  // }, [isFocused, data]);
+
+  if (!data) {
+    return <Text style={styles.boldtext}>로딩</Text>;
+  }
+  const contents = data.reverse();
+  // const wait = (timeout: number) => {
+  //   return new Promise(resolve => setTimeout(resolve, timeout));
+  // };
+
+  // const refreshing = () => {
+  //   setRefresh(true);
+  //   wait(1400).then(() => setRefresh(false));
+  //   getPheedContents();
+  // };
+
+  // useEffect(() => {
+  //   axios
+  //     .get('/pheed/all')
+  //     .then(function (response) {
+  //       SetContents(response.data.reverse());
+  //       // console.log(response.data);
+  //     })
+  //     .catch(function (err) {
+  //       console.log(err);
+  //     });
+  // }, [isFocused]);
 
   const customStyles = StyleSheet.create({
     gradientContainer: {
@@ -64,7 +97,10 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
     return num.toString().padStart(2, '0');
   }
 
+  console.log(data);
+
   return (
+    // <Text>{data.map()}</Text>
     <ScrollView style={styles.pheedCotainer}>
       {contents.map((content, i) => {
         const milliseconds = content.startTime;
