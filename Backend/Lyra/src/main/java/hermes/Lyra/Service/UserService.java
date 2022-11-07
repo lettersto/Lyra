@@ -48,16 +48,21 @@ public class UserService {
 
     @Transactional
     public User join(UserLoginRequestDto userLoginRequestDto){
-        User user = userRepository2.findByEmail(userLoginRequestDto.getEmail()).orElseGet(null);
+        User user = userRepository2.findByEmail(userLoginRequestDto.getEmail()).orElse(null);
+        System.out.println("before checking null");
         if(user == null) {
             User newUser = new User();
             System.out.println("input db");
             newUser.setEmail(userLoginRequestDto.getEmail());
             newUser.setName(userLoginRequestDto.getName());
+            newUser.setNickname(userLoginRequestDto.getNickname());
             newUser.setImage_url(userLoginRequestDto.getImage_url());
             List<String> roles = new ArrayList<>();
             roles.add("ROLE_USER");
             newUser.setRoles(roles);
+            String refreshToken = jwtTokenProvider.createRefreshToken(userLoginRequestDto.getEmail(), roles);
+            newUser.changeRefreshToken(refreshToken);
+            userRepository.save(newUser);
             return newUser;
         } else {
             return user;
