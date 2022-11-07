@@ -7,6 +7,7 @@ import {
   Dimensions,
   Alert,
   TouchableOpacity,
+  BackHandler,
 } from 'react-native';
 import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -41,10 +42,13 @@ const WalletCreationScreen = () => {
   };
 
   const cancleHandler = () => {
-    // TODO specify alert behavior.
     Alert.alert(
       'Lyra',
       '지갑을 만들지 않으면 앱을 쓸 수 없어요. 그래도 괜찮겠어요?',
+      [
+        {text: 'Cancel', onPress: () => {}},
+        {text: 'OK', onPress: () => BackHandler.exitApp()},
+      ],
     );
   };
 
@@ -64,7 +68,6 @@ const WalletCreationScreen = () => {
         source={require('../../assets/image/permission_background.png')}
         resizeMode="cover"
         style={styles.background}>
-        {/* TODO 어떤 정보를 가져가는지 약관 필요 */}
         <View style={styles.permissionContainer}>
           <IIcon
             name={!walletCreated ? 'ios-wallet-outline' : 'happy'}
@@ -119,7 +122,6 @@ const styles = StyleSheet.create({
   },
   permissionContainer: {
     flex: 1,
-    marginVertical: 8,
     width: deviceWidth - 8,
     justifyContent: 'center',
     alignItems: 'center',
