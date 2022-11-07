@@ -5,14 +5,23 @@ import {
   StyleSheet,
   ImageBackground,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
+
 import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
-import AuthContext from '../../store/auth-context';
+import {
+  signInWithKakao,
+  getKakaoProfile,
+  sendUserKakaoInfoToServer,
+} from '../../api/auth';
+import {AuthContext} from '../../store/auth-context';
 import {RootStackParamList, RootTabParamList} from '../../constants/types';
 import Colors from '../../constants/Colors';
+import StarEffect from '../../components/Utils/StarEffect';
 
 type LoginNavigationProps = CompositeNavigationProp<
   BottomTabNavigationProp<RootTabParamList, 'Home'>,
@@ -26,22 +35,62 @@ const LoginScreen = () => {
     navigation.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
   }, [navigation]);
 
-  const LoginButton = ({title}: {title: string}) => {
-    const {locationPermitted, walletCreated} = useContext(AuthContext);
+  const LoginButton = ({title, type}: {title: string; type: string}) => {
+    const {setImageURL, setNickname, setUserId, setIsLoggedIn} =
+      useContext(AuthContext);
 
-    const onLoginPress = () => {
-      if (locationPermitted && walletCreated) {
-        navigation.navigate('Home');
-      } else {
+    const onKakaoLoginPress = async () => {
+      try {
+        await signInWithKakao();
+        // NOTE types are strage here
+        const {
+          name,
+          nickname,
+          profileImageUrl: imageURL,
+          email,
+        } = await getKakaoProfile();
+
+        setImageURL(imageURL);
+        setNickname(nickname);
+
+        const {
+          accessToken,
+          refreshToken,
+          id: userId,
+        } = await sendUserKakaoInfoToServer({
+          name,
+          nickname,
+          imageURL,
+          email,
+        });
+
+        setUserId(userId);
+        setIsLoggedIn(true);
+
+        await EncryptedStorage.setItem('accessToken', accessToken);
+        await EncryptedStorage.setItem('refreshToken', refreshToken);
+
         navigation.navigate('LocationPermission');
+      } catch (err) {
+        if (__DEV__) {
+          console.error(err);
+        }
+        setUserId(null);
+        setImageURL(null);
+        setNickname(null);
+        setIsLoggedIn(false);
       }
+    };
+
+    const onGoogleLoginPress = () => {
+      navigation.navigate('Home');
     };
 
     return (
       <TouchableOpacity
         style={styles.buttonContainer}
         activeOpacity={0.7}
-        onPress={onLoginPress}>
+        onPress={type === 'Kakao' ? onKakaoLoginPress : onGoogleLoginPress}>
         <Text style={styles.buttonText}>{title}</Text>
       </TouchableOpacity>
     );
@@ -50,24 +99,40 @@ const LoginScreen = () => {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require('../../assets/image/login_background.png')}
+        source={require('../../assets/image/star_background.jpg')}
         resizeMode="cover"
         style={styles.background}>
-        <View style={styles.buttons}>
-          <LoginButton title={'Google로 시작하기'} />
-          <LoginButton title={'Kakao로 시작하기'} />
+        <StarEffect />
+        <View style={styles.content}>
+          <View />
+          <Text style={styles.titleText}>Lyra</Text>
+          <View>
+            <LoginButton title={'Google로 시작하기'} type="Google" />
+            <LoginButton title={'Kakao로 시작하기'} type="Kakao" />
+          </View>
         </View>
       </ImageBackground>
     </View>
   );
 };
 
+const {width, height} = Dimensions.get('window');
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width,
+    height,
+    overflow: 'hidden',
   },
   background: {
+    width,
+    height,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: {
     flex: 1,
+    justifyContent: 'space-around',
     alignItems: 'center',
   },
   buttonContainer: {
@@ -81,13 +146,16 @@ const styles = StyleSheet.create({
     borderColor: Colors.pink300,
     borderWidth: 1,
   },
+  titleText: {
+    textAlign: 'center',
+    fontFamily: 'DancingScript-Bold',
+    fontSize: 50,
+    color: 'white',
+  },
   buttonText: {
     fontFamily: 'NanumSquareRoundR',
     fontSize: 24,
     color: Colors.pink300,
-  },
-  buttons: {
-    marginTop: 520,
   },
 });
 

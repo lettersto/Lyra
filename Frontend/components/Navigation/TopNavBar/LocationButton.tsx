@@ -13,7 +13,7 @@ const LocationButton = () => {
 
   const navigation = useNavigation();
   const pressHandler = () => {
-    navigation.navigate('LocationModal');
+    navigation.navigate('TownModal');
   };
 
   return (

@@ -1,4 +1,4 @@
-import React, {useLayoutEffect} from 'react';
+import React, {useLayoutEffect, useState} from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
@@ -25,6 +25,9 @@ const MainPheedScreen = ({navigation}: Props) => {
       },
     });
   }, [navigation]);
+
+  const [currentCategory, SetCurrentCategory] = useState('all');
+
   return (
     <>
       <ScrollView style={styles.scroll}>
@@ -37,11 +40,15 @@ const MainPheedScreen = ({navigation}: Props) => {
           </View>
           <GradientLine />
           <View style={styles.categoryContainer}>
-            <PheedCategory Category="main" />
+            <PheedCategory
+              Category="main"
+              currentCategory={currentCategory}
+              SetCurrentCategory={SetCurrentCategory}
+            />
           </View>
           <GradientLine />
           <View style={styles.pheedContent}>
-            <PheedContent />
+            <PheedContent category={currentCategory} width={0.95} />
           </View>
         </View>
       </ScrollView>

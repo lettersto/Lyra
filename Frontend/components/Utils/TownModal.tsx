@@ -9,11 +9,11 @@ import GestureRecognizer from 'react-native-swipe-gestures';
 
 const deviceWidth = Dimensions.get('window').width;
 
-export const LocationModal = () => {
+export const TownModal = () => {
   const navigation = useNavigation();
 
   const pressHandler = () => {
-    navigation.navigate('LocationSearch');
+    navigation.navigate('TownSearch');
     setModalVisible(false);
   };
 
@@ -32,7 +32,7 @@ export const LocationModal = () => {
           onTouchEnd={() => navigation.navigate('MainPheed')}
         />
         <View style={styles.modal}>
-          <Text style={styles.title}>장소 설정</Text>
+          <Text style={styles.title}>동네 설정</Text>
           <Button
             title="도로명 또는 지번으로 검색"
             btnSize="large"
@@ -54,15 +54,15 @@ export const LocationModal = () => {
           {/* <Text>{address}</Text> */}
           <View style={styles.addressLog}>
             <Icon name="map-marker" size={20} color="white" />
-            <Text style={styles.address}>롯데마트 앞 광장</Text>
+            <Text style={styles.address}>광주광역시 광산구 오선동</Text>
           </View>
           <View style={styles.addressLog}>
             <Icon name="map-marker" size={20} color="white" />
-            <Text style={styles.address}>홍대 놀이터 앞</Text>
+            <Text style={styles.address}>광주광역시 광산구 오선동</Text>
           </View>
           <View style={styles.addressLog}>
             <Icon name="map-marker" size={20} color="white" />
-            <Text style={styles.address}>건대입구 2번출구</Text>
+            <Text style={styles.address}>광주광역시 광산구 오선동</Text>
           </View>
         </View>
       </Modal>

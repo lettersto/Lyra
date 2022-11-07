@@ -6,9 +6,16 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import Icon from 'react-native-vector-icons/Feather';
 
-const DateTime = ({SetDate}: {SetDate: Dispatch<SetStateAction<Date>>}) => {
+const UpDateTime = ({
+  pheedDate,
+  SetDate,
+}: {
+  pheedDate: Date;
+  SetDate: Dispatch<SetStateAction<Date>>;
+}) => {
   const [isDatePickerVisible, setDatePickerVIsibility] = useState(false);
   const [text, onChangeText] = useState<string>('');
+  const changeDate = new Date(pheedDate);
 
   function sliceYear(num: number) {
     return num.toString().slice(2, 4);
@@ -61,7 +68,18 @@ const DateTime = ({SetDate}: {SetDate: Dispatch<SetStateAction<Date>>}) => {
             {text === '' ? (
               <>
                 <Icon name="clock" color={Colors.gray300} size={16} />
-                <Text> 시간</Text>
+                <Text>
+                  {' '}
+                  {[sliceYear(changeDate.getFullYear())] +
+                    '.' +
+                    [padTo2Digits(changeDate.getMonth() + 1)] +
+                    '.' +
+                    [padTo2Digits(changeDate.getDate())] +
+                    ' ' +
+                    [padTo2Digits(changeDate.getHours())] +
+                    ':' +
+                    [padTo2Digits(changeDate.getMinutes())]}
+                </Text>
               </>
             ) : (
               <>
@@ -107,4 +125,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DateTime;
+export default UpDateTime;

@@ -1,9 +1,12 @@
+import Colors from '../../constants/Colors';
+
 const MapStyle = [
   {
     elementType: 'geometry',
     stylers: [
       {
-        color: '#242f3e',
+        // color: '#242f3e',
+        color: Colors.black500,
       },
     ],
   },

@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {
   View,
   ImageBackground,
@@ -7,6 +7,7 @@ import {
   Dimensions,
   Alert,
   TouchableOpacity,
+  BackHandler,
 } from 'react-native';
 import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -16,7 +17,8 @@ import {RootStackParamList, RootTabParamList} from '../../constants/types';
 
 import IIcon from 'react-native-vector-icons/Ionicons';
 
-import AuthContext from '../../store/auth-context';
+import {AuthContext} from '../../store/auth-context';
+import {createWallet} from '../../api/profile';
 import Button from '../../components/Utils/Button';
 import Colors from '../../constants/Colors';
 
@@ -27,8 +29,8 @@ type WalletNavigationProps = CompositeNavigationProp<
 
 const WalletCreationScreen = () => {
   const navigation = useNavigation<WalletNavigationProps>();
-  const {setWalletCreated, walletCreated, setIsLoggedIn} =
-    useContext(AuthContext);
+  const [walletCreated, setWalletCreated] = useState(false);
+  const {userId} = useContext(AuthContext);
   const guidance = !walletCreated
     ? 'Lyra를 제대로 사용하기 위해서는\n지갑이 필요합니다.'
     : '지갑이 생성되었어요!';
@@ -41,20 +43,31 @@ const WalletCreationScreen = () => {
   };
 
   const cancleHandler = () => {
-    // TODO specify alert behavior.
     Alert.alert(
       'Lyra',
       '지갑을 만들지 않으면 앱을 쓸 수 없어요. 그래도 괜찮겠어요?',
+      [
+        {text: 'Cancel', onPress: () => {}},
+        {text: 'OK', onPress: () => BackHandler.exitApp()},
+      ],
     );
   };
 
-  const walletCreationHandler = () => {
-    setWalletCreated(true);
-    navigation.navigate('WalletCreation');
+  const walletCreationHandler = async () => {
+    try {
+      if (userId) {
+        // const walletData = await createWallet(userId);
+        console.log('walletData', walletData);
+      }
+    } catch (error) {
+      if (__DEV__) {
+        console.error(error);
+      }
+    }
+    // setWalletCreated(true);
   };
 
   const startPressHandler = () => {
-    setIsLoggedIn(true);
     navigation.navigate('Home');
   };
 
@@ -64,7 +77,6 @@ const WalletCreationScreen = () => {
         source={require('../../assets/image/permission_background.png')}
         resizeMode="cover"
         style={styles.background}>
-        {/* TODO 어떤 정보를 가져가는지 약관 필요 */}
         <View style={styles.permissionContainer}>
           <IIcon
             name={!walletCreated ? 'ios-wallet-outline' : 'happy'}
@@ -119,7 +131,6 @@ const styles = StyleSheet.create({
   },
   permissionContainer: {
     flex: 1,
-    marginVertical: 8,
     width: deviceWidth - 8,
     justifyContent: 'center',
     alignItems: 'center',

@@ -9,13 +9,18 @@ import Colors from '../../../constants/Colors';
 
 const PheedButtons = () => {
   const navigation = useNavigation();
+
   const alarmPressHandler = () => {
     navigation.navigate('Alarm');
   };
 
+  const searchPressHandler = () => {
+    navigation.navigate('SearchPheed');
+  };
+
   return (
     <View style={styles.container}>
-      <Pressable>
+      <Pressable onPress={searchPressHandler}>
         <View style={styles.innerContainer}>
           <IIcon name="ios-search-outline" size={25} color={Colors.gray300} />
         </View>

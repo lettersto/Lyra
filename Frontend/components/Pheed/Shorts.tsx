@@ -55,7 +55,7 @@ const Shorts = () => {
             return (
               <Pressable
                 onPress={() =>
-                  navigation.navigate('StoryDetail', stories.stories)
+                  navigation.navigate('ShortsDetail', stories.stories)
                 }
                 key={index}>
                 <View style={[styles.videoContainer, styles.show]}>
@@ -70,7 +70,7 @@ const Shorts = () => {
             return (
               <Pressable
                 onPress={() =>
-                  navigation.navigate('StoryDetail', stories.stories)
+                  navigation.navigate('ShortsDetail', stories.stories)
                 }
                 key={index}>
                 <View style={[styles.videoContainer, styles.notshow]}>

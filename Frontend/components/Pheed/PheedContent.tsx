@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   StyleSheet,
@@ -8,23 +8,26 @@ import {
   Pressable,
 } from 'react-native';
 import Colors from '../../constants/Colors';
-import data from './pheedData.json';
 import LinearGradient from 'react-native-linear-gradient';
 import CircleProfile from '../Utils/CircleProfile';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon3 from 'react-native-vector-icons/AntDesign';
 import Icon4 from 'react-native-vector-icons/Ionicons';
-import Button from '../Utils/Button';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import GradientLine from '../Utils/GradientLine';
 import MoreInfo from './MoreInfo';
+import axios from '../../api/axios';
+import {useQuery} from 'react-query';
+import {PheedDetailParamList} from '../../constants/types';
 
-const PheedContent = () => {
+const PheedContent = ({category, width}: {category: string; width: number}) => {
+  // const [contents, SetContents] = useState<any[]>([]);
+  // const isFocused = useIsFocused();
   const navigation = useNavigation();
-  const goChat = () => {
-    navigation.navigate('Chat');
-  };
+  // const goChat = () => {
+  //   navigation.navigate('Chat');
+  // };
 
   const [isLike, setIsLike] = useState(false);
   const activeLike = () => {
@@ -35,10 +38,85 @@ const PheedContent = () => {
     }
   };
 
+  const getPheedContents = async () => {
+    const res = await axios.get<PheedDetailParamList[]>('/pheed/all');
+    return res.data;
+  };
+
+  const result = useQuery('PheedContent', getPheedContents);
+  const {data, error} = result;
+
+  if (error) {
+    console.log(error);
+  }
+
+  // React.useEffect(() => {
+  //   getPheedContents();
+  //   data?.reverse();
+  // }, [isFocused, data]);
+
+  if (!data) {
+    return <Text style={styles.boldtext}>로딩</Text>;
+  }
+  const contents = data.reverse();
+  // const wait = (timeout: number) => {
+  //   return new Promise(resolve => setTimeout(resolve, timeout));
+  // };
+
+  // const refreshing = () => {
+  //   setRefresh(true);
+  //   wait(1400).then(() => setRefresh(false));
+  //   getPheedContents();
+  // };
+
+  // useEffect(() => {
+  //   axios
+  //     .get('/pheed/all')
+  //     .then(function (response) {
+  //       SetContents(response.data.reverse());
+  //       // console.log(response.data);
+  //     })
+  //     .catch(function (err) {
+  //       console.log(err);
+  //     });
+  // }, [isFocused]);
+
+  const customStyles = StyleSheet.create({
+    gradientContainer: {
+      width: Dimensions.get('window').width * width,
+    },
+    Container: {
+      width: Dimensions.get('window').width * width - 2,
+    },
+  });
+
+  function sliceYear(num: number) {
+    return num.toString().slice(2, 4);
+  }
+  function padTo2Digits(num: number) {
+    return num.toString().padStart(2, '0');
+  }
+
+  console.log(data);
+
   return (
+    // <Text>{data.map()}</Text>
     <ScrollView style={styles.pheedCotainer}>
-      {data.map((content, i) => {
-        return (
+      {contents.map((content, i) => {
+        const milliseconds = content.startTime;
+        const date = new Date(milliseconds);
+        const datetime =
+          [sliceYear(date.getFullYear())] +
+          '.' +
+          [padTo2Digits(date.getMonth() + 1)] +
+          '.' +
+          [padTo2Digits(date.getDate())] +
+          ' ' +
+          [padTo2Digits(date.getHours())] +
+          ':' +
+          [padTo2Digits(date.getMinutes())];
+
+        return category === content.category ? (
           <View key={i}>
             <LinearGradient
               start={{x: 0, y: 0}}
@@ -47,15 +125,19 @@ const PheedContent = () => {
               angle={135}
               angleCenter={{x: 0.5, y: 0.5}}
               colors={[Colors.purple300, Colors.pink500]}
-              style={styles.gradientContainer}>
-              <View style={styles.Container}>
+              style={[
+                styles.gradientContainer,
+                customStyles.gradientContainer,
+              ]}>
+              <View style={[styles.Container, customStyles.Container]}>
                 <View style={styles.profileContainer}>
                   <View style={styles.profileDatetime}>
                     <View style={styles.profileImg}>
                       <CircleProfile size="small" isGradient={false} />
                     </View>
                     <View>
-                      <Text style={styles.boldtext}>{content.name}</Text>
+                      <Text style={styles.boldtext}>APOLLON</Text>
+                      {/* <Text style={styles.boldtext}>{content.name}</Text> */}
                       <View>
                         <View style={styles.dateContainer}>
                           <Icon
@@ -64,7 +146,7 @@ const PheedContent = () => {
                             size={16}
                             style={styles.clock}
                           />
-                          <Text style={styles.text}>{content.datetime}</Text>
+                          <Text style={styles.text}>{datetime}</Text>
                         </View>
                         <View style={styles.dateContainer}>
                           <Icon4
@@ -79,7 +161,7 @@ const PheedContent = () => {
                     </View>
                   </View>
                   <View style={styles.liveContainer}>
-                    {content.isLive ? (
+                    {/* {content.isLive ? (
                       <Button
                         title="LIVE"
                         btnSize="medium"
@@ -98,7 +180,7 @@ const PheedContent = () => {
                         onPress={goChat}
                         disabled
                       />
-                    )}
+                    )} */}
                   </View>
                 </View>
                 <View style={styles.lineContainer}>
@@ -107,11 +189,11 @@ const PheedContent = () => {
                 <Pressable
                   onPress={() => navigation.navigate('DetailPheed', content)}>
                   <View style={styles.contentContainer}>
-                    {content.imgUrl.length !== 0 ? (
+                    {/* {content.imgUrl.length !== 0 ? (
                       <Text style={styles.text}>{content.imgUrl}</Text>
                     ) : (
                       <></>
-                    )}
+                    )} */}
                     <Text style={styles.boldtext}>{content.title}</Text>
                     <MoreInfo content={content.content} />
                   </View>
@@ -126,7 +208,11 @@ const PheedContent = () => {
                       style={styles.clock}
                     />
                     <Text style={styles.text}>
-                      댓글 ({content.comments?.length})
+                      댓글 (
+                      {content.comment.length === 0
+                        ? 0
+                        : content.comment.length}
+                      )
                     </Text>
                   </View>
                   <Pressable onPress={activeLike}>
@@ -146,13 +232,135 @@ const PheedContent = () => {
                           style={styles.clock}
                         />
                       )}
-                      <Text style={styles.text}>{content.like}</Text>
+                      {/* <Text style={styles.text}>{content.like}</Text> */}
                     </View>
                   </Pressable>
                 </View>
               </View>
             </LinearGradient>
           </View>
+        ) : category === 'all' ? (
+          <View key={i}>
+            <LinearGradient
+              start={{x: 0, y: 0}}
+              end={{x: 0, y: 1}}
+              useAngle={true}
+              angle={135}
+              angleCenter={{x: 0.5, y: 0.5}}
+              colors={[Colors.purple300, Colors.pink500]}
+              style={styles.gradientContainer}>
+              <View style={styles.Container}>
+                <View style={styles.profileContainer}>
+                  <View style={styles.profileDatetime}>
+                    <View style={styles.profileImg}>
+                      <CircleProfile size="small" isGradient={false} />
+                    </View>
+                    <View>
+                      <Text style={styles.boldtext}>APOLLON</Text>
+                      {/* <Text style={styles.boldtext}>{content.name}</Text> */}
+                      <View>
+                        <View style={styles.dateContainer}>
+                          <Icon
+                            name="clock"
+                            color={Colors.gray300}
+                            size={16}
+                            style={styles.clock}
+                          />
+                          <Text style={styles.text}>{datetime}</Text>
+                        </View>
+                        <View style={styles.dateContainer}>
+                          <Icon4
+                            name="location-outline"
+                            color={Colors.gray300}
+                            size={16}
+                            style={styles.clock}
+                          />
+                          <Text style={styles.text}>{content.location}</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                  <View style={styles.liveContainer}>
+                    {/* {content.isLive ? (
+                      <Button
+                        title="LIVE"
+                        btnSize="medium"
+                        textSize="medium"
+                        isGradient={true}
+                        isOutlined={false}
+                        onPress={goChat}
+                      />
+                    ) : (
+                      <Button
+                        title="예정"
+                        btnSize="medium"
+                        textSize="medium"
+                        isGradient={true}
+                        isOutlined={true}
+                        onPress={goChat}
+                        disabled
+                      />
+                    )} */}
+                  </View>
+                </View>
+                <View style={styles.lineContainer}>
+                  <GradientLine />
+                </View>
+                <Pressable
+                  onPress={() => navigation.navigate('DetailPheed', content)}>
+                  <View style={styles.contentContainer}>
+                    {/* {content.imgUrl.length !== 0 ? (
+                      <Text style={styles.text}>{content.imgUrl}</Text>
+                    ) : (
+                      <></>
+                    )} */}
+                    <Text style={styles.boldtext}>{content.title}</Text>
+                    <MoreInfo content={content.content} />
+                  </View>
+                </Pressable>
+                <GradientLine />
+                <View style={styles.bottomContainer}>
+                  <View style={styles.commentContainer}>
+                    <Icon2
+                      name="comment-text-outline"
+                      color={Colors.gray300}
+                      size={16}
+                      style={styles.clock}
+                    />
+                    <Text style={styles.text}>
+                      댓글 (
+                      {content.comment.length === 0
+                        ? 0
+                        : content.comment.length}
+                      )
+                    </Text>
+                  </View>
+                  <Pressable onPress={activeLike}>
+                    <View style={styles.likeContainer}>
+                      {isLike ? (
+                        <Icon3
+                          name="star"
+                          color={Colors.gray300}
+                          size={16}
+                          style={styles.clock}
+                        />
+                      ) : (
+                        <Icon3
+                          name="staro"
+                          color={Colors.gray300}
+                          size={16}
+                          style={styles.clock}
+                        />
+                      )}
+                      {/* <Text style={styles.text}>{content.like}</Text> */}
+                    </View>
+                  </Pressable>
+                </View>
+              </View>
+            </LinearGradient>
+          </View>
+        ) : (
+          <View key={i} />
         );
       })}
     </ScrollView>

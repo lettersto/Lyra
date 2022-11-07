@@ -1,26 +1,15 @@
 /* eslint-disable react-native/no-inline-styles */
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * Generated with the TypeScript template
- * https://github.com/react-native-community/react-native-template-typescript
- *
- * @format
- */
-
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect} from 'react';
 import {SafeAreaView, StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 
-import {QueryClient, QueryClientProvider} from 'react-query';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
-// NOTE temporary implementation of auth state.
-import AuthContext from './store/auth-context';
+import {AuthContext} from './store/auth-context';
 import {RootStackParamList} from './constants/types';
 import NavBar from './components/Navigation/NavBar';
 import Colors from './constants/Colors';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 declare global {
   namespace ReactNavigation {
@@ -28,40 +17,26 @@ declare global {
   }
 }
 
-const queryClient = new QueryClient();
-
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [walletCreated, setWalletCreated] = useState(false);
-  const [locationPermitted, setLocationPermitted] = useState(false);
+  const {isLoggedIn, setIsLoggedIn} = useContext(AuthContext);
 
-  const authValue = {
-    isLoggedIn,
-    setIsLoggedIn,
-    walletCreated,
-    setWalletCreated,
-    locationPermitted,
-    setLocationPermitted,
-  };
-
-  useEffect(() => {
-    let appData: string | null = null;
-
-    (async () => {
-      try {
-        appData = await AsyncStorage.getItem('isLoggedIn');
-      } catch (error) {
+  const checkTokensInStorage = useCallback(async () => {
+    try {
+      const accessToken = await EncryptedStorage.getItem('accessToken');
+      setIsLoggedIn(!!accessToken);
+    } catch (error) {
+      setIsLoggedIn(false);
+      if (__DEV__) {
         console.error(error);
       }
-    })();
-
-    if (appData === null) {
-      // setIsLoggedIn(true);
-      // AsyncStorage.setItem('isLoggedIn', 'false');
-    } else {
-      setIsLoggedIn(false);
     }
-  }, []);
+  }, [setIsLoggedIn]);
+
+  useEffect(() => {
+    checkTokensInStorage();
+  }, [checkTokensInStorage]);
+
+  console.log('loginin', isLoggedIn);
 
   const backgroundStyle = {
     backgroundColor: Colors.purple300,
@@ -69,19 +44,17 @@ const App = () => {
   };
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthContext.Provider value={authValue}>
-        <SafeAreaView style={backgroundStyle}>
-          <StatusBar
-            backgroundColor={Colors.black500}
-            barStyle={'light-content'}
-          />
-          <NavigationContainer>
-            <NavBar />
-          </NavigationContainer>
-        </SafeAreaView>
-      </AuthContext.Provider>
-    </QueryClientProvider>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <SafeAreaView style={backgroundStyle}>
+        <StatusBar
+          backgroundColor={Colors.black500}
+          barStyle={'light-content'}
+        />
+        <NavigationContainer>
+          <NavBar />
+        </NavigationContainer>
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 };
 

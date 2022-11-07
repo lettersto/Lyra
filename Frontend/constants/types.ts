@@ -28,19 +28,23 @@ export type RootStackParamList = {
   MainPheed: undefined;
   MainMap: undefined;
   LocationModal: undefined;
+  TownModal: undefined;
   LocationSearch: undefined;
+  FirstTownSearch: undefined;
+  TownSearch: undefined;
   MainChat: undefined;
   MainProfile: undefined;
   ProfileDetail: undefined;
   DetailPheed: PheedDetailParamList;
-  ShortsDetail: ShortsDetailParamList;
-  StoryDetail: Array<ShortsDetailParamList>;
+  UpdatePheed: PheedDetailParamList;
+  ShortsDetail: Array<ShortsDetailParamList>;
   Splash: undefined;
   Login: undefined;
   Onboarding: undefined;
   CreateShorts: VideoParamList;
   LocationPermission: undefined;
   WalletCreation: undefined;
+  SearchPheed: undefined;
 };
 
 export type RootTabParamList = {
@@ -52,32 +56,42 @@ export type RootTabParamList = {
 
 // Pheed
 export type PheedDetailParamList = {
-  name: string | undefined;
-  profileImg: string | undefined;
-  datetime: string | undefined;
+  pheedId: number;
+  name: string;
+  profileImg: string;
+  startTime: Date;
+  latitude: number;
+  longitude: number;
+  time: Date;
   location: string;
-  title: string | undefined;
+  title: string;
   content: string;
-  comment: number | undefined;
+  comment: string;
   comments: Array<CommentParamList>;
   like: number | undefined;
   isLive: boolean | undefined;
-  imgUrl: string[] | undefined;
-  tags: Array<string>;
+  pheedImg: string[] | undefined;
+  pheedTag: Array<TagDetailParamList>;
+  category: string;
+};
+
+export type TagDetailParamList = {
+  id: number;
+  name: string;
+};
+
+// export type ShortsDetailParamList = {
+//   name: string;
+//   index: number;
+//   show: boolean;
+// };
+
+export type ShortsParamList = {
+  username: string;
+  stories: Array<ShortsDetailParamList>;
 };
 
 export type ShortsDetailParamList = {
-  name: string;
-  index: number;
-  show: boolean;
-};
-
-export type StorysParamList = {
-  username: string;
-  stories: Array<StoryDetailParamList>;
-};
-
-export type StoryDetailParamList = {
   id: number;
   url: string;
   type: string;
@@ -86,10 +100,9 @@ export type StoryDetailParamList = {
 };
 
 export type VideoParamList = {
-  duration: number;
+  duration: number | null;
   height: number;
   mime: string;
-  modification: string;
   path: string;
   size: number;
   width: number;

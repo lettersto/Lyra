@@ -1,17 +1,26 @@
-import React, {useState} from 'react';
+import React, {Dispatch, SetStateAction, useState} from 'react';
 import {View, StyleSheet, Text, Alert, ScrollView} from 'react-native';
 import Input from '../Utils/Input';
 import Button from '../Utils/Button';
 import Colors from '../../constants/Colors';
 
-const Tag = () => {
+const Tag = ({
+  PheedTags,
+  SetPheedTags,
+}: {
+  PheedTags: string[];
+  SetPheedTags: Dispatch<SetStateAction<string[]>>;
+}) => {
   const [enteredValue, setEnteredValue] = useState<string>('');
-  const [tags, setTag] = useState<string[]>([]);
+  const [tags, setTag] = useState<string[]>(PheedTags);
   const [show, setShow] = useState<boolean>(false);
 
   const submit = () => {
     if (enteredValue.trim()) {
       setTag(prevTags => {
+        return [...prevTags, enteredValue];
+      });
+      SetPheedTags(prevTags => {
         return [...prevTags, enteredValue];
       });
     } else {
@@ -24,6 +33,7 @@ const Tag = () => {
     const newTag = [...tags];
     newTag.splice(index, 1);
     setTag(newTag);
+    SetPheedTags(newTag);
   };
 
   const showInput = () => {

@@ -7,8 +7,10 @@ import PheedTitle from './TopNavBar/PheedTitle';
 import AlarmScreen from '../../screens/Others/AlarmScreen';
 import DetailPheedScreen from '../../screens/Home/Pheed/DetailPheedScreen';
 import ShortsDetailScreen from '../../screens/Home/Shorts/ShortsDetailScreen';
-import StoryDetailScreen from '../../screens/Home/Shorts/StoryDetailScreen';
 import CreateShortsScreen from '../../screens/Home/Shorts/CreateShortsScreen';
+import PheedDetailTitle from './TopNavBar/PheedDetailTitle';
+import SearchPheedScreen from '../../screens/Home/Pheed/SearchPheedScreen';
+import UpdatePheedScreen from '../../screens/Home/Pheed/UpdatePheedScreen';
 
 // Profile
 import MainProfileScreen from '../../screens/Profile/MainProfileScreen';
@@ -30,17 +32,21 @@ import WalletCreationScreen from '../../screens/Others/WalletCreationScreen';
 import LocationPermissionScreen from '../../screens/Others/LocationPermissionScreen';
 // import SplashScreen from '../../screens/Others/SplashScreen';
 
-import AuthContext from '../../store/auth-context';
+// import AuthContext from '../../store/auth-context';
 import {TabScreens} from './NavBar';
 import {RootStackParamList} from '../../constants/types';
 import Colors from '../../constants/Colors';
 import {LocationModal} from '../Utils/LocationModal';
+import FirstTownSearchScreen from '../../screens/Map/FirstTownSearchScreen';
+import TownSearchScreen from '../../screens/Map/TownSearchScreen';
 import LocationSearchScreen from '../../screens/Map/LocationSearchScreen';
+import {TownModal} from '../Utils/TownModal';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const PheedStack = () => {
-  const {isLoggedIn} = useContext(AuthContext);
+  // const {isLoggedIn} = useContext(AuthContext);
+  const isLoggedIn = false;
   return (
     <Stack.Navigator
       initialRouteName={TabScreens.Home}
@@ -54,7 +60,7 @@ export const PheedStack = () => {
           fontSize: 20,
         },
       }}>
-      {isLoggedIn && (
+      {!isLoggedIn && (
         <>
           <Stack.Group
             screenOptions={{
@@ -69,22 +75,38 @@ export const PheedStack = () => {
                 headerShown: false,
                 presentation: 'transparentModal',
               }}>
-              <Stack.Screen name="LocationModal" component={LocationModal} />
-              <Stack.Screen
-                name="LocationSearch"
-                component={LocationSearchScreen}
-              />
+              <Stack.Screen name="TownModal" component={TownModal} />
+              <Stack.Screen name="TownSearch" component={TownSearchScreen} />
             </Stack.Group>
           </Stack.Group>
-
+          <Stack.Screen
+            name="SearchPheed"
+            component={SearchPheedScreen}
+            options={{title: ''}}
+          />
           <Stack.Screen name="CreatePheed" component={CreatePheedScreen} />
-          <Stack.Screen name="ShortsDetail" component={ShortsDetailScreen} />
-          <Stack.Screen name="StoryDetail" component={StoryDetailScreen} />
-          <Stack.Screen name="CreateShorts" component={CreateShortsScreen} />
+          <Stack.Screen name="UpdatePheed" component={UpdatePheedScreen} />
+          <Stack.Screen
+            name="ShortsDetail"
+            component={ShortsDetailScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="CreateShorts"
+            component={CreateShortsScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
           <Stack.Screen
             name="DetailPheed"
             component={DetailPheedScreen}
-            // initialParams={}
+            options={{
+              headerTitle: () => <PheedDetailTitle />,
+              headerBackVisible: false,
+            }}
           />
           <Stack.Screen name="Alarm" component={AlarmScreen} />
         </>
@@ -119,6 +141,11 @@ export const PheedStack = () => {
               headerShown: false,
             }}
           />
+          <Stack.Screen
+            name="FirstTownSearch"
+            component={FirstTownSearchScreen}
+            options={{headerShown: false}}
+          />
         </>
       )}
     </Stack.Navigator>
@@ -139,13 +166,37 @@ export const MapStack = () => {
           fontSize: 20,
         },
       }}>
-      <Stack.Screen
-        name="MainMap"
-        component={MainMapScreen}
-        options={{
+      <Stack.Group
+        screenOptions={{
           headerTitle: () => <MapTitle />,
-        }}
-      />
+          headerBackVisible: false,
+        }}>
+        <Stack.Group screenOptions={{presentation: 'card'}}>
+          <Stack.Screen
+            name="MainMap"
+            component={MainMapScreen}
+            // options={{
+            //   headerTitle: () => <MapTitle />,
+            // }}
+          />
+          <Stack.Screen
+            name="DetailPheed"
+            component={DetailPheedScreen}
+            options={{
+              headerTitle: () => <PheedDetailTitle />,
+              headerBackVisible: false,
+            }}
+          />
+        </Stack.Group>
+        <Stack.Group
+          screenOptions={{
+            headerShown: false,
+            presentation: 'transparentModal',
+          }}>
+          <Stack.Screen name="TownModal" component={TownModal} />
+          <Stack.Screen name="TownSearch" component={TownSearchScreen} />
+        </Stack.Group>
+      </Stack.Group>
     </Stack.Navigator>
   );
 };

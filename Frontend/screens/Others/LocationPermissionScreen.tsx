@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {
   View,
   ImageBackground,
@@ -6,21 +6,38 @@ import {
   StyleSheet,
   Dimensions,
   Alert,
+  Platform,
+  PermissionsAndroid,
+  BackHandler,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../constants/types';
-
+import Geolocation from 'react-native-geolocation-service';
 import IIcon from 'react-native-vector-icons/Ionicons';
 
-import AuthContext from '../../store/auth-context';
 import Button from '../../components/Utils/Button';
 import Colors from '../../constants/Colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
+async function requestPermission() {
+  try {
+    if (Platform.OS === 'ios') {
+      return await Geolocation.requestAuthorization('always');
+    }
+    // 안드로이드 위치 정보 수집 권한 요청
+    if (Platform.OS === 'android') {
+      return await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+    }
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 const LocationPermissionScreen = ({navigation}: Props) => {
   const guidance = 'Lyra를 제대로 사용하기 위해서는\n위치 정보가 필요합니다.';
-  const {setLocationPermitted} = useContext(AuthContext);
 
   const cancleBtnStyle = {
     backgroundColor: 'transparent',
@@ -30,16 +47,27 @@ const LocationPermissionScreen = ({navigation}: Props) => {
   };
 
   const cancleHandler = () => {
-    // TODO specify alert behavior.
     Alert.alert(
       'Lyra',
       '위치 정보를 허용하지 않으면 앱을 쓸 수 없어요. 그래도 괜찮겠어요?',
+      [
+        {text: 'Cancel', onPress: () => {}},
+        {text: 'OK', onPress: () => BackHandler.exitApp()},
+      ],
     );
   };
 
   const permitHandler = () => {
-    setLocationPermitted(true);
-    navigation.navigate('WalletCreation');
+    requestPermission().then(result => {
+      if (result === 'granted') {
+        navigation.navigate('FirstTownSearch');
+      } else {
+        Alert.alert(
+          'Lyra',
+          '위치 정보를 허용하지 않으면 앱을 쓸 수 없어요. 그래도 괜찮겠어요?',
+        );
+      }
+    });
   };
 
   return (
@@ -89,7 +117,6 @@ const styles = StyleSheet.create({
   },
   permissionContainer: {
     flex: 1,
-    marginVertical: 8,
     width: deviceWidth - 8,
     justifyContent: 'center',
     alignItems: 'center',

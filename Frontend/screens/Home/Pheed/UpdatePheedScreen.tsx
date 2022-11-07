@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {SafeAreaView, View, StyleSheet, Dimensions} from 'react-native';
 import Input from '../../../components/Utils/Input';
-import DateTime from '../../../components/Pheed/DateTime';
+import UpDateTime from '../../../components/Pheed/UpdateDateTime';
 import Colors from '../../../constants/Colors';
 import Gallery from '../../../components/Pheed/Gallery';
 import PheedCategory from '../../../components/Pheed/Category/PheedCategory';
@@ -11,32 +11,67 @@ import Button from '../../../components/Utils/Button';
 import Location from '../../../components/Pheed/Location';
 import axios from '../../../api/axios';
 import {useNavigation} from '@react-navigation/native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../../constants/types';
 
-const CreatePheedScreen = () => {
+type Props = NativeStackScreenProps<RootStackParamList, 'DetailPheed'>;
+
+const UpdatePheedScreen = ({route}: Props) => {
   const navigation = useNavigation();
 
   const [photos, SetPhotos] = useState<any[]>([]);
-  const [category, SetCategory] = useState('');
-  const [enteredTitle, setEnteredTitle] = useState<string>('');
-  const [enteredContent, setEnteredContent] = useState<string>('');
-  const [date, SetDate] = useState<Date>(new Date());
-  const [tags, SetTags] = useState<string[]>([]);
+  const [category, SetCategory] = useState(route.params.category);
+  const [enteredTitle, setEnteredTitle] = useState<string>(route.params.title);
+  const [enteredContent, setEnteredContent] = useState<string>(
+    route.params.content,
+  );
+  const [date, SetDate] = useState<Date>(route.params.startTime);
+
+  const currentTags = [];
+
+  for (var i = 0; i < route.params.pheedTag.length; i++) {
+    if (route.params.pheedTag[i].id === undefined) {
+      currentTags.push(route.params.pheedTag[i]);
+    } else {
+      currentTags.push(route.params.pheedTag[i].name);
+    }
+  }
+
+  const [tags, SetTags] = useState<any[]>(currentTags);
 
   const register = () => {
     axios
-      .post('/pheed/?user_id=1', {
+      .patch(`/pheed/${route.params.pheedId}`, {
         category: category,
         content: enteredContent,
-        latitude: 0,
-        longitude: 0,
+        latitude: 1,
+        longitude: 1,
         pheedTag: tags,
         startTime: date,
         title: enteredTitle,
-        location: '하남산단6번로',
+        location: '하남산단로',
       })
-      .then(function (response) {
-        console.log(response);
-        navigation.navigate('MainPheed');
+      .then(function () {
+        // console.log(response);
+        // navigation.goBack();
+        navigation.navigate('DetailPheed', {
+          category: category,
+          content: enteredContent,
+          latitude: 1,
+          longitude: 1,
+          pheedTag: tags,
+          startTime: date,
+          title: enteredTitle,
+          location: '하남산단로',
+          pheedId: route.params.pheedId,
+          pheedImg: route.params.pheedImg,
+          name: route.params.name,
+          profileImg: route.params.profileImg,
+          isLive: route.params.isLive,
+          time: route.params.time,
+          comments: route.params.comments,
+          like: route.params.like,
+        });
       })
       .catch(function (error) {
         console.log(error);
@@ -80,10 +115,10 @@ const CreatePheedScreen = () => {
               />
             </View>
             <View style={styles.dateplace}>
-              <DateTime SetDate={SetDate} />
+              <UpDateTime pheedDate={date} SetDate={SetDate} />
               <Location />
             </View>
-            <Tag PheedTags={[]} SetPheedTags={SetTags} />
+            <Tag PheedTags={tags} SetPheedTags={SetTags} />
             <View style={styles.registerBtn}>
               <Button
                 title="등록"
@@ -134,4 +169,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreatePheedScreen;
+export default UpdatePheedScreen;
