@@ -1,5 +1,5 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import Config from 'react-native-config';
 import MapView, {Marker, PROVIDER_GOOGLE, Region} from 'react-native-maps';
@@ -9,12 +9,15 @@ import MapStyle from '../../components/Map/mapStyle';
 import Button from '../../components/Utils/Button';
 import Colors from '../../constants/Colors';
 import {RootStackParamList} from '../../constants/types';
+import {AuthContext} from '../../store/auth-context';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 const deviceWidth = Dimensions.get('window').width;
 
 const FirstTownSearchScreen = ({navigation}: Props) => {
+  const {setLatitude, setLongitude, nickname} = useContext(AuthContext);
+  console.log('aanickname', nickname);
   const [location, setLocation] = useState<Region>({
     latitudeDelta: 0.005,
     longitudeDelta: 0.005,
@@ -38,6 +41,8 @@ const FirstTownSearchScreen = ({navigation}: Props) => {
   };
 
   const pressHandler = () => {
+    setLatitude(location.latitude);
+    setLongitude(location.longitude);
     navigation.navigate('WalletCreation');
   };
 

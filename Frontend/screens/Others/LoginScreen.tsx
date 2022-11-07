@@ -7,11 +7,18 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+
 import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
-import AuthContext from '../../store/auth-context';
+import {
+  signInWithKakao,
+  getKakaoProfile,
+  sendUserKakaoInfoToServer,
+} from '../../api/auth';
+import {AuthContext} from '../../store/auth-context';
 import {RootStackParamList, RootTabParamList} from '../../constants/types';
 import Colors from '../../constants/Colors';
 import StarEffect from '../../components/Utils/StarEffect';
@@ -29,19 +36,53 @@ const LoginScreen = () => {
   }, [navigation]);
 
   const LoginButton = ({title, type}: {title: string; type: string}) => {
-    const {locationPermitted, walletCreated, setIsLoggedIn} =
+    const {setImageURL, setNickname, setUserId, setIsLoggedIn} =
       useContext(AuthContext);
 
-    const onKakaoLoginPress = () => {
-      if (locationPermitted && walletCreated) {
-        navigation.navigate('Home');
-      } else {
+    const onKakaoLoginPress = async () => {
+      try {
+        await signInWithKakao();
+        // NOTE types are strage here
+        const {
+          name,
+          nickname,
+          profileImageUrl: imageURL,
+          email,
+        } = await getKakaoProfile();
+
+        setImageURL(imageURL);
+        setNickname(nickname);
+
+        const {
+          accessToken,
+          refreshToken,
+          id: userId,
+        } = await sendUserKakaoInfoToServer({
+          name,
+          nickname,
+          imageURL,
+          email,
+        });
+
+        setUserId(userId);
+        setIsLoggedIn(true);
+
+        await EncryptedStorage.setItem('accessToken', accessToken);
+        await EncryptedStorage.setItem('refreshToken', refreshToken);
+
         navigation.navigate('LocationPermission');
+      } catch (err) {
+        if (__DEV__) {
+          console.error(err);
+        }
+        setUserId(null);
+        setImageURL(null);
+        setNickname(null);
+        setIsLoggedIn(false);
       }
     };
 
     const onGoogleLoginPress = () => {
-      setIsLoggedIn(true);
       navigation.navigate('Home');
     };
 

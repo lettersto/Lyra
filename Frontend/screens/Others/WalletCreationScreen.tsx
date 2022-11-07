@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {
   View,
   ImageBackground,
@@ -17,7 +17,8 @@ import {RootStackParamList, RootTabParamList} from '../../constants/types';
 
 import IIcon from 'react-native-vector-icons/Ionicons';
 
-import AuthContext from '../../store/auth-context';
+import {AuthContext} from '../../store/auth-context';
+import {createWallet} from '../../api/profile';
 import Button from '../../components/Utils/Button';
 import Colors from '../../constants/Colors';
 
@@ -28,8 +29,8 @@ type WalletNavigationProps = CompositeNavigationProp<
 
 const WalletCreationScreen = () => {
   const navigation = useNavigation<WalletNavigationProps>();
-  const {setWalletCreated, walletCreated, setIsLoggedIn} =
-    useContext(AuthContext);
+  const [walletCreated, setWalletCreated] = useState(false);
+  const {userId} = useContext(AuthContext);
   const guidance = !walletCreated
     ? 'Lyra를 제대로 사용하기 위해서는\n지갑이 필요합니다.'
     : '지갑이 생성되었어요!';
@@ -52,13 +53,21 @@ const WalletCreationScreen = () => {
     );
   };
 
-  const walletCreationHandler = () => {
-    setWalletCreated(true);
-    navigation.navigate('WalletCreation');
+  const walletCreationHandler = async () => {
+    try {
+      if (userId) {
+        // const walletData = await createWallet(userId);
+        console.log('walletData', walletData);
+      }
+    } catch (error) {
+      if (__DEV__) {
+        console.error(error);
+      }
+    }
+    // setWalletCreated(true);
   };
 
   const startPressHandler = () => {
-    setIsLoggedIn(true);
     navigation.navigate('Home');
   };
 
