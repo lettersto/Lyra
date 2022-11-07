@@ -16,7 +16,8 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 const deviceWidth = Dimensions.get('window').width;
 
 const FirstTownSearchScreen = ({navigation}: Props) => {
-  const {setLatitude, setLongitude, nickname} = useContext(AuthContext);
+  const {setLatitude, setLongitude, nickname, townName, setTownName} =
+    useContext(AuthContext);
   console.log('aanickname', nickname);
   const [location, setLocation] = useState<Region>({
     latitudeDelta: 0.005,
@@ -24,7 +25,6 @@ const FirstTownSearchScreen = ({navigation}: Props) => {
     latitude: 0,
     longitude: 0,
   });
-  const [name, setName] = useState('');
 
   const getTownName = async (lat: number, lng: number) => {
     const response = await fetch(
@@ -37,7 +37,7 @@ const FirstTownSearchScreen = ({navigation}: Props) => {
       },
     );
     const result = await response.json();
-    return setName(result.documents[0].region_3depth_name);
+    return setTownName(result.documents[0].region_3depth_name);
   };
 
   const pressHandler = () => {
@@ -81,7 +81,7 @@ const FirstTownSearchScreen = ({navigation}: Props) => {
           )}
           {location.latitude != 0 ? (
             <View style={{height: '25%', bottom: 0}}>
-              <Text style={styles.name}>{name}</Text>
+              <Text style={styles.name}>{townName}</Text>
               <Button
                 title="선택한 위치로 설정"
                 btnSize="large"
