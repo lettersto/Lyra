@@ -328,19 +328,35 @@ const DetailPheedScreen = ({route}: Props) => {
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.tagsContainer}>
               {tags?.map((tag, idx) => {
-                return (
-                  <View key={idx} style={styles.tag}>
-                    <Button
-                      title={'#' + tag.name}
-                      btnSize="small"
-                      textSize="small"
-                      isGradient={true}
-                      isOutlined={true}
-                      onPress={goChat}
-                      disabled
-                    />
-                  </View>
-                );
+                if (tag.id === undefined) {
+                  return (
+                    <View key={idx} style={styles.tag}>
+                      <Button
+                        title={'#' + tag}
+                        btnSize="small"
+                        textSize="small"
+                        isGradient={true}
+                        isOutlined={true}
+                        onPress={goChat}
+                        disabled
+                      />
+                    </View>
+                  );
+                } else {
+                  return (
+                    <View key={idx} style={styles.tag}>
+                      <Button
+                        title={'#' + tag.name}
+                        btnSize="small"
+                        textSize="small"
+                        isGradient={true}
+                        isOutlined={true}
+                        onPress={goChat}
+                        disabled
+                      />
+                    </View>
+                  );
+                }
               })}
             </View>
           </ScrollView>
