@@ -9,4 +9,5 @@ public class UserLoginRequestDto {
     String email;
     String name;
     String image_url;
+    String nickname;
 }
