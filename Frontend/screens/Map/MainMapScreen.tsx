@@ -1,10 +1,10 @@
 import React, {useRef, useState} from 'react';
 import {Button, Dimensions, StyleSheet, View} from 'react-native';
 import LiveCategory from '../../components/Map/LiveCategory';
-import Map from '../../components/Map/Map';
 import PheedCategory from '../../components/Pheed/Category/PheedCategory';
 import {Modalize} from 'react-native-modalize';
 import PheedContent from '../../components/Pheed/PheedContent';
+import MainMapView from '../../components/Map/MainMapView';
 
 const deviceWidth = Dimensions.get('window').width;
 
@@ -31,7 +31,7 @@ const MainMapScreen = () => {
         SetCurrentCategory={SetCurrentCategory}
       />
       <View style={styles.pheedContent}>
-        <PheedContent />
+        <PheedContent category={currentCategory} width={0.9} />
       </View>
       <Button
         title="Close to initial position"
@@ -43,7 +43,7 @@ const MainMapScreen = () => {
 
   return (
     <>
-      <Map />
+      <MainMapView />
       <LiveCategory CustomStyle={styles.liveCategory} />
       <Modalize
         ref={modalizeRef}
