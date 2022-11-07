@@ -179,14 +179,6 @@ export const MapStack = () => {
             //   headerTitle: () => <MapTitle />,
             // }}
           />
-          <Stack.Screen
-            name="DetailPheed"
-            component={DetailPheedScreen}
-            options={{
-              headerTitle: () => <PheedDetailTitle />,
-              headerBackVisible: false,
-            }}
-          />
         </Stack.Group>
         <Stack.Group
           screenOptions={{
@@ -195,6 +187,16 @@ export const MapStack = () => {
           }}>
           <Stack.Screen name="TownModal" component={TownModal} />
           <Stack.Screen name="TownSearch" component={TownSearchScreen} />
+        </Stack.Group>
+        <Stack.Group>
+          <Stack.Screen
+            name="DetailPheed"
+            component={DetailPheedScreen}
+            options={{
+              headerTitle: () => <PheedDetailTitle />,
+              headerBackVisible: false,
+            }}
+          />
         </Stack.Group>
       </Stack.Group>
     </Stack.Navigator>

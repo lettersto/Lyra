@@ -1,16 +1,16 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useState} from 'react';
+import React, {useContext} from 'react';
 import {Text, Pressable, StyleSheet, View} from 'react-native';
 import MIcon from 'react-native-vector-icons/MaterialIcons';
 
 import Colors from '../../../constants/Colors';
+import {AuthContext} from '../../../store/auth-context';
 
 const LocationButton = () => {
   // TODO
   // 1. get Location from context API or something else. + setCurrentLocation
   // 2. onPress function to find location.
-  const [currentLocation, setCurrentLocation] = useState('오선동');
-
+  const {setLatitude, setLongitude, townName} = useContext(AuthContext);
   const navigation = useNavigation();
   const pressHandler = () => {
     navigation.navigate('TownModal');
@@ -21,7 +21,7 @@ const LocationButton = () => {
       <Pressable onPress={pressHandler}>
         <View style={styles.innerContainer}>
           <MIcon name="keyboard-arrow-down" size={25} color={Colors.gray300} />
-          <Text style={styles.title}>{currentLocation}</Text>
+          <Text style={styles.title}>{townName}</Text>
         </View>
       </Pressable>
     </>
