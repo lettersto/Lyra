@@ -66,6 +66,7 @@ export type PheedDetailParamList = {
   location: string;
   title: string;
   content: string;
+  comment: string;
   comments: Array<CommentParamList>;
   like: number | undefined;
   isLive: boolean | undefined;
