@@ -60,6 +60,8 @@ export type PheedDetailParamList = {
   name: string;
   profileImg: string;
   startTime: Date;
+  latitude: number;
+  longitude: number;
   time: Date;
   location: string;
   title: string;
