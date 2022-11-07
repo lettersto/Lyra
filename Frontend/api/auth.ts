@@ -1,18 +1,18 @@
 import {
   KakaoOAuthToken,
   KakaoOAuthWebToken,
-  KakaoProfile,
-  KakaoProfileWebType,
   getProfile,
   login,
   logout,
   unlink,
 } from '@react-native-seoul/kakao-login';
 
+import axios from './axios';
+
 // KakaoLogin
 export const signInWithKakao = async (): Promise<string> => {
-  const token: KakaoOAuthToken | KakaoOAuthWebToken = await login();
-  return JSON.stringify(token);
+  const siginInInfo: KakaoOAuthToken | KakaoOAuthWebToken = await login();
+  return JSON.stringify(siginInInfo);
 };
 
 export const signOutWithKakao = async (): Promise<string> => {
@@ -20,12 +20,38 @@ export const signOutWithKakao = async (): Promise<string> => {
   return message;
 };
 
-export const getKakaoProfile = async (): Promise<string> => {
-  const profile: KakaoProfile | KakaoProfileWebType = await getProfile();
-  return JSON.stringify(profile);
+export const getKakaoProfile = async () => {
+  const profile = await getProfile();
+  return profile;
+  // return JSON.stringify(profile);
 };
 
 export const unlinkKakao = async (): Promise<string> => {
   const message = await unlink();
   return message;
+};
+
+// authentication
+export const sendUserKakaoInfoToServer = async ({
+  email,
+  imageURL,
+  name,
+  nickname,
+}: {
+  email: string;
+  imageURL: string;
+  name: string;
+  nickname: string;
+}) => {
+  const response = await axios({
+    url: '/user/login',
+    method: 'POST',
+    data: {
+      email,
+      image_url: imageURL,
+      name,
+      nickname,
+    },
+  });
+  return response.data;
 };

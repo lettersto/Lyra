@@ -26,6 +26,8 @@ target 'Frontend' do
   )
 
 
+  pod 'react-native-encrypted-storage', :path => '../node_modules/react-native-encrypted-storage'
+
   target 'FrontendTests' do
     inherit! :complete
     # Pods for testing

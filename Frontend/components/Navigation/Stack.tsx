@@ -32,7 +32,7 @@ import WalletCreationScreen from '../../screens/Others/WalletCreationScreen';
 import LocationPermissionScreen from '../../screens/Others/LocationPermissionScreen';
 // import SplashScreen from '../../screens/Others/SplashScreen';
 
-import AuthContext from '../../store/auth-context';
+// import AuthContext from '../../store/auth-context';
 import {TabScreens} from './NavBar';
 import {RootStackParamList} from '../../constants/types';
 import Colors from '../../constants/Colors';
@@ -45,7 +45,8 @@ import {TownModal} from '../Utils/TownModal';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const PheedStack = () => {
-  const {isLoggedIn} = useContext(AuthContext);
+  // const {isLoggedIn} = useContext(AuthContext);
+  const isLoggedIn = false;
   return (
     <Stack.Navigator
       initialRouteName={TabScreens.Home}
@@ -59,7 +60,7 @@ export const PheedStack = () => {
           fontSize: 20,
         },
       }}>
-      {isLoggedIn && (
+      {!isLoggedIn && (
         <>
           <Stack.Group
             screenOptions={{

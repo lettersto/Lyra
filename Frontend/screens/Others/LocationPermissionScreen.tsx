@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {
   View,
   ImageBackground,
@@ -15,7 +15,6 @@ import {RootStackParamList} from '../../constants/types';
 import Geolocation from 'react-native-geolocation-service';
 import IIcon from 'react-native-vector-icons/Ionicons';
 
-import AuthContext from '../../store/auth-context';
 import Button from '../../components/Utils/Button';
 import Colors from '../../constants/Colors';
 
@@ -39,7 +38,6 @@ async function requestPermission() {
 
 const LocationPermissionScreen = ({navigation}: Props) => {
   const guidance = 'Lyra를 제대로 사용하기 위해서는\n위치 정보가 필요합니다.';
-  const {setLocationPermitted} = useContext(AuthContext);
 
   const cancleBtnStyle = {
     backgroundColor: 'transparent',
@@ -62,7 +60,6 @@ const LocationPermissionScreen = ({navigation}: Props) => {
   const permitHandler = () => {
     requestPermission().then(result => {
       if (result === 'granted') {
-        setLocationPermitted(true);
         navigation.navigate('FirstTownSearch');
       } else {
         Alert.alert(
