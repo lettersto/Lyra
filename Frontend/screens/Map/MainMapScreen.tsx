@@ -1,10 +1,9 @@
 import React, {useRef, useState} from 'react';
-import {Button, Dimensions, StyleSheet, Text, View} from 'react-native';
+import {Button, Dimensions, StyleSheet, View} from 'react-native';
 import LiveCategory from '../../components/Map/LiveCategory';
-import Map from '../../components/Map/map';
+import Map from '../../components/Map/Map';
 import PheedCategory from '../../components/Pheed/Category/PheedCategory';
 import {Modalize} from 'react-native-modalize';
-import Colors from '../../constants/Colors';
 import PheedContent from '../../components/Pheed/PheedContent';
 
 const deviceWidth = Dimensions.get('window').width;
@@ -25,7 +24,12 @@ const MainMapScreen = () => {
 
   const renderContent = () => (
     <View style={styles.content}>
-      <Text style={styles.modalTitle}>Open Fheed!</Text>
+      <PheedCategory
+        Category="main"
+        CustomStyle={styles.pheedCategory}
+        currentCategory={currentCategory}
+        SetCurrentCategory={SetCurrentCategory}
+      />
       <View style={styles.pheedContent}>
         <PheedContent />
       </View>
@@ -41,13 +45,6 @@ const MainMapScreen = () => {
     <>
       <Map />
       <LiveCategory CustomStyle={styles.liveCategory} />
-      <PheedCategory
-        Category="main"
-        CustomStyle={styles.pheedCategory}
-        scrollStyle={styles.scroll}
-        currentCategory={currentCategory}
-        SetCurrentCategory={SetCurrentCategory}
-      />
       <Modalize
         ref={modalizeRef}
         modalStyle={styles.content__modal}
@@ -65,22 +62,15 @@ const styles = StyleSheet.create({
   liveCategory: {
     position: 'absolute',
     zIndex: 1,
-    width: deviceWidth,
+    // width: deviceWidth,
     // bottom: 114,
     top: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    // backgroundColor: 'rgba(0, 0, 0, 0.9)',
     paddingVertical: 5,
   },
   pheedCategory: {
-    position: 'absolute',
-    zIndex: 1,
     width: deviceWidth,
-    top: 37,
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
     paddingVertical: 5,
-  },
-  scroll: {
-    marginHorizontal: '5%',
   },
   content: {
     padding: 20,
@@ -94,12 +84,6 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 6},
     shadowOpacity: 0.45,
     shadowRadius: 16,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    textAlign: 'center',
-    color: Colors.white300,
   },
   pheedContent: {
     flex: 1,
