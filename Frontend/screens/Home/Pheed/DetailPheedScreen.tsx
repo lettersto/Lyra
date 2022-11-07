@@ -23,7 +23,11 @@ import Icon3 from 'react-native-vector-icons/AntDesign';
 import Icon4 from 'react-native-vector-icons/Ionicons';
 import GradientLine from '../../../components/Utils/GradientLine';
 import Button from '../../../components/Utils/Button';
-import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
+import {
+  CompositeNavigationProp,
+  useIsFocused,
+  useNavigation,
+} from '@react-navigation/native';
 import Input from '../../../components/Utils/Input';
 import MoreInfo from './MoreInfo';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
@@ -41,6 +45,8 @@ type DetailPheedNavigationProps = CompositeNavigationProp<
 const DetailPheedScreen = ({route}: Props) => {
   const navigate = useNavigation<DetailPheedNavigationProps>();
   const [change, setChange] = useState(false);
+  const isFocused = useIsFocused();
+  const navigation = useNavigation();
 
   useLayoutEffect(() => {
     navigate.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
@@ -56,7 +62,7 @@ const DetailPheedScreen = ({route}: Props) => {
       .catch(function (error) {
         console.log(error);
       });
-  }, [route.params.pheedId, change]);
+  }, [route.params.pheedId, change, isFocused]);
 
   const name = route.params?.name;
   // const profileImg = route.params?.profileImg;
@@ -70,7 +76,6 @@ const DetailPheedScreen = ({route}: Props) => {
   const tags = route.params?.pheedTag;
   const [comments, SetComments] = useState<any[]>([]);
 
-  const navigation = useNavigation();
   const goChat = () => {
     navigation.navigate('Chat');
   };
@@ -241,9 +246,10 @@ const DetailPheedScreen = ({route}: Props) => {
                     content={
                       <>
                         <Pressable
-                          onPress={() =>
-                            navigation.navigate('UpdatePheed', route.params)
-                          }>
+                          onPress={() => (
+                            navigation.navigate('UpdatePheed', route.params),
+                            SetShowTooltip(false)
+                          )}>
                           <View style={styles.tooltipIcon}>
                             <Text style={styles.tooltipText}>수정</Text>
                             <Icon2
