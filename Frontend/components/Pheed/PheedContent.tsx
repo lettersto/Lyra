@@ -19,7 +19,7 @@ import GradientLine from '../Utils/GradientLine';
 import MoreInfo from './MoreInfo';
 import axios from '../../api/axios';
 
-const PheedContent = () => {
+const PheedContent = ({category, width}: {category: string; width: number}) => {
   const [contents, SetContents] = useState<any[]>([]);
   const isFocused = useIsFocused();
   useEffect(() => {
@@ -48,6 +48,15 @@ const PheedContent = () => {
     }
   };
 
+  const customStyles = StyleSheet.create({
+    gradientContainer: {
+      width: Dimensions.get('window').width * width,
+    },
+    Container: {
+      width: Dimensions.get('window').width * width - 2,
+    },
+  });
+
   function sliceYear(num: number) {
     return num.toString().slice(2, 4);
   }
@@ -71,7 +80,130 @@ const PheedContent = () => {
           ':' +
           [padTo2Digits(date.getMinutes())];
 
-        return (
+        return category === content.category ? (
+          <View key={i}>
+            <LinearGradient
+              start={{x: 0, y: 0}}
+              end={{x: 0, y: 1}}
+              useAngle={true}
+              angle={135}
+              angleCenter={{x: 0.5, y: 0.5}}
+              colors={[Colors.purple300, Colors.pink500]}
+              style={[
+                styles.gradientContainer,
+                customStyles.gradientContainer,
+              ]}>
+              <View style={[styles.Container, customStyles.Container]}>
+                <View style={styles.profileContainer}>
+                  <View style={styles.profileDatetime}>
+                    <View style={styles.profileImg}>
+                      <CircleProfile size="small" isGradient={false} />
+                    </View>
+                    <View>
+                      <Text style={styles.boldtext}>APOLLON</Text>
+                      {/* <Text style={styles.boldtext}>{content.name}</Text> */}
+                      <View>
+                        <View style={styles.dateContainer}>
+                          <Icon
+                            name="clock"
+                            color={Colors.gray300}
+                            size={16}
+                            style={styles.clock}
+                          />
+                          <Text style={styles.text}>{datetime}</Text>
+                        </View>
+                        <View style={styles.dateContainer}>
+                          <Icon4
+                            name="location-outline"
+                            color={Colors.gray300}
+                            size={16}
+                            style={styles.clock}
+                          />
+                          <Text style={styles.text}>{content.location}</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                  <View style={styles.liveContainer}>
+                    {/* {content.isLive ? (
+                      <Button
+                        title="LIVE"
+                        btnSize="medium"
+                        textSize="medium"
+                        isGradient={true}
+                        isOutlined={false}
+                        onPress={goChat}
+                      />
+                    ) : (
+                      <Button
+                        title="예정"
+                        btnSize="medium"
+                        textSize="medium"
+                        isGradient={true}
+                        isOutlined={true}
+                        onPress={goChat}
+                        disabled
+                      />
+                    )} */}
+                  </View>
+                </View>
+                <View style={styles.lineContainer}>
+                  <GradientLine />
+                </View>
+                <Pressable
+                  onPress={() => navigation.navigate('DetailPheed', content)}>
+                  <View style={styles.contentContainer}>
+                    {/* {content.imgUrl.length !== 0 ? (
+                      <Text style={styles.text}>{content.imgUrl}</Text>
+                    ) : (
+                      <></>
+                    )} */}
+                    <Text style={styles.boldtext}>{content.title}</Text>
+                    <MoreInfo content={content.content} />
+                  </View>
+                </Pressable>
+                <GradientLine />
+                <View style={styles.bottomContainer}>
+                  <View style={styles.commentContainer}>
+                    <Icon2
+                      name="comment-text-outline"
+                      color={Colors.gray300}
+                      size={16}
+                      style={styles.clock}
+                    />
+                    <Text style={styles.text}>
+                      댓글 (
+                      {content.comment.length === 0
+                        ? 0
+                        : content.comment.length}
+                      )
+                    </Text>
+                  </View>
+                  <Pressable onPress={activeLike}>
+                    <View style={styles.likeContainer}>
+                      {isLike ? (
+                        <Icon3
+                          name="star"
+                          color={Colors.gray300}
+                          size={16}
+                          style={styles.clock}
+                        />
+                      ) : (
+                        <Icon3
+                          name="staro"
+                          color={Colors.gray300}
+                          size={16}
+                          style={styles.clock}
+                        />
+                      )}
+                      {/* <Text style={styles.text}>{content.like}</Text> */}
+                    </View>
+                  </Pressable>
+                </View>
+              </View>
+            </LinearGradient>
+          </View>
+        ) : category === 'all' ? (
           <View key={i}>
             <LinearGradient
               start={{x: 0, y: 0}}
@@ -191,6 +323,8 @@ const PheedContent = () => {
               </View>
             </LinearGradient>
           </View>
+        ) : (
+          <View key={i} />
         );
       })}
     </ScrollView>
