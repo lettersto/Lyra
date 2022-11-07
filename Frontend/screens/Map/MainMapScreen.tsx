@@ -1,10 +1,9 @@
 import React, {useRef, useState} from 'react';
-import {Button, Dimensions, StyleSheet, Text, View} from 'react-native';
+import {Button, Dimensions, StyleSheet, View} from 'react-native';
 import LiveCategory from '../../components/Map/LiveCategory';
-import Map from '../../components/Map/map';
+import Map from '../../components/Map/Map';
 import PheedCategory from '../../components/Pheed/Category/PheedCategory';
 import {Modalize} from 'react-native-modalize';
-import Colors from '../../constants/Colors';
 import PheedContent from '../../components/Pheed/PheedContent';
 
 const deviceWidth = Dimensions.get('window').width;
@@ -46,7 +45,6 @@ const MainMapScreen = () => {
     <>
       <Map />
       <LiveCategory CustomStyle={styles.liveCategory} />
-
       <Modalize
         ref={modalizeRef}
         modalStyle={styles.content__modal}

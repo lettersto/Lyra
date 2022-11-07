@@ -3,9 +3,10 @@ import {View, StyleSheet, ViewStyle, GestureResponderEvent} from 'react-native';
 import LiveStateBtn from './LiveStateBtn';
 
 const LIVE_CATEGORY = [
-  {label: '인기공연', code: 1},
-  {label: '공연중', code: 2},
-  {label: '공연예정', code: 3},
+  {label: '전체', code: 1},
+  {label: '인기공연', code: 2},
+  {label: '공연중', code: 3},
+  {label: '공연예정', code: 4},
 ];
 
 const LiveCategory = ({

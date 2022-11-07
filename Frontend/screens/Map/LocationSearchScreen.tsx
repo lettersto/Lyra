@@ -3,7 +3,7 @@ import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE, Region} from 'react-native-maps';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import LocationSearch from '../../components/Map/LocationSearch';
-import MapStyle from '../../components/Map/mapStyle';
+import MapStyle from '../../components/Map/MapStyle';
 import Button from '../../components/Utils/Button';
 import Colors from '../../constants/Colors';
 

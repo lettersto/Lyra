@@ -1,6 +1,6 @@
 export const profileData = [
   {
-    id: 0,
+    userId: 1,
     coords: {
       latitude: 37.5126,
       longitude: 127.1025,
@@ -10,7 +10,7 @@ export const profileData = [
     img: require('../../assets/image/basicProfile.png'),
   },
   {
-    id: 1,
+    userId: 2,
     coords: {
       latitude: 37.5089,
       longitude: 127.0999,
@@ -20,7 +20,7 @@ export const profileData = [
     img: require('../../assets/image/basicProfile.png'),
   },
   {
-    id: 3,
+    userId: 3,
     coords: {
       latitude: 37.5144,
       longitude: 127.1007,
@@ -30,7 +30,7 @@ export const profileData = [
     img: require('../../assets/image/basicProfile.png'),
   },
   {
-    id: 4,
+    userId: 4,
     coords: {
       latitude: 30.8406,
       longitude: 76.9584,
@@ -40,7 +40,7 @@ export const profileData = [
     img: require('../../assets/image/basicProfile.png'),
   },
   {
-    id: 5,
+    userId: 5,
     coords: {
       latitude: 30.6936,
       longitude: 76.845,
