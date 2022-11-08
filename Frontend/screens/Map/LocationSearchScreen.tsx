@@ -30,7 +30,7 @@ const LocationSearchScreen = ({navigation}: Props) => {
     <>
       <View style={styles.body}>
         <View style={{flex: 1}}>
-          <Text style={styles.title}>주소 찾기</Text>
+          {/* <Text style={styles.title}>주소 찾기</Text> */}
           <LocationSearch
             onPress={(data, detail) => {
               const {

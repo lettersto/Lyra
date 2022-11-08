@@ -84,23 +84,13 @@ export const PheedStack = () => {
             component={SearchPheedScreen}
             options={{title: ''}}
           />
-          <Stack.Group screenOptions={{presentation: 'card'}}>
-            <Stack.Screen name="CreatePheed" component={CreatePheedScreen} />
-            <Stack.Screen name="UpdatePheed" component={UpdatePheedScreen} />
-          </Stack.Group>
-          <Stack.Group
-            screenOptions={{
-              headerShown: false,
-              presentation: 'transparentModal',
-            }}>
-            <Stack.Screen name="LocationModal" component={LocationModal} />
-            <Stack.Screen
-              name="LocationSearch"
-              component={LocationSearchScreen}
-            />
-          </Stack.Group>
-          {/* <Stack.Screen name="CreatePheed" component={CreatePheedScreen} />
-          <Stack.Screen name="UpdatePheed" component={UpdatePheedScreen} /> */}
+          <Stack.Screen name="CreatePheed" component={CreatePheedScreen} />
+          <Stack.Screen
+            name="LocationSearch"
+            component={LocationSearchScreen}
+            options={{title: ''}}
+          />
+          <Stack.Screen name="UpdatePheed" component={UpdatePheedScreen} />
           <Stack.Screen
             name="ShortsDetail"
             component={ShortsDetailScreen}

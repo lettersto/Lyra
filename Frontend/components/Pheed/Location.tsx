@@ -49,6 +49,8 @@ const Location = ({
           <LocationModal
             modalVisible={modalVisible}
             setModalVisible={setModalVisible}
+            text={text}
+            onChangeText={onChangeText}
           />
         </Pressable>
       </LinearGradient>

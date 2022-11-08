@@ -10,14 +10,18 @@ import GestureRecognizer from 'react-native-swipe-gestures';
 export const LocationModal = ({
   modalVisible,
   setModalVisible,
+  text,
+  onChangeText,
 }: {
   modalVisible: boolean;
   setModalVisible: Dispatch<SetStateAction<boolean>>;
+  text: string;
+  onChangeText: Dispatch<SetStateAction<string>>;
 }) => {
   const navigation = useNavigation();
   const pressHandler = () => {
-    // navigation.replace('LocationSearch');
-    setModalVisible(false);
+    navigation.navigate('LocationSearch');
+    // setModalVisible(false);
   };
 
   // const [modalVisible, setModalVisible] = useState(true);
@@ -32,7 +36,8 @@ export const LocationModal = ({
       <Modal animationType={'slide'} transparent={true} visible={modalVisible}>
         <View
           style={styles.blankSpace}
-          onTouchEnd={() => navigation.navigate('MainPheed')}
+          // onTouchEnd={() => navigation.navigate('CreatePheed')}
+          onTouchEnd={() => setModalVisible(false)}
         />
         <View style={styles.modal}>
           <Text style={styles.title}>장소 설정</Text>
