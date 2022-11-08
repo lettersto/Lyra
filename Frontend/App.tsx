@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useCallback, useContext, useEffect} from 'react';
 import {SafeAreaView, StatusBar} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 import EncryptedStorage from 'react-native-encrypted-storage';
 
@@ -19,6 +19,7 @@ declare global {
 
 const App = () => {
   const {isLoggedIn, setIsLoggedIn} = useContext(AuthContext);
+  const navigation = useNavigation();
 
   const checkTokensInStorage = useCallback(async () => {
     try {
@@ -27,14 +28,17 @@ const App = () => {
     } catch (error) {
       setIsLoggedIn(false);
       if (__DEV__) {
-        console.error(error);
+        console.error('Storage Check Error!', error);
       }
     }
   }, [setIsLoggedIn]);
 
   useEffect(() => {
     checkTokensInStorage();
-  }, [checkTokensInStorage]);
+    if (isLoggedIn) {
+      navigation.navigate('MainPheed');
+    }
+  }, [checkTokensInStorage, isLoggedIn, navigation]);
 
   console.log('loginin', isLoggedIn);
 
@@ -50,9 +54,7 @@ const App = () => {
           backgroundColor={Colors.black500}
           barStyle={'light-content'}
         />
-        <NavigationContainer>
-          <NavBar />
-        </NavigationContainer>
+        <NavBar />
       </SafeAreaView>
     </GestureHandlerRootView>
   );

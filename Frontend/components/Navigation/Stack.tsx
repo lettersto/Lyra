@@ -62,64 +62,6 @@ export const PheedStack = () => {
       }}>
       {!isLoggedIn && (
         <>
-          <Stack.Group
-            screenOptions={{
-              headerTitle: () => <PheedTitle />,
-              headerBackVisible: false,
-            }}>
-            <Stack.Group screenOptions={{presentation: 'card'}}>
-              <Stack.Screen name="MainPheed" component={MainPheedScreen} />
-            </Stack.Group>
-            <Stack.Group
-              screenOptions={{
-                headerShown: false,
-                presentation: 'transparentModal',
-              }}>
-              <Stack.Screen name="TownModal" component={TownModal} />
-              <Stack.Screen name="TownSearch" component={TownSearchScreen} />
-            </Stack.Group>
-          </Stack.Group>
-          <Stack.Screen
-            name="SearchPheed"
-            component={SearchPheedScreen}
-            options={{title: ''}}
-          />
-          <Stack.Screen name="CreatePheed" component={CreatePheedScreen} />
-          <Stack.Screen name="UpdatePheed" component={UpdatePheedScreen} />
-          <Stack.Screen
-            name="ShortsDetail"
-            component={ShortsDetailScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="CreateShorts"
-            component={CreateShortsScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="DetailPheed"
-            component={DetailPheedScreen}
-            options={{
-              headerTitle: () => <PheedDetailTitle />,
-              headerBackVisible: false,
-            }}
-          />
-          <Stack.Screen name="Alarm" component={AlarmScreen} />
-        </>
-      )}
-      {!isLoggedIn && (
-        <>
-          {/* <Stack.Screen
-            name="Splash"
-            component={SplashScreen}
-            options={{
-              headerShown: false,
-            }}
-          /> */}
           <Stack.Screen
             name="Login"
             component={LoginScreen}
@@ -148,6 +90,55 @@ export const PheedStack = () => {
           />
         </>
       )}
+      <>
+        <Stack.Group
+          screenOptions={{
+            headerTitle: () => <PheedTitle />,
+            headerBackVisible: false,
+          }}>
+          <Stack.Group screenOptions={{presentation: 'card'}}>
+            <Stack.Screen name="MainPheed" component={MainPheedScreen} />
+          </Stack.Group>
+          <Stack.Group
+            screenOptions={{
+              headerShown: false,
+              presentation: 'transparentModal',
+            }}>
+            <Stack.Screen name="TownModal" component={TownModal} />
+            <Stack.Screen name="TownSearch" component={TownSearchScreen} />
+          </Stack.Group>
+        </Stack.Group>
+        <Stack.Screen
+          name="SearchPheed"
+          component={SearchPheedScreen}
+          options={{title: ''}}
+        />
+        <Stack.Screen name="CreatePheed" component={CreatePheedScreen} />
+        <Stack.Screen name="UpdatePheed" component={UpdatePheedScreen} />
+        <Stack.Screen
+          name="ShortsDetail"
+          component={ShortsDetailScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="CreateShorts"
+          component={CreateShortsScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="DetailPheed"
+          component={DetailPheedScreen}
+          options={{
+            headerTitle: () => <PheedDetailTitle />,
+            headerBackVisible: false,
+          }}
+        />
+        <Stack.Screen name="Alarm" component={AlarmScreen} />
+      </>
     </Stack.Navigator>
   );
 };

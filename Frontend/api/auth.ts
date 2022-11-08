@@ -55,3 +55,14 @@ export const sendUserKakaoInfoToServer = async ({
   });
   return response.data;
 };
+
+export const logoutFromServer = async (refreshToken: string | null) => {
+  const response = await axios({
+    url: '/user/logout',
+    method: 'GET',
+    headers: {
+      'REFRESH-TOKEN': refreshToken,
+    },
+  });
+  return response.data;
+};
