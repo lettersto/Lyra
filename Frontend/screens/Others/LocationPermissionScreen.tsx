@@ -11,10 +11,11 @@ import {
   BackHandler,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../constants/types';
+
 import Geolocation from 'react-native-geolocation-service';
 import IIcon from 'react-native-vector-icons/Ionicons';
 
+import {RootStackParamList} from '../../constants/types';
 import Button from '../../components/Utils/Button';
 import Colors from '../../constants/Colors';
 

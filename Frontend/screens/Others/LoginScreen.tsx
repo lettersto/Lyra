@@ -69,6 +69,7 @@ const LoginScreen = () => {
         setIsLoggedIn(true);
         console.log(name, nickname, userId);
 
+        await EncryptedStorage.setItem('userId', userId);
         await EncryptedStorage.setItem('accessToken', accessToken);
         await EncryptedStorage.setItem('refreshToken', refreshToken);
 

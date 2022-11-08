@@ -18,20 +18,30 @@ declare global {
 }
 
 const App = () => {
-  const {isLoggedIn, setIsLoggedIn} = useContext(AuthContext);
+  const {isLoggedIn, setIsLoggedIn, setLongitude, setLatitude, setUserId} =
+    useContext(AuthContext);
   const navigation = useNavigation();
 
   const checkTokensInStorage = useCallback(async () => {
     try {
       const accessToken = await EncryptedStorage.getItem('accessToken');
       setIsLoggedIn(!!accessToken);
+      if (accessToken) {
+        const userId = await EncryptedStorage.getItem('userId');
+        const lat = await EncryptedStorage.getItem('latitude');
+        const lon = await EncryptedStorage.getItem('logitude');
+        setLatitude(lat ? parseInt(lat, 10) : null);
+        setLongitude(lon ? parseInt(lon, 10) : null);
+        setUserId(userId ? parseInt(userId, 10) : null);
+      }
     } catch (error) {
       setIsLoggedIn(false);
+      setUserId(null);
       if (__DEV__) {
         console.error('Storage Check Error!', error);
       }
     }
-  }, [setIsLoggedIn]);
+  }, [setIsLoggedIn, setLatitude, setLongitude, setUserId]);
 
   useEffect(() => {
     checkTokensInStorage();
