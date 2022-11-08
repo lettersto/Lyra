@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import LocationSearch from '../../components/Map/LocationSearch';
 import MapStyle from '../../components/Map/MapStyle';
 import Button from '../../components/Utils/Button';
+import Input from '../../components/Utils/Input';
 import Colors from '../../constants/Colors';
 import {RootStackParamList} from '../../constants/types';
 
@@ -21,6 +22,7 @@ const LocationSearchScreen = ({navigation}: Props) => {
     latitude: 0,
     longitude: 0,
   });
+  const [locationAddInfo, setLocationAddInfo] = useState('');
   const [name, setName] = useState('');
   const pressHandler = () => {
     navigation.goBack();
@@ -59,10 +61,21 @@ const LocationSearchScreen = ({navigation}: Props) => {
               </Marker>
             </MapView>
           )}
-          <View style={{height: '25%', bottom: 0}}>
+          <View style={{height: '30%', bottom: 0}}>
             <Text style={styles.name}>{name}</Text>
+            <Input
+              setEnteredValue={setLocationAddInfo}
+              enteredValue={locationAddInfo}
+              width={0.77}
+              height={0.06}
+              borderRadius={25}
+              keyboard={1}
+              placeholder="구체적인 장소를 입력해주세요."
+              customStyle={styles.input}
+              maxLength={30}
+            />
             <Button
-              title="선택한 위치로 설정"
+              title="해당 위치로 설정"
               btnSize="large"
               textSize="medium"
               isGradient={false}
@@ -111,5 +124,8 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     marginTop: 20,
+  },
+  input: {
+    marginBottom: 20,
   },
 });
