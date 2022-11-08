@@ -68,7 +68,7 @@ const Input: React.FC<InputProps> = ({
             autoCorrect={false}
             keyboardType={keyboard === 1 ? 'ascii-capable' : 'numeric'}
             placeholder={placeholder}
-            placeholderTextColor={Colors.gray300}
+            placeholderTextColor={Colors.white300}
             maxLength={maxLength}
             value={enteredValue}
             onChangeText={setEnteredValue}
@@ -82,7 +82,7 @@ const Input: React.FC<InputProps> = ({
             autoCorrect={false}
             keyboardType={keyboard === 1 ? 'ascii-capable' : 'numeric'}
             placeholder={placeholder}
-            placeholderTextColor={Colors.gray300}
+            placeholderTextColor={Colors.white300}
             maxLength={maxLength}
             value={enteredValue}
           />
