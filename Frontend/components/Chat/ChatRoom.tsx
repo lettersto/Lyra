@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   chatContainer: {height: deviceHeight - 80, bottom: 80},
+  donationImg: {marginLeft: 15, marginVertical: 15},
 });
 const buskerId = 1;
 
@@ -191,7 +192,9 @@ const ChatRoom = () => {
           }}
           renderMessage={renderMessage}
           renderActions={() => (
-            <TouchableOpacity onPress={clickDonationHandler}>
+            <TouchableOpacity
+              onPress={clickDonationHandler}
+              style={styles.donationImg}>
               <Image source={require('../../assets/image/donationImg.png')} />
             </TouchableOpacity>
           )}
