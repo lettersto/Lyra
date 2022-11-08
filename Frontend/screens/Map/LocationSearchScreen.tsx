@@ -1,3 +1,5 @@
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useState} from 'react';
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE, Region} from 'react-native-maps';
@@ -6,10 +8,13 @@ import LocationSearch from '../../components/Map/LocationSearch';
 import MapStyle from '../../components/Map/MapStyle';
 import Button from '../../components/Utils/Button';
 import Colors from '../../constants/Colors';
+import {RootStackParamList} from '../../constants/types';
+
+type Props = NativeStackScreenProps<RootStackParamList>;
 
 const deviceWidth = Dimensions.get('window').width;
 
-const LocationSearchScreen = () => {
+const LocationSearchScreen = ({navigation}: Props) => {
   const [location, setLocation] = useState<Region>({
     latitudeDelta: 0.005,
     longitudeDelta: 0.005,
@@ -17,7 +22,9 @@ const LocationSearchScreen = () => {
     longitude: 0,
   });
   const [name, setName] = useState('');
-  const pressHandler = () => {};
+  const pressHandler = () => {
+    navigation.goBack();
+  };
 
   return (
     <>
