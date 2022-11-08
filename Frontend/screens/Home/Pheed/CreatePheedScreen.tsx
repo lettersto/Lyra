@@ -20,6 +20,7 @@ const CreatePheedScreen = () => {
   const [enteredTitle, setEnteredTitle] = useState<string>('');
   const [enteredContent, setEnteredContent] = useState<string>('');
   const [date, SetDate] = useState<Date>(new Date());
+  const [locationName, setLocationName] = useState<string>();
   const [tags, SetTags] = useState<string[]>([]);
 
   const register = () => {
@@ -81,7 +82,7 @@ const CreatePheedScreen = () => {
             </View>
             <View style={styles.dateplace}>
               <DateTime SetDate={SetDate} />
-              <Location />
+              <Location setLocationName={setLocationName} />
             </View>
             <Tag PheedTags={[]} SetPheedTags={SetTags} />
             <View style={styles.registerBtn}>
