@@ -15,8 +15,8 @@ const Colors: ColorObj = {
   blackTransparent: 'rgba(9, 9, 25, 0.8)',
   // black500: '#2D2D2D',
   // black500: '#221f24',
-  gray300: '#EFF0EB',
   white300: 'rgba(240, 240, 240, 0.4)',
+  gray300: '#EFF0EB',
 };
 
 export default Colors;
