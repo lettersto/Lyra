@@ -84,6 +84,7 @@ public class UserService {
             userRepository.save(newUser);
             return newUser;
         } else {
+            user.changeRefreshToken(jwtTokenProvider.createRefreshToken(user.getEmail(), user.getRoles()));
             return user;
         }
     }

@@ -4,6 +4,7 @@ import hermes.Lyra.Service.TalkService;
 import hermes.Lyra.Service.UserService;
 //import hermes.Lyra.config.LyraUserDetails;
 import hermes.Lyra.config.LyraUserDetails;
+import hermes.Lyra.domain.Talk;
 import hermes.Lyra.dto.Message;
 import hermes.Lyra.dto.StatusEnum;
 import io.swagger.annotations.ApiOperation;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.Charset;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/talk")
@@ -31,62 +33,28 @@ public class TalkController {
     TalkService talkService;
 
 //     자기 메시지 조회
-    @ApiOperation(value = "자기 메시지 요청하기", notes = "자기 메시지 요청하기")
-    @GetMapping("/me")
-    public ResponseEntity<?> myTalk(
-            @RequestHeader(value = "REFRESH-TOKEN") String refreshToken
-    ) {
+    @ApiOperation(value = "유저 아이디 기준 톡 조회하기", notes = "유저 아이디 기준 톡 조회하기")
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> myTalk(@PathVariable("userId") Long userId) {
         Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
         try {
-            talkService.myTalk(refreshToken);
+            List<Talk> talks = talkService.myTalk(userId);
             message.setStatus(StatusEnum.OK);
-            message.setMessage("개인 톡 조회 성공");
+            message.setMessage("톡 불러오기 성공");
+            message.setData(talks);
             return new ResponseEntity<>(message, headers, HttpStatus.OK);
-        } catch (Exception e){
+        } catch (IllegalArgumentException | IllegalStateException e){
+            e.printStackTrace();
             message.setStatus(StatusEnum.BAD_REQUEST);
-            message.setMessage("REFRESH TOKEN이 일치하지 않습니다.");
+            message.setMessage("톡 정보가 없습니다.");
             return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            e.printStackTrace();
+            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+            message.setMessage("서버 에러 발생");
+            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-//    @ApiOperation(value = "소셜로그인 - 멤버정보 요청",notes = "발급받은 accessToken으로 멤버정보를 요청한다.")
-//    @GetMapping("/me")
-//    public ResponseEntity<?> getMember(
-//            @RequestHeader(value="X-AUTH-TOKEN") String token) throws Exception {
-//        Message message = new Message();
-//        HttpHeaders headers= new HttpHeaders();
-//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//
-//        message.setStatus(StatusEnum.OK);
-//        message.setMessage("access token으로 정보 불러오기 성공");
-//        message.setData(userService.getUser(token));
-//        return new ResponseEntity<>(message, headers, HttpStatus.OK);
-//
-//    }
-
-    @ApiOperation(value = "로그아웃을 요청한다.",notes = "refresh 토큰으로 로그아웃을 요청한다.") //리프레쉬토큰으로
-    @GetMapping("/logout")
-    public ResponseEntity<?> logout(@RequestHeader(value="REFRESH-TOKEN") String refreshToken) {
-        Message message = new Message();
-        HttpHeaders headers= new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-        try {
-            userService.logout(refreshToken);
-            message.setStatus(StatusEnum.OK);
-            message.setMessage("로그아웃 성공");
-            return new ResponseEntity<>(message, headers, HttpStatus.OK);
-        } catch (Exception e){
-            message.setStatus(StatusEnum.BAD_REQUEST);
-            message.setMessage("ACCESS TOKEN이 일치하지 않습니다.");
-            return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    // 메시지 생성
-//    @PostMapping("")
-//    public ResponseEntity<? extends BaseResponseBody> createMessage(@RequestBody MessagePostReq registerInfo) {
-//        messageService.createMessage(registerInfo);
-//        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
 }
