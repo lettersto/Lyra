@@ -15,8 +15,8 @@ public class NoticeServiceImpl implements NoticeService {
     NoticeRepository noticeRepository;
 
     @Override
-    public Optional<Notice> getNotice(Long noticeId) {
-        return noticeRepository.findById(noticeId);
+    public Notice findById(Long noticeId) {
+        return noticeRepository.findById(noticeId).orElseGet(null);
     }
 
     @Override

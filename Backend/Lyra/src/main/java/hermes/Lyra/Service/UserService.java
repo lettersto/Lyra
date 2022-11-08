@@ -4,9 +4,11 @@ import hermes.Lyra.config.JwtTokenProvider;
 import hermes.Lyra.domain.Repository.UserRepository;
 import hermes.Lyra.domain.Repository.UserRepository2;
 import hermes.Lyra.domain.User;
+import hermes.Lyra.dto.RequestDto.UserLocationRequestDto;
+import hermes.Lyra.dto.ResponseDto.UserLocationResponseDto;
 import hermes.Lyra.dto.UserDto;
-import hermes.Lyra.dto.UserLoginRequestDto;
-import hermes.Lyra.dto.UserLoginResponseDto;
+import hermes.Lyra.dto.RequestDto.UserLoginRequestDto;
+import hermes.Lyra.dto.ResponseDto.UserLoginResponseDto;
 import hermes.Lyra.error.Exception.custom.SomethingNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,24 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserRepository2 userRepository2;
     private final JwtTokenProvider jwtTokenProvider;
+
+    @Transactional
+    public User addLocation(Long userId, UserLocationRequestDto userLocationRequestDto) {
+        User user = userRepository2.findById(userId).orElse(null);
+        System.out.println(user.getEmail());
+        if (user!=null) {
+            user.setLatitude(userLocationRequestDto.getLatitude());
+            user.setLongitude(userLocationRequestDto.getLongitude());
+            userRepository.save(user);
+            return user;
+        } else {
+            try {
+                throw new AccessDeniedException("해당 유저가 존재하지 않습니다.");
+            } catch (AccessDeniedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
     @Transactional
     public UserDto searchUser(Long userId) {
@@ -54,7 +74,6 @@ public class UserService {
             User newUser = new User();
             System.out.println("input db");
             newUser.setEmail(userLoginRequestDto.getEmail());
-            newUser.setName(userLoginRequestDto.getName());
             newUser.setNickname(userLoginRequestDto.getNickname());
             newUser.setImage_url(userLoginRequestDto.getImage_url());
             List<String> roles = new ArrayList<>();
@@ -107,7 +126,7 @@ public class UserService {
     public void joinSocial(UserDto userDto){
         User user = new User();
         user.setEmail(userDto.getEmail());
-        user.setName(userDto.getName());
+//        user.setName(userDto.getName());
         userRepository.save(user);
     }
 

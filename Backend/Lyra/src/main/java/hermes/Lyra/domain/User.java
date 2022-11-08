@@ -7,6 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,9 +30,6 @@ public class User implements UserDetails {
     private String email;
 
     @Column(length = 10)
-    private String name;
-
-    @Column(length = 10)
     private String nickname;
 
     private String introduction;
@@ -45,9 +43,19 @@ public class User implements UserDetails {
 
     private String account;
 
+    // 위도
+    private BigDecimal latitude;
+
+    // 경도
+    private BigDecimal longitude;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Talk> talks = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -91,9 +99,6 @@ public class User implements UserDetails {
         this.refreshToken = refreshToken;
     }
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<Talk> talks = new ArrayList<>();
 
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 //    @JsonIgnore

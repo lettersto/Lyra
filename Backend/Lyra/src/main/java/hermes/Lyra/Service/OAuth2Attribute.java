@@ -15,7 +15,7 @@ public class OAuth2Attribute {
     private Map<String, Object> attributes;
     private String attributeKey;
     private String email;
-    private String name;
+    private String nickname;
 
     // provider마다 제공해주는 값이 달라 분기처리를 위해 구현
 
@@ -35,7 +35,7 @@ public class OAuth2Attribute {
 
     private static OAuth2Attribute ofGoogle(String attributeKey, Map<String, Object> attributes){
         return OAuth2Attribute.builder()
-                .name((String) attributes.get("name"))
+                .nickname((String) attributes.get("nickname"))
                 .email((String) attributes.get("email"))
                 .attributes(attributes)
                 .attributeKey(attributeKey)
@@ -47,7 +47,7 @@ public class OAuth2Attribute {
         Map<String, Object> kakaoProfile = (Map<String, Object>) kakaoAccount.get("profile");
 
         return OAuth2Attribute.builder()
-                .name((String) kakaoProfile.get("nickname"))
+                .nickname((String) kakaoProfile.get("nickname"))
                 .email((String) kakaoAccount.get("email"))
                 .attributes(kakaoAccount)
                 .attributeKey(attributeKey)
@@ -68,7 +68,7 @@ public class OAuth2Attribute {
         Map<String, Object> map = new HashMap<>();
         map.put("id", attributeKey);
         map.put("key", attributeKey);
-        map.put("name", name);
+        map.put("nickname", nickname);
         map.put("email", email);
         return map;
     }

@@ -55,7 +55,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         userService.socialLogin(user.getEmail(), refreshToken);
 
         log.info("email : {}", user.getEmail());
-        log.info("name : {}", user.getName());
         log.info("access token : {}", accessToken);
         log.info("refresh token : {}", refreshToken);
         String targetUrl;
