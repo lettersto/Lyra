@@ -11,6 +11,7 @@ import {
   LogBox,
 } from 'react-native';
 import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
+import EncryptedStorage from 'react-native-encrypted-storage';
 // import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 // import type {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 
@@ -31,6 +32,7 @@ import Colors from '../../constants/Colors';
 const WalletCreationScreen = () => {
   const navigation = useNavigation();
   const [walletCreated, setWalletCreated] = useState(false);
+  const [walletPrivateKey, setWalletPrivateKey] = useState('');
   // const {userId} = useContext(AuthContext);
   const userId = 1;
   const guidance = !walletCreated
@@ -63,12 +65,13 @@ const WalletCreationScreen = () => {
   const walletCreationHandler = async () => {
     try {
       if (userId) {
-        const walletData = await createWallet(userId);
-        console.log('walletData', walletData);
+        const {privateKey, address} = await createWallet(userId);
+        setWalletPrivateKey(privateKey);
+        await EncryptedStorage.setItem('walletAddress', address);
       }
     } catch (error) {
       if (__DEV__) {
-        console.error(error);
+        console.error('Wallet Creation Error!', error);
       }
     }
     setWalletCreated(true);
@@ -91,6 +94,12 @@ const WalletCreationScreen = () => {
             color={Colors.gray300}
           />
           <Text style={styles.text}>{guidance}</Text>
+          {walletCreated && (
+            <Text
+              style={
+                styles.text
+              }>{`지갑의 고유한 키 번호 입니다.\n${walletPrivateKey}\n반드시 별도의 공간에 저장해 주세요.`}</Text>
+          )}
           {!walletCreated && (
             <View style={styles.buttonContainer}>
               <Button
@@ -117,6 +126,7 @@ const WalletCreationScreen = () => {
               style={styles.startContainer}
               activeOpacity={0.7}
               onPress={startPressHandler}>
+              {/* modal로 privatekey 정말로 저장했는지 체크 필요 */}
               <Text style={styles.buttonText}>Lyra 시작하기</Text>
             </TouchableOpacity>
           )}

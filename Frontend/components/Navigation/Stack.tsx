@@ -30,9 +30,8 @@ import UserChatTitle from './TopNavBar/UserChatTitle';
 import LoginScreen from '../../screens/Others/LoginScreen';
 import WalletCreationScreen from '../../screens/Others/WalletCreationScreen';
 import LocationPermissionScreen from '../../screens/Others/LocationPermissionScreen';
-// import SplashScreen from '../../screens/Others/SplashScreen';
 
-// import AuthContext from '../../store/auth-context';
+import {AuthContext} from '../../store/auth-context';
 import {TabScreens} from './NavBar';
 import {RootStackParamList} from '../../constants/types';
 import Colors from '../../constants/Colors';
@@ -44,8 +43,7 @@ import {TownModal} from '../Utils/TownModal';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const PheedStack = () => {
-  // const {isLoggedIn} = useContext(AuthContext);
-  const isLoggedIn = false;
+  const {isLoggedIn} = useContext(AuthContext);
   return (
     <Stack.Navigator
       initialRouteName={TabScreens.Home}
