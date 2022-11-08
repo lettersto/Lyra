@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @Getter
 public class UserDto {
     private String email;
-    private String name;
+    private String nickname;
 
     @Builder
-    public UserDto(String email, String name) {
+    public UserDto(String email, String nickname) {
         this.email = email;
-        this.name = name;
+        this.nickname = nickname;
     }
 }

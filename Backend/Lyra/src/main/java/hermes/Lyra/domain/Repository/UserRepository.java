@@ -98,8 +98,8 @@ public class UserRepository {
         UserDto userDto = UserDto.builder()
 //                .id(id)
                 .email(user.getEmail())
-                .name(user.getName())
-//                .nickname(user.getNickname())
+//                .name(user.getName())
+                .nickname(user.getNickname())
 //                .profilePath(user.getProfilePath())
                 .build();
         return userDto;
