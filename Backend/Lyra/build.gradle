@@ -39,9 +39,9 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
-
 	implementation 'org.modelmapper:modelmapper:2.3.8'
 
 	// 소셜 로그인
@@ -51,7 +51,12 @@ dependencies {
 
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// s3
+	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.336'
+//	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
+
 
 tasks.named('test') {
 	useJUnitPlatform()
