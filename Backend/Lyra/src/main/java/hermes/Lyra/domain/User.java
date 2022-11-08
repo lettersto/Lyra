@@ -36,6 +36,8 @@ public class User implements UserDetails {
 
     private String image_url;
 
+//    private String role;
+
     private String refreshToken;
 
     @Column(length = 10)
@@ -51,11 +53,25 @@ public class User implements UserDetails {
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
+    @JsonIgnore
     private List<String> roles = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Talk> talks = new ArrayList<>();
+
+    @OneToMany(orphanRemoval = true, mappedBy = "followerId", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Follow> followerList = new ArrayList<>();
+
+    @OneToMany(orphanRemoval = true, mappedBy = "followingId", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Follow> followingList = new ArrayList<>();
+
+//    @OneToMany(orphanRemoval = true, mappedBy = "userId", cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private List<Like> likeList = new ArrayList<>();
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

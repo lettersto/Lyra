@@ -63,7 +63,8 @@ public class WebSecurityConfig {
                 .authorizeRequests()  // 요청에 대한 사용 권한 체크
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll() // 추가
                 .antMatchers(AUTH_WHITELIST).permitAll()
-                .antMatchers("/token/**").authenticated()
+//                .antMatchers("/talk/**").authenticated()
+//                .antMatchers("/talk/**").hasAnyRole("ROLE_USER")
                 .anyRequest().permitAll()  // 그 외 나머지 요청은 누구나 접근 가능
                 .and()
                 .cors()

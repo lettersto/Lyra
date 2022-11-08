@@ -70,4 +70,8 @@ public class Pheed {
     @OneToMany(mappedBy = "pheed", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Participant> participant = new ArrayList<>();
+
+//    @OneToMany(orphanRemoval = true, mappedBy = "pheedId", cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private List<Like> likeList = new ArrayList<>();
 }
