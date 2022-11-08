@@ -36,7 +36,6 @@ import LocationPermissionScreen from '../../screens/Others/LocationPermissionScr
 import {TabScreens} from './NavBar';
 import {RootStackParamList} from '../../constants/types';
 import Colors from '../../constants/Colors';
-import {LocationModal} from '../Utils/LocationModal';
 import FirstTownSearchScreen from '../../screens/Map/FirstTownSearchScreen';
 import TownSearchScreen from '../../screens/Map/TownSearchScreen';
 import LocationSearchScreen from '../../screens/Map/LocationSearchScreen';
@@ -62,69 +61,6 @@ export const PheedStack = () => {
       }}>
       {!isLoggedIn && (
         <>
-          <Stack.Group
-            screenOptions={{
-              headerTitle: () => <PheedTitle />,
-              headerBackVisible: false,
-            }}>
-            <Stack.Group screenOptions={{presentation: 'card'}}>
-              <Stack.Screen name="MainPheed" component={MainPheedScreen} />
-            </Stack.Group>
-            <Stack.Group
-              screenOptions={{
-                headerShown: false,
-                presentation: 'transparentModal',
-              }}>
-              <Stack.Screen name="TownModal" component={TownModal} />
-              <Stack.Screen name="TownSearch" component={TownSearchScreen} />
-            </Stack.Group>
-          </Stack.Group>
-          <Stack.Screen
-            name="SearchPheed"
-            component={SearchPheedScreen}
-            options={{title: ''}}
-          />
-          <Stack.Screen name="CreatePheed" component={CreatePheedScreen} />
-          <Stack.Screen
-            name="LocationSearch"
-            component={LocationSearchScreen}
-            options={{title: ''}}
-          />
-          <Stack.Screen name="UpdatePheed" component={UpdatePheedScreen} />
-          <Stack.Screen
-            name="ShortsDetail"
-            component={ShortsDetailScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="CreateShorts"
-            component={CreateShortsScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="DetailPheed"
-            component={DetailPheedScreen}
-            options={{
-              headerTitle: () => <PheedDetailTitle />,
-              headerBackVisible: false,
-            }}
-          />
-          <Stack.Screen name="Alarm" component={AlarmScreen} />
-        </>
-      )}
-      {!isLoggedIn && (
-        <>
-          {/* <Stack.Screen
-            name="Splash"
-            component={SplashScreen}
-            options={{
-              headerShown: false,
-            }}
-          /> */}
           <Stack.Screen
             name="Login"
             component={LoginScreen}
@@ -177,6 +113,11 @@ export const PheedStack = () => {
           options={{title: ''}}
         />
         <Stack.Screen name="CreatePheed" component={CreatePheedScreen} />
+        <Stack.Screen
+          name="LocationSearch"
+          component={LocationSearchScreen}
+          options={{title: ''}}
+        />
         <Stack.Screen name="UpdatePheed" component={UpdatePheedScreen} />
         <Stack.Screen
           name="ShortsDetail"
