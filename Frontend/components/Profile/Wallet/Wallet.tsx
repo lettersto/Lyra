@@ -18,7 +18,7 @@ const Wallet = () => {
   const dummyHashCode = '0x44783342dee123aidfiouekajdkfddkfljalfjakldjf';
   const dummyCoin = 2000000;
 
-  const gradientColors = [Colors.pink300, Colors.purple300];
+  const gradientColors = [Colors.pink700, Colors.purple700];
 
   const copyToClipboard = () => {
     Clipboard.setString(dummyHashCode);
@@ -26,6 +26,9 @@ const Wallet = () => {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity>
+        <Text style={styles.text}>지갑 재생성</Text>
+      </TouchableOpacity>
       <LinearGradient
         colors={[...gradientColors]}
         start={{x: 0.0, y: 0.0}}

@@ -26,6 +26,7 @@ const App = () => {
   const checkTokensInStorage = useCallback(async () => {
     try {
       const accessToken = await EncryptedStorage.getItem('accessToken');
+      // await EncryptedStorage.removeItem('accessToken');
       setIsLoggedIn(!!accessToken);
       if (accessToken) {
         const userId = await EncryptedStorage.getItem('userId');
