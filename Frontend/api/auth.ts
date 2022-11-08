@@ -35,12 +35,10 @@ export const unlinkKakao = async (): Promise<string> => {
 export const sendUserKakaoInfoToServer = async ({
   email,
   imageURL,
-  name,
   nickname,
 }: {
   email: string;
   imageURL: string;
-  name: string;
   nickname: string;
 }) => {
   const response = await axios({
@@ -49,7 +47,6 @@ export const sendUserKakaoInfoToServer = async ({
     data: {
       email,
       image_url: imageURL,
-      name,
       nickname,
     },
   });

@@ -8,6 +8,7 @@ import {
   Alert,
   TouchableOpacity,
   BackHandler,
+  LogBox,
 } from 'react-native';
 import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
 // import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -30,7 +31,8 @@ import Colors from '../../constants/Colors';
 const WalletCreationScreen = () => {
   const navigation = useNavigation();
   const [walletCreated, setWalletCreated] = useState(false);
-  const {userId} = useContext(AuthContext);
+  // const {userId} = useContext(AuthContext);
+  const userId = 1;
   const guidance = !walletCreated
     ? 'Lyra를 제대로 사용하기 위해서는\n지갑이 필요합니다.'
     : '지갑이 생성되었어요!';
@@ -53,11 +55,16 @@ const WalletCreationScreen = () => {
     );
   };
 
+  LogBox.ignoreLogs([
+    "Warning: The provided value 'moz",
+    "Warning: The provided value 'ms-stream",
+  ]);
+
   const walletCreationHandler = async () => {
     try {
       if (userId) {
-        // const walletData = await createWallet(userId);
-        // console.log('walletData', walletData);
+        const walletData = await createWallet(userId);
+        console.log('walletData', walletData);
       }
     } catch (error) {
       if (__DEV__) {
