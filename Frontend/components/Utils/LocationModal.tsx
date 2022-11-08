@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useState} from 'react';
+import React, {Dispatch, SetStateAction, useState} from 'react';
 import {Dimensions, Modal, StyleSheet, Text, View} from 'react-native';
 import Colors from '../../constants/Colors';
 import Button from './Button';
@@ -7,17 +7,24 @@ import Button from './Button';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import GestureRecognizer from 'react-native-swipe-gestures';
 
-const deviceWidth = Dimensions.get('window').width;
-
-export const LocationModal = () => {
+export const LocationModal = ({
+  modalVisible,
+  setModalVisible,
+  text,
+  onChangeText,
+}: {
+  modalVisible: boolean;
+  setModalVisible: Dispatch<SetStateAction<boolean>>;
+  text: string;
+  onChangeText: Dispatch<SetStateAction<string>>;
+}) => {
   const navigation = useNavigation();
-
   const pressHandler = () => {
     navigation.navigate('LocationSearch');
-    setModalVisible(false);
+    // setModalVisible(false);
   };
 
-  const [modalVisible, setModalVisible] = useState(true);
+  // const [modalVisible, setModalVisible] = useState(true);
 
   return (
     <GestureRecognizer
@@ -29,7 +36,8 @@ export const LocationModal = () => {
       <Modal animationType={'slide'} transparent={true} visible={modalVisible}>
         <View
           style={styles.blankSpace}
-          onTouchEnd={() => navigation.navigate('MainPheed')}
+          // onTouchEnd={() => navigation.navigate('CreatePheed')}
+          onTouchEnd={() => setModalVisible(false)}
         />
         <View style={styles.modal}>
           <Text style={styles.title}>장소 설정</Text>
@@ -49,7 +57,7 @@ export const LocationModal = () => {
             isGradient={false}
             isOutlined={false}
             customStyle={styles.currentBtn}
-            onPress={() => console.log('현재 위치 버튼')}
+            onPress={() => {}}
           />
           {/* <Text>{address}</Text> */}
           <View style={styles.addressLog}>
@@ -69,7 +77,7 @@ export const LocationModal = () => {
     </GestureRecognizer>
   );
 };
-
+const deviceWidth = Dimensions.get('window').width;
 const styles = StyleSheet.create({
   modal: {
     width: '100%',

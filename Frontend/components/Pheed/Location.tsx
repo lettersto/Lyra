@@ -5,10 +5,16 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import Icon from 'react-native-vector-icons/EvilIcons';
 import {useNavigation} from '@react-navigation/native';
+import {LocationModal} from '../Utils/LocationModal';
 // {SetDate}: {SetDate: Dispatch<SetStateAction<string>>}
-const Location = () => {
+const Location = ({
+  setLocationName,
+}: {
+  setLocationName: Dispatch<SetStateAction<string>>;
+}) => {
   const navigation = useNavigation();
 
+  const [modalVisible, setModalVisible] = useState(false);
   const [isDatePickerVisible, setDatePickerVIsibility] = useState(false);
   const [text, onChangeText] = useState<string>();
 
@@ -22,7 +28,11 @@ const Location = () => {
         angleCenter={{x: 0.5, y: 0.5}}
         colors={[Colors.purple300, Colors.pink500]}
         style={styles.gradient}>
-        <Pressable onPress={() => navigation.navigate('LocationModal')}>
+        <Pressable
+          onPress={() => {
+            setModalVisible(true);
+            // navigation.navigate('LocationModal');
+          }}>
           <Text style={styles.text}>
             {text === undefined ? (
               <>
@@ -36,6 +46,12 @@ const Location = () => {
               </>
             )}
           </Text>
+          <LocationModal
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+            text={text}
+            onChangeText={onChangeText}
+          />
         </Pressable>
       </LinearGradient>
     </>
