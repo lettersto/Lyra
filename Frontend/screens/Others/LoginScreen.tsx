@@ -52,6 +52,7 @@ const LoginScreen = () => {
 
         setImageURL(imageURL);
         setNickname(nickname);
+        console.log(name, nickname);
 
         const {
           accessToken,
@@ -66,6 +67,7 @@ const LoginScreen = () => {
 
         setUserId(userId);
         setIsLoggedIn(true);
+        console.log(name, nickname, userId);
 
         await EncryptedStorage.setItem('accessToken', accessToken);
         await EncryptedStorage.setItem('refreshToken', refreshToken);
@@ -73,7 +75,7 @@ const LoginScreen = () => {
         navigation.navigate('LocationPermission');
       } catch (err) {
         if (__DEV__) {
-          console.error(err);
+          console.error('Login Error!', err);
         }
         setUserId(null);
         setImageURL(null);

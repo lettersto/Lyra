@@ -10,10 +10,10 @@ import {
   BackHandler,
 } from 'react-native';
 import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import type {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+// import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+// import type {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 
-import {RootStackParamList, RootTabParamList} from '../../constants/types';
+// import {RootStackParamList, RootTabParamList} from '../../constants/types';
 
 import IIcon from 'react-native-vector-icons/Ionicons';
 
@@ -22,13 +22,13 @@ import {createWallet} from '../../api/profile';
 import Button from '../../components/Utils/Button';
 import Colors from '../../constants/Colors';
 
-type WalletNavigationProps = CompositeNavigationProp<
-  BottomTabNavigationProp<RootTabParamList, 'Home'>,
-  NativeStackNavigationProp<RootStackParamList>
->;
+// type WalletNavigationProps = CompositeNavigationProp<
+//   BottomTabNavigationProp<RootTabParamList, 'Home'>,
+//   NativeStackNavigationProp<RootStackParamList>
+// >;
 
 const WalletCreationScreen = () => {
-  const navigation = useNavigation<WalletNavigationProps>();
+  const navigation = useNavigation();
   const [walletCreated, setWalletCreated] = useState(false);
   const {userId} = useContext(AuthContext);
   const guidance = !walletCreated
@@ -57,18 +57,18 @@ const WalletCreationScreen = () => {
     try {
       if (userId) {
         // const walletData = await createWallet(userId);
-        console.log('walletData', walletData);
+        // console.log('walletData', walletData);
       }
     } catch (error) {
       if (__DEV__) {
         console.error(error);
       }
     }
-    // setWalletCreated(true);
+    setWalletCreated(true);
   };
 
   const startPressHandler = () => {
-    navigation.navigate('Home');
+    navigation.navigate('MainPheed');
   };
 
   return (

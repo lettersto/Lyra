@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   View,
   StyleSheet,
@@ -10,12 +10,25 @@ import {
 import {useNavigation} from '@react-navigation/native';
 
 import ImagePicker, {ImageOrVideo} from 'react-native-image-crop-picker';
+import EncryptedStorage from 'react-native-encrypted-storage';
+
+import {AuthContext} from '../../store/auth-context';
+import {logoutFromServer} from '../../api/auth';
+import {signOutWithKakao} from '../../api/auth';
 import CircleProfile from '../../components/Utils/CircleProfile';
 import ProfileInfoItem from '../../components/Profile/EditProfile/ProfileInfoItem';
 import Colors from '../../constants/Colors';
 
 const ProfileDetailScreen = () => {
   const navigation = useNavigation();
+  const {
+    setImageURL,
+    setIsLoggedIn,
+    setLatitude,
+    setLongitude,
+    setNickname,
+    setUserId,
+  } = useContext(AuthContext);
   const [ImageUri, setImageUri] = useState<string>();
 
   const nicknamePressHandler = () => {
@@ -63,6 +76,27 @@ const ProfileDetailScreen = () => {
     }
   };
 
+  const logoutHandler = async () => {
+    try {
+      const refreshToken = await EncryptedStorage.getItem('refreshToken');
+      await logoutFromServer(refreshToken);
+      await signOutWithKakao();
+      await EncryptedStorage.removeItem('refreshToken');
+      await EncryptedStorage.removeItem('accessToken');
+      setUserId(null);
+      setNickname(null);
+      setImageURL(null);
+      setIsLoggedIn(false);
+      setLatitude(null);
+      setLongitude(null);
+      navigation.navigate('Home', {screen: 'Login'});
+    } catch (err) {
+      if (__DEV__) {
+        console.error('Logout Error!', err);
+      }
+    }
+  };
+
   return (
     <ScrollView style={styles.screen}>
       <View style={styles.profileImageContainer}>
@@ -107,6 +141,9 @@ const ProfileDetailScreen = () => {
           placeHolder="예금주를 입력하세요."
           onLongPress={holderPressHandler}
         />
+        <Pressable onPress={logoutHandler}>
+          <Text style={styles.text}>로그아웃</Text>
+        </Pressable>
       </View>
     </ScrollView>
   );
