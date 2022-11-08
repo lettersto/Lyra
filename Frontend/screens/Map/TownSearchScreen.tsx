@@ -10,6 +10,7 @@ import Button from '../../components/Utils/Button';
 import Colors from '../../constants/Colors';
 import {RootStackParamList} from '../../constants/types';
 import {AuthContext} from '../../store/auth-context';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
@@ -38,9 +39,11 @@ const TownSearchScreen = ({navigation}: Props) => {
     const result = await response.json();
     return setTownName(result.documents[0].region_3depth_name);
   };
-  const pressHandler = () => {
+  const pressHandler = async () => {
     setLatitude(location.latitude);
     setLongitude(location.longitude);
+    await EncryptedStorage.setItem('latitude', `${location.latitude}`);
+    await EncryptedStorage.setItem('longitude', `${location.longitude}`);
     navigation.popToTop();
   };
 
