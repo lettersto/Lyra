@@ -79,6 +79,7 @@ public class UserService {
             List<String> roles = new ArrayList<>();
             roles.add("ROLE_USER");
             newUser.setRoles(roles);
+//            newUser.setRole("ROLE_USER");
             String refreshToken = jwtTokenProvider.createRefreshToken(userLoginRequestDto.getEmail(), roles);
             newUser.changeRefreshToken(refreshToken);
             userRepository.save(newUser);
