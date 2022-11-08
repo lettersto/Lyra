@@ -1,13 +1,13 @@
 import React, {useLayoutEffect} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
-import {RootStackParamList} from '../../constants/types';
-import {FollowerType} from '../../constants/types';
+import {
+  ProfileStackNavigationProps,
+  ProfileStackRouteProps,
+} from '../../constants/types';
 import FollowerListItem from '../../components/Profile/Follower/FollowerListItem';
 import Colors from '../../constants/Colors';
-
-type Props = NativeStackScreenProps<RootStackParamList, 'Follower'>;
 
 const dummyUserName = '주혜';
 const dummyUserList = [
@@ -29,11 +29,13 @@ const dummyUserList = [
   {id: 15, nickname: '슈퍼노바'},
 ];
 
-const FollowerScreen = ({navigation, route}: Props) => {
-  const followerMode: FollowerType = route.params.followerMode;
+const FollowerScreen = () => {
+  const navigation = useNavigation<ProfileStackNavigationProps>();
+  const route = useRoute<ProfileStackRouteProps>();
+  const mode = route.params?.param;
 
   const title = `${dummyUserName}의 ${
-    followerMode === 'follower' ? '팔로워' : '팔로우'
+    mode === 'follower' ? '팔로워' : '팔로우'
   }`;
 
   useLayoutEffect(() => {

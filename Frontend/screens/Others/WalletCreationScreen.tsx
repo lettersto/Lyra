@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   ImageBackground,
@@ -10,27 +10,21 @@ import {
   BackHandler,
   LogBox,
 } from 'react-native';
-import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import EncryptedStorage from 'react-native-encrypted-storage';
-// import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-// import type {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
-
-// import {RootStackParamList, RootTabParamList} from '../../constants/types';
 
 import IIcon from 'react-native-vector-icons/Ionicons';
 
-import {AuthContext} from '../../store/auth-context';
+import {
+  PheedStackNavigationProps,
+  PheedStackScreens,
+} from '../../constants/types';
 import {createWallet} from '../../api/profile';
 import Button from '../../components/Utils/Button';
 import Colors from '../../constants/Colors';
 
-// type WalletNavigationProps = CompositeNavigationProp<
-//   BottomTabNavigationProp<RootTabParamList, 'Home'>,
-//   NativeStackNavigationProp<RootStackParamList>
-// >;
-
 const WalletCreationScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<PheedStackNavigationProps>();
   const [walletCreated, setWalletCreated] = useState(false);
   const [walletPrivateKey, setWalletPrivateKey] = useState('');
   // const {userId} = useContext(AuthContext);
@@ -78,7 +72,7 @@ const WalletCreationScreen = () => {
   };
 
   const startPressHandler = () => {
-    navigation.navigate('MainPheed');
+    navigation.navigate(PheedStackScreens.MainPheed);
   };
 
   return (

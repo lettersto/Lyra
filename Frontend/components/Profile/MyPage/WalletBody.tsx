@@ -5,14 +5,18 @@ import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import IIcon from 'react-native-vector-icons/Ionicons';
 
+import {
+  ProfileStackNavigationProps,
+  ProfileStackScreens,
+} from '../../../constants/types';
 import Colors from '../../../constants/Colors';
 
 const WalletBody = () => {
   const gradientColors = [Colors.pink300, Colors.purple300];
-  const navigation = useNavigation();
+  const navigation = useNavigation<ProfileStackNavigationProps>();
 
   const pressHandler = () => {
-    navigation.navigate('Wallet');
+    navigation.navigate(ProfileStackScreens.Wallet);
   };
 
   return (

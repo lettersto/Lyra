@@ -1,13 +1,10 @@
 import React, {useLayoutEffect} from 'react';
 import {View, StyleSheet, Pressable, Text, TextInput} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {KeyboardTypeOptions} from 'react-native';
 
-import {RootStackParamList} from '../../constants/types';
-import {EditProfileType} from '../../constants/types';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {ProfileStackRouteProps} from '../../constants/types';
 import Colors from '../../constants/Colors';
-
-type Props = NativeStackScreenProps<RootStackParamList, 'EditProfile'>;
 
 interface editProfileObj {
   [key: string]: {
@@ -17,9 +14,11 @@ interface editProfileObj {
   };
 }
 
-const EditProfileScreen = ({route, navigation}: Props) => {
-  const editProfileMode: EditProfileType = route.params.editProfileMode;
+const EditProfileScreen = () => {
+  const route = useRoute<ProfileStackRouteProps>();
+  const navigation = useNavigation();
 
+  const mode = route.params?.param!;
   const modeToScreenTitle: editProfileObj = {
     nickname: {
       title: '닉네임 변경',
@@ -48,7 +47,7 @@ const EditProfileScreen = ({route, navigation}: Props) => {
     },
   };
 
-  const {title, placeholder, keyboardType} = modeToScreenTitle[editProfileMode];
+  const {title, placeholder, keyboardType} = modeToScreenTitle[mode];
 
   useLayoutEffect(() => {
     navigation.setOptions({
