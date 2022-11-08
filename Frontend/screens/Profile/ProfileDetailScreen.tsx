@@ -7,11 +7,18 @@ import {
   Pressable,
   Image,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, CompositeNavigationProp} from '@react-navigation/native';
 
 import ImagePicker, {ImageOrVideo} from 'react-native-image-crop-picker';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
+import {
+  ProfileStackNavigationProps,
+  ProfileStackScreens,
+  BottomTabNavigationProps,
+  BottomTabScreens,
+  PheedStackScreens,
+} from '../../constants/types';
 import {AuthContext} from '../../store/auth-context';
 import {logoutFromServer} from '../../api/auth';
 import {signOutWithKakao} from '../../api/auth';
@@ -19,8 +26,13 @@ import CircleProfile from '../../components/Utils/CircleProfile';
 import ProfileInfoItem from '../../components/Profile/EditProfile/ProfileInfoItem';
 import Colors from '../../constants/Colors';
 
+type NavigationProps = CompositeNavigationProp<
+  ProfileStackNavigationProps,
+  BottomTabNavigationProps
+>;
+
 const ProfileDetailScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProps>();
   const {
     setImageURL,
     setIsLoggedIn,
@@ -32,32 +44,32 @@ const ProfileDetailScreen = () => {
   const [ImageUri, setImageUri] = useState<string>();
 
   const nicknamePressHandler = () => {
-    navigation.navigate('EditProfile', {
-      editProfileMode: 'nickname',
+    navigation.navigate(ProfileStackScreens.EditProfile, {
+      param: 'nickname',
     });
   };
 
   const introductionPressHandler = () => {
-    navigation.navigate('EditProfile', {
-      editProfileMode: 'introduction',
+    navigation.navigate(ProfileStackScreens.EditProfile, {
+      param: 'introduction',
     });
   };
 
   const bankPressHandler = () => {
-    navigation.navigate('EditProfile', {
-      editProfileMode: 'bank',
+    navigation.navigate(ProfileStackScreens.EditProfile, {
+      param: 'bank',
     });
   };
 
   const accountPressHandler = () => {
-    navigation.navigate('EditProfile', {
-      editProfileMode: 'account',
+    navigation.navigate(ProfileStackScreens.EditProfile, {
+      param: 'account',
     });
   };
 
   const holderPressHandler = () => {
-    navigation.navigate('EditProfile', {
-      editProfileMode: 'holder',
+    navigation.navigate(ProfileStackScreens.EditProfile, {
+      param: 'holder',
     });
   };
 
@@ -89,7 +101,9 @@ const ProfileDetailScreen = () => {
       setIsLoggedIn(false);
       setLatitude(null);
       setLongitude(null);
-      navigation.navigate('Home', {screen: 'Login'});
+      navigation.navigate(BottomTabScreens.Home, {
+        screen: PheedStackScreens.Login,
+      });
     } catch (err) {
       if (__DEV__) {
         console.error('Logout Error!', err);

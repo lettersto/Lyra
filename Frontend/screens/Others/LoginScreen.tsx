@@ -8,9 +8,7 @@ import {
   Dimensions,
 } from 'react-native';
 
-import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import {useNavigation} from '@react-navigation/native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 import {
@@ -19,17 +17,15 @@ import {
   sendUserKakaoInfoToServer,
 } from '../../api/auth';
 import {AuthContext} from '../../store/auth-context';
-import {RootStackParamList, RootTabParamList} from '../../constants/types';
+import {
+  PheedStackNavigationProps,
+  PheedStackScreens,
+} from '../../constants/types';
 import Colors from '../../constants/Colors';
 import StarEffect from '../../components/Utils/StarEffect';
 
-type LoginNavigationProps = CompositeNavigationProp<
-  BottomTabNavigationProp<RootTabParamList, 'Home'>,
-  NativeStackNavigationProp<RootStackParamList>
->;
-
 const LoginScreen = () => {
-  const navigation = useNavigation<LoginNavigationProps>();
+  const navigation = useNavigation<PheedStackNavigationProps>();
 
   useLayoutEffect(() => {
     navigation.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
@@ -47,7 +43,11 @@ const LoginScreen = () => {
           nickname,
           profileImageUrl: imageURL,
           email,
-        } = await getKakaoProfile();
+        } = (await getKakaoProfile()) as {
+          nickname: string;
+          profileImageUrl: string;
+          email: string;
+        };
 
         setImageURL(imageURL);
         setNickname(nickname);
@@ -68,7 +68,7 @@ const LoginScreen = () => {
         await EncryptedStorage.setItem('accessToken', accessToken);
         await EncryptedStorage.setItem('refreshToken', refreshToken);
 
-        navigation.navigate('LocationPermission');
+        navigation.navigate(PheedStackScreens.LocationPermission);
       } catch (err) {
         if (__DEV__) {
           console.error('Login Error!', err);
@@ -81,7 +81,7 @@ const LoginScreen = () => {
     };
 
     const onGoogleLoginPress = () => {
-      navigation.navigate('Home');
+      navigation.navigate(PheedStackScreens.MainPheed);
     };
 
     return (
