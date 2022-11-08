@@ -28,6 +28,7 @@ public class WebSecurityConfig {
     private final OAuth2SuccessHandler successHandler;
 
     private static final String[] AUTH_WHITELIST = {
+            "/user/login",
             "/authenticate",
             "/swagger-resources/**",
             "/swagger-ui/**",

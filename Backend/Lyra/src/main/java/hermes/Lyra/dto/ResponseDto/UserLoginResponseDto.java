@@ -1,4 +1,4 @@
-package hermes.Lyra.dto;
+package hermes.Lyra.dto.ResponseDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

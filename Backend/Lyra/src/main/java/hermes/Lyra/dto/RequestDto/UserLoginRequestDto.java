@@ -1,4 +1,4 @@
-package hermes.Lyra.dto;
+package hermes.Lyra.dto.RequestDto;
 
 import lombok.*;
 
@@ -7,7 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 public class UserLoginRequestDto {
     String email;
-    String name;
     String image_url;
     String nickname;
 }

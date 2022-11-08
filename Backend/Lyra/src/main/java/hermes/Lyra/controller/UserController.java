@@ -4,7 +4,10 @@ import hermes.Lyra.Service.UserService;
 import hermes.Lyra.config.JwtTokenProvider;
 import hermes.Lyra.domain.User;
 import hermes.Lyra.dto.*;
-import hermes.Lyra.minjae.requestLogin;
+import hermes.Lyra.dto.RequestDto.UserLocationRequestDto;
+import hermes.Lyra.dto.RequestDto.UserLoginRequestDto;
+import hermes.Lyra.dto.ResponseDto.UserLocationResponseDto;
+import hermes.Lyra.dto.ResponseDto.UserLoginResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,12 +19,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.Charset;
 import java.nio.file.AccessDeniedException;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -115,7 +114,7 @@ public class UserController {
     }
 
     @ApiOperation(value = "회원정보를 삭제한다.",notes = "userId에 해당하는 회원 정보를 삭제한다.")
-    @DeleteMapping("/delete/{userId}")
+    @DeleteMapping("/{userId}")
     public ResponseEntity<?> deleteUser(@PathVariable("userId") Long userId){
         Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
@@ -144,20 +143,20 @@ public class UserController {
             return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @ApiOperation(value = "소셜로그인 - 멤버정보 요청",notes = "발급받은 accessToken으로 멤버정보를 요청한다.")
-    @GetMapping("/me")
-    public ResponseEntity<?> getMember(
-            @RequestHeader(value="X-AUTH-TOKEN") String token) throws Exception {
-        Message message = new Message();
-        HttpHeaders headers= new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-
-        message.setStatus(StatusEnum.OK);
-        message.setMessage("access token으로 정보 불러오기 성공");
-        message.setData(userService.getUser(token));
-        return new ResponseEntity<>(message, headers, HttpStatus.OK);
-
-    }
+//    @ApiOperation(value = "소셜로그인 - 멤버정보 요청",notes = "발급받은 accessToken으로 멤버정보를 요청한다.")
+//    @GetMapping("/me")
+//    public ResponseEntity<?> getMember(
+//            @RequestHeader(value="X-AUTH-TOKEN") String token) throws Exception {
+//        Message message = new Message();
+//        HttpHeaders headers= new HttpHeaders();
+//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+//
+//        message.setStatus(StatusEnum.OK);
+//        message.setMessage("access token으로 정보 불러오기 성공");
+//        message.setData(userService.getUser(token));
+//        return new ResponseEntity<>(message, headers, HttpStatus.OK);
+//
+//    }
 
     @ApiOperation(value = "access token 재발급 요청",notes = "refresh 토큰으로 access 토큰을 재발급 신청한다.")
     @PostMapping(value = "/refresh")
@@ -195,10 +194,34 @@ public class UserController {
     public ResponseEntity<?> login(
             @RequestBody UserLoginRequestDto userLoginRequestDto) {
         // userId로 확인한 값이 DB에 저장되어 있는지 확인 있으면 User 가져오고, 없으면 만들어서 User에 할당
-        System.out.println("before userService.join");
+        System.out.println("ssibal");
         User user = userService.join(userLoginRequestDto);
+        log.info("bye");
         String accessToken = jwtTokenProvider.createToken(user.getEmail(), user.getRoles());
         return ResponseEntity.ok(UserLoginResponseDto.of(200, "가입에 성공했습니다", user.getId(), user.getEmail(), user.getNickname(), accessToken, user.getRefreshToken()));
+    }
+
+    @ApiOperation(value = "유저 아이디에 위치 정보를 추가한다.", notes = "유저 아이디에 위치 정보를 추가한다")
+    @PatchMapping("/location/{userId}")
+    public ResponseEntity<?> addUserLocation(
+            @PathVariable("userId") Long userId,
+            @RequestBody UserLocationRequestDto userLocationRequestDto
+    ) {
+        Message message = new Message();
+        HttpHeaders headers= new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        try {
+            User user = userService.addLocation(userId, userLocationRequestDto);
+            message.setStatus(StatusEnum.OK);
+            message.setMessage("회원 위치정보 추가 성공");
+            message.setData(user);
+            return new ResponseEntity<>(message, headers, HttpStatus.OK);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            message.setStatus(StatusEnum.BAD_REQUEST);
+            message.setMessage("회원 정보가 없습니다.");
+            return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+        }
     }
 
 
