@@ -63,7 +63,7 @@ const LocationSearchScreen = ({navigation}: Props) => {
           )}
           <View style={{height: '30%', bottom: 0}}>
             <Text style={styles.name}>{name}</Text>
-            <Input
+            {/* <Input
               setEnteredValue={setLocationAddInfo}
               enteredValue={locationAddInfo}
               width={0.77}
@@ -73,7 +73,7 @@ const LocationSearchScreen = ({navigation}: Props) => {
               placeholder="구체적인 장소를 입력해주세요."
               customStyle={styles.input}
               maxLength={30}
-            />
+            /> */}
             <Button
               title="해당 위치로 설정"
               btnSize="large"
