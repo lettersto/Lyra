@@ -16,7 +16,7 @@ let buskerDict = {}; // 현재 방에 있는 유저정보
 let buskerTotalDict = {}; // 누적으로 들어온 인원
 
 // 방에 있는 접속자 수
-const fetchRoomCnt = async (buskerId) => {
+const fetchRoomCnt = (buskerId) => {
   let cnt = 0;
   if (Object.keys(buskerDict).includes(String(buskerId))) {
     cnt = buskerDict[buskerId].size;
@@ -41,11 +41,11 @@ const userIn = (socket, buskerId) => {
   }
   // 버스커 방 누적 인원 추가
   if (Object.keys(buskerTotalDict).includes(String(buskerId))) {
-    buskerTotalDict[buskerId] = 1;
+    buskerTotalDict[buskerId].add(userId);
   } else {
-    buskerTotalDict[buskerId] = {};
+    buskerTotalDict[buskerId] = new Set([userId]);
   }
-  fetchRoomCnt(io, buskerId);
+  fetchRoomCnt(buskerId);
 };
 
 // 유저가 접속한 방 알려주기
@@ -71,7 +71,7 @@ const userOut = (socket, buskerId) => {
     buskerDict[buskerId].delete(userId);
   }
 
-  fetchRoomCnt(io, buskerId);
+  fetchRoomCnt(buskerId);
 };
 
 // 유저 모두 내보내기
@@ -100,7 +100,6 @@ io.on("connection", (socket) => {
   socket.on("enter room", async (buskerId) => {
     await socket.join(buskerId);
     userIn(socket, buskerId);
-    fetchRoomCnt(io, buskerId);
   });
 
   // 유저가 들어간 방들 조회
