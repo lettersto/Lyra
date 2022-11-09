@@ -118,6 +118,8 @@ const ProfileDetailScreen = () => {
     },
   });
 
+  console.log(createWalletData); 
+
   const walletCreationAgainHandler = () => {
     deleteWalletMutate(userId);
     createWalletMutate(userId);

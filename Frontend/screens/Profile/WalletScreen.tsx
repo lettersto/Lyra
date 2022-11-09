@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   View,
   Text,
@@ -8,10 +8,17 @@ import {
   TextInput,
 } from 'react-native';
 
-import {useQuery} from 'react-query';
+import {useMutation, useQuery, useQueryClient} from 'react-query';
 
-import {getUserWalletAddressAndCoin} from '../../api/profile';
+import {
+  getUserWalletAddressAndCoin,
+  chargeCoinToWallet,
+  createRecordInChargeList,
+  chargeCoinToWeb3,
+  getTotalBalanceFromWeb3,
+} from '../../api/profile';
 import {walletTabType} from '../../constants/types';
+import {AuthContext} from '../../store/auth-context';
 import Wallet from '../../components/Profile/Wallet/Wallet';
 import WalletCategory from '../../components/Profile/Wallet/WalletCategory';
 import CircleProfile from '../../components/Utils/CircleProfile';
@@ -72,16 +79,19 @@ const dummyChargeList = [
 
 // supporter, busker
 const WalletScreen = () => {
+  const queryClient = useQueryClient();
+  const {walletAddress, walletId} = useContext(AuthContext);
   const [walletTabMode, setWalletTabMode] = useState<walletTabType>('give');
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [enteredCoin, setEnteredCoin] = useState<string>('');
   const [validationWarning, setValidationWarning] = useState<string>('');
+  const [totalBalance, setTotalBalance] = useState<number>(0);
 
   const userId = 1;
   const {
     data: walletData,
-    isLoading,
-    isError,
+    isLoading: walletDataIsLoading,
+    // isError,
   } = useQuery('walletInfo', () => getUserWalletAddressAndCoin(userId));
 
   // TODO change type for listData
@@ -177,7 +187,69 @@ const WalletScreen = () => {
     setIsModalVisible(false);
   };
 
-  const chargeCoinHandler = () => {};
+  const {
+    mutate: createRecordMutate,
+    isLoading: createRecordIsLoading,
+    // isError: createRecordIsError,
+  } = useMutation(createRecordInChargeList, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('walletInfo');
+      setEnteredCoin('');
+    },
+  });
+
+  const {
+    mutate: chargeMutate,
+    isLoading: chargeIsLoading,
+    // isError: chrageIsError,
+  } = useMutation(chargeCoinToWallet, {
+    onSuccess: () =>
+      createRecordMutate({
+        walletId: walletId as number,
+        walletAddress: walletAddress as string,
+        coin: totalBalance,
+      }),
+  });
+
+  const {
+    refetch: refechBalance,
+    // data: balanceData, // string coin
+    isLoading: balanceIsLoading,
+  } = useQuery(
+    'walletBalance',
+    () => getTotalBalanceFromWeb3(walletAddress as string),
+    {
+      onSuccess: data => {
+        setTotalBalance(Number(data));
+        chargeMutate({userId, coin: Number(data)});
+      },
+      enabled: false,
+    },
+  );
+
+  const {
+    mutate: webMutate,
+    isLoading: webIsLoading,
+    // error: webError,
+    // isError: webIsError,
+  } = useMutation(chargeCoinToWeb3, {
+    onSuccess: refechBalance,
+  });
+
+  const chargeCoinHandler = () => {
+    webMutate({
+      walletAddress: walletAddress as string,
+      coin: Number(enteredCoin),
+    });
+    setIsModalVisible(false);
+  };
+
+  const isLoading =
+    walletDataIsLoading ||
+    createRecordIsLoading ||
+    chargeIsLoading ||
+    webIsLoading ||
+    balanceIsLoading;
 
   return (
     <View style={styles.container}>
