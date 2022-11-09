@@ -15,13 +15,13 @@ public interface PheedService {
 
     Iterable<Pheed> getPheedBySearch(String keyword);
 
-    PheedDto createPheed(PheedDto pheedDto, List<String> pheedTagList);
+    Pheed createPheed(PheedDto pheedDto, List<String> pheedTagList);
 
     Iterable<Pheed> getPheedByUserId(Long userId);
 
     List<Pheed> getPheedByTag(String tag);
 
-    PheedDto updatePheed(Long pheedId, PheedDto pheedDto, List<String> pheedTagList);
+    Pheed updatePheed(Long pheedId, PheedDto pheedDto, List<String> pheedTagList);
 
     void deletePheed(Long pheedId);
 
