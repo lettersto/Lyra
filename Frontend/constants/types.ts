@@ -255,7 +255,7 @@ export type PheedDetailParamList = {
   comments: Array<CommentParamList>;
   like: number | undefined;
   isLive: boolean | undefined;
-  pheedImg: string[] | undefined;
+  pheedImg: {id: number; path: string}[];
   pheedTag: Array<TagDetailParamList>;
   category: string;
 };
