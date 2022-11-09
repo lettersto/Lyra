@@ -13,12 +13,14 @@ export interface authContextType {
   isLoggedIn: boolean;
   latitude: null | number;
   longitude: null | number;
+  townName: null | string;
   setUserId: Dispatch<SetStateAction<number | null>>;
   setNickname: Dispatch<SetStateAction<string | null>>;
   setImageURL: Dispatch<SetStateAction<string | null>>;
   setIsLoggedIn: Dispatch<SetStateAction<boolean>>;
   setLatitude: Dispatch<SetStateAction<number | null>>;
   setLongitude: Dispatch<SetStateAction<number | null>>;
+  setTownName: Dispatch<SetStateAction<string | null>>;
 }
 
 export const AuthContext = createContext<authContextType>({
@@ -28,12 +30,14 @@ export const AuthContext = createContext<authContextType>({
   latitude: null,
   longitude: null,
   isLoggedIn: false,
+  townName: null,
   setUserId: () => {},
   setNickname: () => {},
   setImageURL: () => {},
   setIsLoggedIn: () => {},
   setLatitude: () => {},
   setLongitude: () => {},
+  setTownName: () => {},
 });
 
 export const AuthProvider = ({children}: {children: ReactNode}) => {
@@ -43,6 +47,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
+  const [townName, setTownName] = useState<string | null>(null);
 
   const authValue = useMemo(() => {
     return {
@@ -52,14 +57,16 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
       isLoggedIn,
       latitude,
       longitude,
+      townName,
       setUserId,
       setNickname,
       setImageURL,
       setIsLoggedIn,
       setLatitude,
       setLongitude,
+      setTownName,
     };
-  }, [userId, nickname, imageURL, isLoggedIn, latitude, longitude]);
+  }, [userId, nickname, imageURL, isLoggedIn, latitude, longitude, townName]);
 
   // const authValue = {
   //   userId,
@@ -68,6 +75,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   //   isLoggedIn,
   //   latitude,
   //   longitude,
+  //   townName,
   //   setUserId,
   //   setNickname,
   //   setImageURL,

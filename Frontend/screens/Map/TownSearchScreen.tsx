@@ -1,5 +1,5 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import Config from 'react-native-config';
 import MapView, {Marker, PROVIDER_GOOGLE, Region} from 'react-native-maps';
@@ -9,19 +9,22 @@ import MapStyle from '../../components/Map/MapStyle';
 import Button from '../../components/Utils/Button';
 import Colors from '../../constants/Colors';
 import {RootStackParamList} from '../../constants/types';
+import {AuthContext} from '../../store/auth-context';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
 const deviceWidth = Dimensions.get('window').width;
 
 const TownSearchScreen = ({navigation}: Props) => {
+  const {setLatitude, setLongitude, townName, setTownName} =
+    useContext(AuthContext);
   const [location, setLocation] = useState<Region>({
     latitudeDelta: 0.005,
     longitudeDelta: 0.005,
     latitude: 0,
     longitude: 0,
   });
-  const [name, setName] = useState('');
 
   const getTownName = async (lat: number, lng: number) => {
     const response = await fetch(
@@ -34,11 +37,13 @@ const TownSearchScreen = ({navigation}: Props) => {
       },
     );
     const result = await response.json();
-    return setName(result.documents[0].region_3depth_name);
+    return setTownName(result.documents[0].region_3depth_name);
   };
-  const pressHandler = () => {
-    console.log('타운서치');
-    // navigation.navigate('MainPheed');
+  const pressHandler = async () => {
+    setLatitude(location.latitude);
+    setLongitude(location.longitude);
+    await EncryptedStorage.setItem('latitude', `${location.latitude}`);
+    await EncryptedStorage.setItem('longitude', `${location.longitude}`);
     navigation.popToTop();
   };
 
@@ -77,7 +82,7 @@ const TownSearchScreen = ({navigation}: Props) => {
           )}
           {location.latitude != 0 ? (
             <View style={{height: '25%', bottom: 0}}>
-              <Text style={styles.name}>{name}</Text>
+              <Text style={styles.name}>{townName}</Text>
               <Button
                 title="선택한 위치로 설정"
                 btnSize="large"

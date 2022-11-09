@@ -29,7 +29,7 @@ export const TownModal = () => {
       <Modal animationType={'slide'} transparent={true} visible={modalVisible}>
         <View
           style={styles.blankSpace}
-          onTouchEnd={() => navigation.navigate('MainPheed')}
+          onTouchEnd={() => navigation.goBack()}
         />
         <View style={styles.modal}>
           <Text style={styles.title}>동네 설정</Text>

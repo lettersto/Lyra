@@ -10,15 +10,17 @@ import {
   PermissionsAndroid,
   BackHandler,
 } from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../constants/types';
+
+import {useNavigation} from '@react-navigation/native';
 import Geolocation from 'react-native-geolocation-service';
 import IIcon from 'react-native-vector-icons/Ionicons';
 
+import {
+  PheedStackNavigationProps,
+  PheedStackScreens,
+} from '../../constants/types';
 import Button from '../../components/Utils/Button';
 import Colors from '../../constants/Colors';
-
-type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 async function requestPermission() {
   try {
@@ -36,7 +38,8 @@ async function requestPermission() {
   }
 }
 
-const LocationPermissionScreen = ({navigation}: Props) => {
+const LocationPermissionScreen = () => {
+  const navigation = useNavigation<PheedStackNavigationProps>();
   const guidance = 'Lyra를 제대로 사용하기 위해서는\n위치 정보가 필요합니다.';
 
   const cancleBtnStyle = {
@@ -60,7 +63,7 @@ const LocationPermissionScreen = ({navigation}: Props) => {
   const permitHandler = () => {
     requestPermission().then(result => {
       if (result === 'granted') {
-        navigation.navigate('FirstTownSearch');
+        navigation.navigate(PheedStackScreens.FirstTownSearch);
       } else {
         Alert.alert(
           'Lyra',

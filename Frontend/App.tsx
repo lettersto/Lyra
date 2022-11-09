@@ -1,7 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
+import './global';
 import React, {useCallback, useContext, useEffect} from 'react';
 import {SafeAreaView, StatusBar} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 import EncryptedStorage from 'react-native-encrypted-storage';
 
@@ -18,23 +19,39 @@ declare global {
 }
 
 const App = () => {
-  const {isLoggedIn, setIsLoggedIn} = useContext(AuthContext);
+  const {isLoggedIn, setIsLoggedIn, setLongitude, setLatitude, setUserId} =
+    useContext(AuthContext);
+  const navigation = useNavigation();
 
   const checkTokensInStorage = useCallback(async () => {
     try {
       const accessToken = await EncryptedStorage.getItem('accessToken');
+      // await EncryptedStorage.removeItem('accessToken');
       setIsLoggedIn(!!accessToken);
+      if (accessToken) {
+        const userId = await EncryptedStorage.getItem('userId');
+        const lat = await EncryptedStorage.getItem('latitude');
+        const lon = await EncryptedStorage.getItem('logitude');
+        setLatitude(lat ? parseInt(lat, 10) : null);
+        setLongitude(lon ? parseInt(lon, 10) : null);
+        setUserId(userId ? parseInt(userId, 10) : null);
+      }
     } catch (error) {
       setIsLoggedIn(false);
+      setUserId(null);
       if (__DEV__) {
-        console.error(error);
+        console.error('Storage Check Error!', error);
       }
     }
-  }, [setIsLoggedIn]);
+  }, [setIsLoggedIn, setLatitude, setLongitude, setUserId]);
 
   useEffect(() => {
     checkTokensInStorage();
-  }, [checkTokensInStorage]);
+    if (isLoggedIn) {
+      navigation.navigate('MainPheed');
+      // navigation.navigate('WalletCreation');
+    }
+  }, [checkTokensInStorage, isLoggedIn, navigation]);
 
   console.log('loginin', isLoggedIn);
 
@@ -50,9 +67,7 @@ const App = () => {
           backgroundColor={Colors.black500}
           barStyle={'light-content'}
         />
-        <NavigationContainer>
-          <NavBar />
-        </NavigationContainer>
+        <NavBar />
       </SafeAreaView>
     </GestureHandlerRootView>
   );

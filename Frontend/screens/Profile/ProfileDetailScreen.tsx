@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   View,
   StyleSheet,
@@ -7,44 +7,69 @@ import {
   Pressable,
   Image,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, CompositeNavigationProp} from '@react-navigation/native';
 
 import ImagePicker, {ImageOrVideo} from 'react-native-image-crop-picker';
+import EncryptedStorage from 'react-native-encrypted-storage';
+
+import {
+  ProfileStackNavigationProps,
+  ProfileStackScreens,
+  BottomTabNavigationProps,
+  BottomTabScreens,
+  PheedStackScreens,
+} from '../../constants/types';
+import {AuthContext} from '../../store/auth-context';
+import {logoutFromServer} from '../../api/auth';
+import {signOutWithKakao} from '../../api/auth';
 import CircleProfile from '../../components/Utils/CircleProfile';
 import ProfileInfoItem from '../../components/Profile/EditProfile/ProfileInfoItem';
 import Colors from '../../constants/Colors';
 
+type NavigationProps = CompositeNavigationProp<
+  ProfileStackNavigationProps,
+  BottomTabNavigationProps
+>;
+
 const ProfileDetailScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProps>();
+  const {
+    setImageURL,
+    setIsLoggedIn,
+    setLatitude,
+    setLongitude,
+    setNickname,
+    setUserId,
+  } = useContext(AuthContext);
   const [ImageUri, setImageUri] = useState<string>();
 
   const nicknamePressHandler = () => {
-    navigation.navigate('EditProfile', {
-      editProfileMode: 'nickname',
+    navigation.navigate(ProfileStackScreens.EditProfile, {
+      param: 'nickname',
     });
   };
 
   const introductionPressHandler = () => {
-    navigation.navigate('EditProfile', {
-      editProfileMode: 'introduction',
+    navigation.navigate(ProfileStackScreens.EditProfile, {
+      param: 'introduction',
     });
   };
 
   const bankPressHandler = () => {
-    navigation.navigate('EditProfile', {
-      editProfileMode: 'bank',
+    navigation.navigate(ProfileStackScreens.EditProfile, {
+      param: 'bank',
     });
   };
 
   const accountPressHandler = () => {
-    navigation.navigate('EditProfile', {
-      editProfileMode: 'account',
+    navigation.navigate(ProfileStackScreens.EditProfile, {
+      param: 'account',
     });
   };
 
   const holderPressHandler = () => {
-    navigation.navigate('EditProfile', {
-      editProfileMode: 'holder',
+    navigation.navigate(ProfileStackScreens.EditProfile, {
+      param: 'holder',
     });
   };
 
@@ -60,6 +85,29 @@ const ProfileDetailScreen = () => {
       setImageUri(newProfileImage.path);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const logoutHandler = async () => {
+    try {
+      const refreshToken = await EncryptedStorage.getItem('refreshToken');
+      await logoutFromServer(refreshToken);
+      await signOutWithKakao();
+      await EncryptedStorage.removeItem('refreshToken');
+      await EncryptedStorage.removeItem('accessToken');
+      setUserId(null);
+      setNickname(null);
+      setImageURL(null);
+      setIsLoggedIn(false);
+      setLatitude(null);
+      setLongitude(null);
+      navigation.navigate(BottomTabScreens.Home, {
+        screen: PheedStackScreens.Login,
+      });
+    } catch (err) {
+      if (__DEV__) {
+        console.error('Logout Error!', err);
+      }
     }
   };
 
@@ -107,6 +155,9 @@ const ProfileDetailScreen = () => {
           placeHolder="예금주를 입력하세요."
           onLongPress={holderPressHandler}
         />
+        <Pressable onPress={logoutHandler}>
+          <Text style={styles.text}>로그아웃</Text>
+        </Pressable>
       </View>
     </ScrollView>
   );

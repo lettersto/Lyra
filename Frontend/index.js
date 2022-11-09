@@ -1,6 +1,7 @@
 import React from 'react';
 import {AppRegistry} from 'react-native';
 
+import {NavigationContainer} from '@react-navigation/native';
 import {QueryClient, QueryClientProvider} from 'react-query';
 import {AuthProvider} from './store/auth-context';
 
@@ -13,7 +14,9 @@ const Root = () => {
   return (
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
-        <App />
+        <NavigationContainer>
+          <App />
+        </NavigationContainer>
       </QueryClientProvider>
     </AuthProvider>
   );

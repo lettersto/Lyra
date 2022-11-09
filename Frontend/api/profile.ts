@@ -1,4 +1,7 @@
+import EncryptedStorage from 'react-native-encrypted-storage';
+import Config from 'react-native-config';
 import axios from './axios';
+const Web3 = require('web3');
 
 // profile
 export const getUserProfile = async (userId: number) => {
@@ -10,7 +13,6 @@ export const getUserProfile = async (userId: number) => {
 };
 
 export const updateNickname = async (userId: number, nickname: string) => {
-  console.log(nickname);
   const response = await axios({
     url: `/user/update/${userId}`,
     method: 'PATCH',
@@ -31,13 +33,21 @@ export const getUserWallet = async (userId: number) => {
   return response.data;
 };
 
+// TODO prevent user to access this function when they already have wallet.
 export const createWallet = async (userId: number) => {
+  const web3 = new Web3(new Web3.providers.HttpProvider(Config.WALLET_API_KEY));
+  const {address, privateKey} = web3.eth.accounts.create();
+  await EncryptedStorage.setItem('address', address);
+
   const response = await axios({
     url: '/wallet',
     method: 'POST',
     params: {user_id: userId},
+    data: {
+      address,
+    },
   });
-  return response.data;
+  return {...response.data, address, privateKey};
 };
 
 export const chargeCoinToWallet = async (userId: number, coin: number) => {
