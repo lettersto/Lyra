@@ -15,6 +15,13 @@ spring:
 #    url: jdbc:mariadb://localhost:3307/lyra?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true&useLegacyDatetimeCode=false
 #    username: root
 #    password: yeobo
+
+
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -49,3 +56,26 @@ spring:
 #            token-uri: https://kauth.kakao.com/oauth/token
 #            user-info-uri: https://kapi.kakao.com/v2/user/me
 #            user-name-attribute: id
+
+cloud:
+  aws:
+    credentials:
+      instance-profile: false
+      accessKey: AKIAU33EAFESBOV5SWWW
+      secretKey: 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
+    region:
+      auto: false
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
+
+aws:
+  s3:
+    bucket: lyra-hermes
