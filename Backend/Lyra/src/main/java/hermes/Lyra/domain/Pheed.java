@@ -43,7 +43,8 @@ public class Pheed {
     @Column(nullable = false)
     private String location;
 
-    @OneToMany(mappedBy = "id",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pheed",cascade = CascadeType.ALL)
+    @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     List<PheedImg> pheedImg = new ArrayList<>();
 
 //    @Enumerated(EnumType.STRING)

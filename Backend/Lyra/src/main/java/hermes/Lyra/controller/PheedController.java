@@ -1,6 +1,7 @@
 package hermes.Lyra.controller;
 
 import hermes.Lyra.Service.PheedService;
+import hermes.Lyra.Service.S3UploadService;
 import hermes.Lyra.domain.Pheed;
 import hermes.Lyra.dto.PheedDto;
 import hermes.Lyra.vo.RequestPheed;
@@ -11,7 +12,9 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,14 +26,16 @@ public class PheedController {
 
     PheedService pheedService;
 
+    S3UploadService s3UploadService;
 
-    public PheedController(PheedService pheedService) {
+    public PheedController(S3UploadService s3UploadService, PheedService pheedService) {
+        this.s3UploadService = s3UploadService;
         this.pheedService = pheedService;
     }
 
 
     @PostMapping("")
-    public ResponseEntity<String> createPheed(@RequestParam("user_id") Long userId, @RequestBody RequestPheed pheed) {
+    public ResponseEntity<String> createPheed(@RequestParam("user_id") Long userId, @RequestPart RequestPheed pheed, @RequestPart List<MultipartFile> images) throws IOException {
 
         log.info("Before create pheed data");
         ModelMapper mapper = new ModelMapper();
@@ -44,10 +49,12 @@ public class PheedController {
 
         pheedDto.setUserId(userId);
 
-        PheedDto createPheed = pheedService.createPheed(pheedDto, pheedTagList);
+        Pheed newPheed = pheedService.createPheed(pheedDto, pheedTagList);
 
 //        ResponsePheed responsePheed = mapper.map(createPheed, ResponsePheed.class);
 //        responsePheed.setPheedTag(pheedTagList);
+
+        s3UploadService.upload(images, newPheed);
 
         log.info("After create pheed data");
 
@@ -93,7 +100,7 @@ public class PheedController {
 
 
     @PatchMapping("{pheed_id}")
-    public ResponseEntity<String> updatePheed(@PathVariable("pheed_id") Long pheedId, @RequestBody RequestPheed pheed) throws Exception {
+    public ResponseEntity<String> updatePheed(@PathVariable("pheed_id") Long pheedId, @RequestPart RequestPheed pheed, @RequestPart List<MultipartFile> images) throws Exception {
 
         log.info("Before update pheed data");
 
@@ -105,10 +112,9 @@ public class PheedController {
 
         PheedDto pheedDto = mapper.map(pheed, PheedDto.class);
 
+        Pheed newPheed = pheedService.updatePheed(pheedId, pheedDto, pheedTagList);
 
-
-        PheedDto updatePheed = pheedService.updatePheed(pheedId, pheedDto, pheedTagList);
-
+        s3UploadService.update(images, newPheed, pheedId);
 
         log.info("After updated pheed data");
 
@@ -120,6 +126,8 @@ public class PheedController {
     public ResponseEntity<String> deletePheed(@PathVariable("pheed_id") Long pheedId) {
 
         log.info("Before delete pheed data");
+
+        s3UploadService.delete(pheedId);
 
         pheedService.deletePheed(pheedId);
 

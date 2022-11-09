@@ -2,10 +2,13 @@ package hermes.Lyra.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @Entity
 public class PheedImg {
     @Id
@@ -18,6 +21,6 @@ public class PheedImg {
     @ManyToOne
     @JoinColumn(name = "pheed_id")
     @JsonIgnore
-    private Pheed pheedId;
+    private Pheed pheed;
 
 }

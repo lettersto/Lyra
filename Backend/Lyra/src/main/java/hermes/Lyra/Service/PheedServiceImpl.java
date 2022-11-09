@@ -63,7 +63,7 @@ public class PheedServiceImpl implements PheedService{
     }
 
     @Override
-    public PheedDto createPheed(PheedDto pheedDto, List<String> pheedTagList) {
+    public Pheed createPheed(PheedDto pheedDto, List<String> pheedTagList) {
 //        if (multipartFile != null) {
 //            String imgUrl = s3Service.uploadObject(multipartFile);
 //            pheedDto.setImgUrl(imgUrl);
@@ -99,7 +99,7 @@ public class PheedServiceImpl implements PheedService{
 
         PheedDto returnValue = mapper.map(pheed, PheedDto.class);
 
-        return returnValue;
+        return pheed;
     }
 
     @Override
@@ -127,7 +127,7 @@ public class PheedServiceImpl implements PheedService{
     }
 
     @Override
-    public PheedDto updatePheed(Long pheedId, PheedDto pheedDto, List<String> pheedTagList) {
+    public Pheed updatePheed(Long pheedId, PheedDto pheedDto, List<String> pheedTagList) {
 
         Optional<Pheed> p = pheedRepository.findById(pheedId);
         pheedDto.setUserId(p.get().getUser().getId());
@@ -167,8 +167,8 @@ public class PheedServiceImpl implements PheedService{
             }
         }
 
-        PheedDto returnValue = mapper.map(pheed, PheedDto.class);
-        return returnValue;
+//        PheedDto returnValue = mapper.map(pheed, PheedDto.class);
+        return pheed;
     }
 
     @Override
