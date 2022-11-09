@@ -7,8 +7,6 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseWallet {
 
-    private Long walletId;
-
     private String address;
 
     private Long coin;
