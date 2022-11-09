@@ -50,7 +50,7 @@ public class WalletController {
         Wallet result = walletService.getWalletByUserId(userId);
 
         ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+//        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         ResponseWallet responseWallet = mapper.map(result, ResponseWallet.class);
 //
