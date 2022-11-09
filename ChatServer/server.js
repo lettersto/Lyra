@@ -12,14 +12,14 @@ const io = new Server(server, {
 });
 
 let userDict = {}; // 유저가 들어간 방정보
-let buskerDict = {};  // 현재 방에 있는 유저정보
+let buskerDict = {}; // 현재 방에 있는 유저정보
 let buskerTotalDict = {}; // 누적으로 들어온 인원
 
 // 방에 있는 접속자 수
 const fetchRoomCnt = async (buskerId) => {
-  let cnt = 0
+  let cnt = 0;
   if (Object.keys(buskerDict).includes(String(buskerId))) {
-    cnt = buskerDict[buskerId].size
+    cnt = buskerDict[buskerId].size;
   }
   io.to(buskerId).emit("fetch user", cnt);
 };
@@ -75,10 +75,10 @@ const userOut = (socket, buskerId) => {
 };
 
 // 유저 모두 내보내기
-const userAllOut = (buskerId) => {
+const userAllOut = async (buskerId) => {
   const sockets = await io.in(buskerId).fetchSockets();
   for (socket of sockets) {
-    const userId = socket.data.userId
+    const userId = socket.data.userId;
     if (Object.keys(userDict).includes(String(userId))) {
       userDict[userId].delete(buskerId);
     }
@@ -132,11 +132,11 @@ io.on("connection", (socket) => {
   // 버스커 방에서 모두 내보낸다.
   socket.on("room close", async (buskerId) => {
     if (buskerId === socket.data.userId) {
-      io.to(buskerId).emit("end",  buskerTotalDict[buskerId].size)
+      io.to(buskerId).emit("end", buskerTotalDict[buskerId].size);
       io.in(buskerId).socketsLeave(buskerId);
       userAllOut(buskerId);
     } else {
-      console.log("방장이 아닙니다!")
+      console.log("방장이 아닙니다!");
     }
   });
 
