@@ -1,3 +1,5 @@
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useState} from 'react';
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE, Region} from 'react-native-maps';
@@ -5,25 +7,32 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import LocationSearch from '../../components/Map/LocationSearch';
 import MapStyle from '../../components/Map/MapStyle';
 import Button from '../../components/Utils/Button';
+import Input from '../../components/Utils/Input';
 import Colors from '../../constants/Colors';
+import {RootStackParamList} from '../../constants/types';
+
+type Props = NativeStackScreenProps<RootStackParamList>;
 
 const deviceWidth = Dimensions.get('window').width;
 
-const LocationSearchScreen = () => {
+const LocationSearchScreen = ({navigation}: Props) => {
   const [location, setLocation] = useState<Region>({
     latitudeDelta: 0.005,
     longitudeDelta: 0.005,
     latitude: 0,
     longitude: 0,
   });
+  const [locationAddInfo, setLocationAddInfo] = useState('');
   const [name, setName] = useState('');
-  const pressHandler = () => {};
+  const pressHandler = () => {
+    navigation.goBack();
+  };
 
   return (
     <>
       <View style={styles.body}>
         <View style={{flex: 1}}>
-          <Text style={styles.title}>주소 찾기</Text>
+          {/* <Text style={styles.title}>주소 찾기</Text> */}
           <LocationSearch
             onPress={(data, detail) => {
               const {
@@ -52,10 +61,21 @@ const LocationSearchScreen = () => {
               </Marker>
             </MapView>
           )}
-          <View style={{height: '25%', bottom: 0}}>
+          <View style={{height: '30%', bottom: 0}}>
             <Text style={styles.name}>{name}</Text>
+            {/* <Input
+              setEnteredValue={setLocationAddInfo}
+              enteredValue={locationAddInfo}
+              width={0.77}
+              height={0.06}
+              borderRadius={25}
+              keyboard={1}
+              placeholder="구체적인 장소를 입력해주세요."
+              customStyle={styles.input}
+              maxLength={30}
+            /> */}
             <Button
-              title="선택한 위치로 설정"
+              title="해당 위치로 설정"
               btnSize="large"
               textSize="medium"
               isGradient={false}
@@ -104,5 +124,8 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     marginTop: 20,
+  },
+  input: {
+    marginBottom: 20,
   },
 });

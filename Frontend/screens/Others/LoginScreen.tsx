@@ -44,7 +44,6 @@ const LoginScreen = () => {
         await signInWithKakao();
         // NOTE types are strage here
         const {
-          name,
           nickname,
           profileImageUrl: imageURL,
           email,
@@ -52,26 +51,23 @@ const LoginScreen = () => {
 
         setImageURL(imageURL);
         setNickname(nickname);
-        console.log(name, nickname);
 
-        const {
-          accessToken,
-          refreshToken,
-          id: userId,
-        } = await sendUserKakaoInfoToServer({
-          name,
-          nickname,
-          imageURL,
-          email,
-        });
+        // const {
+        //   accessToken,
+        //   refreshToken,
+        //   id: userId,
+        // } = await sendUserKakaoInfoToServer({
+        //   nickname,
+        //   imageURL,
+        //   email,
+        // });
 
-        setUserId(userId);
+        // setUserId(userId);
         setIsLoggedIn(true);
-        console.log(name, nickname, userId);
-
-        await EncryptedStorage.setItem('userId', userId);
-        await EncryptedStorage.setItem('accessToken', accessToken);
-        await EncryptedStorage.setItem('refreshToken', refreshToken);
+        await EncryptedStorage.setItem('userId', '1');
+        // await EncryptedStorage.setItem('userId', userId);
+        // await EncryptedStorage.setItem('accessToken', accessToken);
+        // await EncryptedStorage.setItem('refreshToken', refreshToken);
 
         navigation.navigate('LocationPermission');
       } catch (err) {

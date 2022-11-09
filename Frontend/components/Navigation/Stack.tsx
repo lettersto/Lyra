@@ -36,7 +36,6 @@ import LocationPermissionScreen from '../../screens/Others/LocationPermissionScr
 import {TabScreens} from './NavBar';
 import {RootStackParamList} from '../../constants/types';
 import Colors from '../../constants/Colors';
-import {LocationModal} from '../Utils/LocationModal';
 import FirstTownSearchScreen from '../../screens/Map/FirstTownSearchScreen';
 import TownSearchScreen from '../../screens/Map/TownSearchScreen';
 import LocationSearchScreen from '../../screens/Map/LocationSearchScreen';
@@ -114,6 +113,11 @@ export const PheedStack = () => {
           options={{title: ''}}
         />
         <Stack.Screen name="CreatePheed" component={CreatePheedScreen} />
+        <Stack.Screen
+          name="LocationSearch"
+          component={LocationSearchScreen}
+          options={{title: ''}}
+        />
         <Stack.Screen name="UpdatePheed" component={UpdatePheedScreen} />
         <Stack.Screen
           name="ShortsDetail"
