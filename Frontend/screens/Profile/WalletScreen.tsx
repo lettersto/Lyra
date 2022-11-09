@@ -1,10 +1,22 @@
 import React, {useState} from 'react';
-import {View, Text, FlatList, StyleSheet, Pressable} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Pressable,
+  TextInput,
+} from 'react-native';
 
+import {useQuery} from 'react-query';
+
+import {getUserWalletAddressAndCoin} from '../../api/profile';
+import {walletTabType} from '../../constants/types';
 import Wallet from '../../components/Profile/Wallet/Wallet';
 import WalletCategory from '../../components/Profile/Wallet/WalletCategory';
 import CircleProfile from '../../components/Utils/CircleProfile';
-import {walletTabType} from '../../constants/types';
+import ModalWithButton from '../../components/Utils/ModalWithButton';
+import LoadingSpinner from '../../components/Utils/LoadingSpinner';
 import Colors from '../../constants/Colors';
 
 const dummyGiveList = [
@@ -61,6 +73,16 @@ const dummyChargeList = [
 // supporter, busker
 const WalletScreen = () => {
   const [walletTabMode, setWalletTabMode] = useState<walletTabType>('give');
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [enteredCoin, setEnteredCoin] = useState<string>('');
+  const [validationWarning, setValidationWarning] = useState<string>('');
+
+  const userId = 1;
+  const {
+    data: walletData,
+    isLoading,
+    isError,
+  } = useQuery('walletInfo', () => getUserWalletAddressAndCoin(userId));
 
   // TODO change type for listData
   let listData: any = dummyGiveList;
@@ -73,7 +95,11 @@ const WalletScreen = () => {
 
   const Header = () => (
     <View>
-      <Wallet />
+      <Wallet
+        setIsModalVisible={setIsModalVisible}
+        coin={walletData?.coin || 0}
+        address={walletData?.address || ''}
+      />
       <WalletCategory
         walletTabMode={walletTabMode}
         setWalletTabMode={setWalletTabMode}
@@ -123,8 +149,68 @@ const WalletScreen = () => {
     );
   };
 
+  const enterCoinInputHandler = (text: string) => {
+    const textLen = text.length;
+    const numText = Number(text.trim());
+    if (isNaN(numText)) {
+      setEnteredCoin('0');
+      setValidationWarning('충전할 금액을 숫자로 입력해 주세요.');
+      return;
+    }
+    if (textLen > 1 && text[0] === '0') {
+      setEnteredCoin(text.substring(1));
+      setValidationWarning('리라는 0부터 100 사이로만 충전이 가능해요!');
+      return;
+    }
+    if (textLen >= 3 && numText > 100) {
+      setEnteredCoin('100');
+      setValidationWarning('리라는 0부터 100 사이로만 충전이 가능해요!');
+      return;
+    }
+    setValidationWarning('');
+    setEnteredCoin(text.trim());
+  };
+
+  const coinInputCancleHandler = () => {
+    setEnteredCoin('');
+    setValidationWarning('');
+    setIsModalVisible(false);
+  };
+
+  const chargeCoinHandler = () => {};
+
   return (
     <View style={styles.container}>
+      {isLoading ? (
+        <LoadingSpinner
+          size="large"
+          color={Colors.purple300}
+          animating={isLoading}
+        />
+      ) : null}
+      <ModalWithButton
+        isModalVisible={isModalVisible}
+        setIsModalVisible={setIsModalVisible}
+        leftText="취소하기"
+        onLeftPress={() => coinInputCancleHandler()}
+        rightText="충전하기"
+        onRightPress={() => chargeCoinHandler()}>
+        <View style={styles.coinInputContainer}>
+          <TextInput
+            style={styles.coinInput}
+            value={enteredCoin}
+            keyboardType="numeric"
+            onChangeText={enterCoinInputHandler}
+            defaultValue="0"
+            maxLength={9}
+          />
+          {validationWarning ? (
+            <Text style={[styles.text, styles.validationWarning]}>
+              {validationWarning}
+            </Text>
+          ) : null}
+        </View>
+      </ModalWithButton>
       <FlatList
         data={listData}
         renderItem={renderItem}
@@ -159,6 +245,22 @@ const styles = StyleSheet.create({
     fontFamily: 'NanumSquareRoundR',
     fontSize: 18,
     color: Colors.gray300,
+  },
+  coinInputContainer: {
+    width: '90%',
+  },
+  coinInput: {
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.pink300,
+    color: 'white',
+    fontSize: 20,
+    textAlign: 'right',
+  },
+  validationWarning: {
+    marginTop: 8,
+    color: Colors.pink300,
+    fontSize: 12,
+    textAlign: 'right',
   },
 });
 

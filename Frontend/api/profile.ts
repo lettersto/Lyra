@@ -24,7 +24,7 @@ export const updateNickname = async (userId: number, nickname: string) => {
 };
 
 // wallet
-export const getUserWallet = async (userId: number) => {
+export const getUserWalletAddressAndCoin = async (userId: number) => {
   const response = await axios({
     url: '/wallet',
     method: 'GET',
@@ -33,7 +33,6 @@ export const getUserWallet = async (userId: number) => {
   return response.data;
 };
 
-// TODO prevent user to access this function when they already have wallet.
 export const createWallet = async (userId: number) => {
   const web3 = new Web3(new Web3.providers.HttpProvider(Config.WALLET_API_KEY));
   const {address, privateKey} = web3.eth.accounts.create();
@@ -59,7 +58,6 @@ export const chargeCoinToWallet = async (userId: number, coin: number) => {
   return response.data;
 };
 
-// NOTE Do we need delete Wallet?
 export const deleteWallet = async (userId: number) => {
   const response = await axios({
     url: '/wallet',
@@ -85,8 +83,8 @@ export const createRecordInChargeList = async (
 ) => {
   const response = await axios({
     url: `/wallet/${walletId}/charge`,
-    method: 'PATCH',
-    params: {ca: walletAddress, coin},
+    method: 'POST',
+    data: {ca: walletAddress, coin},
   });
   return response.data;
 };

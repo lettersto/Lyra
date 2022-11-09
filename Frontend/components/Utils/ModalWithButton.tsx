@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   modal: {
-    width: deviceWidth * 0.7,
+    width: deviceWidth * 0.8,
     borderRadius: 8,
     backgroundColor: Colors.black500,
   },
