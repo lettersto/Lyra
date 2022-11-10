@@ -12,11 +12,13 @@ const CircleProfile = ({
   grade,
   size,
   isGradient,
+  buskerImg,
 }: {
   // imageURI: string;
   grade?: gradeType;
   size: sizeType;
   isGradient: boolean;
+  buskerImg: string;
 }) => {
   const imageSizes = {
     extraSmall: 32,
@@ -39,10 +41,7 @@ const CircleProfile = ({
       <CircleGradient grade={grade!} size={size}>
         <Pressable>
           {/* TODO change to uri */}
-          <Image
-            style={[styles.image, imageStyle]}
-            source={require('../../assets/image/basicProfile.png')}
-          />
+          <Image style={[styles.image, imageStyle]} source={{uri: buskerImg}} />
         </Pressable>
       </CircleGradient>
     );
@@ -50,10 +49,7 @@ const CircleProfile = ({
 
   return (
     <Pressable>
-      <Image
-        style={[styles.image, imageStyle]}
-        source={require('../../assets/image/basicProfile.png')}
-      />
+      <Image style={[styles.image, imageStyle]} source={{uri: buskerImg}} />
     </Pressable>
   );
 };

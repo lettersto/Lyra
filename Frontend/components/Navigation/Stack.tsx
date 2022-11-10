@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 // Pheed
 import MainPheedScreen from '../../screens/Home/Pheed/MainPheedScreen';
@@ -24,6 +24,7 @@ import MainMapScreen from '../../screens/Map/MainMapScreen';
 import MapTitle from './TopNavBar/MapTitle';
 // Chat
 import MainChatScreen from '../../screens/Chat/MainChatScreen';
+import ChatListScreen from '../../screens/Chat/ChatListScreen';
 import UserChatTitle from './TopNavBar/UserChatTitle';
 // import BuskerChatButtons from './TopNavBar/BuskerChatButtons';
 // Onboarding
@@ -39,6 +40,9 @@ import FirstTownSearchScreen from '../../screens/Map/FirstTownSearchScreen';
 import TownSearchScreen from '../../screens/Map/TownSearchScreen';
 import LocationSearchScreen from '../../screens/Map/LocationSearchScreen';
 import {TownModal} from '../Utils/TownModal';
+import {io} from 'socket.io-client';
+import Config from 'react-native-config';
+import {ChatContext} from '../../store/chat-context';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -210,6 +214,14 @@ export const ChatStack = () => {
           fontSize: 20,
         },
       }}>
+      <Stack.Screen
+        name="ChatList"
+        component={ChatListScreen}
+        // options={{
+        //   title: '',
+        //   headerTitle: () => <UserChatTitle />,
+        // }}
+      />
       <Stack.Screen
         name="MainChat"
         component={MainChatScreen}

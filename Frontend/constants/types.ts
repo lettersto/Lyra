@@ -65,6 +65,7 @@ export enum MapStackScreens {
 }
 
 export enum ChatStackScreens {
+  ChatList = 'ChatList',
   MainChat = 'MainChat',
 }
 
@@ -110,7 +111,8 @@ export type MapStackScreenParams = {
 };
 
 export type ChatStackScreenParams = {
-  [ChatStackScreens.MainChat]: undefined;
+  [ChatStackScreens.ChatList]: undefined;
+  [ChatStackScreens.MainChat]: BuskerInfo;
 };
 
 export type ProfileStackScreenParams = {
@@ -217,7 +219,8 @@ export type RootStackParamList = {
   LocationSearch: undefined;
   FirstTownSearch: undefined;
   TownSearch: undefined;
-  MainChat: undefined;
+  ChatList: undefined;
+  MainChat: BuskerInfo;
   MainProfile: undefined;
   ProfileDetail: undefined;
   DetailPheed: PheedDetailParamList;
@@ -313,6 +316,12 @@ export interface IMessage {
   received?: boolean;
   pending?: boolean;
   donation?: number;
+}
+
+export interface BuskerInfo {
+  buskerId: number;
+  buskerNickname: string;
+  buskerImg: string;
 }
 // Profile
 export type EditProfileType =
