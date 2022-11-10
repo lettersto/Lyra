@@ -51,17 +51,6 @@ const ChatRoom = ({socket, buskerId}: Props) => {
     name: useContext(AuthContext).nickname!,
     avatar: useContext(AuthContext).imageURL!,
   });
-  console.log(myInfo);
-
-  // 더미 데이터(로그인 되기 전까지)
-  // const myInfo = useMemo(() => {
-  //   return {
-  //     _id: 1,
-  //     name: '윤주혜',
-  //     avatar:
-  //       'https://pbs.twimg.com/media/CZYvpQFUEAAWHsm?format=jpg&name=large',
-  //   };
-  // }, []);
 
   // 채팅 전송
   const onSend = (messages: IMessage[]) => {
@@ -109,7 +98,12 @@ const ChatRoom = ({socket, buskerId}: Props) => {
   // 채팅방에 들어오면 채팅 참여!
   useEffect(() => {
     participateChat();
-  }, [participateChat]);
+    return () => {
+      socket!.emit('user rooms');
+      socket.removeAllListeners('receive message');
+      socket.removeAllListeners('fetch user');
+    };
+  }, [participateChat, socket]);
 
   // 대화상자 커스텀
   const renderBubble = (props: any) => {
