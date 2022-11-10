@@ -6,6 +6,7 @@ import hermes.Lyra.domain.User;
 import hermes.Lyra.dto.*;
 import hermes.Lyra.dto.RequestDto.UserLocationRequestDto;
 import hermes.Lyra.dto.RequestDto.UserLoginRequestDto;
+import hermes.Lyra.dto.RequestDto.UserUpdateRequestDto;
 import hermes.Lyra.dto.ResponseDto.UserLocationResponseDto;
 import hermes.Lyra.dto.ResponseDto.UserLoginResponseDto;
 import io.swagger.annotations.ApiOperation;
@@ -82,14 +83,48 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "회원의 닉네임 정보를 수정한다.",notes = "userId에 해당하는 회원 정보를 수정한다.(닉네임)")
+//    @ApiOperation(value = "회원의 닉네임 정보를 수정한다.",notes = "userId에 해당하는 회원 정보를 수정한다.(닉네임)")
+//    @PatchMapping("/update/{userId}")
+//    public ResponseEntity<?> updateUserNick(@PathVariable("userId") Long userId, @RequestParam String nickname){
+//        Message message = new Message();
+//        HttpHeaders headers= new HttpHeaders();
+//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+//        try {
+//            int result = userService.updateUserNick(userId,nickname);
+//            if(result==1){
+//                message.setStatus(StatusEnum.OK);
+//                message.setMessage("회원정보 수정 성공");
+//                return new ResponseEntity<>(message, headers, HttpStatus.OK);
+//            }else{
+//                message.setStatus(StatusEnum.BAD_REQUEST);
+//                message.setMessage("회원정보 수정 실패");
+//                return new ResponseEntity<>(message, headers, HttpStatus.OK);
+//            }
+//
+//        } catch (IllegalArgumentException | IllegalStateException e){
+//            e.printStackTrace();
+//            message.setStatus(StatusEnum.BAD_REQUEST);
+//            message.setMessage("회원 정보가 없습니다.");
+//            return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+//            message.setMessage("서버 에러 발생");
+//            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
+    @ApiOperation(value = "회원 정보를 수정한다.",notes = "userId에 해당하는 회원 정보를 수정한다")
     @PatchMapping("/update/{userId}")
-    public ResponseEntity<?> updateUserNick(@PathVariable("userId") Long userId, @RequestParam String nickname){
+    public ResponseEntity<?> updateUser(
+            @PathVariable("userId") Long userId,
+            @RequestBody UserUpdateRequestDto userUpdateRequestDto
+            ){
         Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
         try {
-            int result = userService.updateUserNick(userId,nickname);
+            int result = userService.updateUser(userId,userUpdateRequestDto);
             if(result==1){
                 message.setStatus(StatusEnum.OK);
                 message.setMessage("회원정보 수정 성공");

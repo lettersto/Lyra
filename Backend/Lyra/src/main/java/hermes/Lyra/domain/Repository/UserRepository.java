@@ -1,6 +1,7 @@
 package hermes.Lyra.domain.Repository;
 
 import hermes.Lyra.domain.User;
+import hermes.Lyra.dto.RequestDto.UserUpdateRequestDto;
 import hermes.Lyra.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -73,17 +74,6 @@ public class UserRepository {
         return findUser;
     }
 
-
-    public int updateUserNickname(Long id, String nickname) {
-        User user = searchOne(id);
-        user.setNickname(nickname);
-        em.persist(user);
-
-        User finduser = searchOne(id);
-        if(finduser.getNickname()==nickname) return 1;
-        else return 0;
-    }
-
     public int deleteById(Long id){
         User user = searchOne(id);
         em.remove(user);
@@ -110,4 +100,31 @@ public class UserRepository {
         return userDto;
     }
 
+    public int updateUserNickname(Long id, String nickname) {
+        User user = searchOne(id);
+        user.setNickname(nickname);
+        em.persist(user);
+
+        User finduser = searchOne(id);
+        if(finduser.getNickname()==nickname) return 1;
+        else return 0;
+    }
+
+    public int updateUser(Long userId, UserUpdateRequestDto userUpdateRequestDto) {
+        User user = searchOne(userId);
+        if (userUpdateRequestDto.getAccount() != null) {
+            user.setAccount(userUpdateRequestDto.getAccount());
+        }
+        if (userUpdateRequestDto.getBank() != null) {
+            user.setBank(userUpdateRequestDto.getBank());
+        }
+        if (userUpdateRequestDto.getNickname() != null) {
+            user.setNickname(userUpdateRequestDto.getNickname());
+        }
+        if (userUpdateRequestDto.getIntroduction() != null) {
+            user.setIntroduction(userUpdateRequestDto.getIntroduction());
+        }
+        em.persist(user);
+        return 1;
+    }
 }
