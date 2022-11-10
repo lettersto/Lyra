@@ -11,7 +11,7 @@ import {
 } from '../../../constants/types';
 import Colors from '../../../constants/Colors';
 
-const WalletBody = () => {
+const WalletBody = ({coin}: {coin: number}) => {
   const gradientColors = [Colors.pink300, Colors.purple300];
   const navigation = useNavigation<ProfileStackNavigationProps>();
 
@@ -39,7 +39,7 @@ const WalletBody = () => {
               </View>
               <View style={styles.money}>
                 <Text style={styles.text}>잔액</Text>
-                <Text style={styles.text}>{`${20000} 코인`}</Text>
+                <Text style={styles.text}>{`${coin} 코인`}</Text>
               </View>
             </View>
           </Pressable>
