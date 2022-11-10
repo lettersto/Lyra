@@ -1,10 +1,23 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TextInput, FlatList} from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  FlatList,
+  Pressable,
+  ActivityIndicator,
+} from 'react-native';
 
 import {useInfiniteQuery} from 'react-query';
+// import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 
-import {fetchPheeds} from '../../../api/pheed';
+import {searchPheeds} from '../../../api/pheed';
+// import {
+//   PheedStackNavigationProps,
+//   PheedStackScreens,
+// } from '../../../constants/types';
 import useDebounce from '../../../hooks/useDebounce';
 import CircleProfile from '../../../components/Utils/CircleProfile';
 import Colors from '../../../constants/Colors';
@@ -26,7 +39,7 @@ interface searchPheedItemType {
 }
 
 const SearchPheedScreen = () => {
-  const dummyPageParam = 1;
+  // const navigation = useNavigation<PheedStackNavigationProps>();
   const gradientColors = [Colors.pink700, Colors.purple700];
   const [searchKeyword, setSearchKeyword] = useState('');
   const debouncedSearchKeyword = useDebounce(searchKeyword, 500);
@@ -36,21 +49,30 @@ const SearchPheedScreen = () => {
   };
 
   const renderItem = ({item}: {item: searchPheedItemType}) => {
+    let content = item.content;
+
+    if (content.length > 20) {
+      content = content.substring(0, 20) + '...';
+    }
+
+    const pressHandler = () => {
+      // navigation
+    };
+
     return (
-      <View key={item.pheedId} style={styles.itemContainer}>
+      <Pressable
+        key={item.pheedId}
+        style={styles.itemContainer}
+        onPress={pressHandler}>
         <CircleProfile size="small" isGradient={false} />
-        {/* {JSON.stringify(item)} */}
-        {/* {item.userId} */}
         <View style={styles.contentContainer}>
           <Text style={[styles.text, styles.title]}>{item.title}</Text>
-          <Text style={[styles.text, styles.content]}>{item.content}</Text>
+          <Text style={[styles.text, styles.content]}>{content}</Text>
           <Text style={[styles.text, styles.time]}>{item.time}</Text>
         </View>
-      </View>
+      </Pressable>
     );
   };
-
-  // TODO useInfiniteQuery
 
   const {
     fetchNextPage,
@@ -61,36 +83,43 @@ const SearchPheedScreen = () => {
     // error,
   } = useInfiniteQuery(
     ['/posts', debouncedSearchKeyword],
-    ({pageParam = 1}) =>
-      fetchPheeds(pageParam, {keyword: debouncedSearchKeyword}),
+    ({pageParam = 0}) =>
+      searchPheeds(pageParam, {keyword: debouncedSearchKeyword}),
     {
       getNextPageParam: (lastPage, allPages) => {
-        return lastPage.length ? allPages.length + 1 : undefined;
+        return lastPage.length ? allPages.length : undefined;
+        // return lastPage.length ? allPages.length + 1 : undefined;
       },
     },
   );
-  // request NextPage
-  // const requestNextPage = () => {
-  //   if (hasNextPage) {
-  //     fetchNextPage();
-  //   }
-  // };
 
-  let content = <Text style={styles.text}>Loading...</Text>;
+  const requestNextPage = () => {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
+  };
+
+  const loadingComponent = (
+    <View style={styles.spinnerContainer}>
+      <ActivityIndicator color={Colors.purple300} size="large" />
+    </View>
+  );
+
+  let content;
+
+  if (status === 'loading' && !isFetchingNextPage) {
+    content = loadingComponent;
+  }
 
   if (status !== 'loading') {
     content = (
       <FlatList
-        data={data?.pages.map(page => page).flat()}
+        data={data?.pages.flat()}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
-        // onEndReached={requestNextPage}
+        onEndReached={requestNextPage}
         onEndReachedThreshold={0.6}
-        ListFooterComponent={
-          isFetchingNextPage ? (
-            <Text style={styles.text}>Loading...</Text>
-          ) : null
-        }
+        ListFooterComponent={isFetchingNextPage ? loadingComponent : null}
       />
     );
   }
@@ -168,6 +197,12 @@ const styles = StyleSheet.create({
   time: {
     color: Colors.white300,
     fontSize: 14,
+  },
+  spinnerContainer: {
+    width: '100%',
+    paddingVertical: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
