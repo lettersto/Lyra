@@ -45,9 +45,7 @@ const ProfileBody = ({
           ) : null}
         </View>
       </View>
-      <View style={styles.moreContainer}>
-        <MoreInfo content={profileData?.introduction || ''} />
-      </View>
+      <MoreInfo content={profileData?.introduction || ''} />
     </View>
   );
 };
@@ -79,9 +77,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 16,
-  },
-  moreContainer: {
-    paddingBottom: 16,
   },
 });
 

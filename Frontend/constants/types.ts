@@ -326,6 +326,8 @@ export type FollowerType = 'follower' | 'follow';
 
 export type walletTabType = 'give' | 'receive' | 'charge';
 
+export type galleryTypes = 'myBusking' | 'favoriteBusking';
+
 export type UserProfileType = {
   account: string | null;
   bank: string | null;

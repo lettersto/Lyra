@@ -18,7 +18,10 @@ const ProfileButtons = () => {
   const {userId: myUserId} = useContext(AuthContext);
   const profileUserId = route.params?.param;
 
-  const isMyProfile = myUserId === profileUserId;
+  let isMyProfile = true;
+  if (profileUserId && profileUserId !== myUserId) {
+    isMyProfile = false;
+  }
 
   const detailPressHander = () => {
     navigation.navigate(ProfileStackScreens.ProfileDetail);
