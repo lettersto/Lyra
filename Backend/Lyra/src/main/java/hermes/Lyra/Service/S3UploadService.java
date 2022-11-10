@@ -7,7 +7,12 @@ import hermes.Lyra.domain.Pheed;
 import hermes.Lyra.domain.PheedImg;
 import hermes.Lyra.domain.Repository.PheedImgRepository;
 import hermes.Lyra.domain.Repository.PheedRepository;
+import hermes.Lyra.domain.Repository.ShortsRepository;
+import hermes.Lyra.domain.Repository.UserRepository2;
+import hermes.Lyra.domain.Shorts;
+import hermes.Lyra.domain.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +25,7 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class S3UploadService {
 
     private String bucket = "lyra-hermes";
@@ -29,6 +35,10 @@ public class S3UploadService {
     private final PheedImgRepository pheedImgRepository;
 
     private final PheedRepository pheedRepository;
+
+    private final ShortsRepository shortsRepository;
+
+    private final UserRepository2 userRepository2;
 
 
     public List upload(List<MultipartFile> images, Pheed newPheed) throws IOException {
@@ -100,6 +110,38 @@ public class S3UploadService {
         Optional<Pheed> p = pheedRepository.findById(pheedId);
 
         pheedImgRepository.deleteByPheed(p.get());
+
+    }
+
+    public void uploadShorts(Long userId, MultipartFile video) throws IOException {
+
+        String s3FileName = UUID.randomUUID() + "-" + video.getOriginalFilename();
+        byte[] bytes = new byte[0];
+        bytes = IOUtils.toByteArray(video.getInputStream());
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(bytes.length);
+        objectMetadata.setContentType(video.getContentType());
+
+        amazonS3.putObject(bucket, s3FileName, video.getInputStream(), objectMetadata);
+
+        URL path = amazonS3.getUrl(bucket, s3FileName);
+
+        Shorts shorts = new Shorts();
+
+        Optional<User> user = userRepository2.findById(userId);
+
+        shorts.setPath(path.toString());
+
+        shorts.setUser(user.get());
+
+        shortsRepository.save(shorts);
+
+    }
+
+    public void deleteShorts(Long shortsId) {
+
+        shortsRepository.deleteById(shortsId);
 
     }
 }

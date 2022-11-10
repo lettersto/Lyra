@@ -6,11 +6,11 @@ import hermes.Lyra.dto.WalletDto;
 
 public interface WalletService {
 
-    WalletDto createWallet(WalletDto walletDto);
+    boolean createWallet(WalletDto walletDto);
 
     Wallet getWalletByUserId(Long userId);
 
     void deleteWallet(Long userId);
 
-    void updateWallet(Wallet wallet, Long coin);
+//    void updateWallet(Wallet wallet, Long coin);
 }

@@ -32,21 +32,31 @@ public class WalletServiceImpl implements WalletService {
 
 
     @Override
-    public WalletDto createWallet(WalletDto walletDto) {
+    public boolean createWallet(WalletDto walletDto) {
 
-        ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        Wallet wallet = mapper.map(walletDto, Wallet.class);
 
-        wallet.setUser(userRepository2.findById(walletDto.getUserId()).get());
 
-        wallet.setCoin(0L);
+        try {
 
-        walletRepository.save(wallet);
+            ModelMapper mapper = new ModelMapper();
 
-        WalletDto returnValue = mapper.map(wallet, WalletDto.class);
+            mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-        return returnValue;
+            Wallet wallet = mapper.map(walletDto, Wallet.class);
+
+
+            wallet.setUser(userRepository2.findById(walletDto.getUserId()).get());
+
+//            wallet.setCoin(0L);
+
+            walletRepository.save(wallet);
+
+            return true;
+
+        } catch(Exception e) {
+            return false;
+        }
+
     }
 
     @Override
@@ -58,11 +68,11 @@ public class WalletServiceImpl implements WalletService {
         walletRepository.deleteByUserId(userId);
     }
 
-    @Override
-    public void updateWallet(Wallet wallet, Long coin) {
-        wallet.setCoin(coin);
-        walletRepository.save(wallet);
-    }
+//    @Override
+//    public void updateWallet(Wallet wallet, Long coin) {
+//        wallet.setCoin(coin);
+//        walletRepository.save(wallet);
+//    }
 
     @Override
     public Wallet getWalletByUserId(Long userId) {
