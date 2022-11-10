@@ -14,18 +14,28 @@ export const getUserProfile = async (userId: number) => {
   return response.data.data;
 };
 
-export const updateNickname = async ({
+export const updateUserInfo = async ({
   userId,
   nickname,
+  account,
+  bank,
+  introduction,
 }: {
   userId: number;
   nickname: string;
+  account: string | null;
+  bank: string | null;
+  introduction: string | null;
 }) => {
   const response = await axios({
     url: `/user/update/${userId}`,
     method: 'PATCH',
-    params: {
+    data: {
       nickname,
+      account,
+      bank,
+      introduction,
+      id: userId,
     },
   });
   return response.data.data;
