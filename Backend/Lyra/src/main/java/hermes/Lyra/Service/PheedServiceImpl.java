@@ -1,15 +1,13 @@
 package hermes.Lyra.Service;
 
+import hermes.Lyra.domain.*;
 import hermes.Lyra.domain.Repository.*;
 import hermes.Lyra.dto.PheedDto;
-import hermes.Lyra.domain.Category;
-import hermes.Lyra.domain.Pheed;
-import hermes.Lyra.domain.PheedTag;
-import hermes.Lyra.domain.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -47,9 +45,9 @@ public class PheedServiceImpl implements PheedService{
     }
 
     @Override
-    public Iterable<Pheed> getPheedByCategory(String category) {
+    public List<Pheed> getPheedByCategory(String category, Pageable pageable) {
         Category categoryByEnum = Category.valueOf(category);
-        return pheedRepository.findByCategory(categoryByEnum);
+        return pheedRepository.findByCategory(categoryByEnum, pageable);
     }
 
     @Override
@@ -58,8 +56,8 @@ public class PheedServiceImpl implements PheedService{
     }
 
     @Override
-    public Iterable<Pheed> getPheedBySearch(String keyword) {
-        return pheedRepository.findBySearch(keyword);
+    public List<Pheed> getPheedBySearch(String keyword, Pageable pageable) {
+        return pheedRepository.findBySearch(keyword, pageable);
     }
 
     @Override
@@ -103,14 +101,16 @@ public class PheedServiceImpl implements PheedService{
     }
 
     @Override
-    public Iterable<Pheed> getPheedByUserId(Long userId) {
-        return pheedRepository.findByUserId(userId);
+    public List<Pheed> getPheedByUser(String nickname, Pageable pageable) {
+        Optional<User> user = userRepository2.findByNickname(nickname);
+        Long userId = user.get().getId();
+        return pheedRepository.findByUserId(userId, pageable);
     }
 
     @Override
-    public List<Pheed> getPheedByTag(String tag) {
+    public List<Pheed> getPheedByTag(String tag, Pageable pageable) {
         Long ti = tagRepository.findByName(tag).getId();
-        Iterable<PheedTag> pt = pheedTagRepository.findByTagId(ti);
+        List<PheedTag> pt = pheedTagRepository.findByTagId(ti, pageable);
 
 //        log.info(String.valueOf(pt));
 
@@ -187,5 +187,9 @@ public class PheedServiceImpl implements PheedService{
         return pheedRepository.findById(pheedId);
     }
 
-
+    @Override
+    @Transactional
+    public Iterable<Pheed> getPheedByPage(Pageable pageable) {
+        return pheedRepository.findAll(pageable);
+    }
 }

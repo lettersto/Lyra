@@ -10,6 +10,9 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -70,6 +73,26 @@ public class PheedController {
 
         log.info("Before get pheeds data");
         Iterable<Pheed> pheedList = pheedService.getPheedByAll();
+
+        List<ResponsePheed> result = new ArrayList<>();
+
+        pheedList.forEach(v -> {
+            result.add(new ModelMapper().map(v, ResponsePheed.class));
+        });
+
+        log.info("After got pheeds data");
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @ApiOperation(value = "모든 피드 불러오기, 페이징0부터&최신순")
+    @GetMapping("")
+    public ResponseEntity<List<ResponsePheed>> getPheedsByPage(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
+
+        log.info("Before get pheeds data");
+//        Iterable<Pheed> pheedList = pheedService.getPheedByAll();
+
+        Iterable<Pheed> pheedList = pheedService.getPheedByPage(pageable);
 
         List<ResponsePheed> result = new ArrayList<>();
 
@@ -143,12 +166,12 @@ public class PheedController {
     }
 
 
-    @ApiOperation(value = "카테고리 별 피드")
+    @ApiOperation(value = "카테고리 별 피드, 페이징0부터&최신순")
     @GetMapping("category/{category}")
-    public ResponseEntity<List<ResponsePheed>> getPheedByCategory(@PathVariable String category) throws Exception {
+    public ResponseEntity<List<ResponsePheed>> getPheedByCategory(@PathVariable String category, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
 
         log.info("Before get pheed by category data");
-        Iterable<Pheed> pheedList = pheedService.getPheedByCategory(category);
+        List<Pheed> pheedList = pheedService.getPheedByCategory(category, pageable);
 
         List<ResponsePheed> result = new ArrayList<>();
 
@@ -162,13 +185,13 @@ public class PheedController {
     }
 
 
-    @ApiOperation(value = "키워드로 피드 검색")
+    @ApiOperation(value = "키워드로 피드 검색, 페이징0부터&최신순")
     @GetMapping("search")
-    public ResponseEntity<List<ResponsePheed>> getPheedBySearch(@RequestParam(value="keyword") String keyword) {
+    public ResponseEntity<List<ResponsePheed>> getPheedBySearch(@RequestParam(value="keyword") String keyword, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
         log.info("Before get pheed by search data");
 
-        Iterable<Pheed> pheedList = pheedService.getPheedBySearch(keyword);
+        List<Pheed> pheedList = pheedService.getPheedBySearch(keyword, pageable);
 
         List<ResponsePheed> result = new ArrayList<>();
 
@@ -182,15 +205,15 @@ public class PheedController {
     }
 
 
-    @ApiOperation(value = "태그로 피드 검색")
+    @ApiOperation(value = "태그로 피드 검색, 페이징0부터&최신순")
     @GetMapping("tag")
-    public ResponseEntity<?> getPheedbyTag(@RequestParam(value="tag") String tag) throws Exception {
+    public ResponseEntity<?> getPheedbyTag(@RequestParam(value="tag") String tag, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
 
         log.info("Before get pheed by tag data");
 
         try {
 
-            List<Pheed> pheedList = pheedService.getPheedByTag(tag);
+            List<Pheed> pheedList = pheedService.getPheedByTag(tag, pageable);
 
             List<ResponsePheed> result = new ArrayList<>();
 
@@ -215,12 +238,12 @@ public class PheedController {
     }
 
 
-    @ApiOperation(value = "유저로 피드 검색")
-    @GetMapping("")
-    public ResponseEntity<List<ResponsePheed>> getPheedbyUser(@RequestParam("user_id") Long userId) throws Exception {
+    @ApiOperation(value = "유저 닉네임으로 피드 검색, 페이징0부터&최신순")
+    @GetMapping("user")
+    public ResponseEntity<List<ResponsePheed>> getPheedbyUser(@RequestParam("nickname") String nickname, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
 
         log.info("Before get pheed by user data");
-        Iterable<Pheed> pheedList = pheedService.getPheedByUserId(userId);
+        List<Pheed> pheedList = pheedService.getPheedByUser(nickname, pageable);
 
         List<ResponsePheed> result = new ArrayList<>();
 
