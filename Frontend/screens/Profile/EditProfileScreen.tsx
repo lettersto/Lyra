@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useLayoutEffect, useState, useContext} from 'react';
 import {
   KeyboardTypeOptions,
   View,
@@ -12,6 +12,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 
 import {useMutation, useQueryClient} from 'react-query';
 
+import {AuthContext} from '../../store/auth-context';
 import {updateNickname} from '../../api/profile';
 import {ProfileStackRouteProps} from '../../constants/types';
 import Colors from '../../constants/Colors';
@@ -29,7 +30,7 @@ interface editProfileObj {
 }
 
 const EditProfileScreen = () => {
-  const userId = 1;
+  const {userId} = useContext(AuthContext);
   const route = useRoute<ProfileStackRouteProps>();
   const queryClient = useQueryClient();
   const navigation = useNavigation();
@@ -56,7 +57,7 @@ const EditProfileScreen = () => {
       modalText: '닉네임을 변경하시겠습니까?',
       pressHandler() {
         if (enteredValue) {
-          return nicknameMutate({userId, nickname: enteredValue});
+          return nicknameMutate({userId: userId!, nickname: enteredValue});
         }
       },
     },

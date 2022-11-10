@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   View,
   ImageBackground,
@@ -20,6 +20,7 @@ import {
   PheedStackNavigationProps,
   PheedStackScreens,
 } from '../../constants/types';
+import {AuthContext} from '../../store/auth-context';
 import {createWallet} from '../../api/profile';
 import ModalWithButton from '../../components/Utils/ModalWithButton';
 import Button from '../../components/Utils/Button';
@@ -30,8 +31,7 @@ const WalletCreationScreen = () => {
   const [walletCreated, setWalletCreated] = useState<boolean>(false);
   const [walletPrivateKey, setWalletPrivateKey] = useState<string>('');
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  // const {userId} = useContext(AuthContext);
-  const userId = 1;
+  const {userId} = useContext(AuthContext);
   const guidance = !walletCreated
     ? 'Lyra를 제대로 사용하기 위해서는\n지갑이 필요합니다.'
     : '지갑이 생성되었어요!';
