@@ -6,6 +6,7 @@ import hermes.Lyra.dto.SupportDto;
 import hermes.Lyra.vo.RequestSupport;
 import hermes.Lyra.vo.ResponseSupport;
 import hermes.Lyra.vo.ResponseSupport2;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -27,6 +28,7 @@ public class SupportController {
 
     SupportService supportService;
 
+    @ApiOperation(value = "후원 데이터 생성")
     @PostMapping("")
     public ResponseEntity<String> createSupport(@RequestParam("user_id") Long supporterId, @RequestBody RequestSupport support) {
 
@@ -46,6 +48,7 @@ public class SupportController {
     }
 
 
+    @ApiOperation(value = "내가 후원한 정보 불러오기")
     @GetMapping("give")
     public ResponseEntity<List<ResponseSupport>> getGive(@RequestParam("user_id") Long userId) throws Exception {
 
@@ -64,6 +67,7 @@ public class SupportController {
     }
 
 
+    @ApiOperation(value = "내가 받은 후원 정보 불러오기")
     @GetMapping("receive")
     public ResponseEntity<List<ResponseSupport2>> getReceive(@RequestParam("user_id") Long userId) throws Exception {
 

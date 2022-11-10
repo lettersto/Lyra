@@ -5,6 +5,7 @@ import hermes.Lyra.domain.Charge;
 import hermes.Lyra.dto.ChargeDto;
 import hermes.Lyra.vo.RequestCharge;
 import hermes.Lyra.vo.ResponseCharge;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -26,7 +27,7 @@ public class ChargeController {
         this.chargeService = chargeService;
     }
 
-    // 지갑 별 충전 현황
+    @ApiOperation(value = "지갑 별 충전 현황 역순")
     @GetMapping("{wallet_id}/charge")
     public ResponseEntity<List<ResponseCharge>> getCharges(@PathVariable("wallet_id") Long walletId) throws Exception {
         log.info("Before get charges data");
@@ -44,7 +45,7 @@ public class ChargeController {
 
     }
 
-    // 충전
+    @ApiOperation(value = "충전 데이터 생성")
     @PostMapping("{wallet_id}/charge")
     public ResponseEntity<String> createCharge(@PathVariable("wallet_id") Long walletId, @RequestBody RequestCharge charge) throws Exception {
 
