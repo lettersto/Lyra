@@ -52,11 +52,6 @@ const FirstTownSearchScreen = () => {
   };
 
   const pressHandler = async () => {
-    setLatitude(location.latitude);
-    setLongitude(location.longitude);
-    await EncryptedStorage.setItem('latitude', `${location.latitude}`);
-    await EncryptedStorage.setItem('longitude', `${location.longitude}`);
-    await EncryptedStorage.setItem('townName', `${townName}`);
     try {
       const response = await sendUserLocation({
         userId: userId,
@@ -69,6 +64,7 @@ const FirstTownSearchScreen = () => {
         setLongitude(location.longitude);
         await EncryptedStorage.setItem('latitude', `${location.latitude}`);
         await EncryptedStorage.setItem('longitude', `${location.longitude}`);
+        await EncryptedStorage.setItem('townName', `${townName}`);
         if (!walletAddress) {
           navigation.navigate(PheedStackScreens.WalletCreation);
         } else {

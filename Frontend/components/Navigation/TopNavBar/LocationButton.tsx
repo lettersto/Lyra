@@ -1,8 +1,8 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {Text, Pressable, StyleSheet, View} from 'react-native';
 import MIcon from 'react-native-vector-icons/MaterialIcons';
-
+import EncryptedStorage from 'react-native-encrypted-storage';
 import Colors from '../../../constants/Colors';
 import {AuthContext} from '../../../store/auth-context';
 
@@ -10,11 +10,19 @@ const LocationButton = () => {
   // TODO
   // 1. get Location from context API or something else. + setCurrentLocation
   // 2. onPress function to find location.
-  const {setLatitude, setLongitude, townName} = useContext(AuthContext);
+  const {townName, setTownName} = useContext(AuthContext);
   const navigation = useNavigation();
   const pressHandler = () => {
     navigation.navigate('TownModal');
   };
+
+  const getTownName = async () => {
+    setTownName(await EncryptedStorage.getItem('townName'));
+  };
+
+  useEffect(() => {
+    getTownName();
+  }, []);
 
   return (
     <>

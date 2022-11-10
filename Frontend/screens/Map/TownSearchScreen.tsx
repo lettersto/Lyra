@@ -55,6 +55,7 @@ const TownSearchScreen = ({navigation}: Props) => {
         await EncryptedStorage.setItem('latitude', `${location.latitude}`);
         await EncryptedStorage.setItem('longitude', `${location.longitude}`);
         await EncryptedStorage.setItem('townName', `${townName}`);
+
         navigation.goBack();
       } else {
         alert('다시 확인해주세요.');
