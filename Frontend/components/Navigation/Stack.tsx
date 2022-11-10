@@ -17,8 +17,9 @@ import MainProfileScreen from '../../screens/Profile/MainProfileScreen';
 import ProfileDetailScreen from '../../screens/Profile/ProfileDetailScreen';
 import EditProfileScreen from '../../screens/Profile/EditProfileScreen';
 import WalletScreen from '../../screens/Profile/WalletScreen';
-import ProfileTitle from './TopNavBar/ProfileTitle';
 import FollowerScreen from '../../screens/Profile/FollowerScreen';
+import ProfileButtons from './TopNavBar/ProfileButtons';
+
 // MAP
 import MainMapScreen from '../../screens/Map/MainMapScreen';
 import MapTitle from './TopNavBar/MapTitle';
@@ -217,7 +218,7 @@ export const ChatStack = () => {
           title: '',
           // TODO differentiate between user & busker
           // headerRight: () => <BuskerChatButtons />,
-          headerTitle: () => <UserChatTitle />,
+          headerRight: () => <UserChatTitle />,
         }}
       />
     </Stack.Navigator>
@@ -242,7 +243,10 @@ export const ProfileStack = () => {
         name="MainProfile"
         component={MainProfileScreen}
         options={{
-          headerTitle: () => <ProfileTitle />,
+          // headerTitle: () => <ProfileTitle />,
+          title: '',
+          headerTitleAlign: 'center',
+          headerRight: () => <ProfileButtons />,
         }}
       />
       <Stack.Screen

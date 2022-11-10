@@ -14,7 +14,13 @@ export const getUserProfile = async (userId: number) => {
   return response.data.data;
 };
 
-export const updateNickname = async (userId: number, nickname: string) => {
+export const updateNickname = async ({
+  userId,
+  nickname,
+}: {
+  userId: number;
+  nickname: string;
+}) => {
   const response = await axios({
     url: `/user/update/${userId}`,
     method: 'PATCH',
