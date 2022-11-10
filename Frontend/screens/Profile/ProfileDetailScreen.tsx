@@ -45,12 +45,12 @@ const ProfileDetailScreen = () => {
     setLongitude,
     setNickname,
     setUserId,
+    userId,
   } = useContext(AuthContext);
   const [ImageUri, setImageUri] = useState<string>();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [isWalletCreatedAgain, setIsWalletCreatedAgain] =
     useState<boolean>(false);
-  const userId = 1;
 
   const {
     data: profileData,

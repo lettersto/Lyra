@@ -1,4 +1,3 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useState, useContext} from 'react';
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import Config from 'react-native-config';
@@ -8,17 +7,27 @@ import LocationSearch from '../../components/Map/LocationSearch';
 import MapStyle from '../../components/Map/MapStyle';
 import Button from '../../components/Utils/Button';
 import Colors from '../../constants/Colors';
-import {RootStackParamList} from '../../constants/types';
 import {AuthContext} from '../../store/auth-context';
-
-type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
+import {useNavigation} from '@react-navigation/native';
+import {
+  PheedStackNavigationProps,
+  PheedStackScreens,
+} from '../../constants/types';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 const deviceWidth = Dimensions.get('window').width;
 
-const FirstTownSearchScreen = ({navigation}: Props) => {
-  const {setLatitude, setLongitude, nickname, townName, setTownName} =
-    useContext(AuthContext);
-  console.log('aanickname', nickname);
+const FirstTownSearchScreen = () => {
+  const navigation = useNavigation<PheedStackNavigationProps>();
+  const {
+    setLatitude,
+    setLongitude,
+    townName,
+    setTownName,
+    nickname,
+    walletAddress,
+  } = useContext(AuthContext);
+  console.log('nicknamelocaiton', nickname);
   const [location, setLocation] = useState<Region>({
     latitudeDelta: 0.005,
     longitudeDelta: 0.005,
@@ -40,10 +49,16 @@ const FirstTownSearchScreen = ({navigation}: Props) => {
     return setTownName(result.documents[0].region_3depth_name);
   };
 
-  const pressHandler = () => {
+  const pressHandler = async () => {
     setLatitude(location.latitude);
     setLongitude(location.longitude);
-    navigation.navigate('WalletCreation');
+    await EncryptedStorage.setItem('latitude', `${location.latitude}`);
+    await EncryptedStorage.setItem('longitude', `${location.longitude}`);
+    if (!walletAddress) {
+      navigation.navigate(PheedStackScreens.WalletCreation);
+    } else {
+      navigation.navigate(PheedStackScreens.MainPheed);
+    }
   };
 
   return (

@@ -12,7 +12,7 @@ import {useMutation, useQuery, useQueryClient} from 'react-query';
 
 import {
   getUserWalletAddressAndCoin,
-  chargeCoinToWallet,
+  // chargeCoinToWallet,
   createRecordInChargeList,
   chargeCoinToWeb3,
   getTotalBalanceFromWeb3,
@@ -72,19 +72,18 @@ const dummyReceiveList = [
 // supporter, busker
 const WalletScreen = () => {
   const queryClient = useQueryClient();
-  const {walletAddress, walletId} = useContext(AuthContext);
+  const {walletAddress, walletId, userId} = useContext(AuthContext);
   const [walletTabMode, setWalletTabMode] = useState<walletTabType>('give');
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [enteredCoin, setEnteredCoin] = useState<string>('');
   const [validationWarning, setValidationWarning] = useState<string>('');
-  const [totalBalance, setTotalBalance] = useState<number>(0);
+  // const [totalBalance, setTotalBalance] = useState<number>(0);
 
-  const userId = 1;
   const {
     data: walletData,
     isLoading: walletDataIsLoading,
     // isError,
-  } = useQuery('walletInfo', () => getUserWalletAddressAndCoin(userId));
+  } = useQuery('walletInfo', () => getUserWalletAddressAndCoin(userId!));
 
   const {
     data: chargeListData,
@@ -198,18 +197,18 @@ const WalletScreen = () => {
     },
   });
 
-  const {
-    mutate: chargeMutate,
-    isLoading: chargeIsLoading,
-    // isError: chrageIsError,
-  } = useMutation(chargeCoinToWallet, {
-    onSuccess: () =>
-      createRecordMutate({
-        walletId: walletId as number,
-        walletAddress: walletAddress as string,
-        coin: Number(enteredCoin),
-      }),
-  });
+  // const {
+  //   mutate: chargeMutate,
+  //   isLoading: chargeIsLoading,
+  //   // isError: chrageIsError,
+  // } = useMutation(chargeCoinToWallet, {
+  //   onSuccess: () =>
+  //     createRecordMutate({
+  //       walletId: walletId as number,
+  //       walletAddress: walletAddress as string,
+  //       coin: Number(enteredCoin),
+  //     }),
+  // });
 
   const {
     // data: balanceData, // string coin
@@ -219,9 +218,14 @@ const WalletScreen = () => {
     'walletBalance',
     () => getTotalBalanceFromWeb3(walletAddress as string),
     {
-      onSuccess: data => {
-        setTotalBalance(Number(data));
+      onSuccess: () => {
+        // setTotalBalance(Number(data));
         // chargeMutate({userId, coin: totalBalance});
+        createRecordMutate({
+          walletId: walletId as number,
+          walletAddress: walletAddress as string,
+          coin: Number(enteredCoin),
+        });
       },
     },
   );
@@ -235,7 +239,7 @@ const WalletScreen = () => {
     onSuccess: () => {
       balanceRefetch();
       // queryClient.invalidateQueries('walletBalance');
-      chargeMutate({userId, coin: totalBalance});
+      // chargeMutate({userId, coin: totalBalance});
     },
   });
 
@@ -250,7 +254,7 @@ const WalletScreen = () => {
   const isLoading =
     walletDataIsLoading ||
     createRecordIsLoading ||
-    chargeIsLoading ||
+    // chargeIsLoading ||
     webIsLoading ||
     balanceIsLoading ||
     chargeListIsLoading;

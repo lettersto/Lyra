@@ -16,15 +16,14 @@ import LoadingSpinner from '../../components/Utils/LoadingSpinner';
 import Colors from '../../constants/Colors';
 
 const MainProfileScreen = () => {
-  const userId = 1;
-  const {setWalletId, setWalletAddress} = useContext(AuthContext);
+  const {setWalletId, setWalletAddress, userId} = useContext(AuthContext);
   const navigation = useNavigation<ProfileStackNavigationProps>();
 
   const {
     data: profileData,
     isLoading: profileIsLoading,
     // isError,
-  } = useQuery('userProfile', () => getUserProfile(userId));
+  } = useQuery('userProfile', () => getUserProfile(userId!));
 
   const nickname = profileData?.nickname;
 
@@ -38,7 +37,7 @@ const MainProfileScreen = () => {
     data: walletData,
     isLoading: walletIsLoading,
     // isError,
-  } = useQuery('walletInfo', () => getUserWalletAddressAndCoin(userId), {
+  } = useQuery('walletInfo', () => getUserWalletAddressAndCoin(userId!), {
     onSuccess: data => {
       setWalletId(data.walletId);
       setWalletAddress(data.address);
