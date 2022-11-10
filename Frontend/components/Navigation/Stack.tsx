@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 // Pheed
 import MainPheedScreen from '../../screens/Home/Pheed/MainPheedScreen';
@@ -34,6 +34,7 @@ import WalletCreationScreen from '../../screens/Others/WalletCreationScreen';
 import LocationPermissionScreen from '../../screens/Others/LocationPermissionScreen';
 
 import {TabScreens} from './NavBar';
+import {AuthContext} from '../../store/auth-context';
 import {RootStackParamList} from '../../constants/types';
 import Colors from '../../constants/Colors';
 import FirstTownSearchScreen from '../../screens/Map/FirstTownSearchScreen';
@@ -47,6 +48,9 @@ import {ChatContext} from '../../store/chat-context';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const PheedStack = () => {
+  const {isLoggedIn, latitude, longitude, walletAddress} =
+    useContext(AuthContext);
+
   return (
     <Stack.Navigator
       initialRouteName={TabScreens.Home}
@@ -61,32 +65,40 @@ export const PheedStack = () => {
         },
       }}>
       <Stack.Group>
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="WalletCreation"
-          component={WalletCreationScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="LocationPermission"
-          component={LocationPermissionScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="FirstTownSearch"
-          component={FirstTownSearchScreen}
-          options={{headerShown: false}}
-        />
+        {!isLoggedIn ? (
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+        ) : null}
+        {!walletAddress ? (
+          <Stack.Screen
+            name="WalletCreation"
+            component={WalletCreationScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+        ) : null}
+        {!latitude && !longitude ? (
+          <>
+            <Stack.Screen
+              name="LocationPermission"
+              component={LocationPermissionScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="FirstTownSearch"
+              component={FirstTownSearchScreen}
+              options={{headerShown: false}}
+            />
+          </>
+        ) : null}
       </Stack.Group>
       <Stack.Group
         screenOptions={{
