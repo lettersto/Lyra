@@ -56,7 +56,7 @@ const ProfileDetailScreen = () => {
     data: profileData,
     isLoading: profileIsLoading,
     // isError,
-  } = useQuery('userProfile', () => getUserProfile(userId));
+  } = useQuery('userProfile', () => getUserProfile(userId!));
 
   const nicknamePressHandler = () => {
     navigation.navigate(ProfileStackScreens.EditProfile, {
@@ -125,8 +125,8 @@ const ProfileDetailScreen = () => {
   });
 
   const walletCreationAgainHandler = () => {
-    deleteWalletMutate(userId);
-    createWalletMutate(userId);
+    deleteWalletMutate(userId!);
+    createWalletMutate(userId!);
   };
 
   const closeWalletCreationAgainModal = () => {
@@ -228,19 +228,19 @@ const ProfileDetailScreen = () => {
           />
           <ProfileInfoItem
             title="소개"
-            content=""
+            content={profileData?.introduction || ''}
             placeHolder="소개를 작성해주세요."
             onLongPress={introductionPressHandler}
           />
           <ProfileInfoItem
             title="계좌"
-            content=""
+            content={profileData?.bank || ''}
             placeHolder="은행을 선택하세요."
             onLongPress={bankPressHandler}
           />
           <ProfileInfoItem
             title=""
-            content=""
+            content={profileData?.account || ''}
             placeHolder="계좌 번호를 입력하세요."
             onLongPress={accountPressHandler}
           />
@@ -258,7 +258,9 @@ const ProfileDetailScreen = () => {
               지갑 재발급 받기
             </Text>
           </Pressable>
-          <Pressable onPress={logoutHandler} style={styles.button}>
+          <Pressable
+            onPress={logoutHandler}
+            style={[styles.button, styles.lastButton]}>
             <Text style={[styles.text, styles.buttonText]}>로그아웃</Text>
           </Pressable>
         </View>
@@ -271,6 +273,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: Colors.black500,
+    marginBottom: '15%',
   },
   changePhoto: {
     marginBottom: 8,
@@ -326,6 +329,9 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: Colors.pink300,
+  },
+  lastButton: {
+    paddingBottom: 16,
   },
   spinner: {
     position: 'absolute',

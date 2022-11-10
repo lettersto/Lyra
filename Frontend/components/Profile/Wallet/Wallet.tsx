@@ -53,7 +53,7 @@ const Wallet = ({
           <View style={styles.walletBottom}>
             <View style={styles.coinContainer}>
               <Text style={[styles.text, styles.colorPink, styles.textMargin]}>
-                COIN
+                LYRA
               </Text>
               <Text style={styles.text}>{coin}</Text>
             </View>

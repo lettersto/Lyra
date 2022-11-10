@@ -12,7 +12,6 @@ import {useMutation, useQuery, useQueryClient} from 'react-query';
 
 import {
   getUserWalletAddressAndCoin,
-  // chargeCoinToWallet,
   createRecordInChargeList,
   chargeCoinToWeb3,
   getTotalBalanceFromWeb3,
@@ -77,7 +76,6 @@ const WalletScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [enteredCoin, setEnteredCoin] = useState<string>('');
   const [validationWarning, setValidationWarning] = useState<string>('');
-  // const [totalBalance, setTotalBalance] = useState<number>(0);
 
   const {
     data: walletData,
@@ -89,7 +87,12 @@ const WalletScreen = () => {
     data: chargeListData,
     isLoading: chargeListIsLoading,
     // isError,
-  } = useQuery('chargeList', () => getChargeList(walletId as number));
+  } = useQuery('chargeList', () => getChargeList(walletId!));
+
+  const {
+    data: balanceData, // string coin
+    isLoading: balanceIsLoading,
+  } = useQuery('walletBalance', () => getTotalBalanceFromWeb3(walletAddress!));
 
   // TODO change type for listData
   let listData: any = dummyGiveList;
@@ -105,7 +108,7 @@ const WalletScreen = () => {
     <View>
       <Wallet
         setIsModalVisible={setIsModalVisible}
-        coin={walletData?.coin || 0}
+        coin={Number(balanceData) || 0}
         address={walletData?.address || ''}
       />
       <WalletCategory
@@ -197,39 +200,6 @@ const WalletScreen = () => {
     },
   });
 
-  // const {
-  //   mutate: chargeMutate,
-  //   isLoading: chargeIsLoading,
-  //   // isError: chrageIsError,
-  // } = useMutation(chargeCoinToWallet, {
-  //   onSuccess: () =>
-  //     createRecordMutate({
-  //       walletId: walletId as number,
-  //       walletAddress: walletAddress as string,
-  //       coin: Number(enteredCoin),
-  //     }),
-  // });
-
-  const {
-    // data: balanceData, // string coin
-    isLoading: balanceIsLoading,
-    refetch: balanceRefetch,
-  } = useQuery(
-    'walletBalance',
-    () => getTotalBalanceFromWeb3(walletAddress as string),
-    {
-      onSuccess: () => {
-        // setTotalBalance(Number(data));
-        // chargeMutate({userId, coin: totalBalance});
-        createRecordMutate({
-          walletId: walletId as number,
-          walletAddress: walletAddress as string,
-          coin: Number(enteredCoin),
-        });
-      },
-    },
-  );
-
   const {
     mutate: webMutate,
     isLoading: webIsLoading,
@@ -237,13 +207,20 @@ const WalletScreen = () => {
     // isError: webIsError,
   } = useMutation(chargeCoinToWeb3, {
     onSuccess: () => {
-      balanceRefetch();
-      // queryClient.invalidateQueries('walletBalance');
-      // chargeMutate({userId, coin: totalBalance});
+      queryClient.invalidateQueries('walletBalance');
+      createRecordMutate({
+        walletId: walletId as number,
+        walletAddress: walletAddress as string,
+        coin: Number(enteredCoin),
+      });
     },
   });
 
   const chargeCoinHandler = () => {
+    if (enteredCoin === '' || enteredCoin === '0') {
+      setValidationWarning('0 Lyra 이상을 충전해주세요.');
+      return;
+    }
     webMutate({
       walletAddress: walletAddress as string,
       coin: Number(enteredCoin),

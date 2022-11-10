@@ -6,15 +6,14 @@ import {
   Pressable,
   Text,
   TextInput,
-  GestureResponderEvent,
 } from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
 import {useMutation, useQueryClient} from 'react-query';
 
 import {AuthContext} from '../../store/auth-context';
-import {updateNickname} from '../../api/profile';
-import {ProfileStackRouteProps} from '../../constants/types';
+import {updateUserInfo} from '../../api/profile';
+import {ProfileStackRouteProps, UserProfileType} from '../../constants/types';
 import Colors from '../../constants/Colors';
 import LoadingSpinner from '../../components/Utils/LoadingSpinner';
 import ModalWithButton from '../../components/Utils/ModalWithButton';
@@ -25,7 +24,7 @@ interface editProfileObj {
     placeholder: string;
     modalText: string;
     keyboardType: KeyboardTypeOptions;
-    pressHandler: (event: GestureResponderEvent) => void;
+    // pressHandler: (event: GestureResponderEvent) => void;
   };
 }
 
@@ -38,10 +37,10 @@ const EditProfileScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   const {
-    mutate: nicknameMutate,
-    isLoading: nicknameIsLoading,
+    mutate: userInfoMutate,
+    isLoading: userInfoIsLoading,
     // isError,
-  } = useMutation(updateNickname, {
+  } = useMutation(updateUserInfo, {
     onSuccess: () => {
       queryClient.invalidateQueries('userProfile');
       navigation.goBack();
@@ -55,51 +54,58 @@ const EditProfileScreen = () => {
       placeholder: '새 닉네임을 작성하세요.',
       keyboardType: 'default',
       modalText: '닉네임을 변경하시겠습니까?',
-      pressHandler() {
-        if (enteredValue) {
-          return nicknameMutate({userId: userId!, nickname: enteredValue});
-        }
-      },
     },
     introduction: {
       title: '소개 변경',
       placeholder: '새 소개글을 작성하세요.',
       keyboardType: 'default',
       modalText: '소개글을 변경하시겠습니까?',
-      pressHandler() {},
     },
     bank: {
       title: '은행 변경',
       placeholder: '은행 이름을 작성하세요.',
       keyboardType: 'default',
       modalText: '은행을 변경하시겠습니까?',
-      pressHandler() {},
     },
     account: {
       title: '계좌번호 변경',
       placeholder: '새 계좌번호를 작성하세요.',
       keyboardType: 'decimal-pad',
       modalText: '계좌 번호를 변경하시겠습니까?',
-      pressHandler() {},
     },
     holder: {
       title: '예금주 변경',
       placeholder: '새 예금주 이름을 작성하세요.',
       keyboardType: 'default',
       modalText: '예금주를 변경하시겠습니까?',
-      pressHandler() {},
     },
   };
 
-  const {title, placeholder, keyboardType, modalText, pressHandler} =
-    modeToScreenTitle[mode];
+  const {title, placeholder, keyboardType, modalText} = modeToScreenTitle[mode];
 
   const changeTextHandler = (text: string) => {
     if (text.trim()) {
-      setEnteredValue(text.trim());
+      setEnteredValue(text);
       return;
     }
     setEnteredValue('');
+  };
+
+  const pressHandler = () => {
+    if (enteredValue) {
+      const {bank, account, nickname, introduction} = queryClient.getQueryData(
+        'userProfile',
+      ) as UserProfileType;
+      const prevInfo = {
+        userId: userId!,
+        bank,
+        account,
+        nickname,
+        introduction,
+      };
+      const updatedInfo = {...prevInfo, [mode]: enteredValue.trim()};
+      return userInfoMutate(updatedInfo);
+    }
   };
 
   useLayoutEffect(() => {
@@ -108,7 +114,7 @@ const EditProfileScreen = () => {
     });
   }, [title, navigation]);
 
-  const isLoading = nicknameIsLoading;
+  const isLoading = userInfoIsLoading;
 
   return (
     <View style={styles.container}>
