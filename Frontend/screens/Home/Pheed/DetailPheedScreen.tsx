@@ -72,7 +72,7 @@ const DetailPheedScreen = ({route}: Props) => {
   const content = route.params?.content;
   // const like = route.params?.like;
   const isLive = route.params?.isLive;
-  // const imgUrl = route.params?.pheedImg;
+  const imgUrl = route.params?.pheedImg;
   const tags = route.params?.pheedTag;
   const [comments, SetComments] = useState<any[]>([]);
 
@@ -293,20 +293,17 @@ const DetailPheedScreen = ({route}: Props) => {
               </View>
               <View style={styles.contentContainer}>
                 <ScrollView horizontal>
-                  <View style={styles.imgContainer}>
-                    <Image
-                      source={require('../../../assets/image/basicProfile.png')}
-                      style={styles.image}
-                    />
-                    <Image
-                      source={require('../../../assets/image/basicProfile.png')}
-                      style={styles.image}
-                    />
-                    <Image
-                      source={require('../../../assets/image/basicProfile.png')}
-                      style={styles.image}
-                    />
-                  </View>
+                  {imgUrl &&
+                    imgUrl.map(imgs => {
+                      return (
+                        <Image
+                          style={{width: 100, height: 100}}
+                          source={{uri: imgs.path}}
+                          // style={styles.text}
+                          key={imgs.id}
+                        />
+                      );
+                    })}
                 </ScrollView>
               </View>
               <View style={styles.titleContainer}>

@@ -6,6 +6,7 @@ import {
   Dimensions,
   ScrollView,
   Pressable,
+  Image,
 } from 'react-native';
 import Colors from '../../constants/Colors';
 import LinearGradient from 'react-native-linear-gradient';
@@ -28,7 +29,6 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
   // const goChat = () => {
   //   navigation.navigate('Chat');
   // };
-
   const [isLike, setIsLike] = useState(false);
   const activeLike = () => {
     if (isLike === true) {
@@ -97,12 +97,11 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
     return num.toString().padStart(2, '0');
   }
 
-  console.log(data);
-
   return (
     // <Text>{data.map()}</Text>
     <ScrollView style={styles.pheedCotainer}>
       {contents.map((content, i) => {
+        // setImgList(content.pheedImg);
         const milliseconds = content.startTime;
         const date = new Date(milliseconds);
         const datetime =
@@ -189,11 +188,20 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
                 <Pressable
                   onPress={() => navigation.navigate('DetailPheed', content)}>
                   <View style={styles.contentContainer}>
-                    {/* {content.imgUrl.length !== 0 ? (
-                      <Text style={styles.text}>{content.imgUrl}</Text>
+                    {content.pheedImg.length !== 0 ? (
+                      content.pheedImg.map(imgs => {
+                        return (
+                          <Image
+                            style={{width: 100, height: 100}}
+                            source={{uri: imgs.path}}
+                            // style={styles.text}
+                            key={imgs.id}
+                          />
+                        );
+                      })
                     ) : (
                       <></>
-                    )} */}
+                    )}
                     <Text style={styles.boldtext}>{content.title}</Text>
                     <MoreInfo content={content.content} />
                   </View>

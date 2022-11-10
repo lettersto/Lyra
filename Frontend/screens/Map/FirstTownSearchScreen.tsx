@@ -14,6 +14,7 @@ import {
   PheedStackScreens,
 } from '../../constants/types';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {sendUserLocation} from '../../api/profile';
 
 const deviceWidth = Dimensions.get('window').width;
 
@@ -24,6 +25,7 @@ const FirstTownSearchScreen = () => {
     setLongitude,
     townName,
     setTownName,
+    userId,
     nickname,
     walletAddress,
   } = useContext(AuthContext);
@@ -50,14 +52,29 @@ const FirstTownSearchScreen = () => {
   };
 
   const pressHandler = async () => {
-    setLatitude(location.latitude);
-    setLongitude(location.longitude);
-    await EncryptedStorage.setItem('latitude', `${location.latitude}`);
-    await EncryptedStorage.setItem('longitude', `${location.longitude}`);
-    if (!walletAddress) {
-      navigation.navigate(PheedStackScreens.WalletCreation);
-    } else {
-      navigation.navigate(PheedStackScreens.MainPheed);
+    try {
+      const response = await sendUserLocation({
+        userId: userId,
+        latitude: location.latitude,
+        longitude: location.longitude,
+      });
+      console.log(response);
+      if (response.status === 'OK') {
+        setLatitude(location.latitude);
+        setLongitude(location.longitude);
+        await EncryptedStorage.setItem('latitude', `${location.latitude}`);
+        await EncryptedStorage.setItem('longitude', `${location.longitude}`);
+        await EncryptedStorage.setItem('townName', `${townName}`);
+        if (!walletAddress) {
+          navigation.navigate(PheedStackScreens.WalletCreation);
+        } else {
+          navigation.navigate(PheedStackScreens.MainPheed);
+        }
+      } else {
+        alert('다시 확인해주세요.');
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 

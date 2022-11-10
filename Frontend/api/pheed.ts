@@ -16,7 +16,7 @@ export const getPheedbyUser = async (user_id: string) => {
   const response = await axios({
     url: '/pheed',
     method: 'GET',
-    params: user_id,
+    params: {user_id},
   });
   return response.data;
 };

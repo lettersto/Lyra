@@ -6,6 +6,7 @@ import React, {
   Dispatch,
   SetStateAction,
 } from 'react';
+
 export interface authContextType {
   userId: null | number;
   nickname: null | string;

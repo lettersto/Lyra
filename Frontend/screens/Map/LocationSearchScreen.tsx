@@ -61,29 +61,31 @@ const LocationSearchScreen = ({navigation}: Props) => {
               </Marker>
             </MapView>
           )}
-          <View style={{height: '30%', bottom: 0}}>
-            <Text style={styles.name}>{name}</Text>
-            {/* <Input
-              setEnteredValue={setLocationAddInfo}
-              enteredValue={locationAddInfo}
-              width={0.77}
-              height={0.06}
-              borderRadius={25}
-              keyboard={1}
-              placeholder="구체적인 장소를 입력해주세요."
-              customStyle={styles.input}
-              maxLength={30}
-            /> */}
-            <Button
-              title="해당 위치로 설정"
-              btnSize="large"
-              textSize="medium"
-              isGradient={false}
-              isOutlined={false}
-              onPress={pressHandler}
-              customStyle={styles.button}
-            />
-          </View>
+          {location.latitude != 0 ? (
+            <View style={{height: '35%', bottom: 0}}>
+              <Text style={styles.name}>{name}</Text>
+              <Input
+                setEnteredValue={setLocationAddInfo}
+                enteredValue={locationAddInfo}
+                width={0.8}
+                height={0.05}
+                borderRadius={25}
+                keyboard={1}
+                placeholder="구체적인 장소를 입력해주세요."
+                customStyle={styles.input}
+                maxLength={30}
+              />
+              <Button
+                title="해당 위치로 설정"
+                btnSize="large"
+                textSize="medium"
+                isGradient={false}
+                isOutlined={false}
+                onPress={pressHandler}
+                customStyle={styles.button}
+              />
+            </View>
+          ) : null}
         </View>
       </View>
     </>
@@ -123,9 +125,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
     fontSize: 16,
-    marginTop: 20,
+    margin: 20,
   },
   input: {
-    marginBottom: 20,
+    marginBottom: 2,
   },
 });

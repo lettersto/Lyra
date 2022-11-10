@@ -159,3 +159,24 @@ export const createRecordInChargeList = async ({
   });
   return response.data;
 };
+
+export const sendUserLocation = async ({
+  userId,
+  latitude,
+  longitude,
+}: {
+  userId: number | null;
+  latitude: number;
+  longitude: number;
+}) => {
+  const response = await axios({
+    url: `/user/location/${userId}`,
+    method: 'PATCH',
+    params: {userId},
+    data: {
+      latitude: latitude,
+      longitude: longitude,
+    },
+  });
+  return response.data;
+};
