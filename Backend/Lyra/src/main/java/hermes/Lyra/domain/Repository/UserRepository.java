@@ -96,11 +96,16 @@ public class UserRepository {
         User user = searchOne(id);
 
         UserDto userDto = UserDto.builder()
-//                .id(id)
+                .id(user.getId())
                 .email(user.getEmail())
-//                .name(user.getName())
+                .account(user.getAccount())
+                .bank(user.getBank())
                 .nickname(user.getNickname())
-//                .profilePath(user.getProfilePath())
+                .image_url(user.getImage_url())
+                .introduction(user.getIntroduction())
+                .latitude(user.getLatitude())
+                .longitude(user.getLongitude())
+                .refresh_token(user.getRefreshToken())
                 .build();
         return userDto;
     }
