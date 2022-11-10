@@ -11,6 +11,7 @@ interface Props {
 }
 
 const BuskerName = ({buskerId, buskerNickname, buskerImg}: Props) => {
+  console.log(buskerImg);
   return (
     <Pressable>
       <View style={styles.container}>
@@ -18,7 +19,7 @@ const BuskerName = ({buskerId, buskerNickname, buskerImg}: Props) => {
           size="extraSmall"
           grade="normal"
           isGradient={true}
-          buskerImg={buskerImg}
+          img={buskerImg}
         />
         <Text style={styles.title}>{buskerNickname}</Text>
       </View>

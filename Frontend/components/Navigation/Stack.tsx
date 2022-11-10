@@ -41,9 +41,6 @@ import FirstTownSearchScreen from '../../screens/Map/FirstTownSearchScreen';
 import TownSearchScreen from '../../screens/Map/TownSearchScreen';
 import LocationSearchScreen from '../../screens/Map/LocationSearchScreen';
 import {TownModal} from '../Utils/TownModal';
-import {io} from 'socket.io-client';
-import Config from 'react-native-config';
-import {ChatContext} from '../../store/chat-context';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

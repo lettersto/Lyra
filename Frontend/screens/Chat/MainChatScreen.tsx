@@ -9,6 +9,7 @@ const MainChatScreen = () => {
   const {socket} = useContext(ChatContext);
   const route = useRoute<ChatStackRouteProps>();
   const buskerId = route.params?.buskerId!;
+
   return (
     <>
       {socket && <ChatRoom socket={socket} buskerId={buskerId} />}
