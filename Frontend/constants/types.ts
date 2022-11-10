@@ -114,7 +114,7 @@ export type ChatStackScreenParams = {
 };
 
 export type ProfileStackScreenParams = {
-  [ProfileStackScreens.MainProfile]: undefined;
+  [ProfileStackScreens.MainProfile]: {param: number};
   [ProfileStackScreens.ProfileDetail]: undefined;
   [ProfileStackScreens.EditProfile]: {param: EditProfileType} | undefined;
 

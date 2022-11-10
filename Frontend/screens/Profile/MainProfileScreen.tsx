@@ -1,10 +1,13 @@
 import React, {useContext, useEffect} from 'react';
 import {StyleSheet, ScrollView} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
 import {useQuery} from 'react-query';
 
-import {ProfileStackNavigationProps} from '../../constants/types';
+import {
+  ProfileStackNavigationProps,
+  ProfileStackRouteProps,
+} from '../../constants/types';
 import {AuthContext} from '../../store/auth-context';
 import {
   getUserWalletAddressAndCoin,
@@ -20,15 +23,33 @@ import LoadingSpinner from '../../components/Utils/LoadingSpinner';
 import Colors from '../../constants/Colors';
 
 const MainProfileScreen = () => {
-  const {setWalletId, setWalletAddress, userId, walletAddress} =
-    useContext(AuthContext);
+  const route = useRoute<ProfileStackRouteProps>();
+  const {
+    setWalletId,
+    setWalletAddress,
+    userId: MyUserId,
+    walletAddress,
+  } = useContext(AuthContext);
   const navigation = useNavigation<ProfileStackNavigationProps>();
+
+  const profileUserId = route.params?.param;
+  const userId = profileUserId || MyUserId;
 
   const {
     data: profileData,
     isLoading: profileIsLoading,
     // isError,
-  } = useQuery('userProfile', () => getUserProfile(userId!));
+  } = useQuery(
+    ['userProfile', userId],
+    () => getUserProfile(userId as number),
+    {
+      onSuccess: () => {
+        if (userId) {
+          balanceRefetch();
+        }
+      },
+    },
+  );
 
   const nickname = profileData?.nickname;
 
@@ -50,15 +71,20 @@ const MainProfileScreen = () => {
     // data: walletData,
     isLoading: walletIsLoading,
     // isError,
-  } = useQuery('walletInfo', () => getUserWalletAddressAndCoin(userId!), {
-    onSuccess: data => {
-      setWalletId(data.walletId);
-      setWalletAddress(data.address);
-      balanceRefetch();
+  } = useQuery(
+    'walletInfo',
+    () => getUserWalletAddressAndCoin(userId as number),
+    {
+      onSuccess: data => {
+        setWalletId(data.walletId);
+        setWalletAddress(data.address);
+        balanceRefetch();
+      },
     },
-  });
+  );
 
   const isLoading = walletIsLoading || profileIsLoading || balanceIsLoading;
+  const isMyProfile = profileUserId === MyUserId;
 
   return (
     <>
@@ -70,9 +96,9 @@ const MainProfileScreen = () => {
         />
       ) : null}
       <ScrollView style={styles.container}>
-        <ProfileBody profileData={profileData} />
+        <ProfileBody profileData={profileData} isMyProfile={isMyProfile} />
         <GradientLine />
-        <WalletBody coin={Number(balanceData) || 0} />
+        {isMyProfile ? <WalletBody coin={Number(balanceData) || 0} /> : null}
         <GradientLine />
         <Gallery />
         <GradientLine />
