@@ -5,6 +5,7 @@ import hermes.Lyra.domain.Repository.UserRepository;
 import hermes.Lyra.domain.Repository.UserRepository2;
 import hermes.Lyra.domain.User;
 import hermes.Lyra.dto.RequestDto.UserLocationRequestDto;
+import hermes.Lyra.dto.RequestDto.UserUpdateRequestDto;
 import hermes.Lyra.dto.ResponseDto.UserLocationResponseDto;
 import hermes.Lyra.dto.UserDto;
 import hermes.Lyra.dto.RequestDto.UserLoginRequestDto;
@@ -51,19 +52,6 @@ public class UserService {
     @Transactional
     public int deleteUser(Long userId) {
         return userRepository.deleteById(userId);
-    }
-    @Transactional
-    public int updateUserNick(Long userId, String nickname){
-        return userRepository.updateUserNickname(userId, nickname);
-    }
-
-    @Transactional
-    public User checkEmail(String email) {
-        boolean userEmailDuplicate = userRepository.existsByEmail(email);
-        if(!userEmailDuplicate) throw new IllegalStateException("해당 이메일에 존재하는 회원이 없습니다.");
-
-        User user = userRepository.findByEmail(email);
-        return user;
     }
 
     @Transactional
@@ -138,35 +126,55 @@ public class UserService {
     }
 
     @Transactional
-    public UserLoginResponseDto getUser(String accessToken) throws Exception {
-        String email = jwtTokenProvider.getUserPk(accessToken);
-        User user = userRepository.findByEmail(email);
-        if(user == null) throw new SomethingNotFoundException("user(email:"+email+")");
-        // 리프레쉬 토큰 발급
-        UserLoginResponseDto userDto = UserLoginResponseDto.builder()
-                .email(email)
-                .accessToken(accessToken)
-                .refreshToken(user.getRefreshToken())
-                .id(user.getId()).nickname(user.getNickname())
-                .build();
-
-        return userDto;
+    public int updateUser(Long userId, UserUpdateRequestDto userUpdateRequestDto) {
+        return userRepository.updateUser(userId, userUpdateRequestDto);
     }
 
-    public UserLoginResponseDto userGet(Long userId) throws Exception {
-        User user = userRepository.findOne(userId);
+//    @Transactional
+//    public User checkEmail(String email) {
+//        boolean userEmailDuplicate = userRepository.existsByEmail(email);
+//        if(!userEmailDuplicate) throw new IllegalStateException("해당 이메일에 존재하는 회원이 없습니다.");
+//
+//        User user = userRepository.findByEmail(email);
+//        return user;
+//    }
 
-        UserLoginResponseDto userLoginResponseDto = UserLoginResponseDto.builder()
-                .email(user.getEmail())
-                .id(user.getId()).nickname(user.getNickname())
-                .build();
+//    @Transactional
+//    public void checkEmailDuplicate(String email) {
+//        boolean userEmailDuplicate = userRepository.existsByEmail(email);
+//        if(userEmailDuplicate) throw new IllegalStateException("이미 존재하는 회원입니다.");
+//    }
 
-        return userLoginResponseDto;
-    }
+//    @Transactional
+//    public int updateUserNick(Long userId, String nickname){
+//        return userRepository.updateUserNickname(userId, nickname);
+//    }
+//
+//    @Transactional
+//    public UserLoginResponseDto getUser(String accessToken) throws Exception {
+//        String email = jwtTokenProvider.getUserPk(accessToken);
+//        User user = userRepository.findByEmail(email);
+//        if(user == null) throw new SomethingNotFoundException("user(email:"+email+")");
+//        // 리프레쉬 토큰 발급
+//        UserLoginResponseDto userDto = UserLoginResponseDto.builder()
+//                .email(email)
+//                .accessToken(accessToken)
+//                .refreshToken(user.getRefreshToken())
+//                .id(user.getId()).nickname(user.getNickname())
+//                .build();
+//
+//        return userDto;
+//    }
+//
+//    public UserLoginResponseDto userGet(Long userId) throws Exception {
+//        User user = userRepository.findOne(userId);
+//
+//        UserLoginResponseDto userLoginResponseDto = UserLoginResponseDto.builder()
+//                .email(user.getEmail())
+//                .id(user.getId()).nickname(user.getNickname())
+//                .build();
+//
+//        return userLoginResponseDto;
+//    }
 
-    @Transactional
-    public void checkEmailDuplicate(String email) {
-        boolean userEmailDuplicate = userRepository.existsByEmail(email);
-        if(userEmailDuplicate) throw new IllegalStateException("이미 존재하는 회원입니다.");
-    }
 }
