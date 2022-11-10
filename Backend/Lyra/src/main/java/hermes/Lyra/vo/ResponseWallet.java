@@ -11,5 +11,5 @@ public class ResponseWallet {
 
     private String address;
 
-    private Long coin;
+//    private Long coin;
 }
