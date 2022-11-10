@@ -10,17 +10,25 @@ import java.util.Optional;
 
 public interface PheedService {
 
-    Iterable<Pheed> getPheedByCategory(String category);
+//    Iterable<Pheed> getPheedByCategory(String category);
+
+    List<Pheed> getPheedByCategory(String category, Pageable pageable);
 
     Iterable<Pheed> getPheedByAll();
 
-    Iterable<Pheed> getPheedBySearch(String keyword);
+//    Iterable<Pheed> getPheedBySearch(String keyword);
+
+    List<Pheed> getPheedBySearch(String keyword, Pageable pageable);
 
     Pheed createPheed(PheedDto pheedDto, List<String> pheedTagList);
 
-    Iterable<Pheed> getPheedByUserId(Long userId);
+//    Iterable<Pheed> getPheedByUserId(Long userId);
 
-    List<Pheed> getPheedByTag(String tag);
+//    List<Pheed> getPheedByUserId(Long userId, Pageable pageable);
+
+//    List<Pheed> getPheedByTag(String tag);
+
+    List<Pheed> getPheedByTag(String tag, Pageable pageable);
 
     Pheed updatePheed(Long pheedId, PheedDto pheedDto, List<String> pheedTagList);
 
@@ -30,4 +38,6 @@ public interface PheedService {
 
 
     Iterable<Pheed> getPheedByPage(Pageable pageable);
+
+    List<Pheed> getPheedByUser(String nickname, Pageable pageable);
 }
