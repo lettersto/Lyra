@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useContext} from 'react';
+import React, {useLayoutEffect, useContext, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Dimensions,
 } from 'react-native';
 
+import {useQuery} from 'react-query';
 import {useNavigation} from '@react-navigation/native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
@@ -16,6 +17,7 @@ import {
   getKakaoProfile,
   sendUserKakaoInfoToServer,
 } from '../../api/auth';
+import {getUserWalletAddressAndCoin} from '../../api/profile';
 import {AuthContext} from '../../store/auth-context';
 import {
   PheedStackNavigationProps,
@@ -26,15 +28,57 @@ import StarEffect from '../../components/Utils/StarEffect';
 
 const LoginScreen = () => {
   const navigation = useNavigation<PheedStackNavigationProps>();
+  const [loginUserId, setLoginUserId] = useState<number | null>(null);
+
+  const {
+    setImageURL,
+    setNickname,
+    setUserId,
+    setIsLoggedIn,
+    setAccessToken,
+    setRefreshToken,
+    isLoggedIn,
+    latitude,
+    longitude,
+    walletAddress,
+    setWalletId,
+    setWalletAddress,
+  } = useContext(AuthContext);
+
+  const {
+    refetch: walletRefetch,
+    // data: walletData,
+    // isLoading: walletIsLoading,
+    // isError,
+  } = useQuery('userProfile', () => getUserWalletAddressAndCoin(loginUserId!), {
+    enabled: false,
+    onSuccess: async data => {
+      setWalletId(data.walletId);
+      setWalletAddress(data.address);
+      await EncryptedStorage.setItem('walletAddress', data.address);
+    },
+    onError: async () => {
+      setWalletId(null);
+      setWalletAddress(null);
+      await EncryptedStorage.removeItem('walletAddress');
+    },
+  });
 
   useLayoutEffect(() => {
     navigation.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
   }, [navigation]);
 
-  const LoginButton = ({title, type}: {title: string; type: string}) => {
-    const {setImageURL, setNickname, setUserId, setIsLoggedIn} =
-      useContext(AuthContext);
+  useEffect(() => {
+    if (isLoggedIn && latitude && longitude && walletAddress) {
+      navigation.navigate(PheedStackScreens.MainPheed);
+    } else if (isLoggedIn && !latitude && !longitude) {
+      navigation.navigate(PheedStackScreens.LocationPermission);
+    } else if (isLoggedIn && latitude && longitude && !walletAddress) {
+      navigation.navigate(PheedStackScreens.WalletCreation);
+    }
+  }, [isLoggedIn, latitude, longitude, navigation, walletAddress]);
 
+  const LoginButton = ({title, type}: {title: string; type: string}) => {
     const onKakaoLoginPress = async () => {
       try {
         await signInWithKakao();
@@ -63,12 +107,21 @@ const LoginScreen = () => {
         });
 
         setUserId(userId);
+        setLoginUserId(userId);
         setIsLoggedIn(true);
+        setAccessToken(accessToken);
+        setRefreshToken(refreshToken);
         await EncryptedStorage.setItem('userId', `${userId}`);
         await EncryptedStorage.setItem('accessToken', accessToken);
         await EncryptedStorage.setItem('refreshToken', refreshToken);
-
-        navigation.navigate(PheedStackScreens.LocationPermission);
+        walletRefetch();
+        if (!latitude && !longitude) {
+          navigation.navigate(PheedStackScreens.LocationPermission);
+        } else if (!walletAddress) {
+          navigation.navigate(PheedStackScreens.WalletCreation);
+        } else {
+          navigation.navigate(PheedStackScreens.MainPheed);
+        }
       } catch (err) {
         if (__DEV__) {
           console.error('Login Error!', err);
@@ -77,6 +130,8 @@ const LoginScreen = () => {
         setImageURL(null);
         setNickname(null);
         setIsLoggedIn(false);
+        setAccessToken(null);
+        setRefreshToken(null);
       }
     };
 
@@ -102,12 +157,18 @@ const LoginScreen = () => {
         style={styles.background}>
         <StarEffect />
         <View style={styles.content}>
-          <View />
+          {!isLoggedIn ? <View /> : null}
           <Text style={styles.titleText}>Lyra</Text>
-          <View>
+          {!isLoggedIn ? (
+            <View>
+              <LoginButton title={'Google로 시작하기'} type="Google" />
+              <LoginButton title={'Kakao로 시작하기'} type="Kakao" />
+            </View>
+          ) : null}
+          {/* <View>
             <LoginButton title={'Google로 시작하기'} type="Google" />
             <LoginButton title={'Kakao로 시작하기'} type="Kakao" />
-          </View>
+          </View> */}
         </View>
       </ImageBackground>
     </View>

@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {useNavigation, CompositeNavigationProp} from '@react-navigation/native';
 
-import {useMutation, useQueryClient} from 'react-query';
+import {useMutation, useQuery, useQueryClient} from 'react-query';
 import ImagePicker, {ImageOrVideo} from 'react-native-image-crop-picker';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import IIcon from 'react-native-vector-icons/Ionicons';
@@ -25,7 +25,7 @@ import {
 } from '../../constants/types';
 import {AuthContext} from '../../store/auth-context';
 import {logoutFromServer, signOutWithKakao} from '../../api/auth';
-import {deleteWallet, createWallet} from '../../api/profile';
+import {getUserProfile, deleteWallet, createWallet} from '../../api/profile';
 import CircleProfile from '../../components/Utils/CircleProfile';
 import ProfileInfoItem from '../../components/Profile/EditProfile/ProfileInfoItem';
 import ModalWithButton from '../../components/Utils/ModalWithButton';
@@ -45,12 +45,18 @@ const ProfileDetailScreen = () => {
     setLongitude,
     setNickname,
     setUserId,
+    userId,
   } = useContext(AuthContext);
   const [ImageUri, setImageUri] = useState<string>();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [isWalletCreatedAgain, setIsWalletCreatedAgain] =
     useState<boolean>(false);
-  const userId = 1;
+
+  const {
+    data: profileData,
+    isLoading: profileIsLoading,
+    // isError,
+  } = useQuery('userProfile', () => getUserProfile(userId));
 
   const nicknamePressHandler = () => {
     navigation.navigate(ProfileStackScreens.EditProfile, {
@@ -118,8 +124,6 @@ const ProfileDetailScreen = () => {
     },
   });
 
-  console.log(createWalletData); 
-
   const walletCreationAgainHandler = () => {
     deleteWalletMutate(userId);
     createWalletMutate(userId);
@@ -161,7 +165,8 @@ const ProfileDetailScreen = () => {
     }
   };
 
-  const isLoading = createWalletIsLoading || deleteWalletIsLoading;
+  const isLoading =
+    createWalletIsLoading || deleteWalletIsLoading || profileIsLoading;
 
   return (
     <>
@@ -218,7 +223,7 @@ const ProfileDetailScreen = () => {
         <View style={styles.itemContainer}>
           <ProfileInfoItem
             title="닉네임"
-            content="주혜"
+            content={profileData?.nickname || ''}
             onLongPress={nicknamePressHandler}
           />
           <ProfileInfoItem

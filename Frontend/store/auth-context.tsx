@@ -16,6 +16,8 @@ export interface authContextType {
   townName: null | string;
   walletId: null | number;
   walletAddress: null | string;
+  accessToken: null | string;
+  refreshToken: null | string;
   setUserId: Dispatch<SetStateAction<number | null>>;
   setNickname: Dispatch<SetStateAction<string | null>>;
   setImageURL: Dispatch<SetStateAction<string | null>>;
@@ -25,6 +27,8 @@ export interface authContextType {
   setTownName: Dispatch<SetStateAction<string | null>>;
   setWalletId: Dispatch<SetStateAction<number | null>>;
   setWalletAddress: Dispatch<SetStateAction<string | null>>;
+  setAccessToken: Dispatch<SetStateAction<string | null>>;
+  setRefreshToken: Dispatch<SetStateAction<string | null>>;
 }
 
 export const AuthContext = createContext<authContextType>({
@@ -37,6 +41,8 @@ export const AuthContext = createContext<authContextType>({
   townName: null,
   walletId: null,
   walletAddress: null,
+  accessToken: null,
+  refreshToken: null,
   setUserId: () => {},
   setNickname: () => {},
   setImageURL: () => {},
@@ -46,6 +52,8 @@ export const AuthContext = createContext<authContextType>({
   setTownName: () => {},
   setWalletId: () => {},
   setWalletAddress: () => {},
+  setAccessToken: () => {},
+  setRefreshToken: () => {},
 });
 
 export const AuthProvider = ({children}: {children: ReactNode}) => {
@@ -58,6 +66,8 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   const [townName, setTownName] = useState<string | null>(null);
   const [walletId, setWalletId] = useState<number | null>(null);
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [refreshToken, setRefreshToken] = useState<string | null>(null);
 
   const authValue = useMemo(() => {
     return {
@@ -70,6 +80,8 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
       townName,
       walletId,
       walletAddress,
+      accessToken,
+      refreshToken,
       setUserId,
       setNickname,
       setImageURL,
@@ -79,6 +91,8 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
       setTownName,
       setWalletId,
       setWalletAddress,
+      setAccessToken,
+      setRefreshToken,
     };
   }, [
     userId,
@@ -90,6 +104,8 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
     townName,
     walletId,
     walletAddress,
+    accessToken,
+    refreshToken,
   ]);
 
   return (

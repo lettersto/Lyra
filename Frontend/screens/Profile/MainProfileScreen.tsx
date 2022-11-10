@@ -1,10 +1,12 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {StyleSheet, ScrollView} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 import {useQuery} from 'react-query';
 
+import {ProfileStackNavigationProps} from '../../constants/types';
 import {AuthContext} from '../../store/auth-context';
-import {getUserWalletAddressAndCoin} from '../../api/profile';
+import {getUserWalletAddressAndCoin, getUserProfile} from '../../api/profile';
 import ProfileBody from '../../components/Profile/MyPage/ProfileBody';
 import WalletBody from '../../components/Profile/MyPage/WalletBody';
 import Gallery from '../../components/Profile/MyPage/Gallery';
@@ -14,18 +16,35 @@ import LoadingSpinner from '../../components/Utils/LoadingSpinner';
 import Colors from '../../constants/Colors';
 
 const MainProfileScreen = () => {
-  const userId = 1;
-  const {setWalletId, setWalletAddress} = useContext(AuthContext);
+  const {setWalletId, setWalletAddress, userId} = useContext(AuthContext);
+  const navigation = useNavigation<ProfileStackNavigationProps>();
+
+  const {
+    data: profileData,
+    isLoading: profileIsLoading,
+    // isError,
+  } = useQuery('userProfile', () => getUserProfile(userId!));
+
+  const nickname = profileData?.nickname;
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: nickname || '',
+    });
+  }, [navigation, nickname]);
+
   const {
     data: walletData,
-    isLoading,
+    isLoading: walletIsLoading,
     // isError,
-  } = useQuery('walletInfo', () => getUserWalletAddressAndCoin(userId), {
+  } = useQuery('walletInfo', () => getUserWalletAddressAndCoin(userId!), {
     onSuccess: data => {
       setWalletId(data.walletId);
       setWalletAddress(data.address);
     },
   });
+
+  const isLoading = walletIsLoading || profileIsLoading;
 
   return (
     <>

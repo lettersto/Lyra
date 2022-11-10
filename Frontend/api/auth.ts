@@ -50,7 +50,7 @@ export const sendUserKakaoInfoToServer = async ({
       nickname,
     },
   });
-  console.log('===============', response);
+  console.log('===============', response.data);
   return response.data;
 };
 
