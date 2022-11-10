@@ -2,6 +2,7 @@ package hermes.Lyra.Service;
 
 import hermes.Lyra.dto.PheedDto;
 import hermes.Lyra.domain.Pheed;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,4 +28,6 @@ public interface PheedService {
 
     Optional<Pheed> getPheedById(Long pheedId);
 
+
+    Iterable<Pheed> getPheedByPage(Pageable pageable);
 }

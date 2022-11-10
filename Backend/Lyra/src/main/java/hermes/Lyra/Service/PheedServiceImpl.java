@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -187,5 +188,9 @@ public class PheedServiceImpl implements PheedService{
         return pheedRepository.findById(pheedId);
     }
 
-
+    @Override
+    @Transactional
+    public Iterable<Pheed> getPheedByPage(Pageable pageable) {
+        return pheedRepository.findAll(pageable);
+    }
 }

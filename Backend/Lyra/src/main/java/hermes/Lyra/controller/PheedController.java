@@ -9,6 +9,9 @@ import hermes.Lyra.vo.ResponsePheed;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -62,11 +65,30 @@ public class PheedController {
     }
 
 
+//    @GetMapping("all")
+//    public ResponseEntity<List<ResponsePheed>> getPheeds() throws Exception {
+//
+//        log.info("Before get pheeds data");
+//        Iterable<Pheed> pheedList = pheedService.getPheedByAll();
+//
+//        List<ResponsePheed> result = new ArrayList<>();
+//
+//        pheedList.forEach(v -> {
+//            result.add(new ModelMapper().map(v, ResponsePheed.class));
+//        });
+//
+//        log.info("After got pheeds data");
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(result);
+//    }
+
     @GetMapping("all")
-    public ResponseEntity<List<ResponsePheed>> getPheeds() throws Exception {
+    public ResponseEntity<List<ResponsePheed>> getPheeds(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
 
         log.info("Before get pheeds data");
-        Iterable<Pheed> pheedList = pheedService.getPheedByAll();
+//        Iterable<Pheed> pheedList = pheedService.getPheedByAll();
+
+        Iterable<Pheed> pheedList = pheedService.getPheedByPage(pageable);
 
         List<ResponsePheed> result = new ArrayList<>();
 
