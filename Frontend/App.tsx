@@ -7,15 +7,19 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import EncryptedStorage from 'react-native-encrypted-storage';
 
-import {PheedStackNavigationProps} from './constants/types';
+import {
+  BuskerInfo,
+  PheedStackNavigationProps,
+  UserProfileType,
+} from './constants/types';
 import {AuthContext} from './store/auth-context';
 import {RootStackParamList} from './constants/types';
 import NavBar from './components/Navigation/NavBar';
 import Colors from './constants/Colors';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {ChatContext} from './store/chat-context';
 import Config from 'react-native-config';
 import {io} from 'socket.io-client';
+import {getUserProfile} from './api/profile';
 
 declare global {
   namespace ReactNavigation {
@@ -27,11 +31,15 @@ let appStarted = false;
 
 const App = () => {
   const {
+    isLoggedIn,
+    userId,
     setIsLoggedIn,
     setLongitude,
     setWalletAddress,
     setLatitude,
     setUserId,
+    setNickname,
+    setImageURL,
   } = useContext(AuthContext);
 
   // const {
@@ -82,6 +90,11 @@ const App = () => {
         setLongitude(lon ? parseInt(lon, 10) : null);
         setUserId(prevUserId ? parseInt(prevUserId, 10) : null);
         setWalletAddress(address ? address : null);
+        const userInfo: UserProfileType = await getUserProfile(
+          Number(prevUserId),
+        );
+        setNickname(userInfo.nickname);
+        setImageURL(userInfo.image_url);
       }
     } catch (error) {
       setIsLoggedIn(false);
@@ -90,15 +103,23 @@ const App = () => {
         console.error('Storage Check Error!', error);
       }
     }
-  }, [setIsLoggedIn, setLatitude, setLongitude, setUserId, setWalletAddress]);
-
-  // 로그인 됐거나 id 바뀔 때 Socket 연결
+  }, [
+    setIsLoggedIn,
+    setLatitude,
+    setLongitude,
+    setUserId,
+    setWalletAddress,
+    setImageURL,
+    setNickname,
+  ]);
   useEffect(() => {
     if (!appStarted) {
       (async () => await checkTokensInStorage())();
     }
     appStarted = true;
   }, [checkTokensInStorage]);
+
+  const {socket, setSocket, setLiveBusker} = useContext(ChatContext);
 
   // 로그인 됐거나 id 바뀔 때 Socket 연결
   useEffect(() => {
@@ -111,8 +132,24 @@ const App = () => {
   useEffect(() => {
     if (socket && userId) {
       socket.emit('user connect', userId);
+      socket.on('user rooms', (buskerIds: number[]) => {
+        const buskerList: BuskerInfo[] = [];
+        buskerIds.forEach(id =>
+          getUserProfile(id).then(res => {
+            buskerList.push({
+              buskerId: res.id,
+              buskerNickname: res.nickname,
+              buskerImg: res.image_url,
+            });
+            if (buskerList.length === buskerIds.length) {
+              setLiveBusker(buskerList);
+              console.log(buskerList);
+            }
+          }),
+        );
+      });
     }
-  }, [socket, userId]);
+  }, [socket, userId, setLiveBusker]);
 
   const backgroundStyle = {
     backgroundColor: Colors.purple300,
