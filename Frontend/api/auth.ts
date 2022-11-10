@@ -64,3 +64,12 @@ export const logoutFromServer = async (refreshToken: string | null) => {
   });
   return response.data;
 };
+
+export const sendUserLocation = async (userId: string) => {
+  const response = await axios({
+    url: '/user/location',
+    method: 'PATCH',
+    params: userId,
+  });
+  return response.data;
+};

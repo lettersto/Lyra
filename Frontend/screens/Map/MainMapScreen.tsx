@@ -12,16 +12,6 @@ const MainMapScreen = () => {
   const modalizeRef = useRef<Modalize>(null);
   const [currentCategory, SetCurrentCategory] = useState('');
 
-  const onOpen = () => {
-    modalizeRef.current?.open();
-  };
-
-  const handleClose = dest => {
-    if (modalizeRef.current) {
-      modalizeRef.current.close(dest);
-    }
-  };
-
   const renderContent = () => (
     <View style={styles.content}>
       <PheedCategory
@@ -33,11 +23,6 @@ const MainMapScreen = () => {
       <View style={styles.pheedContent}>
         <PheedContent category={currentCategory} width={0.9} />
       </View>
-      <Button
-        title="Close to initial position"
-        onPress={() => handleClose('alwaysOpen')}
-      />
-      <Button title="Close completely" onPress={handleClose} />
     </View>
   );
 
