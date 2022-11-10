@@ -6,6 +6,7 @@ import hermes.Lyra.domain.Pheed;
 import hermes.Lyra.dto.PheedDto;
 import hermes.Lyra.vo.RequestPheed;
 import hermes.Lyra.vo.ResponsePheed;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -37,6 +38,7 @@ public class PheedController {
     }
 
 
+    @ApiOperation(value = "피드 작성")
     @PostMapping("")
     public ResponseEntity<String> createPheed(@RequestParam("user_id") Long userId, @RequestPart RequestPheed pheed, @RequestPart List<MultipartFile> images) throws IOException {
 
@@ -82,6 +84,7 @@ public class PheedController {
 //        return ResponseEntity.status(HttpStatus.OK).body(result);
 //    }
 
+    @ApiOperation(value = "모든 피드 불러오기, 페이징0부터&최신순")
     @GetMapping("all")
     public ResponseEntity<List<ResponsePheed>> getPheeds(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
 
@@ -102,6 +105,7 @@ public class PheedController {
     }
 
 
+    @ApiOperation(value = "피드 상세 불러오기")
     @GetMapping("{pheed_id}")
     public ResponseEntity<ResponsePheed> getPheed(@PathVariable("pheed_id") Long pheedId) throws Exception {
 
@@ -121,6 +125,7 @@ public class PheedController {
     }
 
 
+    @ApiOperation(value = "피드 수정")
     @PatchMapping("{pheed_id}")
     public ResponseEntity<String> updatePheed(@PathVariable("pheed_id") Long pheedId, @RequestPart RequestPheed pheed, @RequestPart List<MultipartFile> images) throws Exception {
 
@@ -144,6 +149,7 @@ public class PheedController {
     }
 
 
+    @ApiOperation(value = "피드 삭제")
     @DeleteMapping("{pheed_id}")
     public ResponseEntity<String> deletePheed(@PathVariable("pheed_id") Long pheedId) {
 
@@ -159,6 +165,7 @@ public class PheedController {
     }
 
 
+    @ApiOperation(value = "카테고리 별 피드")
     @GetMapping("category/{category}")
     public ResponseEntity<List<ResponsePheed>> getPheedByCategory(@PathVariable String category) throws Exception {
 
@@ -177,6 +184,7 @@ public class PheedController {
     }
 
 
+    @ApiOperation(value = "키워드로 피드 검색")
     @GetMapping("search")
     public ResponseEntity<List<ResponsePheed>> getPheedBySearch(@RequestParam(value="keyword") String keyword) {
 
@@ -196,6 +204,7 @@ public class PheedController {
     }
 
 
+    @ApiOperation(value = "태그로 피드 검색")
     @GetMapping("tag")
     public ResponseEntity<?> getPheedbyTag(@RequestParam(value="tag") String tag) throws Exception {
 
@@ -228,6 +237,7 @@ public class PheedController {
     }
 
 
+    @ApiOperation(value = "유저로 피드 검색")
     @GetMapping("")
     public ResponseEntity<List<ResponsePheed>> getPheedbyUser(@RequestParam("user_id") Long userId) throws Exception {
 
