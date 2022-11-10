@@ -7,6 +7,7 @@ import hermes.Lyra.dto.CommentDto;
 import hermes.Lyra.vo.RequestComment;
 import hermes.Lyra.vo.ResponseComment;
 import hermes.Lyra.vo.ResponseWallet;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -29,6 +30,7 @@ public class CommentController {
         this.commentService = commentService;
     }
 
+    @ApiOperation(value = "피드 내 전체 댓글")
     @GetMapping("{pheed_id}/comment")
     public ResponseEntity<List<ResponseComment>> getComments(@PathVariable("pheed_id") Long pheedId) throws Exception {
 
@@ -46,6 +48,7 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    @ApiOperation(value = "댓글 상세")
     @GetMapping("{pheed_id}/comment/{comment_id}")
     public ResponseEntity<ResponseComment> getComment(@PathVariable("pheed_id") Long pheedId, @PathVariable("comment_id") Long commentId) throws Exception {
 
@@ -66,6 +69,7 @@ public class CommentController {
     }
 
 
+    @ApiOperation(value = "댓글 수정")
     @PatchMapping("{pheed_id}/comment/{comment_id}")
     public ResponseEntity<String> updateComment(@PathVariable("pheed_id") Long pheedId, @PathVariable("comment_id") Long commentId, @RequestBody RequestComment comment) throws Exception {
 
@@ -83,6 +87,7 @@ public class CommentController {
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
+    @ApiOperation(value = "댓글 삭제")
     @DeleteMapping("{pheed_id}/comment/{comment_id}")
     public ResponseEntity<String> deleteComment(@PathVariable("pheed_id") Long pheedId, @PathVariable("comment_id") Long commentId) throws Exception {
 
@@ -95,6 +100,7 @@ public class CommentController {
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
+    @ApiOperation(value = "댓글 작성")
     @PostMapping("{pheed_id}/comment")
     public ResponseEntity<String> createComment(@RequestParam("user_id") Long userId, @PathVariable("pheed_id") Long pheedId, @RequestBody RequestComment comment) throws Exception {
 

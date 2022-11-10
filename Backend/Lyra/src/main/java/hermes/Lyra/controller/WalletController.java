@@ -6,6 +6,7 @@ import hermes.Lyra.domain.Wallet;
 import hermes.Lyra.dto.WalletDto;
 import hermes.Lyra.vo.RequestWallet;
 import hermes.Lyra.vo.ResponseWallet;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ public class WalletController {
     }
 
 
+    @ApiOperation(value = "지갑 데이터 생성")
     @PostMapping("")
     public ResponseEntity<String> createWallet(@RequestParam("user_id") Long userId, @RequestBody RequestWallet wallet) {
 
@@ -44,6 +46,7 @@ public class WalletController {
 
     }
 
+    @ApiOperation(value = "지갑 정보 불러오기")
     @GetMapping("")
     public ResponseEntity<ResponseWallet> getWallet(@RequestParam("user_id") Long userId) throws Exception {
 
@@ -76,6 +79,7 @@ public class WalletController {
 
 
 
+    @ApiOperation(value = "지갑 정보 삭제")
     @DeleteMapping("")
     public ResponseEntity<String> deleteWallet(@RequestParam("user_id") Long userId) {
 

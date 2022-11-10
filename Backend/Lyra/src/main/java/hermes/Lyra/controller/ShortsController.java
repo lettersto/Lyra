@@ -4,6 +4,7 @@ import hermes.Lyra.Service.S3UploadService;
 import hermes.Lyra.Service.ShortsService;
 import hermes.Lyra.domain.Shorts;
 import hermes.Lyra.vo.ResponseShorts;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ public class ShortsController {
         this.shortsService = shortsService;
     }
 
+    @ApiOperation(value = "쇼츠 작성")
     @PostMapping("")
     public ResponseEntity<String> createShorts(@RequestParam("user_id") Long userId, @RequestPart MultipartFile video) throws IOException {
 
@@ -42,6 +44,7 @@ public class ShortsController {
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
+    @ApiOperation(value = "쇼츠 삭제")
     @DeleteMapping("{shorts_id}")
     public ResponseEntity<String> deleteShorts(@PathVariable("shorts_id") Long shortsId) throws IOException {
 
@@ -54,6 +57,7 @@ public class ShortsController {
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
+    @ApiOperation(value = "전체 쇼츠 불러오기")
     @GetMapping("/all")
     public ResponseEntity<List<ResponseShorts>> getShorts() throws IOException {
         log.info("Before get shorts data");
