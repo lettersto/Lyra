@@ -11,7 +11,6 @@ interface Props {
 }
 
 const BuskerName = ({buskerId, buskerNickname, buskerImg}: Props) => {
-  console.log(buskerImg);
   return (
     <Pressable>
       <View style={styles.container}>

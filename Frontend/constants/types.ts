@@ -322,6 +322,7 @@ export interface BuskerInfo {
   buskerId: number;
   buskerNickname: string;
   buskerImg: string;
+  userCnt?: number;
 }
 // Profile
 export type EditProfileType =

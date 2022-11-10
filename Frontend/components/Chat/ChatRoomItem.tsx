@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {BuskerInfo} from '../../constants/types';
 
@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
 });
 
 const ChatRoomItem = ({clickChatRoomHandler, busker}: Props) => {
+  useEffect(() => {}, []);
   return (
     <TouchableOpacity
       onPress={() =>
@@ -32,7 +33,9 @@ const ChatRoomItem = ({clickChatRoomHandler, busker}: Props) => {
         )
       }>
       <View style={styles.container}>
-        <Text style={styles.text}>{busker.buskerNickname}</Text>
+        <Text style={styles.text}>
+          {busker.buskerNickname} {busker.userCnt}
+        </Text>
       </View>
     </TouchableOpacity>
   );
