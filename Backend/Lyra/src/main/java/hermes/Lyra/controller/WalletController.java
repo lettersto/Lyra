@@ -8,7 +8,6 @@ import hermes.Lyra.vo.RequestWallet;
 import hermes.Lyra.vo.ResponseWallet;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,21 +25,23 @@ public class WalletController {
 
 
     @PostMapping("")
-    public ResponseEntity<ResponseWallet> createWallet(@RequestParam("user_id") Long userId, @RequestBody RequestWallet wallet) {
+    public ResponseEntity<String> createWallet(@RequestParam("user_id") Long userId, @RequestBody RequestWallet wallet) {
 
         log.info("Before add wallet data");
         ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         WalletDto walletDto = mapper.map(wallet, WalletDto.class);
         walletDto.setUserId(userId);
 
-        WalletDto createWallet = walletService.createWallet(walletDto);
-        ResponseWallet responseWallet = mapper.map(createWallet, ResponseWallet.class);
+        Boolean createWallet = walletService.createWallet(walletDto);
 
-        log.info("After added wallet data");
+        if (createWallet) {
+            log.info("After added wallet data");
+            return new ResponseEntity<String>("success", HttpStatus.OK);
+        }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseWallet);
+        return new ResponseEntity<String>("fail", HttpStatus.OK);
+
     }
 
     @GetMapping("")
@@ -50,22 +51,9 @@ public class WalletController {
         Wallet result = walletService.getWalletByUserId(userId);
 
         ModelMapper mapper = new ModelMapper();
-//        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         ResponseWallet responseWallet = mapper.map(result, ResponseWallet.class);
-//
-//        List<ResponseWallet> result = new ArrayList<>();
-//        walletList.forEach(v -> {
-//            result.add(new ModelMapper().map(v, ResponseWallet.class));
-//        });
 
-//
-//        try {
-//            Thread.sleep(1000);
-//            throw new Exception("장애 발생");
-//        } catch(InterruptedException ex) {
-//            log.warn(ex.getMessage());
-//        }
 
         log.info("After got wallet data");
 
@@ -73,18 +61,18 @@ public class WalletController {
     }
 
 
-    @PatchMapping("")
-    public ResponseEntity<String> updateWallet(@RequestParam("user_id") Long userId, @RequestParam Long coin) {
-
-        log.info("Before update wallet data");
-
-        Wallet wallet = walletService.getWalletByUserId(userId);
-        walletService.updateWallet(wallet, coin);
-
-        log.info("After updated wallet data");
-
-        return new ResponseEntity<String>("success", HttpStatus.OK);
-    }
+//    @PatchMapping("")
+//    public ResponseEntity<String> updateWallet(@RequestParam("user_id") Long userId, @RequestParam Long coin) {
+//
+//        log.info("Before update wallet data");
+//
+//        Wallet wallet = walletService.getWalletByUserId(userId);
+//        walletService.updateWallet(wallet, coin);
+//
+//        log.info("After updated wallet data");
+//
+//        return new ResponseEntity<String>("success", HttpStatus.OK);
+//    }
 
 
 
@@ -98,11 +86,6 @@ public class WalletController {
         log.info("After deleted wallet data");
 
         return new ResponseEntity<String>("success", HttpStatus.OK);
-    }
-
-    @GetMapping("welcome")
-    public String welcome() {
-        return "welcome";
     }
 
 

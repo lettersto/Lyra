@@ -35,7 +35,7 @@ public class ChargeController {
         List<ResponseCharge> result = new ArrayList<>();
 
         chargeList.forEach(v -> {
-            result.add(new ModelMapper().map(v, ResponseCharge.class));
+            result.add(0, new ModelMapper().map(v, ResponseCharge.class));
         });
 
         log.info("After got charges data");
@@ -51,10 +51,8 @@ public class ChargeController {
         log.info("Before create charge data");
 
         ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         ChargeDto chargeDto = mapper.map(charge, ChargeDto.class);
-
 
         ChargeDto createCharge = chargeService.createCharge(chargeDto, walletId);
 
