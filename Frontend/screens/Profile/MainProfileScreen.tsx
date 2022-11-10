@@ -6,7 +6,11 @@ import {useQuery} from 'react-query';
 
 import {ProfileStackNavigationProps} from '../../constants/types';
 import {AuthContext} from '../../store/auth-context';
-import {getUserWalletAddressAndCoin, getUserProfile} from '../../api/profile';
+import {
+  getUserWalletAddressAndCoin,
+  getUserProfile,
+  getTotalBalanceFromWeb3,
+} from '../../api/profile';
 import ProfileBody from '../../components/Profile/MyPage/ProfileBody';
 import WalletBody from '../../components/Profile/MyPage/WalletBody';
 import Gallery from '../../components/Profile/MyPage/Gallery';
@@ -16,7 +20,8 @@ import LoadingSpinner from '../../components/Utils/LoadingSpinner';
 import Colors from '../../constants/Colors';
 
 const MainProfileScreen = () => {
-  const {setWalletId, setWalletAddress, userId} = useContext(AuthContext);
+  const {setWalletId, setWalletAddress, userId, walletAddress} =
+    useContext(AuthContext);
   const navigation = useNavigation<ProfileStackNavigationProps>();
 
   const {
@@ -34,17 +39,26 @@ const MainProfileScreen = () => {
   }, [navigation, nickname]);
 
   const {
-    data: walletData,
+    data: balanceData, // string coin
+    isLoading: balanceIsLoading,
+    refetch: balanceRefetch,
+  } = useQuery('walletBalance', () => getTotalBalanceFromWeb3(walletAddress!), {
+    enabled: false,
+  });
+
+  const {
+    // data: walletData,
     isLoading: walletIsLoading,
     // isError,
   } = useQuery('walletInfo', () => getUserWalletAddressAndCoin(userId!), {
     onSuccess: data => {
       setWalletId(data.walletId);
       setWalletAddress(data.address);
+      balanceRefetch();
     },
   });
 
-  const isLoading = walletIsLoading || profileIsLoading;
+  const isLoading = walletIsLoading || profileIsLoading || balanceIsLoading;
 
   return (
     <>
@@ -56,9 +70,9 @@ const MainProfileScreen = () => {
         />
       ) : null}
       <ScrollView style={styles.container}>
-        <ProfileBody />
+        <ProfileBody profileData={profileData} />
         <GradientLine />
-        <WalletBody coin={walletData?.coin || 0} />
+        <WalletBody coin={Number(balanceData) || 0} />
         <GradientLine />
         <Gallery />
         <GradientLine />

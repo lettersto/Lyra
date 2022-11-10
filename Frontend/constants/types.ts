@@ -334,3 +334,16 @@ export type EditProfileType =
 export type FollowerType = 'follower' | 'follow';
 
 export type walletTabType = 'give' | 'receive' | 'charge';
+
+export type UserProfileType = {
+  account: string | null;
+  bank: string | null;
+  email: string;
+  id: number;
+  image_url: string;
+  introduction: string | null;
+  latitude: number | null;
+  longitutde: number | null;
+  nickname: string;
+  refresh_token: string;
+};
