@@ -114,7 +114,7 @@ export type ChatStackScreenParams = {
 };
 
 export type ProfileStackScreenParams = {
-  [ProfileStackScreens.MainProfile]: undefined;
+  [ProfileStackScreens.MainProfile]: {param: number};
   [ProfileStackScreens.ProfileDetail]: undefined;
   [ProfileStackScreens.EditProfile]: {param: EditProfileType} | undefined;
 
@@ -325,6 +325,8 @@ export type EditProfileType =
 export type FollowerType = 'follower' | 'follow';
 
 export type walletTabType = 'give' | 'receive' | 'charge';
+
+export type galleryTypes = 'myBusking' | 'favoriteBusking';
 
 export type UserProfileType = {
   account: string | null;

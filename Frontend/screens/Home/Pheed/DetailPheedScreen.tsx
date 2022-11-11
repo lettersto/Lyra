@@ -16,6 +16,7 @@ import {
 } from '@react-navigation/native-stack';
 import Colors from '../../../constants/Colors';
 import LinearGradient from 'react-native-linear-gradient';
+import ProfilePhoto from '../../../components/Utils/ProfilePhoto';
 import CircleProfile from '../../../components/Utils/CircleProfile';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -65,7 +66,7 @@ const DetailPheedScreen = ({route}: Props) => {
   }, [route.params.pheedId, change, isFocused]);
 
   const name = route.params?.name;
-  // const profileImg = route.params?.profileImg;
+  const profileImg = route.params?.profileImg;
   const startTime = route.params?.startTime;
   const location = route.params?.location;
   const title = route.params?.title;
@@ -195,7 +196,13 @@ const DetailPheedScreen = ({route}: Props) => {
               <View style={styles.profileContainer}>
                 <View style={styles.profileDatetime}>
                   <View style={styles.profileImg}>
-                    <CircleProfile size="small" isGradient={false} />
+                    {/* <CircleProfile size="small" isGradient={false} /> */}
+                    <ProfilePhoto
+                      size="small"
+                      isGradient={false}
+                      imageURI={profileImg}
+                      profileUserId={route.params?.userId}
+                    />
                   </View>
                   <View>
                     <Text style={styles.boldtext}>{name}</Text>

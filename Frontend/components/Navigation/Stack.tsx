@@ -250,7 +250,6 @@ export const ProfileStack = () => {
         name="MainProfile"
         component={MainProfileScreen}
         options={{
-          // headerTitle: () => <ProfileTitle />,
           title: '',
           headerTitleAlign: 'center',
           headerRight: () => <ProfileButtons />,

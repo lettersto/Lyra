@@ -1,9 +1,8 @@
 import React, {useState} from 'react';
 import {View, StyleSheet, Dimensions} from 'react-native';
 
+import {galleryTypes} from '../../../constants/types';
 import GalleryButtons from './GalleryButtons';
-
-type galleryTypes = 'visitedBusking' | 'myBusking' | 'favoriteBusking';
 
 const Gallery = () => {
   const [galleryCategory, setGalleryCategory] =

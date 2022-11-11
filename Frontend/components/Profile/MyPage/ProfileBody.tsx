@@ -7,7 +7,13 @@ import ProfilePhoto from '../../Utils/ProfilePhoto';
 import Button from '../../Utils/Button';
 import MoreInfo from '../../Utils/MoreInfo';
 
-const ProfileBody = ({profileData}: {profileData: UserProfileType}) => {
+const ProfileBody = ({
+  profileData,
+  isMyProfile,
+}: {
+  profileData: UserProfileType;
+  isMyProfile: boolean;
+}) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const buttonCustomStyle = {width: 236};
 
@@ -18,6 +24,7 @@ const ProfileBody = ({profileData}: {profileData: UserProfileType}) => {
           size="extraLarge"
           isGradient={false}
           imageURI={profileData?.image_url}
+          profileUserId={profileData?.id}
         />
         <View style={styles.profileInfoContainer}>
           <View style={styles.profileInfo}>
@@ -25,20 +32,20 @@ const ProfileBody = ({profileData}: {profileData: UserProfileType}) => {
             <ProfileItem count={256} description="팔로워" />
             <ProfileItem count={14} description="팔로우" />
           </View>
-          <Button
-            title={isFollowing ? '팔로우 끊기' : '팔로우 하기'}
-            btnSize="small"
-            textSize="small"
-            customStyle={buttonCustomStyle}
-            isGradient={true}
-            isOutlined={true}
-            onPress={() => setIsFollowing(preV => !preV)}
-          />
+          {!isMyProfile ? (
+            <Button
+              title={isFollowing ? '팔로우 끊기' : '팔로우 하기'}
+              btnSize="small"
+              textSize="small"
+              customStyle={buttonCustomStyle}
+              isGradient={true}
+              isOutlined={true}
+              onPress={() => setIsFollowing(preV => !preV)}
+            />
+          ) : null}
         </View>
       </View>
-      <View>
-        <MoreInfo content={profileData?.introduction || ''} />
-      </View>
+      <MoreInfo content={profileData?.introduction || ''} />
     </View>
   );
 };
