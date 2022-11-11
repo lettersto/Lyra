@@ -207,33 +207,21 @@ public class PheedController {
 
     @ApiOperation(value = "태그로 피드 검색, 페이징0부터&최신순")
     @GetMapping("tag")
-    public ResponseEntity<?> getPheedbyTag(@RequestParam(value="tag") String tag, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
+    public ResponseEntity<List<ResponsePheed>> getPheedbyTag(@RequestParam(value="tag") String tag, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
 
         log.info("Before get pheed by tag data");
 
-        try {
+        List<Pheed> pheedList = pheedService.getPheedByTag(tag, pageable);
 
-            List<Pheed> pheedList = pheedService.getPheedByTag(tag, pageable);
+        List<ResponsePheed> result = new ArrayList<>();
 
-            List<ResponsePheed> result = new ArrayList<>();
+        pheedList.forEach(v -> {
+            result.add(new ModelMapper().map(v, ResponsePheed.class));
+        });
 
-            pheedList.forEach(v -> {
-                result.add(new ModelMapper().map(v, ResponsePheed.class));
-            });
+        log.info("After got pheed by tag data");
+        return ResponseEntity.status(HttpStatus.OK).body(result);
 
-
-            if(result==null) {
-                return new ResponseEntity<String>("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
-            }else if(result.size()==0) {
-                return new ResponseEntity<String>("조회된 내용이 없습니다.", HttpStatus.NO_CONTENT);
-            }else {
-                log.info("After got pheed by tag data");
-                return ResponseEntity.status(HttpStatus.OK).body(result);
-            }
-
-        } catch (Exception e) {
-            return new ResponseEntity<String>("조회 실패", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
 
     }
 
