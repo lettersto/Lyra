@@ -12,6 +12,21 @@ export const searchPheeds = async (pageParam = 0, options = {keyword: ''}) => {
   return response.data;
 };
 
+export const searchPheedsByTags = async (
+  pageParam = 0,
+  options = {tag: ''},
+) => {
+  const response = await axios({
+    url: '/pheed/tag',
+    method: 'GET',
+    params: {
+      ...options,
+      page: pageParam,
+    },
+  });
+  return response.data;
+};
+
 export const getPheedbyUser = async (user_id: string) => {
   const response = await axios({
     url: '/pheed',
