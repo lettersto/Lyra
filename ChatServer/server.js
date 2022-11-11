@@ -51,12 +51,22 @@ const userIn = (socket, buskerId) => {
 // 유저가 접속한 방 알려주기
 const fetchUserRooms = (socket) => {
   const userId = socket.data.userId;
-  const buskerIds = [];
+  let buskerRooms = [];
   if (Object.keys(userDict).includes(String(userId))) {
-    buskerIds = Array.from(userDict[userId]);
+    buskerRooms = Array.from(userDict[userId]);
   }
+  buskerRooms.forEach((id, idx) => {
+    let cnt = 0;
+    if (Object.keys(buskerDict).includes(String(id))) {
+      cnt = buskerDict[id].size;
+    }
+    buskerRooms[idx] = { buskerId: id, userCnt: cnt };
+  });
+  buskerRooms.sort(function (a, b) {
+    return b.cnt - a.cnt;
+  });
   // 유저가 접속한 방들 보내기
-  socket.emit("user rooms", buskerIds);
+  socket.emit("user rooms", buskerRooms);
 };
 
 // 유저 나가기
@@ -103,8 +113,8 @@ io.on("connection", (socket) => {
   });
 
   // 유저가 들어간 방들 조회
-  socket.on("user rooms", (socket) => {
-    fetchUserRooms(io, socket);
+  socket.on("user rooms", () => {
+    fetchUserRooms(socket);
   });
 
   // 전송된 메세지 받기

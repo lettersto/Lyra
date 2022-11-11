@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import ChatList from '../../components/Chat/ChatList';
+import MyChat from '../../components/Chat/MyChat';
 import {ChatContext} from '../../store/chat-context';
 
 const deviceHeight = Dimensions.get('window').height;
@@ -65,6 +66,7 @@ const ChatListScreen = () => {
           )}
           keyExtractor={item => String(item.buskerId)}
         />
+        <MyChat />
         <ChatList
           liveBusker={liveBusker}
           clickChatRoomHandler={clickChatRoomHandler}

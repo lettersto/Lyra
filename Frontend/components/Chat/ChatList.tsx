@@ -1,7 +1,9 @@
 import React from 'react';
-import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
 import {BuskerInfo} from '../../constants/types';
 import ChatRoomItem from './ChatRoomItem';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {useNavigation} from '@react-navigation/native';
 
 interface Props {
   liveBusker: BuskerInfo[];
@@ -24,22 +26,60 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
+  textContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  mapMoveText: {
+    fontSize: 15,
+  },
+  textRowContainer: {
+    flexDirection: 'row',
+  },
+  icon: {
+    marginTop: 10,
+  },
 });
 
 const ChatList = ({liveBusker, clickChatRoomHandler}: Props) => {
+  const navigation = useNavigation();
+  const moveMapHandler = () => {
+    navigation.navigate('Map');
+  };
+
   return (
     <View style={styles.container}>
       <Text style={[styles.text, styles.title]}>참여중인 채팅방</Text>
-      <FlatList
-        data={liveBusker}
-        renderItem={({item}) => (
-          <ChatRoomItem
-            clickChatRoomHandler={clickChatRoomHandler}
-            busker={item}
-          />
-        )}
-        keyExtractor={item => String(item.buskerId)}
-      />
+      {liveBusker.length === 0 ? (
+        <View style={styles.textContainer}>
+          <Text style={styles.text}>아직 참여중인 채팅방이 없습니다.</Text>
+          <Pressable onPress={moveMapHandler}>
+            <View style={styles.textRowContainer}>
+              <Text style={[styles.text, styles.mapMoveText]}>
+                내 주위 버스킹 둘러보기
+              </Text>
+              <Icon
+                style={[styles.icon]}
+                name="arrow-right"
+                size={17}
+                color="white"
+              />
+            </View>
+          </Pressable>
+        </View>
+      ) : (
+        <FlatList
+          data={liveBusker}
+          renderItem={({item}) => (
+            <ChatRoomItem
+              clickChatRoomHandler={clickChatRoomHandler}
+              busker={item}
+            />
+          )}
+          keyExtractor={item => String(item.buskerId)}
+        />
+      )}
     </View>
   );
 };
