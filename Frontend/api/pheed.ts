@@ -1,4 +1,5 @@
 import axios from './axios';
+import originalAxios from 'axios';
 
 export const searchPheeds = async (pageParam = 0, options = {keyword: ''}) => {
   const response = await axios({
@@ -43,4 +44,44 @@ export const getPheeds = async () => {
   } catch (err) {
     throw err;
   }
+};
+
+// shorts
+export const uploadVideo = async ({
+  userId,
+  video,
+  title,
+}: {
+  userId: number;
+  video: string;
+  title: string;
+}) => {
+  const response = await originalAxios({
+    url: 'http://k7c105.p.ssafy.io:8080/shorts',
+    method: 'POST',
+    params: {userId},
+    data: {
+      title,
+      video,
+    },
+    headers: {'Content-Type': 'multipart/form-data'},
+  });
+  return response.data;
+};
+
+export const deleteVideo = async ({shortsId}: {shortsId: number}) => {
+  const response = await axios({
+    url: '/shorts',
+    method: 'DELETE',
+    params: {shorts_id: shortsId},
+  });
+  return response.data;
+};
+
+export const getAllVideos = async () => {
+  const response = await axios({
+    url: '/shorts/all',
+    method: 'GET',
+  });
+  return response.data;
 };
