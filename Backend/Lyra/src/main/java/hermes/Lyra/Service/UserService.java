@@ -33,8 +33,18 @@ public class UserService {
         User user = userRepository2.findById(userId).orElse(null);
         System.out.println(user.getEmail());
         if (user!=null) {
-            user.setLatitude(userLocationRequestDto.getLatitude());
-            user.setLongitude(userLocationRequestDto.getLongitude());
+            if (userLocationRequestDto.getLatitude()!=null) {
+                user.setLatitude(userLocationRequestDto.getLatitude());
+            }
+            if (userLocationRequestDto.getLongitude()!=null) {
+                user.setLongitude(userLocationRequestDto.getLongitude());
+            }
+            if (userLocationRequestDto.getRegion_code()!=null) {
+                user.setRegion_code(userLocationRequestDto.getRegion_code());
+            }
+            if (userLocationRequestDto.getRegion_name()!=null) {
+                user.setRegion_name(userLocationRequestDto.getRegion_name());
+            }
             userRepository.save(user);
             return user;
         } else {
@@ -65,6 +75,8 @@ public class UserService {
             newUser.setEmail(userLoginRequestDto.getEmail());
             newUser.setNickname(userLoginRequestDto.getNickname());
             newUser.setImage_url(userLoginRequestDto.getImage_url());
+            newUser.setFollower_count(0L);
+            newUser.setFollowing_count(0L);
             List<String> roles = new ArrayList<>();
             roles.add("ROLE_USER");
             newUser.setRoles(roles);

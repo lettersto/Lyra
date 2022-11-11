@@ -41,11 +41,19 @@ public class FollowServiceImpl implements FollowService {
         if (check==null) {
             follow.setFollowerId(follower);
             follow.setFollowingId(following);
+            follower.setFollowing_count(follower.getFollower_count()+1);
+            following.setFollower_count(following.getFollower_count()+1);
+            userRepository.save(follower);
+            userRepository.save(following);
             followRepository.save(follow);
             return 1;
         }
         else {
             followRepository.delete(check);
+            follower.setFollowing_count(follower.getFollower_count()-1);
+            following.setFollower_count(following.getFollower_count()-1);
+            userRepository.save(follower);
+            userRepository.save(following);
             return 2;
         }
     }

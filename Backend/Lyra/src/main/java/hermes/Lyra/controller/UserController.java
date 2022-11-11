@@ -84,37 +84,6 @@ public class UserController {
         }
     }
 
-//    @ApiOperation(value = "회원의 닉네임 정보를 수정한다.",notes = "userId에 해당하는 회원 정보를 수정한다.(닉네임)")
-//    @PatchMapping("/update/{userId}")
-//    public ResponseEntity<?> updateUserNick(@PathVariable("userId") Long userId, @RequestParam String nickname){
-//        Message message = new Message();
-//        HttpHeaders headers= new HttpHeaders();
-//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//        try {
-//            int result = userService.updateUserNick(userId,nickname);
-//            if(result==1){
-//                message.setStatus(StatusEnum.OK);
-//                message.setMessage("회원정보 수정 성공");
-//                return new ResponseEntity<>(message, headers, HttpStatus.OK);
-//            }else{
-//                message.setStatus(StatusEnum.BAD_REQUEST);
-//                message.setMessage("회원정보 수정 실패");
-//                return new ResponseEntity<>(message, headers, HttpStatus.OK);
-//            }
-//
-//        } catch (IllegalArgumentException | IllegalStateException e){
-//            e.printStackTrace();
-//            message.setStatus(StatusEnum.BAD_REQUEST);
-//            message.setMessage("회원 정보가 없습니다.");
-//            return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
-//        } catch (Exception e){
-//            e.printStackTrace();
-//            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
-//            message.setMessage("서버 에러 발생");
-//            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
     @ApiOperation(value = "회원 정보를 수정한다.",notes = "userId에 해당하는 회원 정보를 수정한다")
     @PatchMapping("/update/{userId}")
     public ResponseEntity<?> updateUser(
@@ -213,20 +182,6 @@ public class UserController {
             return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-//    @ApiOperation(value = "소셜로그인 - 멤버정보 요청",notes = "발급받은 accessToken으로 멤버정보를 요청한다.")
-//    @GetMapping("/me")
-//    public ResponseEntity<?> getMember(
-//            @RequestHeader(value="X-AUTH-TOKEN") String token) throws Exception {
-//        Message message = new Message();
-//        HttpHeaders headers= new HttpHeaders();
-//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//
-//        message.setStatus(StatusEnum.OK);
-//        message.setMessage("access token으로 정보 불러오기 성공");
-//        message.setData(userService.getUser(token));
-//        return new ResponseEntity<>(message, headers, HttpStatus.OK);
-//
-//    }
 
     @ApiOperation(value = "access token 재발급 요청",notes = "refresh 토큰으로 access 토큰을 재발급 신청한다.")
     @PostMapping(value = "/refresh")
@@ -257,7 +212,6 @@ public class UserController {
             return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
     @ApiOperation(value = "로그인을 요청한다.",notes = "refresh 토큰으로 로그인을 요청한다.") //리프레쉬토큰으로
     @PostMapping("/login")
