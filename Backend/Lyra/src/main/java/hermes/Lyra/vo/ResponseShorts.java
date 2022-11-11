@@ -8,7 +8,15 @@ public class ResponseShorts {
 
     private Long shortsId;
 
-    private User user;
+    private Long userId;
+
+    private String userImage_url;
+
+    private String userNickname;
+
+//    private User user;
 
     private String path;
+
+    private String title;
 }

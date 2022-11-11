@@ -191,4 +191,9 @@ public class PheedServiceImpl implements PheedService{
     public Iterable<Pheed> getPheedByPage(Pageable pageable) {
         return pheedRepository.findAll(pageable);
     }
+
+    @Override
+    public List<Pheed> getPheedByRegion(String regionCode, Pageable pageable) {
+        return pheedRepository.findByRegionCode(regionCode, pageable);
+    }
 }

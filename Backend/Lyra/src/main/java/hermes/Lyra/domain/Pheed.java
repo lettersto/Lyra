@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import hermes.Lyra.config.CategoryConverter;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -42,6 +43,12 @@ public class Pheed {
 
     @Column(nullable = false)
     private String location;
+
+    @ColumnDefault("0")
+    private int state;
+
+    @Column(nullable = false)
+    private String regionCode;
 
     @OneToMany(mappedBy = "pheed",cascade = CascadeType.ALL)
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)

@@ -3,6 +3,7 @@ package hermes.Lyra.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -21,6 +22,13 @@ public class Shorts {
     @JsonIgnore
     private User user;
 
+    @Column
     private String path;
+
+    @Column
+    private String title;
+
+    @Column
+    private String regionCode;
 
 }

@@ -105,6 +105,25 @@ public class PheedController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    @ApiOperation(value = "동네 별 모든 피드 불러오기, 페이징0부터&최신순")
+    @GetMapping("region")
+    public ResponseEntity<List<ResponsePheed>> getPheedsByRegion(@RequestParam(value="code") String code, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
+
+        log.info("Before get pheeds data");
+
+        List<Pheed> pheedList = pheedService.getPheedByRegion(code, pageable);
+
+        List<ResponsePheed> result = new ArrayList<>();
+
+        pheedList.forEach(v -> {
+            result.add(new ModelMapper().map(v, ResponsePheed.class));
+        });
+
+        log.info("After got pheeds data");
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
 
     @ApiOperation(value = "피드 상세 불러오기")
     @GetMapping("{pheed_id}")

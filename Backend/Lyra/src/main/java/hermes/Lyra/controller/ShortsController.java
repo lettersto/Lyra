@@ -33,11 +33,11 @@ public class ShortsController {
 
     @ApiOperation(value = "쇼츠 작성")
     @PostMapping("")
-    public ResponseEntity<String> createShorts(@RequestParam("user_id") Long userId, @RequestPart MultipartFile video) throws IOException {
+    public ResponseEntity<String> createShorts(@RequestParam("user_id") Long userId, @RequestPart MultipartFile video, @RequestPart String title) throws IOException {
 
         log.info("Before create shorts data");
 
-        s3UploadService.uploadShorts(userId, video);
+        s3UploadService.uploadShorts(userId, video, title);
 
         log.info("After create shorts data");
 
@@ -63,6 +63,25 @@ public class ShortsController {
         log.info("Before get shorts data");
 
         Iterable<Shorts> shortsList = shortsService.getShorts();
+
+        List<ResponseShorts> result = new ArrayList<>();
+
+        shortsList.forEach(v -> {
+            result.add(new ModelMapper().map(v, ResponseShorts.class));
+        });
+
+        log.info("After got shorts data");
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+
+    }
+
+    @ApiOperation(value = "동네 별 전체 쇼츠 불러오기")
+    @GetMapping("/region")
+    public ResponseEntity<List<ResponseShorts>> getShortsByRegion(@RequestParam(value="code") String regionCode) throws IOException {
+        log.info("Before get shorts data");
+
+        List<Shorts> shortsList = shortsService.getShortsByRegion(regionCode);
 
         List<ResponseShorts> result = new ArrayList<>();
 

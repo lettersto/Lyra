@@ -6,6 +6,8 @@ import hermes.Lyra.domain.Shorts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class ShortsServiceImpl implements ShortsService {
@@ -23,5 +25,8 @@ public class ShortsServiceImpl implements ShortsService {
         return shortsRepository.findAll();
     }
 
-
+    @Override
+    public List<Shorts> getShortsByRegion(String regionCode) {
+        return shortsRepository.findByRegionCode(regionCode);
+    }
 }

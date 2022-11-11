@@ -23,4 +23,6 @@ public interface PheedRepository extends CrudRepository<Pheed, Long> {
     List<Pheed> findByUserId(Long userId, Pageable pageable);
 
     Iterable<Pheed> findAll(Pageable pageable);
+
+    List<Pheed> findByRegionCode(String regionCode, Pageable pageable);
 }
