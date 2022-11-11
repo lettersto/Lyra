@@ -17,5 +17,9 @@ public class ResponseComment {
 
     private Long userId;
 
+    private String userImage_url;
+
+    private String userNickname;
+
 
 }
