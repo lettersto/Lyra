@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class UserUpdateRequestDto {
-    Long id;
     String nickname;
     String introduction;
     String bank;
     String account;
+    String holder;
 }
