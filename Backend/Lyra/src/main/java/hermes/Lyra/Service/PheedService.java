@@ -40,4 +40,6 @@ public interface PheedService {
     Iterable<Pheed> getPheedByPage(Pageable pageable);
 
     List<Pheed> getPheedByUser(String nickname, Pageable pageable);
+
+    List<Pheed> getPheedByRegion(String regionCode, Pageable pageable);
 }
