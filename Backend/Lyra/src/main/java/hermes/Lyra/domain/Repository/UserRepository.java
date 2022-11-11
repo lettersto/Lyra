@@ -1,6 +1,7 @@
 package hermes.Lyra.domain.Repository;
 
 import hermes.Lyra.domain.User;
+import hermes.Lyra.dto.RequestDto.UserImageRequestDto;
 import hermes.Lyra.dto.RequestDto.UserUpdateRequestDto;
 import hermes.Lyra.dto.UserDto;
 import lombok.RequiredArgsConstructor;
@@ -124,6 +125,16 @@ public class UserRepository {
         if (userUpdateRequestDto.getIntroduction() != null) {
             user.setIntroduction(userUpdateRequestDto.getIntroduction());
         }
+        if (userUpdateRequestDto.getHolder() != null) {
+            user.setHolder(userUpdateRequestDto.getHolder());
+        }
+        em.persist(user);
+        return 1;
+    }
+
+    public int updateImage(Long userId, UserImageRequestDto userImageRequestDto) {
+        User user = searchOne(userId);
+        user.setImage_url(userImageRequestDto.getImage_url());
         em.persist(user);
         return 1;
     }
