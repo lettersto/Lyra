@@ -8,8 +8,10 @@ import hermes.Lyra.domain.Repository.UserRepository2;
 import hermes.Lyra.domain.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -46,9 +48,28 @@ public class WishServiceImpl implements WishService {
     }
 
     @Override
-    public List<Wish> searchPheedList(Long userId) {
+    public List<Pheed> searchPheedList(Long userId) {
         User user = userRepository.findById(userId).orElse(null);
-        return wishRepository.findAllByUserId(user).orElseGet(null);
+        List<Wish> wishList = wishRepository.findAllByUserId(user).orElseGet(null);
+//      피드만 뽑아내기 위한 초기화
+        List<Pheed> pheeds = new ArrayList<>();
+
+        for (int i=0; i<wishList.size(); i++) {
+            Pheed pheed = wishList.get(i).getPheedId();
+            pheeds.add(pheed);
+        }
+        return pheeds;
     }
 
+    @Override
+    public List<User> searchUserList(Long pheedId) {
+        Pheed pheed = pheedRepository.findById(pheedId).orElse(null);
+        List<Wish> wishList = wishRepository.findAllByPheedId(pheed).orElseGet(null);
+        List<User> users = new ArrayList<>();
+        for (int i=0; i<wishList.size(); i++) {
+            User user = wishList.get(i).getUserId();
+            users.add(user);
+        }
+        return users;
+    }
 }

@@ -1,10 +1,8 @@
 package hermes.Lyra.controller;
 
-import hermes.Lyra.Service.WishService;
+import hermes.Lyra.Service.FollowService;
 import hermes.Lyra.Service.UserService;
-import hermes.Lyra.domain.Pheed;
 import hermes.Lyra.domain.User;
-import hermes.Lyra.domain.Wish;
 import hermes.Lyra.dto.Message;
 import hermes.Lyra.dto.StatusEnum;
 import io.swagger.annotations.ApiOperation;
@@ -19,70 +17,69 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 @RestController
-@RequestMapping("/wish")
-public class WishController {
+@RequestMapping("/follow")
+public class FollowController {
 
     @Autowired
-    WishService wishService;
+    FollowService followService;
 
     @Autowired
     UserService userService;
 
-    @ApiOperation(value = "피드에 좋아요/좋아요 취소를 누른다.",notes = "피드에 좋아요/좋아요 취소를 누른다")
-    @PostMapping("/{userId}/{pheedId}")
-    public ResponseEntity<?> wishPheed(
-            @PathVariable("userId") Long userId,
-            @PathVariable("pheedId") Long pheedId)  {
+    @ApiOperation(value = "유저에 팔로우/팔로우 취소를 누른다.",notes = "유저에 팔로우/팔로우 취소를 누른다")
+    @PostMapping("/{followerId}/{followingId}")
+    public ResponseEntity<?> follow(
+            @PathVariable("followerId") Long followerId,
+            @PathVariable("followingId") Long followingId)  {
         Message message = new Message();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-        int check = wishService.wishPheed(userId, pheedId);
+        int check = followService.follow(followerId, followingId);
         if (check==1) {
             message.setStatus(StatusEnum.OK);
-            message.setMessage("좋아요 성공");
+            message.setMessage("팔로우 성공");
             return new ResponseEntity<>(message, headers, HttpStatus.OK);
         } else if (check==2) {
             message.setStatus(StatusEnum.OK);
-            message.setMessage("좋아요 취소 성공");
+            message.setMessage("팔로우 취소 성공");
             return new ResponseEntity<>(message, headers, HttpStatus.OK);
         } else {
             message.setStatus(StatusEnum.BAD_REQUEST);
-            if (check==3) message.setMessage("없는 유저입니다");
-            else message.setMessage("없는 피드입니다");
+            if (check==3) message.setMessage("팔로워 아이디를 잘못 입력했습니다");
+            else message.setMessage("팔로잉 아이디를 잘못 입력했습니다");
             return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @ApiOperation(value = "유저가 좋아요한 피드 리스트를 조회한다.",notes = "유저가 좋아요한 피드 리스트를 조회한다")
-    @GetMapping("pheedlist/{userId}")
-    public ResponseEntity<?> searchWishPheedList(
+    @ApiOperation(value = "유저의 팔로워 리스트를 조회한다.",notes = "유저의 팔로워 리스트를 조회한다")
+    @GetMapping("followerList/{userId}")
+    public ResponseEntity<?> followerList(
             @PathVariable("userId") Long userId){
         Message message = new Message();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-        List<Pheed> pheedList = wishService.searchPheedList(userId);
+        List<User> followers = followService.searchFollowerList(userId);
         message.setStatus(StatusEnum.OK);
-        message.setMessage("좋아요한 피드 리스트 조회 성공");
-        message.setData(pheedList);
+        message.setMessage("팔로워 리스트 조회 성공");
+        message.setData(followers);
 
         return new ResponseEntity<>(message, headers, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "피드를 좋아요한 유저 리스트를 조회한다.",notes = "피드를 좋아요한 유저 리스트를 조회한다")
-    @GetMapping("userlist/{pheedId}")
-    public ResponseEntity<?> searchWishUserList(
-            @PathVariable("pheedId") Long pheedId){
+    @ApiOperation(value = "유저의 팔로잉 리스트를 조회한다.",notes = "유저의 팔로잉 리스트를 조회한다")
+    @GetMapping("followingList/{userId}")
+    public ResponseEntity<?> followingList(
+            @PathVariable("userId") Long userId){
         Message message = new Message();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-        List<User> userList = wishService.searchUserList(pheedId);
+        List<User> followings = followService.searchFollowingList(userId);
         message.setStatus(StatusEnum.OK);
-        message.setMessage("좋아요한 유저 리스트 조회 성공");
-        message.setData(userList);
+        message.setMessage("팔로잉 리스트 조회 성공");
+        message.setData(followings);
 
         return new ResponseEntity<>(message, headers, HttpStatus.OK);
     }
-
 }

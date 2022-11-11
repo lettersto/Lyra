@@ -25,6 +25,5 @@ public class Wish {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     private User userId;
 }
