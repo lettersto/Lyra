@@ -3,6 +3,7 @@ package hermes.Lyra.vo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import hermes.Lyra.domain.PheedImg;
 import hermes.Lyra.domain.PheedTag;
+import hermes.Lyra.domain.User;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -13,9 +14,13 @@ import java.util.List;
 @Data
 public class ResponsePheed {
 
-    private Long pheedId;
-
     private Long userId;
+
+    private String userImage_url;
+
+    private String userNickname;
+
+    private Long pheedId;
 
     private String title;
 
