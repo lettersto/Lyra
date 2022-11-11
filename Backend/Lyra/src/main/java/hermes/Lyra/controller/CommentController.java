@@ -37,9 +37,11 @@ public class CommentController {
         log.info("Before get comments data");
         Iterable<Comment> commentList = commentService.getCommentByAll(pheedId);
 
+
         List<ResponseComment> result = new ArrayList<>();
 
         commentList.forEach(v -> {
+            log.info(String.valueOf(v.getUser()));
             result.add(new ModelMapper().map(v, ResponseComment.class));
         });
 
