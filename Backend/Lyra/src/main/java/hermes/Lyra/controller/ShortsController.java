@@ -33,11 +33,11 @@ public class ShortsController {
 
     @ApiOperation(value = "쇼츠 작성")
     @PostMapping("")
-    public ResponseEntity<String> createShorts(@RequestParam("user_id") Long userId, @RequestPart MultipartFile video, @RequestPart String title) throws IOException {
+    public ResponseEntity<String> createShorts(@RequestParam("user_id") Long userId, @RequestPart MultipartFile video, @RequestPart String title, @RequestPart String regionCode) throws IOException {
 
         log.info("Before create shorts data");
 
-        s3UploadService.uploadShorts(userId, video, title);
+        s3UploadService.uploadShorts(userId, video, title, regionCode);
 
         log.info("After create shorts data");
 
