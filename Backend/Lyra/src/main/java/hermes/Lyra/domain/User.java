@@ -2,6 +2,7 @@ package hermes.Lyra.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,8 +37,6 @@ public class User implements UserDetails {
 
     private String image_url;
 
-//    private String role;
-
     private String refreshToken;
 
     @Column(length = 10)
@@ -47,11 +46,23 @@ public class User implements UserDetails {
 
     private String holder;
 
+    // 지역코드
+    private String region_code;
+
+    // 지역 이름
+    private String region_name;
+
     // 위도
     private BigDecimal latitude;
 
     // 경도
     private BigDecimal longitude;
+
+    // 팔로워 수
+    private Long follower_count;
+
+    // 팔로잉 수
+    private Long following_count;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
