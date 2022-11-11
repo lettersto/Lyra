@@ -62,6 +62,7 @@ public class Pheed {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     @OneToMany(mappedBy = "pheed", cascade = CascadeType.ALL)
@@ -72,7 +73,7 @@ public class Pheed {
     @JsonIgnore
     private List<Participant> participant = new ArrayList<>();
 
-//    @OneToMany(orphanRemoval = true, mappedBy = "pheedId", cascade = CascadeType.ALL)
-//    @JsonIgnore
-//    private List<Like> likeList = new ArrayList<>();
+    @OneToMany(orphanRemoval = true, mappedBy = "pheedId", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Wish> wishList = new ArrayList<>();
 }

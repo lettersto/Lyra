@@ -12,6 +12,7 @@ public class UserDto {
     private Long id;
     private String account;
     private String bank;
+    private String holder;
     private String image_url;
     private String introduction;
     private String refresh_token;
@@ -21,12 +22,13 @@ public class UserDto {
     private BigDecimal longitude;
 
     @Builder
-    public UserDto(Long id, String account, String bank, String image_url, String introduction, String refresh_token,  String email, String nickname, BigDecimal latitude, BigDecimal longitude) {
+    public UserDto(Long id, String account, String bank, String holder, String image_url, String introduction, String refresh_token,  String email, String nickname, BigDecimal latitude, BigDecimal longitude) {
         this.id = id;
         this.email = email;
         this.nickname = nickname;
         this.account = account;
         this.bank = bank;
+        this.holder = holder;
         this.image_url = image_url;
         this.introduction = introduction;
         this.refresh_token = refresh_token;

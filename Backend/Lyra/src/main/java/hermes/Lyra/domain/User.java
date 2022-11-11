@@ -45,6 +45,8 @@ public class User implements UserDetails {
 
     private String account;
 
+    private String holder;
+
     // 위도
     private BigDecimal latitude;
 
@@ -68,9 +70,9 @@ public class User implements UserDetails {
     @JsonIgnore
     private List<Follow> followingList = new ArrayList<>();
 
-//    @OneToMany(orphanRemoval = true, mappedBy = "userId", cascade = CascadeType.ALL)
-//    @JsonIgnore
-//    private List<Like> likeList = new ArrayList<>();
+    @OneToMany(orphanRemoval = true, mappedBy = "userId", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Wish> wishList = new ArrayList<>();
 
 
     @Override
