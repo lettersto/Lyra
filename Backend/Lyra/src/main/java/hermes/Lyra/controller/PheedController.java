@@ -263,5 +263,53 @@ public class PheedController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    @ApiOperation(value = "유저 아이디로 피드 조회 -12시간 +12시간 이내 state=0인것만")
+    @GetMapping("userplan")
+    public ResponseEntity<List<ResponsePheed>> getPheedbyUserPlan(@RequestParam("user_id") Long userId) throws Exception {
+
+        log.info("Before get pheed by user data");
+        List<Pheed> pheedList = pheedService.getPheedByUserPlan(userId);
+
+        List<ResponsePheed> result = new ArrayList<>();
+
+        pheedList.forEach(v -> {
+            result.add(new ModelMapper().map(v, ResponsePheed.class));
+        });
+
+        log.info("After got pheed by user data");
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @ApiOperation(value = "유저 아이디로 피드 조회 state=1인것")
+    @GetMapping("userchat")
+    public ResponseEntity<List<ResponsePheed>> getPheedbyUserChat(@RequestParam("user_id") Long userId) throws Exception {
+
+        log.info("Before get pheed by user data");
+        List<Pheed> pheedList = pheedService.getPheedByUserChat(userId);
+
+        List<ResponsePheed> result = new ArrayList<>();
+
+        pheedList.forEach(v -> {
+            result.add(new ModelMapper().map(v, ResponsePheed.class));
+        });
+
+        log.info("After got pheed by user data");
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @ApiOperation(value = "피드 상태 변경 0 or 1 or 2")
+    @PatchMapping("pheedstate")
+    public ResponseEntity<String> updatePheedbyState(@RequestParam("pheed_id") Long pheedId, @RequestParam("state") int state) throws Exception {
+
+        log.info("Before update pheed data");
+        pheedService.updatePheedByState(pheedId, state);
+
+        log.info("After updated pheed data");
+
+        return new ResponseEntity<String>("success", HttpStatus.OK);
+    }
+
 
 }
