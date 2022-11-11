@@ -10,6 +10,8 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 public class UserLocationRequestDto {
+    String region_code;
+    String region_name;
     BigDecimal latitude;
     BigDecimal longitude;
 }
