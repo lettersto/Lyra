@@ -4,6 +4,7 @@ import hermes.Lyra.config.JwtTokenProvider;
 import hermes.Lyra.domain.Repository.UserRepository;
 import hermes.Lyra.domain.Repository.UserRepository2;
 import hermes.Lyra.domain.User;
+import hermes.Lyra.dto.RequestDto.UserImageRequestDto;
 import hermes.Lyra.dto.RequestDto.UserLocationRequestDto;
 import hermes.Lyra.dto.RequestDto.UserUpdateRequestDto;
 import hermes.Lyra.dto.ResponseDto.UserLocationResponseDto;
@@ -128,6 +129,11 @@ public class UserService {
     @Transactional
     public int updateUser(Long userId, UserUpdateRequestDto userUpdateRequestDto) {
         return userRepository.updateUser(userId, userUpdateRequestDto);
+    }
+
+    @Transactional
+    public int updateImage(Long userId, UserImageRequestDto userImageRequestDto) {
+        return userRepository.updateImage(userId, userImageRequestDto);
     }
 
 //    @Transactional
