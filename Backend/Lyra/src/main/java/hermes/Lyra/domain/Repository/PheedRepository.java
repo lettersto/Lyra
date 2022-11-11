@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface PheedRepository extends CrudRepository<Pheed, Long> {
@@ -25,4 +26,8 @@ public interface PheedRepository extends CrudRepository<Pheed, Long> {
     Iterable<Pheed> findAll(Pageable pageable);
 
     List<Pheed> findByRegionCode(String regionCode, Pageable pageable);
+
+    List<Pheed> findByStartTimeBetweenAndState(Timestamp st, Timestamp et, int i);
+
+    List<Pheed> findByUserIdAndState(Long userId, int i);
 }

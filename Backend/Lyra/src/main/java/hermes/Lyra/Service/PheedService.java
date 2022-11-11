@@ -42,4 +42,10 @@ public interface PheedService {
     List<Pheed> getPheedByUser(String nickname, Pageable pageable);
 
     List<Pheed> getPheedByRegion(String regionCode, Pageable pageable);
+
+    List<Pheed> getPheedByUserPlan(Long userId);
+
+    List<Pheed> getPheedByUserChat(Long userId);
+
+    void updatePheedByState(Long pheedId, int state);
 }
