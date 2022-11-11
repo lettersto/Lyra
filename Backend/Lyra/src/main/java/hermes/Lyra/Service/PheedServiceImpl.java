@@ -109,20 +109,19 @@ public class PheedServiceImpl implements PheedService{
 
     @Override
     public List<Pheed> getPheedByTag(String tag, Pageable pageable) {
-        Long ti = tagRepository.findByName(tag).getId();
-        List<PheedTag> pt = pheedTagRepository.findByTagId(ti, pageable);
-
-//        log.info(String.valueOf(pt));
-
+        Tag t = tagRepository.findByName(tag);
         List<Pheed> result = new ArrayList<>();
+        if (t != null) {
 
-        if(pt == null){
-            return null;
-        }else{
+            Long ti = t.getId();
+            List<PheedTag> pt = pheedTagRepository.findByTagId(ti, pageable);
+
             pt.forEach(v -> {
                 result.add(v.getPheed());
             });
+
         }
+
         return result;
     }
 
