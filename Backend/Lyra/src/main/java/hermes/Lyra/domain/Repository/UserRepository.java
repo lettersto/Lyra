@@ -124,6 +124,9 @@ public class UserRepository {
         if (userUpdateRequestDto.getIntroduction() != null) {
             user.setIntroduction(userUpdateRequestDto.getIntroduction());
         }
+        if (userUpdateRequestDto.getHolder() != null) {
+            user.setHolder(userUpdateRequestDto.getHolder());
+        }
         em.persist(user);
         return 1;
     }
