@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import './global';
 import React, {useCallback, useContext, useEffect} from 'react';
-import {SafeAreaView, StatusBar} from 'react-native';
+import {SafeAreaView, StatusBar, LogBox} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import SplashScreen from 'react-native-splash-screen';
@@ -27,6 +27,7 @@ const App = () => {
     setWalletAddress,
     setLatitude,
     setUserId,
+    accessToken: token,
   } = useContext(AuthContext);
 
   const checkTokensInStorage = useCallback(async () => {
@@ -66,10 +67,16 @@ const App = () => {
     }, 2000);
   }, []);
 
+  useEffect(() => {}, [token]);
+
   const backgroundStyle = {
     backgroundColor: Colors.purple300,
     height: '100%',
   };
+
+  LogBox.ignoreLogs([
+    "The provided value 'moz-chunked-arraybuffer' is not a valid 'responseType'.",
+  ]);
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>
