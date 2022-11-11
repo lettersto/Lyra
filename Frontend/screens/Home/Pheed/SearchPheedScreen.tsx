@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -13,7 +13,7 @@ import {useInfiniteQuery} from 'react-query';
 // import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 
-import {searchPheeds} from '../../../api/pheed';
+import {searchPheeds, searchPheedsByTags} from '../../../api/pheed';
 // import {
 //   PheedStackNavigationProps,
 //   PheedStackScreens,
@@ -38,20 +38,97 @@ interface searchPheedItemType {
   userId: number;
 }
 
+type searchType = 'default' | 'tags';
+
 const SearchPheedScreen = () => {
   // const navigation = useNavigation<PheedStackNavigationProps>();
   const gradientColors = [Colors.pink700, Colors.purple700];
+  const [searchMode, setSearchMode] = useState<searchType>('default');
+  const [enteredWord, setEnteredWord] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
-  const debouncedSearchKeyword = useDebounce(searchKeyword, 500);
+  const [tag, setTag] = useState('');
+  const debouncedEnteredWord = useDebounce(enteredWord, 500);
 
-  const inputEnterHandler = (text: string) => {
+  const defaultInputEnterHandler = (text: string) => {
     setSearchKeyword(text.trim());
   };
 
-  const renderItem = ({item}: {item: searchPheedItemType}) => {
-    let content = item.content;
+  const tagInputEnterHandler = (text: string) => {
+    const _text = text.trim();
+    const hashIndex = _text.indexOf('#');
+    const firstTag = _text.substring(hashIndex + 1).split(' ')[0];
+    setTag(firstTag);
+  };
 
-    if (content.length > 20) {
+  useEffect(() => {
+    if (debouncedEnteredWord.length > 0 && debouncedEnteredWord[0] === '#') {
+      setSearchMode('tags');
+      tagInputEnterHandler(debouncedEnteredWord);
+    } else {
+      setSearchMode('default');
+      defaultInputEnterHandler(debouncedEnteredWord);
+    }
+  }, [debouncedEnteredWord]);
+
+  const {
+    fetchNextPage: defaultSearchFetchNextPage,
+    hasNextPage: defaultSearchHasNextPage,
+    isFetchingNextPage: defaultSearchIsFetchingNextPage,
+    data: defaultSearchData,
+    status: defaultSearchStatus,
+  } = useInfiniteQuery(
+    ['/searchPostsByKeyword', searchKeyword],
+    ({pageParam = 0}) => searchPheeds(pageParam, {keyword: searchKeyword}),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        return lastPage.length ? allPages.length : undefined;
+      },
+      enabled: searchMode === 'default',
+    },
+  );
+
+  const requestDefaultSearchNextPage = () => {
+    if (defaultSearchHasNextPage) {
+      defaultSearchFetchNextPage();
+    }
+  };
+
+  const {
+    fetchNextPage: tagSearchFetchNextPage,
+    hasNextPage: tagSearchHasNextPage,
+    isFetchingNextPage: tagSearchIsFetchingNextPage,
+    data: tagSearchData,
+    status: tagSearchStatus,
+  } = useInfiniteQuery(
+    ['/searchPostsByTags', tag],
+    ({pageParam = 0}) => searchPheedsByTags(pageParam, {tag: tag}),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        return lastPage.length ? allPages.length : undefined;
+      },
+      enabled: searchMode === 'tags' && tag.length > 0,
+    },
+  );
+
+  const requestTagSearchNextPage = () => {
+    if (tagSearchHasNextPage) {
+      tagSearchFetchNextPage();
+    }
+  };
+
+  const loadingComponent = (
+    <View style={styles.spinnerContainer}>
+      <ActivityIndicator color={Colors.purple300} size="large" />
+    </View>
+  );
+
+  const renderItem = ({item}: {item: searchPheedItemType}) => {
+    if (!item) {
+      return <View />;
+    }
+
+    let content = item.content;
+    if (content?.length > 20) {
       content = content.substring(0, 20) + '...';
     }
 
@@ -74,52 +151,36 @@ const SearchPheedScreen = () => {
     );
   };
 
-  const {
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    data,
-    status,
-    // error,
-  } = useInfiniteQuery(
-    ['/posts', debouncedSearchKeyword],
-    ({pageParam = 0}) =>
-      searchPheeds(pageParam, {keyword: debouncedSearchKeyword}),
-    {
-      getNextPageParam: (lastPage, allPages) => {
-        return lastPage.length ? allPages.length : undefined;
-        // return lastPage.length ? allPages.length + 1 : undefined;
-      },
-    },
-  );
-
-  const requestNextPage = () => {
-    if (hasNextPage) {
-      fetchNextPage();
-    }
-  };
-
-  const loadingComponent = (
-    <View style={styles.spinnerContainer}>
-      <ActivityIndicator color={Colors.purple300} size="large" />
-    </View>
-  );
-
   let content;
 
-  if (status === 'loading' && !isFetchingNextPage) {
+  if (
+    (defaultSearchStatus === 'loading' && !defaultSearchIsFetchingNextPage) ||
+    (tagSearchStatus === 'loading' && !tagSearchIsFetchingNextPage)
+  ) {
     content = loadingComponent;
   }
 
-  if (status !== 'loading') {
+  if (defaultSearchStatus !== 'loading' && tagSearchStatus !== 'loading') {
     content = (
       <FlatList
-        data={data?.pages.flat()}
+        data={
+          searchMode === 'default'
+            ? defaultSearchData?.pages.flat()
+            : tagSearchData?.pages?.flat()
+        }
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
-        onEndReached={requestNextPage}
+        onEndReached={
+          searchMode === 'default'
+            ? requestDefaultSearchNextPage
+            : requestTagSearchNextPage
+        }
         onEndReachedThreshold={0.6}
-        ListFooterComponent={isFetchingNextPage ? loadingComponent : null}
+        ListFooterComponent={
+          defaultSearchIsFetchingNextPage || tagSearchIsFetchingNextPage
+            ? loadingComponent
+            : null
+        }
       />
     );
   }
@@ -135,8 +196,8 @@ const SearchPheedScreen = () => {
           style={[styles.input, styles.text]}
           placeholder="피드와 해시태그를 검색해보세요."
           placeholderTextColor={Colors.white300}
-          value={searchKeyword}
-          onChangeText={inputEnterHandler}
+          value={enteredWord}
+          onChangeText={setEnteredWord}
         />
       </LinearGradient>
       {content}
