@@ -113,7 +113,7 @@ public class S3UploadService {
 
     }
 
-    public void uploadShorts(Long userId, MultipartFile video, String title) throws IOException {
+    public void uploadShorts(Long userId, MultipartFile video, String title, String regionCode) throws IOException {
 
         String s3FileName = UUID.randomUUID() + "-" + video.getOriginalFilename();
         byte[] bytes = new byte[0];
@@ -134,6 +134,8 @@ public class S3UploadService {
         shorts.setPath(path.toString());
 
         shorts.setUser(user.get());
+
+        shorts.setRegionCode(regionCode);
 
         shorts.setTitle(title);
 
