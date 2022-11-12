@@ -26,6 +26,7 @@ public class ResponsePheed {
 
     private String content;
 
+    @JsonFormat(timezone = "Asia/Seoul", pattern = "yyyy-MM-dd HH:mm")
     private Timestamp startTime;
 
     private BigDecimal latitude;
