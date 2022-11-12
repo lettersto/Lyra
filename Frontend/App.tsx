@@ -76,6 +76,7 @@ const App = () => {
 
   LogBox.ignoreLogs([
     "The provided value 'moz-chunked-arraybuffer' is not a valid 'responseType'.",
+    "The provided value 'ms-stream' is not a valid 'responseType'.",
   ]);
 
   return (
