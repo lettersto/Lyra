@@ -4,6 +4,7 @@ import hermes.Lyra.dto.PheedDto;
 import hermes.Lyra.domain.Pheed;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,10 +37,9 @@ public interface PheedService {
 
     Optional<Pheed> getPheedById(Long pheedId);
 
-
     Iterable<Pheed> getPheedByPage(Pageable pageable);
 
-    List<Pheed> getPheedByUser(String nickname, Pageable pageable);
+    List<Pheed> getPheedByNickname(String nickname, Pageable pageable);
 
     List<Pheed> getPheedByRegion(String regionCode, Pageable pageable);
 
@@ -48,4 +48,8 @@ public interface PheedService {
     List<Pheed> getPheedByUserChat(Long userId);
 
     void updatePheedByState(Long pheedId, int state);
+
+    List<Pheed> getPheedByMap(BigDecimal latitude, BigDecimal longitude, double z);
+
+    List<Pheed> getPheedByUser(Long userId, Pageable pageable);
 }

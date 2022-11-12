@@ -30,4 +30,6 @@ public interface PheedRepository extends CrudRepository<Pheed, Long> {
     List<Pheed> findByStartTimeBetweenAndState(Timestamp st, Timestamp et, int i);
 
     List<Pheed> findByUserIdAndState(Long userId, int i);
+
+    List<Pheed> findByState(int i);
 }

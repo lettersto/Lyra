@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -246,11 +247,29 @@ public class PheedController {
 
 
     @ApiOperation(value = "유저 닉네임으로 피드 검색, 페이징0부터&최신순")
-    @GetMapping("user")
-    public ResponseEntity<List<ResponsePheed>> getPheedbyUser(@RequestParam("nickname") String nickname, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
+    @GetMapping("nickname")
+    public ResponseEntity<List<ResponsePheed>> getPheedbyNickname(@RequestParam String nickname, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
 
         log.info("Before get pheed by user data");
-        List<Pheed> pheedList = pheedService.getPheedByUser(nickname, pageable);
+        List<Pheed> pheedList = pheedService.getPheedByNickname(nickname, pageable);
+
+        List<ResponsePheed> result = new ArrayList<>();
+
+        pheedList.forEach(v -> {
+            result.add(new ModelMapper().map(v, ResponsePheed.class));
+        });
+
+        log.info("After got pheed by user data");
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @ApiOperation(value = "유저 아이디로 피드 조회, 페이징0부터&최신순")
+    @GetMapping("mybusking")
+    public ResponseEntity<List<ResponsePheed>> getPheedbyUser(@RequestParam("user_id") Long userId, @PageableDefault(size = 30, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
+
+        log.info("Before get pheed by user data");
+        List<Pheed> pheedList = pheedService.getPheedByUser(userId, pageable);
 
         List<ResponsePheed> result = new ArrayList<>();
 
@@ -309,6 +328,63 @@ public class PheedController {
         log.info("After updated pheed data");
 
         return new ResponseEntity<String>("success", HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "지도에서 쓸 피드 정보")
+    @GetMapping("map")
+    public ResponseEntity<List<ResponsePheed>> getPheedbyMap(@RequestParam("latitude") BigDecimal latitude, @RequestParam("longitude") BigDecimal longitude, @RequestParam("zoom") Long zoom) throws Exception {
+
+        log.info("Before get pheed by map");
+        double z = 0;
+        if (zoom == 3) {
+            z = 6144000;
+        } else if (zoom == 4) {
+            z = 3072000;
+        } else if (zoom == 5) {
+            z = 1536000;
+        } else if (zoom == 6) {
+            z = 768000;
+        } else if (zoom == 7) {
+            z = 384000;
+        } else if (zoom == 8) {
+            z = 192000;
+        } else if (zoom == 9) {
+            z = 96000;
+        } else if (zoom == 10) {
+            z = 48000;
+        } else if (zoom == 11) {
+            z = 24000;
+        } else if (zoom == 12) {
+            z = 12000;
+        } else if (zoom == 13) {
+            z = 6000;
+        } else if (zoom == 14) {
+            z = 3000;
+        } else if (zoom == 15) {
+            z = 1500;
+        } else if (zoom == 16) {
+            z = 750;
+        } else if (zoom == 17) {
+            z = 375;
+        } else if (zoom == 18) {
+            z = 188;
+        } else if (zoom == 19) {
+            z = 94;
+        } else if (zoom == 20) {
+            z = 47;
+        }
+
+        List<Pheed> pheedList = pheedService.getPheedByMap(latitude, longitude, z);
+
+        List<ResponsePheed> result = new ArrayList<>();
+
+        pheedList.forEach(v -> {
+            result.add(new ModelMapper().map(v, ResponsePheed.class));
+        });
+
+        log.info("After got pheed by map");
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
 

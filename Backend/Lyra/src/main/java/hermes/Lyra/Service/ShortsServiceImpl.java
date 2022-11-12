@@ -6,6 +6,9 @@ import hermes.Lyra.domain.Shorts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.List;
 
 @Service
@@ -27,6 +30,14 @@ public class ShortsServiceImpl implements ShortsService {
 
     @Override
     public List<Shorts> getShortsByRegion(String regionCode) {
-        return shortsRepository.findByRegionCode(regionCode);
+        Timestamp stmStamp = Timestamp.valueOf(LocalDateTime.now());
+        Timestamp etmStamp = Timestamp.valueOf(LocalDateTime.now());
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(stmStamp);
+        cal.add(Calendar.HOUR, -12);
+        stmStamp.setTime(cal.getTime().getTime());
+
+        return shortsRepository.findByTimeBetweenAndRegionCode(stmStamp, etmStamp, regionCode);
     }
 }

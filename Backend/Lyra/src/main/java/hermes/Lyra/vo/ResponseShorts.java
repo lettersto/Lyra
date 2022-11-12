@@ -1,7 +1,10 @@
 package hermes.Lyra.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import hermes.Lyra.domain.User;
 import lombok.Data;
+
+import java.sql.Timestamp;
 
 @Data
 public class ResponseShorts {
@@ -19,4 +22,7 @@ public class ResponseShorts {
     private String path;
 
     private String title;
+
+    @JsonFormat(timezone = "Asia/Seoul", pattern = "yyyy-MM-dd HH:mm")
+    private Timestamp time;
 }
