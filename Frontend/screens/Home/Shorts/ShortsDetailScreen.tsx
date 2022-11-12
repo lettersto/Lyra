@@ -1,4 +1,4 @@
-import React, {useState, useLayoutEffect} from 'react';
+import React, {useState, useLayoutEffect, useContext} from 'react';
 import {
   StyleSheet,
   View,
@@ -11,6 +11,8 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 
 import Video from 'react-native-video';
 import GestureRecognizer from 'react-native-swipe-gestures';
+import {useMutation, useQueryClient} from 'react-query';
+import IIcon from 'react-native-vector-icons/Ionicons';
 
 import {
   PheedStackRouteProps,
@@ -18,13 +20,21 @@ import {
   PheedStackNavigationProps,
   StoryType,
 } from '../../../constants/types';
+import {deleteVideo} from '../../../api/pheed';
+import {AuthContext} from '../../../store/auth-context';
 import Colors from '../../../constants/Colors';
 import ProfilePhoto from '../../../components/Utils/ProfilePhoto';
+import ModalWithButton from '../../../components/Utils/ModalWithButton';
+import LoadingSpinner from '../../../components/Utils/LoadingSpinner';
 
 const ShortsDetailScreen = () => {
+  const {userId: myUserId} = useContext(AuthContext);
   const route = useRoute<PheedStackRouteProps>();
   const navigation = useNavigation<PheedStackNavigationProps>();
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const queryClient = useQueryClient();
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] =
+    useState<boolean>(false);
 
   useLayoutEffect(() => {
     navigation.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
@@ -60,8 +70,46 @@ const ShortsDetailScreen = () => {
     navigation.navigate(PheedStackScreens.MainPheed);
   };
 
+  const isMyStory = myUserId === dataStories[currentIndex].userId;
+
+  const {mutate: deleteVideoMutate, isLoading} = useMutation(deleteVideo, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('videoInNeighborhood');
+      goHome();
+    },
+  });
+
+  const storyDeleteHandler = () => {
+    if (!isMyStory) {
+      return;
+    }
+    deleteVideoMutate(dataStories[currentIndex].shortsId);
+  };
+
   return (
     <GestureRecognizer onSwipeDown={goHome} style={styles.screen}>
+      {isLoading ? (
+        <LoadingSpinner
+          animating={isLoading}
+          size="large"
+          color={Colors.purple300}
+        />
+      ) : null}
+      <ModalWithButton
+        isModalVisible={isDeleteModalVisible}
+        setIsModalVisible={setIsDeleteModalVisible}
+        leftText="취소하기"
+        onLeftPress={() => setIsDeleteModalVisible(false)}
+        rightText="삭제하기"
+        onRightPress={storyDeleteHandler}>
+        <IIcon
+          name="sad-outline"
+          size={25}
+          color={Colors.pink300}
+          style={styles.warningIcon}
+        />
+        <Text style={styles.storyTitle}>정말 스토리를 삭제하시겠습니까?</Text>
+      </ModalWithButton>
       <View style={styles.storyTop}>
         <ProfilePhoto
           imageURI={dataStories[currentIndex].userImage_url}
@@ -78,6 +126,11 @@ const ShortsDetailScreen = () => {
             {`${dataStories[currentIndex].userNickname} | ${dataStories[currentIndex].time}`}
           </Text>
         </View>
+        <Pressable
+          style={styles.deleteBtn}
+          onPress={() => setIsDeleteModalVisible(true)}>
+          <Text style={styles.deleteText}>삭제</Text>
+        </Pressable>
       </View>
       <Pressable
         onPress={e => changeStory(e.nativeEvent)}
@@ -108,6 +161,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   storyTop: {
+    position: 'relative',
     flexDirection: 'row',
     alignItems: 'center',
     paddingTop: 8,
@@ -115,6 +169,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   storyTitle: {
+    fontFamily: 'NanumSquareRoundR',
     color: Colors.pink500,
     fontSize: 18,
   },
@@ -122,8 +177,25 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   storySubInfo: {
+    fontFamily: 'NanumSquareRoundR',
     color: '#ffffffcf',
     fontSize: 14,
+  },
+  deleteBtn: {
+    position: 'absolute',
+    right: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    backgroundColor: Colors.purple300,
+  },
+  deleteText: {
+    fontFamily: 'NanumSquareRoundR',
+    color: 'white',
+    fontSize: 16,
+  },
+  warningIcon: {
+    marginBottom: 12,
   },
 });
 

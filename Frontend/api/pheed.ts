@@ -72,11 +72,10 @@ export const uploadVideo = async ({
   return response;
 };
 
-export const deleteVideo = async ({shortsId}: {shortsId: number}) => {
+export const deleteVideo = async (shortsId: number) => {
   const response = await axios({
-    url: '/shorts',
+    url: `/shorts/${shortsId}`,
     method: 'DELETE',
-    params: {shorts_id: shortsId},
   });
   return response.data;
 };

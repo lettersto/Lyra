@@ -303,7 +303,7 @@ export type CommentParamList = {
 
 export type StoryType = {
   path: string;
-  shortsId: string;
+  shortsId: number;
   title: string;
   userId: number;
   userImage_url: string;

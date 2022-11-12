@@ -11,7 +11,7 @@ import {
 import {useNavigation, useRoute} from '@react-navigation/native';
 
 import Video from 'react-native-video';
-import {useMutation} from 'react-query';
+import {useMutation, useQueryClient} from 'react-query';
 import MIcon from 'react-native-vector-icons/MaterialIcons';
 import IIcon from 'react-native-vector-icons/Ionicons';
 
@@ -44,6 +44,7 @@ const CreateShortsScreen = () => {
     path: videoUri,
     // size,
   } = useRoute<PheedStackRouteProps>().params as VideoParamList;
+  const queryClient = useQueryClient();
   const {userId} = useContext(AuthContext);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [title, setTitle] = useState('');
@@ -56,6 +57,7 @@ const CreateShortsScreen = () => {
     // isError,
   } = useMutation(uploadVideo, {
     onSuccess: () => {
+      queryClient.invalidateQueries('videoInNeighborhood');
       navigation.navigate(PheedStackScreens.MainPheed);
     },
   });

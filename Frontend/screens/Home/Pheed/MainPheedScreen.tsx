@@ -58,9 +58,11 @@ const MainPheedScreen = () => {
           <View style={styles.bannerContainer}>
             <MainBanner />
           </View>
-          <View style={styles.videoContainer}>
-            <Story storyData={storyData} />
-          </View>
+          {storyData.length ? (
+            <View style={styles.videoContainer}>
+              <Story storyData={storyData} />
+            </View>
+          ) : null}
           <GradientLine />
           <View style={styles.categoryContainer}>
             <PheedCategory
