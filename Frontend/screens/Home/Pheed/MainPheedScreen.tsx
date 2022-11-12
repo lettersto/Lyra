@@ -6,13 +6,16 @@ import {
   useFocusEffect,
 } from '@react-navigation/native';
 
+import {useQuery} from 'react-query';
+
+import {getVideosInNeighborhood} from '../../../api/pheed';
 import CreateButton from '../../../components/Pheed/CreateButton';
 import PheedContent from '../../../components/Pheed/PheedContent';
 import Colors from '../../../constants/Colors';
 import MainBanner from '../../../components/Pheed/MainBanner';
 import GradientLine from '../../../components/Utils/GradientLine';
 import PheedCategory from '../../../components/Pheed/Category/PheedCategory';
-import Shorts from '../../../components/Pheed/Shorts';
+import Story from '../../../components/Pheed/Story';
 import {
   PheedStackNavigationProps,
   BottomTabNavigationProps,
@@ -24,6 +27,7 @@ type Props = CompositeNavigationProp<
 >;
 
 const MainPheedScreen = () => {
+  const dummyRegionCode = '2920012300';
   const navigation = useNavigation<Props>();
   useFocusEffect(() => {
     navigation.getParent()?.setOptions({
@@ -39,6 +43,14 @@ const MainPheedScreen = () => {
 
   const [currentCategory, SetCurrentCategory] = useState('all');
 
+  const {
+    data: storyData,
+    // isLoading: storyIsLoading,
+    // isError: storyIsError,
+  } = useQuery('videoInNeighborhood', () =>
+    getVideosInNeighborhood(dummyRegionCode),
+  );
+
   return (
     <>
       <ScrollView style={styles.scroll}>
@@ -47,7 +59,7 @@ const MainPheedScreen = () => {
             <MainBanner />
           </View>
           <View style={styles.videoContainer}>
-            <Shorts />
+            <Story storyData={storyData} />
           </View>
           <GradientLine />
           <View style={styles.categoryContainer}>

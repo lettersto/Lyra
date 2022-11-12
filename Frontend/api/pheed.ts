@@ -81,6 +81,15 @@ export const deleteVideo = async ({shortsId}: {shortsId: number}) => {
   return response.data;
 };
 
+export const getVideosInNeighborhood = async (code: string) => {
+  const response = await axios({
+    url: '/shorts/region',
+    method: 'GET',
+    params: {code},
+  });
+  return response.data;
+};
+
 export const getAllVideos = async () => {
   const response = await axios({
     url: '/shorts/all',
