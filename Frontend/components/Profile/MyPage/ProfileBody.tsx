@@ -29,8 +29,14 @@ const ProfileBody = ({
         <View style={styles.profileInfoContainer}>
           <View style={styles.profileInfo}>
             <ProfileItem count={1} description="내 버스킹" />
-            <ProfileItem count={256} description="팔로워" />
-            <ProfileItem count={14} description="팔로우" />
+            <ProfileItem
+              count={profileData?.follower_count || 0}
+              description="팔로워"
+            />
+            <ProfileItem
+              count={profileData?.following_count || 0}
+              description="팔로우"
+            />
           </View>
           {!isMyProfile ? (
             <Button
