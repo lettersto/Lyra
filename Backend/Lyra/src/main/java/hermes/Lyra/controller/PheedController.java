@@ -264,7 +264,7 @@ public class PheedController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    @ApiOperation(value = "유저 아이디로 피드 조회, 페이징0부터&최신순")
+    @ApiOperation(value = "유저 아이디로 피드 조회, state 상관없이, 페이징0부터&최신순")
     @GetMapping("mybusking")
     public ResponseEntity<List<ResponsePheed>> getPheedbyUser(@RequestParam("user_id") Long userId, @PageableDefault(size = 30, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
 
