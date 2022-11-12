@@ -10,7 +10,7 @@ import {getPheedbyUser} from '../../api/pheed';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 
 interface Props {
-  userId: string;
+  userId: number | null;
   isModalVisible: boolean;
   setIsModalVisible: Dispatch<SetStateAction<boolean>>;
 }
