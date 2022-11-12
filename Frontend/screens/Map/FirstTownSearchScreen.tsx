@@ -29,6 +29,8 @@ const FirstTownSearchScreen = () => {
     nickname,
     walletAddress,
   } = useContext(AuthContext);
+  const [regionCode, setRegionCode] = useState('');
+  const [threeDepthName, setThreeDepthName] = useState('');
   console.log('nicknamelocaiton', nickname);
   const [location, setLocation] = useState<Region>({
     latitudeDelta: 0.005,
@@ -48,7 +50,8 @@ const FirstTownSearchScreen = () => {
       },
     );
     const result = await response.json();
-    return setTownName(result.documents[0].region_3depth_name);
+    setRegionCode(result.documents[0].code);
+    setThreeDepthName(result.documents[0].region_3depth_name);
   };
 
   const pressHandler = async () => {
@@ -57,14 +60,19 @@ const FirstTownSearchScreen = () => {
         userId: userId,
         latitude: location.latitude,
         longitude: location.longitude,
+        regionCode: regionCode,
+        regionName: threeDepthName,
       });
       console.log(response);
       if (response.status === 'OK') {
         setLatitude(location.latitude);
         setLongitude(location.longitude);
+        setRegionCode(regionCode);
+        setThreeDepthName(threeDepthName);
+
         await EncryptedStorage.setItem('latitude', `${location.latitude}`);
         await EncryptedStorage.setItem('longitude', `${location.longitude}`);
-        await EncryptedStorage.setItem('townName', `${townName}`);
+        // await EncryptedStorage.setItem('townName', `${townName}`);
         if (!walletAddress) {
           navigation.navigate(PheedStackScreens.WalletCreation);
         } else {
@@ -113,7 +121,7 @@ const FirstTownSearchScreen = () => {
           )}
           {location.latitude != 0 ? (
             <View style={{height: '25%', bottom: 0}}>
-              <Text style={styles.name}>{townName}</Text>
+              <Text style={styles.name}>{threeDepthName}</Text>
               <Button
                 title="선택한 위치로 설정"
                 btnSize="large"
