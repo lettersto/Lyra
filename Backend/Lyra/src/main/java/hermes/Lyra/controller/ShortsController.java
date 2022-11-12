@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class ShortsController {
 
         log.info("Before create shorts data");
 
-        s3UploadService.uploadShorts(userId, video, title, regionCode);
+        s3UploadService.uploadShorts(userId, video, title.getBytes(StandardCharsets.UTF_8), regionCode);
 
         log.info("After create shorts data");
 
