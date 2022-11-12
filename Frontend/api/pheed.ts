@@ -1,5 +1,5 @@
 import axios from './axios';
-import originalAxios from 'axios';
+import {baseURL} from './axios';
 
 export const searchPheeds = async (pageParam = 0, options = {keyword: ''}) => {
   const response = await axios({
@@ -49,24 +49,27 @@ export const getPheeds = async () => {
 // shorts
 export const uploadVideo = async ({
   userId,
-  video,
+  videoFile,
   title,
+  regionCode,
 }: {
   userId: number;
-  video: string;
+  videoFile: {uri: string; type: string; name: string};
   title: string;
+  regionCode: string;
 }) => {
-  const response = await originalAxios({
-    url: 'http://k7c105.p.ssafy.io:8080/shorts',
+  const video = new FormData();
+  video.append('video', videoFile);
+  video.append('regionCode', regionCode);
+  video.append('title', title);
+
+  const response = await fetch(baseURL + `/shorts/?user_id=${userId}`, {
     method: 'POST',
-    params: {userId},
-    data: {
-      title,
-      video,
-    },
+    body: video,
     headers: {'Content-Type': 'multipart/form-data'},
   });
-  return response.data;
+
+  return response;
 };
 
 export const deleteVideo = async ({shortsId}: {shortsId: number}) => {

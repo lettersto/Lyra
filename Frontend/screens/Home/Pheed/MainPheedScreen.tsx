@@ -1,6 +1,10 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {
+  useNavigation,
+  CompositeNavigationProp,
+  useFocusEffect,
+} from '@react-navigation/native';
 
 import CreateButton from '../../../components/Pheed/CreateButton';
 import PheedContent from '../../../components/Pheed/PheedContent';
@@ -9,12 +13,19 @@ import MainBanner from '../../../components/Pheed/MainBanner';
 import GradientLine from '../../../components/Utils/GradientLine';
 import PheedCategory from '../../../components/Pheed/Category/PheedCategory';
 import Shorts from '../../../components/Pheed/Shorts';
-import {RootStackParamList} from '../../../constants/types';
+import {
+  PheedStackNavigationProps,
+  BottomTabNavigationProps,
+} from '../../../constants/types';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
+type Props = CompositeNavigationProp<
+  PheedStackNavigationProps,
+  BottomTabNavigationProps
+>;
 
-const MainPheedScreen = ({navigation}: Props) => {
-  useLayoutEffect(() => {
+const MainPheedScreen = () => {
+  const navigation = useNavigation<Props>();
+  useFocusEffect(() => {
     navigation.getParent()?.setOptions({
       tabBarStyle: {
         backgroundColor: Colors.black500,
@@ -24,7 +35,7 @@ const MainPheedScreen = ({navigation}: Props) => {
         position: 'absolute',
       },
     });
-  }, [navigation]);
+  });
 
   const [currentCategory, SetCurrentCategory] = useState('all');
 
