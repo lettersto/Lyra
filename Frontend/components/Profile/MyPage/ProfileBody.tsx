@@ -1,11 +1,15 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {View, StyleSheet, Dimensions} from 'react-native';
 
+import {useMutation, useQueryClient} from 'react-query';
+
+import {followAndUnfollow} from '../../../api/profile';
 import {UserProfileType} from '../../../constants/types';
 import ProfileItem from './ProfileItem';
 import ProfilePhoto from '../../Utils/ProfilePhoto';
 import Button from '../../Utils/Button';
 import MoreInfo from '../../Utils/MoreInfo';
+import {AuthContext} from '../../../store/auth-context';
 
 const ProfileBody = ({
   profileData,
@@ -14,8 +18,34 @@ const ProfileBody = ({
   profileData: UserProfileType;
   isMyProfile: boolean;
 }) => {
+  const queryClient = useQueryClient();
+  const {userId} = useContext(AuthContext);
   const [isFollowing, setIsFollowing] = useState(false);
   const buttonCustomStyle = {width: 236};
+
+  const {
+    mutate: followerMutate,
+    // isLoading: followerIsLoading,
+    // isError,
+  } = useMutation(followAndUnfollow);
+
+  const followerhandler = () => {
+    if (isMyProfile) {
+      return;
+    }
+    followerMutate(
+      {
+        followerId: userId!,
+        followingId: profileData?.id,
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries('userProfile');
+          setIsFollowing(preV => !preV);
+        },
+      },
+    );
+  };
 
   return (
     <View style={styles.profileContainer}>
@@ -32,10 +62,14 @@ const ProfileBody = ({
             <ProfileItem
               count={profileData?.follower_count || 0}
               description="팔로워"
+              userProfileId={profileData?.id}
+              profileUserNickname={profileData?.nickname || ''}
             />
             <ProfileItem
               count={profileData?.following_count || 0}
               description="팔로우"
+              userProfileId={profileData?.id}
+              profileUserNickname={profileData?.nickname || ''}
             />
           </View>
           {!isMyProfile ? (
@@ -46,7 +80,7 @@ const ProfileBody = ({
               customStyle={buttonCustomStyle}
               isGradient={true}
               isOutlined={true}
-              onPress={() => setIsFollowing(preV => !preV)}
+              onPress={followerhandler}
             />
           ) : null}
         </View>

@@ -76,7 +76,6 @@ const MainProfileScreen = () => {
   });
 
   const {
-    // data: walletData,
     isLoading: walletIsLoading,
     // isError,
   } = useQuery(

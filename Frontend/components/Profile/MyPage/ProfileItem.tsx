@@ -11,21 +11,33 @@ import Colors from '../../../constants/Colors';
 const ProfileItem = ({
   count,
   description,
+  userProfileId,
+  profileUserNickname,
 }: {
   count: number;
   description: string;
+  userProfileId?: number;
+  profileUserNickname?: string;
 }) => {
   const navigation = useNavigation<ProfileStackNavigationProps>();
 
   const pressHandler = () => {
     if (description === '팔로워') {
       navigation.navigate(ProfileStackScreens.Follower, {
-        param: 'follower',
+        param: {
+          mode: 'follower',
+          userProfileId: userProfileId as number,
+          name: profileUserNickname as string,
+        },
       });
     }
     if (description === '팔로우') {
       navigation.navigate(ProfileStackScreens.Follower, {
-        param: 'follow',
+        param: {
+          mode: 'follow',
+          userProfileId: userProfileId as number,
+          name: profileUserNickname as string,
+        },
       });
     }
   };

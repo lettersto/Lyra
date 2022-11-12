@@ -50,7 +50,7 @@ export const updateUserImg = async ({
   imageUri,
 }: {
   userId: number;
-  imageUri: string; // do type later
+  imageUri: string;
 }) => {
   const response = await fetch(baseURL + `/user/updateImage/${userId}`, {
     method: 'PATCH',
@@ -63,6 +63,37 @@ export const updateUserImg = async ({
   });
   const data = await response.json();
   return data;
+};
+
+// follower & follow
+export const followAndUnfollow = async ({
+  followerId,
+  followingId,
+}: {
+  followerId: number;
+  followingId: number;
+}) => {
+  const response = await axios({
+    url: `/follow/${followerId}/${followingId}`,
+    method: 'POST',
+  });
+  return response.data;
+};
+
+export const getFollowerList = async (userProfileId: number) => {
+  const response = await axios({
+    url: `/follow/followerList/${userProfileId}`,
+    method: 'GET',
+  });
+  return response.data?.data;
+};
+
+export const getFollowingList = async (userProfileId: number) => {
+  const response = await axios({
+    url: `/follow/followingList/${userProfileId}`,
+    method: 'GET',
+  });
+  return response.data?.data;
 };
 
 // wallet
