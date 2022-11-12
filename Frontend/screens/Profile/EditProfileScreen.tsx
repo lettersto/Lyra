@@ -24,7 +24,6 @@ interface editProfileObj {
     placeholder: string;
     modalText: string;
     keyboardType: KeyboardTypeOptions;
-    // pressHandler: (event: GestureResponderEvent) => void;
   };
 }
 
@@ -93,15 +92,15 @@ const EditProfileScreen = () => {
 
   const pressHandler = () => {
     if (enteredValue) {
-      const {bank, account, nickname, introduction} = queryClient.getQueryData(
-        'userProfile',
-      ) as UserProfileType;
+      const {bank, account, nickname, introduction, holder} =
+        queryClient.getQueryData('userProfile') as UserProfileType;
       const prevInfo = {
         userId: userId!,
         bank,
         account,
         nickname,
         introduction,
+        holder,
       };
       const updatedInfo = {...prevInfo, [mode]: enteredValue.trim()};
       return userInfoMutate(updatedInfo);
