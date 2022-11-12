@@ -41,8 +41,10 @@ public class FollowServiceImpl implements FollowService {
         if (check==null) {
             follow.setFollowerId(follower);
             follow.setFollowingId(following);
-            follower.setFollowing_count(follower.getFollower_count()+1);
-            following.setFollower_count(following.getFollower_count()+1);
+            // you.setmecount(you.getmecount+1))
+            follower.setFollower_count(follower.getFollower_count()+1);
+            // me.you_count(me.getyoucount)+1))
+            following.setFollowing_count(following.getFollowing_count()+1);
             userRepository.save(follower);
             userRepository.save(following);
             followRepository.save(follow);
@@ -50,8 +52,8 @@ public class FollowServiceImpl implements FollowService {
         }
         else {
             followRepository.delete(check);
-            follower.setFollowing_count(follower.getFollower_count()-1);
-            following.setFollower_count(following.getFollower_count()-1);
+            follower.setFollower_count(follower.getFollower_count()-1);
+            following.setFollowing_count(following.getFollowing_count()-1);
             userRepository.save(follower);
             userRepository.save(following);
             return 2;

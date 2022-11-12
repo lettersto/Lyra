@@ -97,6 +97,11 @@ public class UserRepository {
                 .latitude(user.getLatitude())
                 .longitude(user.getLongitude())
                 .refresh_token(user.getRefreshToken())
+                .follower_count(user.getFollower_count())
+                .following_count(user.getFollowing_count())
+                .region_code(user.getRegion_code())
+                .region_name(user.getRegion_name())
+                .holder(user.getHolder())
                 .build();
         return userDto;
     }
