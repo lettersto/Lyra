@@ -38,7 +38,7 @@ public class ShortsController {
 
         log.info("Before create shorts data");
 
-        s3UploadService.uploadShorts(userId, video, title.getBytes(StandardCharsets.UTF_8), regionCode);
+        s3UploadService.uploadShorts(userId, video, title, regionCode);
 
         log.info("After create shorts data");
 
