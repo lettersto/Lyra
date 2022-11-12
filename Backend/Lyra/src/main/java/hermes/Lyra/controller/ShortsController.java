@@ -76,7 +76,7 @@ public class ShortsController {
 
     }
 
-    @ApiOperation(value = "동네 별 전체 쇼츠 불러오기")
+    @ApiOperation(value = "동네 별 전체 쇼츠 불러오기, 12시간 이내 것만")
     @GetMapping("/region")
     public ResponseEntity<List<ResponseShorts>> getShortsByRegion(@RequestParam(value="code") String regionCode) throws IOException {
         log.info("Before get shorts data");

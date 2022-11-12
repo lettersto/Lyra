@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -105,7 +106,7 @@ public class PheedServiceImpl implements PheedService{
     }
 
     @Override
-    public List<Pheed> getPheedByUser(String nickname, Pageable pageable) {
+    public List<Pheed> getPheedByNickname(String nickname, Pageable pageable) {
         Optional<User> user = userRepository2.findByNickname(nickname);
         Long userId = user.get().getId();
         return pheedRepository.findByUserId(userId, pageable);
@@ -211,12 +212,12 @@ public class PheedServiceImpl implements PheedService{
         cal.setTime(stmStamp);
         cal.add(Calendar.HOUR, -12);
         stmStamp.setTime(cal.getTime().getTime());
-        System.out.println(stmStamp);
+//        System.out.println(stmStamp);
 
         cal.setTime(etmStamp);
         cal.add(Calendar.HOUR, 12);
         etmStamp.setTime(cal.getTime().getTime());
-        System.out.println(etmStamp);
+//        System.out.println(etmStamp);
         return pheedRepository.findByStartTimeBetweenAndState(stmStamp, etmStamp, 0);
     }
 
@@ -230,5 +231,38 @@ public class PheedServiceImpl implements PheedService{
         Optional<Pheed> p = pheedRepository.findById(pheedId);
         p.get().setState(state);
         pheedRepository.save(p.get());
+    }
+
+    @Override
+    public List<Pheed> getPheedByMap(BigDecimal latitude, BigDecimal longitude, double z) {
+        List<Pheed> pheedList = pheedRepository.findByState(1);
+
+        List<Pheed> result = new ArrayList<>();
+        double lat = latitude.doubleValue();
+        double lon = longitude.doubleValue();
+
+        for (Pheed p : pheedList) {
+            double newLat = p.getLatitude().doubleValue();
+            double newLon = p.getLongitude().doubleValue();
+            double theta = Math.abs(lon - newLon);
+
+            double dist = Math.sin(Math.toRadians(lat)) * Math.sin(Math.toRadians(newLat)) + Math.cos(Math.toRadians(lat)) * Math.cos(Math.toRadians(newLat)) * Math.cos(Math.toRadians(theta));
+            dist = Math.acos(dist);
+            dist = Math.toDegrees(dist);
+            dist = dist*60*1.1515;
+            dist = dist*1.609344;
+
+            if (z >= dist) {
+                result.add(p);
+            }
+        }
+        log.info(String.valueOf(result.size()));
+
+        return result;
+    }
+
+    @Override
+    public List<Pheed> getPheedByUser(Long userId, Pageable pageable) {
+        return pheedRepository.findByUserId(userId, pageable);
     }
 }
