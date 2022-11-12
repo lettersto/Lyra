@@ -113,7 +113,7 @@ public class S3UploadService {
 
     }
 
-    public void uploadShorts(Long userId, MultipartFile video, byte[] title, String regionCode) throws IOException {
+    public void uploadShorts(Long userId, MultipartFile video, String title, String regionCode) throws IOException {
 
         String s3FileName = UUID.randomUUID() + "-" + video.getOriginalFilename();
         byte[] bytes = new byte[0];
@@ -137,7 +137,7 @@ public class S3UploadService {
 
         shorts.setRegionCode(regionCode);
 
-        shorts.setTitle(String.valueOf(title));
+        shorts.setTitle(title);
 
         shortsRepository.save(shorts);
 
