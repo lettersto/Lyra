@@ -25,11 +25,7 @@ const ChatListScreen = () => {
   const navigation = useNavigation();
   const {socket, liveBusker} = useContext(ChatContext);
   const isFocused = useIsFocused();
-  const busker = [
-    {buskerId: 1, buskerNickname: '윤주혜', buskerImg: '~'},
-    {buskerId: 2, buskerNickname: '정혜령', buskerImg: '~'},
-    {buskerId: 3, buskerNickname: '문유주', buskerImg: '~'},
-  ];
+  const busker = [{buskerId: 1, buskerNickname: '아각', buskerImg: '~'}];
 
   const clickChatRoomHandler = (id: number, nickname: string, img: string) => {
     navigation.navigate('MainChat', {

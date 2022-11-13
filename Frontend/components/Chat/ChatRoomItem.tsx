@@ -1,6 +1,8 @@
-import React, {useEffect} from 'react';
+import {useIsFocused} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {BuskerInfo} from '../../constants/types';
+import {getLiveChatPheedUser, getPheed} from '../../api/chat';
+import {BuskerInfo, ChatRoomInfo} from '../../constants/types';
 import CircleProfile from '../Utils/CircleProfile';
 
 interface Props {
@@ -17,17 +19,37 @@ const styles = StyleSheet.create({
     padding: '5%',
     borderRadius: 15,
   },
-  text: {},
-  title: {
+  text: {
     fontFamily: 'NanumSquareRoundR',
-    fontSize: 20,
     fontWeight: 'bold',
-    marginLeft: 8,
+    color: 'gray',
+    fontSize: 12,
   },
+  title: {
+    fontSize: 16,
+    color: 'black',
+  },
+  cntText: {marginLeft: '5%'},
+  textContainer: {marginLeft: '5%'},
+  textRowContainer: {flexDirection: 'row', alignItems: 'center'},
 });
 
 const ChatRoomItem = ({clickChatRoomHandler, busker}: Props) => {
-  useEffect(() => {}, []);
+  const [chatRoom, setChatRoom] = useState<ChatRoomInfo>();
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    getLiveChatPheedUser(String(busker.buskerId))
+      .then(pheed => {
+        getPheed(String(pheed[0].pheedId)).then(res => {
+          setChatRoom(res);
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, [isFocused, busker]);
+
   return (
     <TouchableOpacity
       onPress={() =>
@@ -39,14 +61,23 @@ const ChatRoomItem = ({clickChatRoomHandler, busker}: Props) => {
       }>
       <View style={styles.container}>
         <CircleProfile
-          size="extraSmall"
+          size="medium"
           grade="normal"
           isGradient={true}
           img={busker.buskerImg}
         />
-        <Text style={styles.title}>
-          {busker.buskerNickname} {busker.userCnt}
-        </Text>
+        <View style={styles.textContainer}>
+          <View style={styles.textRowContainer}>
+            <Text style={[styles.text, styles.title]}>
+              {chatRoom && chatRoom.title}
+            </Text>
+            <Text style={[styles.text, styles.cntText]}>{busker.userCnt}</Text>
+          </View>
+          <Text style={styles.text}>{chatRoom?.location}</Text>
+          <Text style={styles.text}>
+            {busker.buskerNickname}님이 공연중입니다.
+          </Text>
+        </View>
       </View>
     </TouchableOpacity>
   );

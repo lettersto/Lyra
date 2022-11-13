@@ -26,3 +26,11 @@ export const pickOpenChatPheed = async (pheed_id: string, state: string) => {
   });
   return response.data;
 };
+
+export const getPheed = async (pheed_id: string) => {
+  const response = await axios({
+    url: `/pheed/${pheed_id}`,
+    method: 'GET',
+  });
+  return response.data;
+};
