@@ -1,4 +1,4 @@
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import React, {useContext, useEffect} from 'react';
 import {
   Dimensions,
@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
 const ChatListScreen = () => {
   const navigation = useNavigation();
   const {socket, liveBusker} = useContext(ChatContext);
+  const isFocused = useIsFocused();
   const busker = [
     {buskerId: 1, buskerNickname: '윤주혜', buskerImg: '~'},
     {buskerId: 2, buskerNickname: '정혜령', buskerImg: '~'},
@@ -38,11 +39,17 @@ const ChatListScreen = () => {
     });
   };
 
+  // useEffect(() => {
+  //   if (socket) {
+  //     socket!.emit('user rooms');
+  //   }
+  // }, [socket]);
+
   useEffect(() => {
     if (socket) {
       socket!.emit('user rooms');
     }
-  }, [socket]);
+  }, [isFocused, socket]);
 
   return (
     <ImageBackground
@@ -66,7 +73,7 @@ const ChatListScreen = () => {
           )}
           keyExtractor={item => String(item.buskerId)}
         />
-        <MyChat />
+        <MyChat clickChatRoomHandler={clickChatRoomHandler} />
         <ChatList
           liveBusker={liveBusker}
           clickChatRoomHandler={clickChatRoomHandler}

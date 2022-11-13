@@ -99,7 +99,7 @@ const ChatRoom = ({socket, buskerId}: Props) => {
   useEffect(() => {
     participateChat();
     return () => {
-      socket!.emit('user rooms');
+      // socket!.emit('user rooms');
       socket.removeAllListeners('receive message');
       socket.removeAllListeners('fetch user');
     };

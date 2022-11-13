@@ -1,9 +1,18 @@
 import React from 'react';
-import {FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Dimensions,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {BuskerInfo} from '../../constants/types';
 import ChatRoomItem from './ChatRoomItem';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useNavigation} from '@react-navigation/native';
+
+const deviceHeight = Dimensions.get('window').height;
 
 interface Props {
   liveBusker: BuskerInfo[];
@@ -11,11 +20,11 @@ interface Props {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  ParticipateContainer: {
     backgroundColor: 'rgba(0, 0, 0, 0.55)',
     margin: '5%',
     padding: '5%',
-    height: '65%',
+    height: deviceHeight * 0.5,
     borderRadius: 15,
   },
   text: {
@@ -49,7 +58,7 @@ const ChatList = ({liveBusker, clickChatRoomHandler}: Props) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.ParticipateContainer}>
       <Text style={[styles.text, styles.title]}>참여중인 채팅방</Text>
       {liveBusker.length === 0 ? (
         <View style={styles.textContainer}>
