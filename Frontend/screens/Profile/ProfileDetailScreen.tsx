@@ -5,7 +5,6 @@ import {
   ScrollView,
   Text,
   Pressable,
-  Image,
   ActivityIndicator,
 } from 'react-native';
 import {useNavigation, CompositeNavigationProp} from '@react-navigation/native';
@@ -25,8 +24,13 @@ import {
 } from '../../constants/types';
 import {AuthContext} from '../../store/auth-context';
 import {logoutFromServer, signOutWithKakao} from '../../api/auth';
-import {getUserProfile, deleteWallet, createWallet} from '../../api/profile';
-import CircleProfile from '../../components/Utils/CircleProfile';
+import {
+  getUserProfile,
+  deleteWallet,
+  createWallet,
+  updateUserImg,
+} from '../../api/profile';
+import ProfilePhoto from '../../components/Utils/ProfilePhoto';
 import ProfileInfoItem from '../../components/Profile/EditProfile/ProfileInfoItem';
 import ModalWithButton from '../../components/Utils/ModalWithButton';
 import Colors from '../../constants/Colors';
@@ -47,8 +51,10 @@ const ProfileDetailScreen = () => {
     setUserId,
     userId,
   } = useContext(AuthContext);
-  const [ImageUri, setImageUri] = useState<string>();
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [isLogoutModalVisible, setIsLogoutModalVisible] =
+    useState<boolean>(false);
+  const [isWalletModalVisible, setIsWalletModalVisible] =
+    useState<boolean>(false);
   const [isWalletCreatedAgain, setIsWalletCreatedAgain] =
     useState<boolean>(false);
 
@@ -57,6 +63,15 @@ const ProfileDetailScreen = () => {
     isLoading: profileIsLoading,
     // isError,
   } = useQuery('userProfile', () => getUserProfile(userId!));
+
+  const {mutate: userImgMutate, isLoading: userImgIsLoading} = useMutation(
+    updateUserImg,
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('userProfile');
+      },
+    },
+  );
 
   const nicknamePressHandler = () => {
     navigation.navigate(ProfileStackScreens.EditProfile, {
@@ -96,10 +111,13 @@ const ProfileDetailScreen = () => {
         height: 300,
         cropping: true,
         mediaType: 'photo',
+        // includeBase64: true,
       });
-      setImageUri(newProfileImage.path);
+      userImgMutate({userId: userId!, imageUri: newProfileImage.path});
     } catch (error) {
-      console.error(error);
+      if (__DEV__) {
+        console.error(error);
+      }
     }
   };
 
@@ -131,7 +149,7 @@ const ProfileDetailScreen = () => {
 
   const closeWalletCreationAgainModal = () => {
     setIsWalletCreatedAgain(false);
-    setIsModalVisible(false);
+    setIsWalletModalVisible(false);
   };
 
   const walletCreationAgainWarning = isWalletCreatedAgain
@@ -166,18 +184,21 @@ const ProfileDetailScreen = () => {
   };
 
   const isLoading =
-    createWalletIsLoading || deleteWalletIsLoading || profileIsLoading;
+    createWalletIsLoading ||
+    deleteWalletIsLoading ||
+    profileIsLoading ||
+    userImgIsLoading;
 
   return (
     <>
       <ModalWithButton
-        isModalVisible={isModalVisible}
-        setIsModalVisible={setIsModalVisible}
+        isModalVisible={isWalletModalVisible}
+        setIsModalVisible={setIsWalletModalVisible}
         leftText={isWalletCreatedAgain ? '닫기' : '취소하기'}
         onLeftPress={
           isWalletCreatedAgain
             ? closeWalletCreationAgainModal
-            : () => setIsModalVisible(false)
+            : () => setIsWalletModalVisible(false)
         }
         rightText={isWalletCreatedAgain ? '복사하기' : '발급하기'}
         onRightPress={
@@ -207,12 +228,24 @@ const ProfileDetailScreen = () => {
           {walletCreationAgainWarning}
         </Text>
       </ModalWithButton>
+      <ModalWithButton
+        isModalVisible={isLogoutModalVisible}
+        setIsModalVisible={setIsLogoutModalVisible}
+        leftText="취소하기"
+        onLeftPress={() => setIsLogoutModalVisible(false)}
+        rightText="로그아웃"
+        onRightPress={logoutHandler}>
+        <Text style={styles.text}>정말 로그아웃 하시겠어요?</Text>
+      </ModalWithButton>
       <ScrollView style={styles.screen}>
         <View style={styles.profileImageContainer}>
-          {ImageUri && <Image style={styles.image} source={{uri: ImageUri}} />}
-          {!ImageUri && (
-            <CircleProfile size="extraLarge" grade="normal" isGradient={true} />
-          )}
+          <ProfilePhoto
+            size="extraLarge"
+            grade="normal"
+            isGradient={true}
+            imageURI={profileData?.image_url}
+            profileUserId={userId!}
+          />
           <Pressable
             style={styles.changePhoto}
             onPress={ChangeProfileImagePressHandler}>
@@ -246,20 +279,20 @@ const ProfileDetailScreen = () => {
           />
           <ProfileInfoItem
             title=""
-            content=""
+            content={profileData?.holder || ''}
             placeHolder="예금주를 입력하세요."
             onLongPress={holderPressHandler}
           />
           <View style={styles.buttomSeperator} />
           <Pressable
-            onPress={() => setIsModalVisible(true)}
+            onPress={() => setIsWalletModalVisible(true)}
             style={styles.button}>
             <Text style={[styles.text, styles.buttonText]}>
               지갑 재발급 받기
             </Text>
           </Pressable>
           <Pressable
-            onPress={logoutHandler}
+            onPress={() => setIsLogoutModalVisible(true)}
             style={[styles.button, styles.lastButton]}>
             <Text style={[styles.text, styles.buttonText]}>로그아웃</Text>
           </Pressable>

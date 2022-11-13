@@ -7,7 +7,6 @@ import Colors from '../../constants/Colors';
 
 const MoreInfo = ({content}: {content: string}) => {
   const [moreIsOpen, setMoreIsOpen] = useState(false);
-  // TODO 글자 수 몇에서 컷할지 생각 필요
   let cuttedText = content;
   let isCutted = false;
 
@@ -20,9 +19,13 @@ const MoreInfo = ({content}: {content: string}) => {
     setMoreIsOpen(prevState => !prevState);
   };
 
+  const containerPadding = {
+    paddingBottom: isCutted ? 0 : 16,
+  };
+
   return (
     <>
-      <View style={styles.textContainer}>
+      <View style={[styles.textContainer, containerPadding]}>
         {!moreIsOpen && (
           <Text style={[styles.text, styles.content]}>{`${cuttedText} ${
             isCutted && !moreIsOpen ? '...' : ''

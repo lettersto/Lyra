@@ -3,6 +3,7 @@ import Config from 'react-native-config';
 import axios from './axios';
 const Web3 = require('web3');
 
+import {baseURL} from './axios';
 import ABI from './ABI.json';
 
 // profile
@@ -20,12 +21,14 @@ export const updateUserInfo = async ({
   account,
   bank,
   introduction,
+  holder,
 }: {
   userId: number;
   nickname: string;
   account: string | null;
   bank: string | null;
   introduction: string | null;
+  holder: string | null;
 }) => {
   const response = await axios({
     url: `/user/update/${userId}`,
@@ -36,9 +39,61 @@ export const updateUserInfo = async ({
       bank,
       introduction,
       id: userId,
+      holder,
     },
   });
   return response.data.data;
+};
+
+export const updateUserImg = async ({
+  userId,
+  imageUri,
+}: {
+  userId: number;
+  imageUri: string;
+}) => {
+  const response = await fetch(baseURL + `/user/updateImage/${userId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({
+      image_url: imageUri,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  const data = await response.json();
+  return data;
+};
+
+// follower & follow
+export const followAndUnfollow = async ({
+  followerId,
+  followingId,
+}: {
+  followerId: number;
+  followingId: number;
+}) => {
+  const response = await axios({
+    url: `/follow/${followerId}/${followingId}`,
+    method: 'POST',
+  });
+  return response.data;
+};
+
+export const getFollowerList = async (userProfileId: number) => {
+  const response = await axios({
+    url: `/follow/followerList/${userProfileId}`,
+    method: 'GET',
+  });
+  return response.data?.data;
+};
+
+export const getFollowingList = async (userProfileId: number) => {
+  const response = await axios({
+    url: `/follow/followingList/${userProfileId}`,
+    method: 'GET',
+  });
+  return response.data?.data;
 };
 
 // wallet

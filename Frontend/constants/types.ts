@@ -95,7 +95,7 @@ export type PheedStackScreenParams = {
   [PheedStackScreens.TownSearch]: undefined;
   [PheedStackScreens.LocationSearch]: undefined;
 
-  [PheedStackScreens.ShortsDetail]: Array<ShortsDetailParamList>;
+  [PheedStackScreens.ShortsDetail]: Array<StoryType>;
   [PheedStackScreens.CreateShorts]: VideoParamList;
 
   [PheedStackScreens.Alarm]: undefined;
@@ -116,13 +116,13 @@ export type ChatStackScreenParams = {
 };
 
 export type ProfileStackScreenParams = {
-  [ProfileStackScreens.MainProfile]: undefined;
+  [ProfileStackScreens.MainProfile]: {param: number};
   [ProfileStackScreens.ProfileDetail]: undefined;
   [ProfileStackScreens.EditProfile]: {param: EditProfileType} | undefined;
 
   [ProfileStackScreens.Wallet]: undefined;
 
-  [ProfileStackScreens.Follower]: {param: FollowerType} | undefined;
+  [ProfileStackScreens.Follower]: {param: FollowerParam} | undefined;
 };
 
 export type PheedStackScreenProps<
@@ -304,6 +304,16 @@ export type CommentParamList = {
   name: string;
 };
 
+export type StoryType = {
+  path: string;
+  shortsId: number;
+  title: string;
+  userId: number;
+  userImage_url: string;
+  userNickname: string;
+  time: string;
+};
+
 // Map
 
 // Chat
@@ -333,18 +343,30 @@ export type EditProfileType =
   | 'holder';
 
 export type FollowerType = 'follower' | 'follow';
+export type FollowerParam = {
+  mode: FollowerType;
+  userProfileId: number;
+  name: string;
+};
 
 export type walletTabType = 'give' | 'receive' | 'charge';
 
+export type galleryTypes = 'myBusking' | 'favoriteBusking';
+
 export type UserProfileType = {
+  id: number;
   account: string | null;
   bank: string | null;
-  email: string;
-  id: number;
+  holder: string | null;
   image_url: string;
   introduction: string | null;
+  refresh_token: string;
+  email: string;
+  nickname: string;
+  region_code: string | null;
+  region_name: string | null;
+  follower_count: number | null;
+  following_count: number | null;
   latitude: number | null;
   longitutde: number | null;
-  nickname: string;
-  refresh_token: string;
 };
