@@ -334,6 +334,17 @@ export interface BuskerInfo {
   buskerImg: string;
   userCnt?: number;
 }
+
+export interface ChatRoomInfo {
+  title: string;
+  userId: number;
+  userImage_url: string;
+  pheedId: number;
+  location: string;
+  latitude: number;
+  longitude: number;
+}
+
 // Profile
 export type EditProfileType =
   | 'nickname'

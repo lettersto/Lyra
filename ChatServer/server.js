@@ -24,6 +24,15 @@ const fetchRoomCnt = (buskerId) => {
   io.to(buskerId).emit("fetch user", cnt);
 };
 
+// 유저에게 요청한 방의 인원수 보내주기
+const fetchUserRoomCnt = (socket, buskerId) => {
+  let cnt = 0;
+  if (Object.keys(buskerDict).includes(String(buskerId))) {
+    cnt = buskerDict[buskerId].size;
+  }
+  socket.emit("my room cnt", cnt);
+};
+
 // 유저 입장
 const userIn = (socket, buskerId) => {
   const userId = socket.data.userId;
@@ -115,6 +124,11 @@ io.on("connection", (socket) => {
   // 유저가 들어간 방들 조회
   socket.on("user rooms", () => {
     fetchUserRooms(socket);
+  });
+
+  // 특정 방의 유저 수 보내주기
+  socket.on("my room cnt", (buskerId) => {
+    fetchUserRoomCnt(socket, buskerId);
   });
 
   // 전송된 메세지 받기
