@@ -201,23 +201,30 @@ public class PheedServiceImpl implements PheedService{
         return pheedRepository.findByRegionCode(regionCode, pageable);
     }
 
+//    @Override
+//    public List<Pheed> getPheedByUserPlan(Long userId) {
+//
+//        Timestamp stmStamp = Timestamp.valueOf(LocalDateTime.now());
+//        Timestamp etmStamp = Timestamp.valueOf(LocalDateTime.now());
+//
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTime(stmStamp);
+//        cal.add(Calendar.HOUR, -168);
+//        stmStamp.setTime(cal.getTime().getTime());
+////        System.out.println(stmStamp);
+//
+//        cal.setTime(etmStamp);
+//        cal.add(Calendar.HOUR, 168);
+//        etmStamp.setTime(cal.getTime().getTime());
+////        System.out.println(etmStamp);
+//        return pheedRepository.findByStartTimeBetweenAndState(stmStamp, etmStamp, 0);
+//    }
+
     @Override
     public List<Pheed> getPheedByUserPlan(Long userId) {
 
-        Timestamp stmStamp = Timestamp.valueOf(LocalDateTime.now());
-        Timestamp etmStamp = Timestamp.valueOf(LocalDateTime.now());
+        return pheedRepository.findByUserIdAndState(userId, 0);
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(stmStamp);
-        cal.add(Calendar.HOUR, -168);
-        stmStamp.setTime(cal.getTime().getTime());
-//        System.out.println(stmStamp);
-
-        cal.setTime(etmStamp);
-        cal.add(Calendar.HOUR, 168);
-        etmStamp.setTime(cal.getTime().getTime());
-//        System.out.println(etmStamp);
-        return pheedRepository.findByStartTimeBetweenAndState(stmStamp, etmStamp, 0);
     }
 
     @Override
