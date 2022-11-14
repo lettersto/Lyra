@@ -19,6 +19,7 @@ import {v4 as uuidv4} from 'uuid';
 import {Socket} from 'socket.io-client';
 import {AuthContext} from '../../store/auth-context';
 import DonationModal from './DonationModal';
+import LottieView from 'lottie-react-native';
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
@@ -36,6 +37,13 @@ const styles = StyleSheet.create({
   },
   chatContainer: {height: deviceHeight - 80, bottom: 80},
   donationImg: {marginLeft: 15, marginVertical: 15},
+  heart: {
+    position: 'absolute',
+    width: 100,
+    right: 10,
+    bottom: -80,
+    height: deviceHeight,
+  },
 });
 
 interface Props {
@@ -51,6 +59,7 @@ const ChatRoom = ({socket, buskerId}: Props) => {
     name: useContext(AuthContext).nickname!,
     avatar: useContext(AuthContext).imageURL!,
   });
+  const [heartVisible, setHeartVisible] = useState(false);
 
   // 채팅 전송
   const onSend = (messages: IMessage[]) => {
@@ -144,7 +153,13 @@ const ChatRoom = ({socket, buskerId}: Props) => {
   };
 
   // 하트 날리기
-  const clickHeartHandler = (event: GestureResponderEvent) => {};
+  const clickHeartHandler = () => {
+    setHeartVisible(true);
+    // console.log('heart');
+    setTimeout(() => {
+      setHeartVisible(false);
+    }, 3000);
+  };
 
   return (
     <ImageBackground
@@ -179,6 +194,13 @@ const ChatRoom = ({socket, buskerId}: Props) => {
             </CircleGradient>
           </TouchableOpacity>
         </View>
+        {heartVisible ? (
+          <LottieView
+            style={styles.heart}
+            source={require('./81755-hearts-feedback.json')}
+            autoPlay
+          />
+        ) : null}
         <KeyboardAvoidingView
           behavior={'padding'}
           keyboardVerticalOffset={30}
