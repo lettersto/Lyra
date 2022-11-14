@@ -35,8 +35,8 @@ const ProfileBody = ({
     }
     followerMutate(
       {
-        followerId: userId!,
-        followingId: profileData?.id,
+        followerId: profileData?.id,
+        followingId: userId!,
       },
       {
         onSuccess: () => {
