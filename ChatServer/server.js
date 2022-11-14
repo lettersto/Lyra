@@ -156,8 +156,8 @@ io.on("connection", (socket) => {
   socket.on("room close", async (buskerId) => {
     if (buskerId === socket.data.userId) {
       io.to(buskerId).emit("end", buskerTotalDict[buskerId].size);
+      await userAllOut(buskerId);
       io.in(buskerId).socketsLeave(buskerId);
-      userAllOut(buskerId);
     } else {
       console.log("방장이 아닙니다!");
     }

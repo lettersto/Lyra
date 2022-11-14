@@ -41,6 +41,7 @@ import FirstTownSearchScreen from '../../screens/Map/FirstTownSearchScreen';
 import TownSearchScreen from '../../screens/Map/TownSearchScreen';
 import LocationSearchScreen from '../../screens/Map/LocationSearchScreen';
 import {TownModal} from '../Utils/TownModal';
+import EndChatScreen from '../../screens/Chat/EndChatScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

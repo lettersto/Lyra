@@ -74,16 +74,6 @@ const ChatRoom = ({socket, buskerId}: Props) => {
     setModalVisible(false);
   };
 
-  // 채팅 나가기
-  const leaveChat = () => {
-    socket.emit('leave_room', buskerId);
-  };
-
-  // 채팅방 종료
-  const closeChat = () => {
-    socket.emit('room_close', buskerId);
-  };
-
   // 채팅 시작
   const participateChat = useCallback(() => {
     socket.emit('enter room', buskerId);
@@ -99,7 +89,6 @@ const ChatRoom = ({socket, buskerId}: Props) => {
   useEffect(() => {
     participateChat();
     return () => {
-      // socket!.emit('user rooms');
       socket.removeAllListeners('receive message');
       socket.removeAllListeners('fetch user');
     };
@@ -151,6 +140,7 @@ const ChatRoom = ({socket, buskerId}: Props) => {
       resizeMode="cover"
       source={require('../../assets/image/chatBackGroundImg.png')}>
       <View style={styles.chatContainer}>
+        {}
         <GiftedChat
           messages={totalMessages}
           onSend={onSend}
