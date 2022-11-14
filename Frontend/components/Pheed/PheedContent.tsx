@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   StyleSheet,
@@ -10,17 +10,17 @@ import {
 } from 'react-native';
 import Colors from '../../constants/Colors';
 import LinearGradient from 'react-native-linear-gradient';
-import CircleProfile from '../Utils/CircleProfile';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon3 from 'react-native-vector-icons/AntDesign';
 import Icon4 from 'react-native-vector-icons/Ionicons';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import GradientLine from '../Utils/GradientLine';
 import MoreInfo from './MoreInfo';
 import axios from '../../api/axios';
 import {useQuery} from 'react-query';
 import {PheedDetailParamList} from '../../constants/types';
+import ProfilePhoto from '../../components/Utils/ProfilePhoto';
 
 const PheedContent = ({category, width}: {category: string; width: number}) => {
   // const [contents, SetContents] = useState<any[]>([]);
@@ -58,28 +58,7 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
   if (!data) {
     return <Text style={styles.boldtext}>로딩</Text>;
   }
-  const contents = data.reverse();
-  // const wait = (timeout: number) => {
-  //   return new Promise(resolve => setTimeout(resolve, timeout));
-  // };
-
-  // const refreshing = () => {
-  //   setRefresh(true);
-  //   wait(1400).then(() => setRefresh(false));
-  //   getPheedContents();
-  // };
-
-  // useEffect(() => {
-  //   axios
-  //     .get('/pheed/all')
-  //     .then(function (response) {
-  //       SetContents(response.data.reverse());
-  //       // console.log(response.data);
-  //     })
-  //     .catch(function (err) {
-  //       console.log(err);
-  //     });
-  // }, [isFocused]);
+  const contents = data;
 
   const customStyles = StyleSheet.create({
     gradientContainer: {
@@ -90,31 +69,9 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
     },
   });
 
-  function sliceYear(num: number) {
-    return num.toString().slice(2, 4);
-  }
-  function padTo2Digits(num: number) {
-    return num.toString().padStart(2, '0');
-  }
-
   return (
-    // <Text>{data.map()}</Text>
     <ScrollView style={styles.pheedCotainer}>
-      {contents.map((content, i) => {
-        // setImgList(content.pheedImg);
-        const milliseconds = content.startTime;
-        const date = new Date(milliseconds);
-        const datetime =
-          [sliceYear(date.getFullYear())] +
-          '.' +
-          [padTo2Digits(date.getMonth() + 1)] +
-          '.' +
-          [padTo2Digits(date.getDate())] +
-          ' ' +
-          [padTo2Digits(date.getHours())] +
-          ':' +
-          [padTo2Digits(date.getMinutes())];
-
+      {contents.reverse().map((content, i) => {
         return category === content.category ? (
           <View key={i}>
             <LinearGradient
@@ -132,11 +89,17 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
                 <View style={styles.profileContainer}>
                   <View style={styles.profileDatetime}>
                     <View style={styles.profileImg}>
-                      <CircleProfile size="small" isGradient={false} />
+                      <ProfilePhoto
+                        size="small"
+                        isGradient={false}
+                        imageURI={content.userImage_url}
+                        profileUserId={content.userId}
+                      />
                     </View>
                     <View>
-                      <Text style={styles.boldtext}>APOLLON</Text>
-                      {/* <Text style={styles.boldtext}>{content.name}</Text> */}
+                      <Text style={styles.boldtext}>
+                        {content.userNickname}
+                      </Text>
                       <View>
                         <View style={styles.dateContainer}>
                           <Icon
@@ -145,7 +108,7 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
                             size={16}
                             style={styles.clock}
                           />
-                          <Text style={styles.text}>{datetime}</Text>
+                          <Text style={styles.text}>{content.startTime}</Text>
                         </View>
                         <View style={styles.dateContainer}>
                           <Icon4
@@ -188,20 +151,21 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
                 <Pressable
                   onPress={() => navigation.navigate('DetailPheed', content)}>
                   <View style={styles.contentContainer}>
-                    {content.pheedImg.length !== 0 ? (
-                      content.pheedImg.map(imgs => {
-                        return (
-                          <Image
-                            style={{width: 100, height: 100}}
-                            source={{uri: imgs.path}}
-                            // style={styles.text}
-                            key={imgs.id}
-                          />
-                        );
-                      })
-                    ) : (
-                      <></>
-                    )}
+                    <View style={styles.imgContainer}>
+                      {content.pheedImg.length !== 0 ? (
+                        content.pheedImg.map(imgs => {
+                          return (
+                            <Image
+                              style={{width: 100, height: 100}}
+                              source={{uri: imgs.path}}
+                              key={imgs.id}
+                            />
+                          );
+                        })
+                      ) : (
+                        <></>
+                      )}
+                    </View>
                     <Text style={styles.boldtext}>{content.title}</Text>
                     <MoreInfo content={content.content} />
                   </View>
@@ -261,11 +225,17 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
                 <View style={styles.profileContainer}>
                   <View style={styles.profileDatetime}>
                     <View style={styles.profileImg}>
-                      <CircleProfile size="small" isGradient={false} />
+                      <ProfilePhoto
+                        size="small"
+                        isGradient={false}
+                        imageURI={content.userImage_url}
+                        profileUserId={content.userId}
+                      />
                     </View>
                     <View>
-                      <Text style={styles.boldtext}>APOLLON</Text>
-                      {/* <Text style={styles.boldtext}>{content.name}</Text> */}
+                      <Text style={styles.boldtext}>
+                        {content.userNickname}
+                      </Text>
                       <View>
                         <View style={styles.dateContainer}>
                           <Icon
@@ -274,7 +244,7 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
                             size={16}
                             style={styles.clock}
                           />
-                          <Text style={styles.text}>{datetime}</Text>
+                          <Text style={styles.text}>{content.startTime}</Text>
                         </View>
                         <View style={styles.dateContainer}>
                           <Icon4
@@ -317,11 +287,21 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
                 <Pressable
                   onPress={() => navigation.navigate('DetailPheed', content)}>
                   <View style={styles.contentContainer}>
-                    {/* {content.imgUrl.length !== 0 ? (
-                      <Text style={styles.text}>{content.imgUrl}</Text>
-                    ) : (
-                      <></>
-                    )} */}
+                    <View style={styles.imgContainer}>
+                      {content.pheedImg.length !== 0 ? (
+                        content.pheedImg.map(imgs => {
+                          return (
+                            <Image
+                              style={{width: 100, height: 100}}
+                              source={{uri: imgs.path}}
+                              key={imgs.id}
+                            />
+                          );
+                        })
+                      ) : (
+                        <></>
+                      )}
+                    </View>
                     <Text style={styles.boldtext}>{content.title}</Text>
                     <MoreInfo content={content.content} />
                   </View>
@@ -441,6 +421,9 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
     marginBottom: 10,
+  },
+  imgContainer: {
+    flexDirection: 'row',
   },
   bottomContainer: {
     flexDirection: 'row',

@@ -1,5 +1,9 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react';
-import {RootStackParamList, RootTabParamList} from '../../../constants/types';
+import {
+  RootStackParamList,
+  RootTabParamList,
+  PheedDetailParamList,
+} from '../../../constants/types';
 import {
   StyleSheet,
   View,
@@ -17,7 +21,6 @@ import {
 import Colors from '../../../constants/Colors';
 import LinearGradient from 'react-native-linear-gradient';
 import ProfilePhoto from '../../../components/Utils/ProfilePhoto';
-import CircleProfile from '../../../components/Utils/CircleProfile';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon3 from 'react-native-vector-icons/AntDesign';
@@ -35,6 +38,7 @@ import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import axios from '../../../api/axios';
 import Tooltip from 'react-native-walkthrough-tooltip';
+import {useQuery} from 'react-query';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DetailPheed'>;
 
@@ -65,16 +69,8 @@ const DetailPheedScreen = ({route}: Props) => {
       });
   }, [route.params.pheedId, change, isFocused]);
 
-  const name = route.params?.name;
-  const profileImg = route.params?.profileImg;
-  const startTime = route.params?.startTime;
-  const location = route.params?.location;
-  const title = route.params?.title;
-  const content = route.params?.content;
   // const like = route.params?.like;
   const isLive = route.params?.isLive;
-  const imgUrl = route.params?.pheedImg;
-  const tags = route.params?.pheedTag;
   const [comments, SetComments] = useState<any[]>([]);
 
   const goChat = () => {
@@ -137,26 +133,6 @@ const DetailPheedScreen = ({route}: Props) => {
     return () => backHandler.remove();
   }, [navigate, navigation]);
 
-  function sliceYear(num: number) {
-    return num.toString().slice(2, 4);
-  }
-  function padTo2Digits(num: number) {
-    return num.toString().padStart(2, '0');
-  }
-
-  const date = new Date(startTime);
-
-  const datetime =
-    [sliceYear(date.getFullYear())] +
-    '.' +
-    [padTo2Digits(date.getMonth() + 1)] +
-    '.' +
-    [padTo2Digits(date.getDate())] +
-    ' ' +
-    [padTo2Digits(date.getHours())] +
-    ':' +
-    [padTo2Digits(date.getMinutes())];
-
   const PheedDelete = () => {
     axios
       .delete(`/pheed/${route.params.pheedId}`)
@@ -180,6 +156,34 @@ const DetailPheedScreen = ({route}: Props) => {
 
   const [showTooltip, SetShowTooltip] = useState(false);
 
+  const getPheedDetail = async () => {
+    const res = await axios.get<PheedDetailParamList[]>(
+      `/pheed/${route.params.pheedId}`,
+    );
+    return res.data;
+  };
+
+  const result = useQuery('PheedDetail', getPheedDetail);
+  const {data, error} = result;
+
+  if (error) {
+    console.log(error);
+  }
+
+  // const getPheedComments = async () => {
+  //   const res = await axios.get<CommentParamList[]>(
+  //     `/pheed/${route.params.pheedId}/comment`,
+  //   );
+  //   return res.data;
+  // };
+
+  // const commentResult = useQuery('PheedComments', getPheedComments);
+  // const {commentData, commentError} = commentResult;
+
+  if (!data) {
+    return <Text style={styles.boldtext}>로딩</Text>;
+  }
+
   return (
     <GestureRecognizer onSwipeRight={goHome} style={styles.container}>
       <ScrollView style={styles.detailpheed}>
@@ -200,12 +204,12 @@ const DetailPheedScreen = ({route}: Props) => {
                     <ProfilePhoto
                       size="small"
                       isGradient={false}
-                      imageURI={profileImg}
-                      profileUserId={route.params?.userId}
+                      imageURI={data.userImage_url}
+                      profileUserId={data.userId}
                     />
                   </View>
                   <View>
-                    <Text style={styles.boldtext}>{name}</Text>
+                    <Text style={styles.boldtext}>{data.userNickname}</Text>
                     <View style={styles.dateContainer}>
                       <Icon
                         name="clock"
@@ -213,7 +217,7 @@ const DetailPheedScreen = ({route}: Props) => {
                         size={16}
                         style={styles.clock}
                       />
-                      <Text style={styles.text}>{datetime}</Text>
+                      <Text style={styles.text}>{data.startTime}</Text>
                     </View>
                     <View style={styles.locationContainer}>
                       <Icon4
@@ -222,7 +226,7 @@ const DetailPheedScreen = ({route}: Props) => {
                         size={16}
                         style={styles.clock}
                       />
-                      <Text style={styles.text}>{location}</Text>
+                      <Text style={styles.text}>{data.location}</Text>
                     </View>
                   </View>
                 </View>
@@ -300,8 +304,8 @@ const DetailPheedScreen = ({route}: Props) => {
               </View>
               <View style={styles.contentContainer}>
                 <ScrollView horizontal>
-                  {imgUrl &&
-                    imgUrl.map(imgs => {
+                  {data.pheedImg &&
+                    data.pheedImg.map(imgs => {
                       return (
                         <Image
                           style={{width: 100, height: 100}}
@@ -314,7 +318,7 @@ const DetailPheedScreen = ({route}: Props) => {
                 </ScrollView>
               </View>
               <View style={styles.titleContainer}>
-                <Text style={styles.titleText}>{title}</Text>
+                <Text style={styles.titleText}>{data.title}</Text>
                 <Icon2
                   name="play-box-multiple-outline"
                   color={Colors.gray300}
@@ -324,14 +328,14 @@ const DetailPheedScreen = ({route}: Props) => {
               </View>
               <GradientLine />
               <View style={styles.contentText}>
-                <MoreInfo content={content} />
+                <MoreInfo content={data.content} />
               </View>
             </View>
           </LinearGradient>
           {/* tag */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.tagsContainer}>
-              {tags?.map((tag, idx) => {
+              {data.pheedTag?.map((tag, idx) => {
                 if (tag.id === undefined) {
                   return (
                     <View key={idx} style={styles.tag}>
@@ -415,7 +419,12 @@ const DetailPheedScreen = ({route}: Props) => {
                     return (
                       <View style={styles.commentCt} key={idx}>
                         <View style={styles.commentContentCt}>
-                          <CircleProfile size="extraSmall" isGradient={false} />
+                          <ProfilePhoto
+                            size="small"
+                            isGradient={false}
+                            imageURI={value.userImage_url}
+                            profileUserId={value.userId}
+                          />
                           <View style={styles.commentTextContainer}>
                             <Text style={styles.boldtext}>{value.userId}</Text>
                             <Text style={styles.text}>{value.content}</Text>
