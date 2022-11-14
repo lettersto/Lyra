@@ -1,8 +1,8 @@
 import React from 'react';
-import {Text, Pressable, StyleSheet, View} from 'react-native';
+import {Text, StyleSheet, View} from 'react-native';
 
-import CircleProfile from '../../Utils/CircleProfile';
 import Colors from '../../../constants/Colors';
+import ProfilePhoto from '../../Utils/ProfilePhoto';
 
 interface Props {
   buskerId: number;
@@ -12,17 +12,16 @@ interface Props {
 
 const BuskerName = ({buskerId, buskerNickname, buskerImg}: Props) => {
   return (
-    <Pressable>
-      <View style={styles.container}>
-        <CircleProfile
-          size="extraSmall"
-          grade="normal"
-          isGradient={true}
-          img={buskerImg}
-        />
-        <Text style={styles.title}>{buskerNickname}</Text>
-      </View>
-    </Pressable>
+    <View style={styles.container}>
+      <ProfilePhoto
+        size="extraSmall"
+        grade="normal"
+        isGradient={true}
+        imageURI={buskerImg}
+        profileUserId={buskerId}
+      />
+      <Text style={styles.title}>{buskerNickname}</Text>
+    </View>
   );
 };
 

@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {getLiveChatPheedUser, getPheed} from '../../api/chat';
 import {BuskerInfo, ChatRoomInfo} from '../../constants/types';
-import CircleProfile from '../Utils/CircleProfile';
+import ProfilePhoto from '../Utils/ProfilePhoto';
 
 interface Props {
   clickChatRoomHandler: (id: number, nickname: string, img: string) => void;
@@ -60,11 +60,12 @@ const ChatRoomItem = ({clickChatRoomHandler, busker}: Props) => {
         )
       }>
       <View style={styles.container}>
-        <CircleProfile
+        <ProfilePhoto
           size="medium"
           grade="normal"
           isGradient={true}
-          img={busker.buskerImg}
+          imageURI={busker.buskerImg}
+          profileUserId={busker.buskerId}
         />
         <View style={styles.textContainer}>
           <View style={styles.textRowContainer}>

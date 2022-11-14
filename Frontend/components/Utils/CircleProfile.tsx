@@ -8,17 +8,15 @@ type sizeType = 'extraSmall' | 'small' | 'medium' | 'large' | 'extraLarge';
 
 // TODO make onPress
 const CircleProfile = ({
-  // imageURI,
+  imageURI,
   grade,
   size,
   isGradient,
-  img,
 }: {
-  // imageURI: string;
+  imageURI?: string;
   grade?: gradeType;
   size: sizeType;
   isGradient: boolean;
-  img: string;
 }) => {
   const imageSizes = {
     extraSmall: 32,
@@ -40,8 +38,12 @@ const CircleProfile = ({
     return (
       <CircleGradient grade={grade!} size={size}>
         <Pressable>
-          {/* TODO change to uri */}
-          <Image style={[styles.image, imageStyle]} source={{uri: img}} />
+          {imageURI && (
+            <Image
+              style={[styles.image, imageStyle]}
+              source={{uri: imageURI}}
+            />
+          )}
         </Pressable>
       </CircleGradient>
     );
@@ -49,7 +51,9 @@ const CircleProfile = ({
 
   return (
     <Pressable>
-      <Image style={[styles.image, imageStyle]} source={{uri: img}} />
+      {imageURI && (
+        <Image style={[styles.image, imageStyle]} source={{uri: imageURI}} />
+      )}
     </Pressable>
   );
 };

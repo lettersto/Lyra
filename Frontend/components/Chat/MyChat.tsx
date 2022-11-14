@@ -16,8 +16,8 @@ import {
 import {ChatRoomInfo} from '../../constants/types';
 import {AuthContext} from '../../store/auth-context';
 import {ChatContext} from '../../store/chat-context';
-import CircleProfile from '../Utils/CircleProfile';
 import ModalWithButton from '../Utils/ModalWithButton';
+import ProfilePhoto from '../Utils/ProfilePhoto';
 import RadioButton from '../Utils/RadioButton';
 
 const deviceHeight = Dimensions.get('window').height;
@@ -131,11 +131,12 @@ const MyChat = ({clickChatRoomHandler}: Props) => {
             <Text style={[styles.text, styles.title]}>{myLiveRoom.title}</Text>
             <Text style={styles.text}>{myRoomCnt}명이 함께하고 있습니다</Text>
           </View>
-          <CircleProfile
+          <ProfilePhoto
             size="medium"
             grade="normal"
             isGradient={true}
-            img={myLiveRoom.userImage_url}
+            imageURI={myLiveRoom.userImage_url}
+            profileUserId={userId!}
           />
           <Icon name="chevron-right" size={20} color="white" />
         </TouchableOpacity>
