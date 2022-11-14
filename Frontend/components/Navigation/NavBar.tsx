@@ -58,7 +58,7 @@ const NavBar = () => {
         name={TabScreens.Chat}
         component={ChatStack}
         options={{
-          tabBarLabel: 'Live',
+          tabBarLabel: 'Chat',
           tabBarIcon: ({color, size}) => (
             <WithLocalSvg
               asset={require('../../assets/image/live_streaming.svg')}
