@@ -254,8 +254,8 @@ export const sendUserLocation = async ({
   userId: number | null;
   latitude: number;
   longitude: number;
-  regionCode: string;
-  regionName: string;
+  regionCode: string | null;
+  regionName: string | null;
 }) => {
   const response = await axios({
     url: `/user/location/${userId}`,
