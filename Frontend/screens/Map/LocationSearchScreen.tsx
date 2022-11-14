@@ -2,6 +2,7 @@ import {useNavigation} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useState} from 'react';
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import Config from 'react-native-config';
 import MapView, {Marker, PROVIDER_GOOGLE, Region} from 'react-native-maps';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import LocationSearch from '../../components/Map/LocationSearch';
@@ -22,10 +23,28 @@ const LocationSearchScreen = ({navigation}: Props) => {
     latitude: 0,
     longitude: 0,
   });
+  const [regionCode, setRegionCode] = useState('');
+  const [threeDepthName, setThreeDepthName] = useState('');
   const [locationAddInfo, setLocationAddInfo] = useState('');
   const [name, setName] = useState('');
+
+  const getTownName = async (lat: number, lng: number) => {
+    const response = await fetch(
+      `https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${lng}&y=${lat}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `KakaoAK ${Config.KAKAO_REST_API_KEY}`,
+        },
+      },
+    );
+    const result = await response.json();
+    setRegionCode(result.documents[0].code);
+    setThreeDepthName(result.documents[0].region_3depth_name);
+  };
+
   const pressHandler = () => {
-    navigation.goBack();
+    navigation.navigate('CreatePheed');
   };
 
   return (
@@ -46,6 +65,7 @@ const LocationSearchScreen = ({navigation}: Props) => {
                 longitude: lng,
               }));
               setName(data.description);
+              getTownName(lat, lng);
             }}
           />
           {location && (

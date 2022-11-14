@@ -12,8 +12,8 @@ export interface authContextType {
   nickname: null | string;
   imageURL: null | string;
   isLoggedIn: boolean;
-  latitude: null | number;
-  longitude: null | number;
+  latitude: number;
+  longitude: number;
   townName: null | string;
   walletId: null | number;
   walletAddress: null | string;
@@ -36,8 +36,8 @@ export const AuthContext = createContext<authContextType>({
   userId: null,
   nickname: null,
   imageURL: null,
-  latitude: null,
-  longitude: null,
+  latitude: 126.59,
+  longitude: 37.33,
   isLoggedIn: false,
   townName: null,
   walletId: null,

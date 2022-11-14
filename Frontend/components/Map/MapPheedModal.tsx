@@ -6,27 +6,26 @@ import Colors from '../../constants/Colors';
 import CircleProfile from '../Utils/CircleProfile';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
-import {getPheedbyUser} from '../../api/pheed';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 
 interface Props {
-  userId: string;
+  userId: number | null;
   isModalVisible: boolean;
   setIsModalVisible: Dispatch<SetStateAction<boolean>>;
 }
 
-const MapPheedModal = ({userId, isModalVisible, setIsModalVisible}: Props) => {
+const MapPheedModal = ({isModalVisible, setIsModalVisible}: Props) => {
   const gradientColors = [Colors.pink300, Colors.purple300];
   const navigation = useNavigation();
-  const [contents, setContents] = useState<any[]>([]);
-  useEffect(() => {
-    const fetch = async () => {
-      const res = await getPheedbyUser(userId);
-      // console.log(res);
-      setContents(res.data);
-    };
-    fetch();
-  });
+  const [pheeds, setPheeds] = useState<any[]>([]);
+  // useEffect(() => {
+  //   const fetch = async () => {
+  //     const res = await getPheedbyUser(userId);
+  //     // console.log(res);
+  //     setContents(res.data);
+  //   };
+  //   fetch();
+  // });
 
   return (
     <ReactNativeModal
