@@ -9,6 +9,7 @@ import {useNavigation} from '@react-navigation/native';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 import {getPheedDetail} from '../../api/pheed';
 import {PheedDetailParamList} from '../../constants/types';
+import ProfilePhoto from '../Utils/ProfilePhoto';
 
 interface Props {
   pheedId: number | null;
@@ -46,33 +47,40 @@ const MapPheedModal = ({pheedId, isModalVisible, setIsModalVisible}: Props) => {
               <View style={styles.container}>
                 <View style={styles.profileContainer}>
                   <View style={styles.profileImg}>
-                    <CircleProfile size="small" isGradient={false} />
+                    <ProfilePhoto
+                      profileUserId={pheed.userId}
+                      imageURI={pheed.userImage_url}
+                      grade="hot"
+                      size="small"
+                      isGradient={true}
+                    />
                   </View>
                   <View style={styles.profileInfo}>
                     <Text style={styles.boldtext}>{pheed!.userNickname}</Text>
-                    <View style={styles.liveInfo}>
-                      <View style={styles.dateContainer}>
-                        <Icon
-                          name="clock"
-                          color={Colors.gray300}
-                          size={16}
-                          style={styles.clock}
-                        />
-                        <Text style={styles.text}>{pheed!.startTime}</Text>
-                      </View>
-                      <View style={styles.dateContainer}>
-                        <Icon2
-                          name="location-outline"
-                          color={Colors.gray300}
-                          size={16}
-                          style={styles.clock}
-                        />
-                        <Text style={styles.text}>장소</Text>
-                      </View>
+                    {/* <View style={styles.liveInfo}> */}
+                    <View style={styles.dateContainer}>
+                      <Icon
+                        name="clock"
+                        color={Colors.gray300}
+                        size={16}
+                        style={styles.clock}
+                      />
+                      <Text style={styles.text}>{pheed!.startTime}</Text>
                     </View>
+                    <View style={styles.dateContainer}>
+                      <Icon2
+                        name="location-outline"
+                        color={Colors.gray300}
+                        size={16}
+                        style={styles.clock}
+                      />
+                      <Text style={styles.text}>{pheed.location}</Text>
+                    </View>
+                    {/* </View> */}
                   </View>
                 </View>
-                <Pressable onPress={() => {}}>
+                <Pressable
+                  onPress={() => navigation.navigate('DetailPheed', pheed)}>
                   <View style={styles.contentContainer}>
                     <Text style={styles.titleText}>{pheed!.title}</Text>
                     <Text style={styles.contentText}>{pheed!.content}</Text>
@@ -148,7 +156,6 @@ const styles = StyleSheet.create({
   },
   modal: {
     width: deviceWidth * 0.9,
-    height: deviceWidth * 0.5,
     borderRadius: 20,
     backgroundColor: Colors.black500,
   },
@@ -158,8 +165,8 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   contentContainer: {
-    justifyContent: 'center',
-    // alignItems: 'center',
+    width: deviceWidth * 0.85,
+    alignItems: 'flex-start',
     margin: 5,
   },
   profileContainer: {
@@ -174,7 +181,6 @@ const styles = StyleSheet.create({
   profileDatetime: {
     flexDirection: 'row',
     left: 5,
-    alignItems: 'center',
   },
   profileImg: {
     marginRight: 5,
@@ -192,7 +198,7 @@ const styles = StyleSheet.create({
   bottomContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     width: '100%',
   },
   viewerCnt: {flexDirection: 'row', alignItems: 'center'},

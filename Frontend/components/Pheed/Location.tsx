@@ -1,15 +1,16 @@
-import React, {Dispatch, SetStateAction, useState} from 'react';
+import React, {Dispatch, SetStateAction, useContext, useState} from 'react';
 import {StyleSheet, Text, Dimensions, Pressable, Alert} from 'react-native';
 import Colors from '../../constants/Colors';
 import LinearGradient from 'react-native-linear-gradient';
 
 import Icon from 'react-native-vector-icons/EvilIcons';
 import {useNavigation} from '@react-navigation/native';
+import {PheedMapContext} from '../../store/pheedMap-context';
 
 // {SetDate}: {SetDate: Dispatch<SetStateAction<string>>}
 const Location = ({}) => {
   const navigation = useNavigation();
-
+  const {pheedMapLocationAddInfo} = useContext(PheedMapContext);
   const [modalVisible, setModalVisible] = useState(false);
   const [isDatePickerVisible, setDatePickerVIsibility] = useState(false);
   const [text, onChangeText] = useState<string>();
@@ -30,7 +31,7 @@ const Location = ({}) => {
             navigation.navigate('LocationSearch');
           }}>
           <Text style={styles.text}>
-            {text === undefined ? (
+            {pheedMapLocationAddInfo === '' ? (
               <>
                 <Icon name="location" color={Colors.gray300} size={20} />
                 <Text> 장소</Text>
@@ -38,7 +39,7 @@ const Location = ({}) => {
             ) : (
               <>
                 <Icon name="clock" color={Colors.gray300} size={20} />
-                <Text> {text}</Text>
+                <Text> {pheedMapLocationAddInfo}</Text>
               </>
             )}
           </Text>
