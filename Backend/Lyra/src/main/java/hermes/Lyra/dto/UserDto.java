@@ -3,6 +3,7 @@ package hermes.Lyra.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
@@ -25,8 +26,11 @@ public class UserDto {
     private BigDecimal latitude;
     private BigDecimal longitude;
 
+    @Setter
+    private int end_busk_count;
+
     @Builder
-    public UserDto(Long id, String account, String bank, String holder, String image_url, String introduction, String refresh_token,  String email, String nickname, String region_code, String region_name, BigDecimal latitude, BigDecimal longitude, Long follower_count, Long following_count) {
+    public UserDto(Long id, String account, String bank, String holder, String image_url, String introduction, String refresh_token, String email, String nickname, String region_code, String region_name, BigDecimal latitude, BigDecimal longitude, Long follower_count, Long following_count) {
         this.id = id;
         this.email = email;
         this.nickname = nickname;
