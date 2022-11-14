@@ -282,7 +282,25 @@ public class PheedController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    @ApiOperation(value = "유저 아이디로 피드 조회 -12시간 +12시간 이내 state=0인것만")
+//    @ApiOperation(value = "유저 아이디로 피드 조회 -7일 +7일 이내 state=0인것만")
+//    @GetMapping("userplan")
+//    public ResponseEntity<List<ResponsePheed>> getPheedbyUserPlan(@RequestParam("user_id") Long userId) throws Exception {
+//
+//        log.info("Before get pheed by user data");
+//        List<Pheed> pheedList = pheedService.getPheedByUserPlan(userId);
+//
+//        List<ResponsePheed> result = new ArrayList<>();
+//
+//        pheedList.forEach(v -> {
+//            result.add(new ModelMapper().map(v, ResponsePheed.class));
+//        });
+//
+//        log.info("After got pheed by user data");
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(result);
+//    }
+
+    @ApiOperation(value = "유저 아이디로 피드 조회 state=0인것만")
     @GetMapping("userplan")
     public ResponseEntity<List<ResponsePheed>> getPheedbyUserPlan(@RequestParam("user_id") Long userId) throws Exception {
 
