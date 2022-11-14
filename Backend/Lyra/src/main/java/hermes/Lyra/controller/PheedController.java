@@ -323,11 +323,19 @@ public class PheedController {
     public ResponseEntity<String> updatePheedbyState(@RequestParam("pheed_id") Long pheedId, @RequestParam("state") int state) throws Exception {
 
         log.info("Before update pheed data");
-        pheedService.updatePheedByState(pheedId, state);
 
-        log.info("After updated pheed data");
+        Boolean b = pheedService.updatePheedByState(pheedId, state);
 
-        return new ResponseEntity<String>("success", HttpStatus.OK);
+        if (b == true) {
+
+            log.info("After updated pheed data");
+
+            return new ResponseEntity<String>("success", HttpStatus.OK);
+
+        }
+
+        return new ResponseEntity<String>("fail: You have a feed with an open chat", HttpStatus.OK);
+
     }
 
     @ApiOperation(value = "지도에서 쓸 피드 정보")
