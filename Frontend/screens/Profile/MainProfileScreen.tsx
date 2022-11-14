@@ -101,10 +101,11 @@ const MainProfileScreen = () => {
     data: myBuskingListData,
     isLoading: myBuskingListIsLoading,
   } = useInfiniteQuery(
-    'myBusking',
-    ({pageParam = 0}) => getMyBuskingList(pageParam, {user_id: MyUserId!}),
+    ['myBusking', profileUserId],
+    ({pageParam = 0}) =>
+      getMyBuskingList(pageParam, {user_id: profileUserId as number}),
     {
-      getNextPageParam: (lastPage, allPages) => {
+      getNextPageParam: (lastPage: any, allPages) => {
         return lastPage.length ? allPages.length : undefined;
       },
       enabled: galleryCategory === 'myBusking',
@@ -118,8 +119,9 @@ const MainProfileScreen = () => {
     data: favoritePheedData,
     isLoading: favoritePheedIsLoading,
   } = useInfiniteQuery(
-    'favoriteBusking',
-    ({pageParam = 0}) => getFavoritePheedList(pageParam, {userId: MyUserId!}),
+    ['favoriteBusking', profileUserId],
+    ({pageParam = 0}) =>
+      getFavoritePheedList(pageParam, {userId: profileUserId as number}),
     {
       getNextPageParam: (lastPage, allPages) => {
         return lastPage.length ? allPages.length : undefined;
