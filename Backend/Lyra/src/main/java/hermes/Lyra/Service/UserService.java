@@ -1,6 +1,7 @@
 package hermes.Lyra.Service;
 
 import hermes.Lyra.config.JwtTokenProvider;
+import hermes.Lyra.domain.Repository.PheedRepository;
 import hermes.Lyra.domain.Repository.UserRepository;
 import hermes.Lyra.domain.Repository.UserRepository2;
 import hermes.Lyra.domain.User;
@@ -25,6 +26,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+
+    private final PheedRepository pheedRepository;
     private final UserRepository2 userRepository2;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -58,7 +61,9 @@ public class UserService {
 
     @Transactional
     public UserDto searchUser(Long userId) {
-        return userRepository.searchUser(userId);
+        UserDto user = userRepository.searchUser(userId);
+        user.setEnd_busk_count(pheedRepository.findByUserIdAndState(userId, 2).size());
+        return user;
     }
     @Transactional
     public int deleteUser(Long userId) {
