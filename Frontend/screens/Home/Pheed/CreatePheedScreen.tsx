@@ -82,7 +82,7 @@ const CreatePheedScreen = () => {
             </View>
             <View style={styles.dateplace}>
               <DateTime SetDate={SetDate} />
-              <Location setLocationName={setLocationName} />
+              <Location />
             </View>
             <Tag PheedTags={[]} SetPheedTags={SetTags} />
             <View style={styles.registerBtn}>

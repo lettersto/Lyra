@@ -5,22 +5,14 @@ import PheedCategory from '../../components/Pheed/Category/PheedCategory';
 import {Modalize} from 'react-native-modalize';
 import PheedContent from '../../components/Pheed/PheedContent';
 import MainMapView from '../../components/Map/MainMapView';
+import MapPheedContent from '../../components/Map/MapPheedContent';
 
 const deviceWidth = Dimensions.get('window').width;
 
 const MainMapScreen = () => {
   const modalizeRef = useRef<Modalize>(null);
-  const [currentCategory, SetCurrentCategory] = useState('');
 
-  const onOpen = () => {
-    modalizeRef.current?.open();
-  };
-
-  const handleClose = dest => {
-    if (modalizeRef.current) {
-      modalizeRef.current.close(dest);
-    }
-  };
+  const [currentCategory, SetCurrentCategory] = useState('all');
 
   const renderContent = () => (
     <View style={styles.content}>
@@ -31,20 +23,15 @@ const MainMapScreen = () => {
         SetCurrentCategory={SetCurrentCategory}
       />
       <View style={styles.pheedContent}>
-        <PheedContent category={currentCategory} width={0.9} />
+        <MapPheedContent category={currentCategory} />
       </View>
-      <Button
-        title="Close to initial position"
-        onPress={() => handleClose('alwaysOpen')}
-      />
-      <Button title="Close completely" onPress={handleClose} />
     </View>
   );
 
   return (
     <>
       <MainMapView />
-      <LiveCategory CustomStyle={styles.liveCategory} />
+      {/* <LiveCategory CustomStyle={styles.liveCategory} /> */}
       <Modalize
         ref={modalizeRef}
         modalStyle={styles.content__modal}

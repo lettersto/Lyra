@@ -1,17 +1,33 @@
 import React, {useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
 import {View, StyleSheet, Pressable, Text, Alert} from 'react-native';
+import {useNavigation, CompositeNavigationProp} from '@react-navigation/native';
+
 import LinearGradient from 'react-native-linear-gradient';
-import Colors from '../../constants/Colors';
 import ImagePicker from 'react-native-image-crop-picker';
 
+import {
+  ChatStackScreens,
+  PheedStackScreens,
+  PheedStackNavigationProps,
+  BottomTabScreens,
+  BottomTabNavigationProps,
+} from '../../constants/types';
+import Colors from '../../constants/Colors';
+
+type navigationProp = CompositeNavigationProp<
+  PheedStackNavigationProps,
+  BottomTabNavigationProps
+>;
+
 const CreateButton = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<navigationProp>();
   const goPheed = () => {
-    navigation.navigate('CreatePheed');
+    navigation.navigate(PheedStackScreens.CreatePheed);
   };
   const goChat = () => {
-    navigation.navigate('Chat');
+    navigation.navigate(BottomTabScreens.Chat, {
+      screen: ChatStackScreens.MainChat,
+    });
   };
   const pressHandler = () => {
     if (active) {
@@ -30,9 +46,9 @@ const CreateButton = () => {
       });
 
       if (response.duration !== null && response.duration > 30000) {
-        Alert.alert('30초 미만만 가능합니다.');
+        Alert.alert('영상은 30초 미만의 길이만 가능합니다.');
       } else {
-        navigation.navigate('CreateShorts', {
+        navigation.navigate(PheedStackScreens.CreateShorts, {
           duration: response.duration,
           height: response.height,
           mime: response.mime,
@@ -41,8 +57,8 @@ const CreateButton = () => {
           width: response.width,
         });
       }
-    } catch (e) {
-      navigation.navigate('MainPheed');
+    } catch (_err) {
+      navigation.navigate(PheedStackScreens.MainPheed);
     }
   };
 

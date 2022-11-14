@@ -4,7 +4,7 @@ import {StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Colors from '../../constants/Colors';
 
-type gradeType = 'new' | 'normal' | 'hot';
+type gradeType = 'new' | 'normal' | 'hot' | 'white';
 type sizeType = 'extraSmall' | 'small' | 'medium' | 'large' | 'extraLarge';
 
 const CircleGradient = ({
@@ -20,6 +20,7 @@ const CircleGradient = ({
     new: ['#8DFFFF', '#8AF2F7', '#7CACCC', '#7177AB'],
     normal: [Colors.pink300, '#C9A5CD', Colors.purple500],
     hot: ['#DDB962', '#DFA371', '#EEA39D', '#F591AC', '#F974C4'],
+    white: ['white'],
   };
 
   const gradientSize = {

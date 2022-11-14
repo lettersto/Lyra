@@ -16,6 +16,7 @@ import {
 } from '@react-navigation/native-stack';
 import Colors from '../../../constants/Colors';
 import LinearGradient from 'react-native-linear-gradient';
+import ProfilePhoto from '../../../components/Utils/ProfilePhoto';
 import CircleProfile from '../../../components/Utils/CircleProfile';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -65,14 +66,14 @@ const DetailPheedScreen = ({route}: Props) => {
   }, [route.params.pheedId, change, isFocused]);
 
   const name = route.params?.name;
-  // const profileImg = route.params?.profileImg;
+  const profileImg = route.params?.profileImg;
   const startTime = route.params?.startTime;
   const location = route.params?.location;
   const title = route.params?.title;
   const content = route.params?.content;
   // const like = route.params?.like;
   const isLive = route.params?.isLive;
-  // const imgUrl = route.params?.pheedImg;
+  const imgUrl = route.params?.pheedImg;
   const tags = route.params?.pheedTag;
   const [comments, SetComments] = useState<any[]>([]);
 
@@ -195,7 +196,13 @@ const DetailPheedScreen = ({route}: Props) => {
               <View style={styles.profileContainer}>
                 <View style={styles.profileDatetime}>
                   <View style={styles.profileImg}>
-                    <CircleProfile size="small" isGradient={false} />
+                    {/* <CircleProfile size="small" isGradient={false} /> */}
+                    <ProfilePhoto
+                      size="small"
+                      isGradient={false}
+                      imageURI={profileImg}
+                      profileUserId={route.params?.userId}
+                    />
                   </View>
                   <View>
                     <Text style={styles.boldtext}>{name}</Text>
@@ -293,20 +300,17 @@ const DetailPheedScreen = ({route}: Props) => {
               </View>
               <View style={styles.contentContainer}>
                 <ScrollView horizontal>
-                  <View style={styles.imgContainer}>
-                    <Image
-                      source={require('../../../assets/image/basicProfile.png')}
-                      style={styles.image}
-                    />
-                    <Image
-                      source={require('../../../assets/image/basicProfile.png')}
-                      style={styles.image}
-                    />
-                    <Image
-                      source={require('../../../assets/image/basicProfile.png')}
-                      style={styles.image}
-                    />
-                  </View>
+                  {imgUrl &&
+                    imgUrl.map(imgs => {
+                      return (
+                        <Image
+                          style={{width: 100, height: 100}}
+                          source={{uri: imgs.path}}
+                          // style={styles.text}
+                          key={imgs.id}
+                        />
+                      );
+                    })}
                 </ScrollView>
               </View>
               <View style={styles.titleContainer}>
