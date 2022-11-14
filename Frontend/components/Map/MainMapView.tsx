@@ -121,6 +121,7 @@ const MainMapView = () => {
                     grade="hot"
                     size="medium"
                     isGradient={true}
+                    profileUserId={val.userId}
                   />
                 </Marker>
               </View>
