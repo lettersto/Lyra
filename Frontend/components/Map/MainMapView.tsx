@@ -54,10 +54,10 @@ const MainMapView = () => {
       longitude: mapLongitude,
       zoom: zoomLv,
     });
-    console.log('================');
-    res.reduce((a, b, c, d) => {
-      console.log(a, b, c, d);
-    }, []);
+    // console.log('================');
+    // res.reduce((a, b, c, d) => {
+    //   console.log(a, b, c, d);
+    // }, []);
     setContents(res);
   };
 
