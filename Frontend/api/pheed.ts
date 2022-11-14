@@ -117,3 +117,11 @@ export const getMapPheeds = async ({
   });
   return response.data;
 };
+
+export const getPheedDetail = async (pheedId: number | null) => {
+  const response = await axios({
+    url: `/pheed/${pheedId}`,
+    method: 'GET',
+  });
+  return response.data;
+};

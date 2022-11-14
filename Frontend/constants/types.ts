@@ -244,23 +244,23 @@ export type RootTabParamList = {
 
 // Pheed
 export type PheedDetailParamList = {
+  userId: number;
+  userImage_url: string;
+  userNickname: string;
   pheedId: number;
-  name: string;
-  profileImg: string;
+  title: string;
+  content: string;
   startTime: Date;
   latitude: number;
   longitude: number;
-  time: Date;
   location: string;
-  title: string;
-  content: string;
-  comment: string;
-  comments: Array<CommentParamList>;
+  pheedImg: {id: number; path: string}[];
+  category: string;
+  pheedTag: Array<TagDetailParamList>;
+  time: Date;
+  comment: Array<CommentParamList>;
   like: number | undefined;
   isLive: boolean | undefined;
-  pheedImg: {id: number; path: string}[];
-  pheedTag: Array<TagDetailParamList>;
-  category: string;
 };
 
 export type TagDetailParamList = {
@@ -297,11 +297,12 @@ export type VideoParamList = {
 };
 
 export type CommentParamList = {
+  id: number;
   content: string;
-  pheedId: string;
   time: string;
   userId: string;
-  name: string;
+  userImage_url: string;
+  userNickname: string;
 };
 
 export type StoryType = {

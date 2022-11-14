@@ -63,9 +63,10 @@ const MapPheedContent = ({category}: {category?: string}) => {
                     <View style={styles.profileDatetime}>
                       <View style={styles.profileImg}>
                         <ProfilePhoto
+                          profileUserId={pheed.userId}
                           imageURI={pheed.userImage_url}
                           grade="hot"
-                          size="medium"
+                          size="small"
                           isGradient={true}
                         />
                       </View>
