@@ -126,11 +126,13 @@ const ShortsDetailScreen = () => {
             {`${dataStories[currentIndex].userNickname} | ${dataStories[currentIndex].time}`}
           </Text>
         </View>
-        <Pressable
-          style={styles.deleteBtn}
-          onPress={() => setIsDeleteModalVisible(true)}>
-          <Text style={styles.deleteText}>삭제</Text>
-        </Pressable>
+        {isMyStory ? (
+          <Pressable
+            style={styles.deleteBtn}
+            onPress={() => setIsDeleteModalVisible(true)}>
+            <Text style={styles.deleteText}>삭제</Text>
+          </Pressable>
+        ) : null}
       </View>
       <Pressable
         onPress={e => changeStory(e.nativeEvent)}

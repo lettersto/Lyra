@@ -32,7 +32,6 @@ const FirstTownSearchScreen = () => {
     setUserLocationInfo,
     setUserRegionCode,
   } = useContext(MapContext);
-  console.log('nicknamelocaiton', nickname);
   const [location, setLocation] = useState<Region>({
     latitudeDelta: 0.005,
     longitudeDelta: 0.005,

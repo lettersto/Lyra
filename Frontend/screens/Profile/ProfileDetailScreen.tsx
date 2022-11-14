@@ -180,6 +180,8 @@ const ProfileDetailScreen = () => {
       if (__DEV__) {
         console.error('Logout Error!', err);
       }
+    } finally {
+      setIsLogoutModalVisible(false);
     }
   };
 

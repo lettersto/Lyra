@@ -47,16 +47,21 @@ const MainProfileScreen = () => {
   const profileUserId = route.params?.param;
   const userId = profileUserId || MyUserId;
 
+  let isMyProfile = true;
+  if (profileUserId && profileUserId !== MyUserId) {
+    isMyProfile = false;
+  }
+
   const {
     data: profileData,
     isLoading: profileIsLoading,
-    // isError,
+    // isError: profileIsError,
   } = useQuery(
     ['userProfile', userId],
     () => getUserProfile(userId as number),
     {
       onSuccess: () => {
-        if (userId) {
+        if (isMyProfile && userId) {
           balanceRefetch();
         }
       },
@@ -75,14 +80,12 @@ const MainProfileScreen = () => {
     data: balanceData, // string coin
     isLoading: balanceIsLoading,
     refetch: balanceRefetch,
+    // isError: balanceIsError,
   } = useQuery('walletBalance', () => getTotalBalanceFromWeb3(walletAddress!), {
     enabled: false,
   });
 
-  const {
-    isLoading: walletIsLoading,
-    // isError,
-  } = useQuery(
+  const {isLoading: walletIsLoading} = useQuery(
     'walletInfo',
     () => getUserWalletAddressAndCoin(userId as number),
     {
@@ -100,10 +103,13 @@ const MainProfileScreen = () => {
     // isFetchingNextPage: myBuskingListIsFetchingNextPage,
     data: myBuskingListData,
     isLoading: myBuskingListIsLoading,
+    // isError: myBuskingIsError,
   } = useInfiniteQuery(
     ['myBusking', profileUserId],
     ({pageParam = 0}) =>
-      getMyBuskingList(pageParam, {user_id: profileUserId as number}),
+      getMyBuskingList(pageParam, {
+        user_id: (profileUserId as number) || MyUserId!,
+      }),
     {
       getNextPageParam: (lastPage: any, allPages) => {
         return lastPage.length ? allPages.length : undefined;
@@ -118,10 +124,13 @@ const MainProfileScreen = () => {
     // isFetchingNextPage: favoritePheedIsFetchingNextPage,
     data: favoritePheedData,
     isLoading: favoritePheedIsLoading,
+    // isError: favoritePheedIsError,
   } = useInfiniteQuery(
     ['favoriteBusking', profileUserId],
     ({pageParam = 0}) =>
-      getFavoritePheedList(pageParam, {userId: profileUserId as number}),
+      getFavoritePheedList(pageParam, {
+        userId: (profileUserId as number) || MyUserId!,
+      }),
     {
       getNextPageParam: (lastPage, allPages) => {
         return lastPage.length ? allPages.length : undefined;
@@ -141,11 +150,6 @@ const MainProfileScreen = () => {
       favoritePheedFetchNextPage();
     }
   };
-
-  let isMyProfile = true;
-  if (profileUserId && profileUserId !== MyUserId) {
-    isMyProfile = false;
-  }
 
   let renderData = myBuskingListData;
   let requestNextPage = requestMyBuskingNextPage;
