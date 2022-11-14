@@ -6,31 +6,41 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import Colors from '../../../constants/Colors';
 import {AuthContext} from '../../../store/auth-context';
 import {getUserProfile} from '../../../api/profile';
+import {MapContext} from '../../../store/map-context';
 
 const LocationButton = () => {
   // TODO
   // 1. get Location from context API or something else. + setCurrentLocation
   // 2. onPress function to find location.
-  const {userId, townName, setTownName} = useContext(AuthContext);
-  const [threeDepthName, setThreeDepthName] = useState('');
+  const {userId} = useContext(AuthContext);
+  const {
+    userLocationInfo,
+    userRegionCode,
+    userLatitude,
+    userLongitude,
+    setUserLatitude,
+    setUserLongitude,
+    setUserLocationInfo,
+    setUserRegionCode,
+  } = useContext(MapContext);
   const navigation = useNavigation();
 
   const pressHandler = () => {
     navigation.navigate('TownModal');
   };
 
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        const response = await getUserProfile(userId!);
-        console.log(response);
-        setThreeDepthName(response.regionName);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetch();
-  });
+  // useEffect(() => {
+  //   const fetch = async () => {
+  //     try {
+  //       const response = await getUserProfile(userId!);
+  //       console.log(response);
+  //       setThreeDepthName(response.regionName);
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   };
+  //   fetch();
+  // });
 
   // const getTownName = async () => {
   //   setTownName(await EncryptedStorage.getItem('townName'));
@@ -42,7 +52,7 @@ const LocationButton = () => {
       <Pressable onPress={pressHandler}>
         <View style={styles.innerContainer}>
           <MIcon name="keyboard-arrow-down" size={25} color={Colors.gray300} />
-          <Text style={styles.title}>{threeDepthName}</Text>
+          <Text style={styles.title}>{userLocationInfo}</Text>
         </View>
       </Pressable>
     </>

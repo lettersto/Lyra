@@ -12,6 +12,7 @@ import {RootStackParamList} from '../../constants/types';
 import {AuthContext} from '../../store/auth-context';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {sendUserLocation} from '../../api/profile';
+import {MapContext} from '../../store/map-context';
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
@@ -19,8 +20,16 @@ const deviceWidth = Dimensions.get('window').width;
 
 const TownSearchScreen = ({navigation}: Props) => {
   const {userId, setLatitude, setLongitude} = useContext(AuthContext);
-  const [regionCode, setRegionCode] = useState('');
-  const [threeDepthName, setThreeDepthName] = useState('');
+  const {
+    userLocationInfo,
+    userRegionCode,
+    userLatitude,
+    userLongitude,
+    setUserLatitude,
+    setUserLongitude,
+    setUserLocationInfo,
+    setUserRegionCode,
+  } = useContext(MapContext);
   const [location, setLocation] = useState<Region>({
     latitudeDelta: 0.005,
     longitudeDelta: 0.005,
@@ -39,8 +48,8 @@ const TownSearchScreen = ({navigation}: Props) => {
       },
     );
     const result = await response.json();
-    setRegionCode(result.documents[0].code);
-    setThreeDepthName(result.documents[0].region_3depth_name);
+    setUserRegionCode(result.documents[0].code);
+    setUserLocationInfo(result.documents[0].region_3depth_name);
   };
 
   const pressHandler = async () => {
@@ -49,12 +58,14 @@ const TownSearchScreen = ({navigation}: Props) => {
         userId: userId,
         latitude: location.latitude,
         longitude: location.longitude,
-        regionCode: regionCode,
+        regionCode: userRegionCode,
+        regionName: userLocationInfo,
       });
       if (response.status === 'OK') {
-        setLatitude(location.latitude);
-        setLongitude(location.longitude);
-        setRegionCode(regionCode);
+        setUserLatitude(location.latitude);
+        setUserLongitude(location.longitude);
+        setUserRegionCode(userRegionCode);
+        setUserLocationInfo(userLocationInfo);
         await EncryptedStorage.setItem('latitude', `${location.latitude}`);
         await EncryptedStorage.setItem('longitude', `${location.longitude}`);
         // await EncryptedStorage.setItem('townName', `${townName}`);
@@ -103,7 +114,7 @@ const TownSearchScreen = ({navigation}: Props) => {
           )}
           {location.latitude != 0 ? (
             <View style={{height: '25%', bottom: 0}}>
-              <Text style={styles.name}>{threeDepthName}</Text>
+              <Text style={styles.name}>{userLocationInfo}</Text>
               <Button
                 title="선택한 위치로 설정"
                 btnSize="large"
