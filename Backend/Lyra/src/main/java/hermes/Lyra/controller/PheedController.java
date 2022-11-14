@@ -41,11 +41,11 @@ public class PheedController {
 
     @ApiOperation(value = "피드 작성")
     @PostMapping("")
-    public ResponseEntity<String> createPheed(@RequestParam("user_id") Long userId, @RequestPart RequestPheed pheed, @RequestPart List<MultipartFile> images) throws IOException {
+    public ResponseEntity<String> createPheed(@RequestParam("user_id") Long userId, @ModelAttribute RequestPheed pheed, @RequestPart List<MultipartFile> images) throws IOException {
 
         log.info("Before create pheed data");
         ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+//        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         List<String> pheedTagList = pheed.getPheedTag();
         log.info(String.valueOf(pheedTagList));
@@ -148,12 +148,12 @@ public class PheedController {
 
     @ApiOperation(value = "피드 수정")
     @PatchMapping("{pheed_id}")
-    public ResponseEntity<String> updatePheed(@PathVariable("pheed_id") Long pheedId, @RequestPart RequestPheed pheed, @RequestPart List<MultipartFile> images) throws Exception {
+    public ResponseEntity<String> updatePheed(@PathVariable("pheed_id") Long pheedId, @ModelAttribute RequestPheed pheed, @RequestPart List<MultipartFile> images) throws Exception {
 
         log.info("Before update pheed data");
 
         ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+//        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         List<String> pheedTagList = pheed.getPheedTag();
         log.info(String.valueOf(pheedTagList));
