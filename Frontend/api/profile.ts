@@ -270,3 +270,26 @@ export const sendUserLocation = async ({
   });
   return response.data;
 };
+
+// support
+export const getSupportedList = async (userId: number) => {
+  const response = await axios({
+    url: '/support/receive',
+    method: 'GET',
+    params: {
+      user_id: userId,
+    },
+  });
+  return response.data;
+};
+
+export const getSupportList = async (userId: number) => {
+  const response = await axios({
+    url: '/support/give',
+    method: 'GET',
+    params: {
+      user_id: userId,
+    },
+  });
+  return response.data;
+};
