@@ -58,7 +58,7 @@ const MainPheedScreen = () => {
           <View style={styles.bannerContainer}>
             <MainBanner />
           </View>
-          {storyData.length ? (
+          {storyData?.length ? (
             <View style={styles.videoContainer}>
               <Story storyData={storyData} />
             </View>
