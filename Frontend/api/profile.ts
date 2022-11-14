@@ -15,6 +15,35 @@ export const getUserProfile = async (userId: number) => {
   return response.data.data;
 };
 
+export const getMyBuskingList = async (
+  pageParam: number = 0,
+  options: {user_id: number},
+) => {
+  const response = await axios({
+    url: '/pheed/mybusking',
+    method: 'GET',
+    params: {
+      ...options,
+      page: pageParam,
+    },
+  });
+  return response.data;
+};
+
+export const getFavoritePheedList = async (
+  pageParam: number = 0,
+  options: {userId: number},
+) => {
+  const response = await axios({
+    url: `/wish/pheedlist/${options.userId}`,
+    method: 'GET',
+    params: {
+      page: pageParam,
+    },
+  });
+  return response.data.data;
+};
+
 export const updateUserInfo = async ({
   userId,
   nickname,
