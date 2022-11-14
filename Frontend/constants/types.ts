@@ -95,7 +95,7 @@ export type PheedStackScreenParams = {
   [PheedStackScreens.TownSearch]: undefined;
   [PheedStackScreens.LocationSearch]: undefined;
 
-  [PheedStackScreens.ShortsDetail]: Array<StoryType>;
+  [PheedStackScreens.ShortsDetail]: StoryDeatilScreenParamList;
   [PheedStackScreens.CreateShorts]: VideoParamList;
 
   [PheedStackScreens.Alarm]: undefined;
@@ -268,12 +268,6 @@ export type TagDetailParamList = {
   name: string;
 };
 
-// export type ShortsDetailParamList = {
-//   name: string;
-//   index: number;
-//   show: boolean;
-// };
-
 export type ShortsParamList = {
   username: string;
   stories: Array<ShortsDetailParamList>;
@@ -294,6 +288,11 @@ export type VideoParamList = {
   path: string;
   size: number;
   width: number;
+};
+
+export type StoryDeatilScreenParamList = {
+  storyData: Array<StoryType>;
+  shortsId: number;
 };
 
 export type CommentParamList = {

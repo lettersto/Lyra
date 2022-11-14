@@ -8,14 +8,15 @@ import {
   PheedStackNavigationProps,
 } from '../../constants/types';
 import Colors from '../../constants/Colors';
-// import data from './shortsData.json';
-// import data2 from './storyData.json';
 
 const Story = ({storyData}: {storyData: Array<StoryType>}) => {
   const navigation = useNavigation<PheedStackNavigationProps>();
 
-  const storyPressHandler = () => {
-    navigation.navigate(PheedStackScreens.ShortsDetail, storyData);
+  const storyPressHandler = (shortsId: number) => {
+    navigation.navigate(PheedStackScreens.ShortsDetail, {
+      storyData,
+      shortsId,
+    });
   };
 
   return (
@@ -27,7 +28,7 @@ const Story = ({storyData}: {storyData: Array<StoryType>}) => {
 
           return (
             <Pressable
-              onPress={storyPressHandler}
+              onPress={() => storyPressHandler(story.shortsId)}
               key={story.shortsId}
               style={styles.shortsBtn}>
               <Image
@@ -39,86 +40,6 @@ const Story = ({storyData}: {storyData: Array<StoryType>}) => {
         })}
       </View>
     </ScrollView>
-
-    // <ScrollView horizontal style={styles.scroll}>
-    //   <View style={styles.container}>
-    //     {/* {data
-    //       .filter(shorts => !shorts.show)
-    //       .map((shorts, index) => {
-    //         return (
-    //           <Pressable
-    //             onPress={() => navigation.navigate('ShortsDetail', shorts)}
-    //             key={index}>
-    //             <View style={[styles.videoContainer, styles.notshow]}>
-    //               <Image
-    //                 source={require('../../assets/image/basicProfile.png')}
-    //                 style={styles.image}
-    //               />
-    //             </View>
-    //           </Pressable>
-    //         );
-    //       })}
-    //     {data
-    //       .filter(shorts => shorts.show)
-    //       .map((shorts, index) => {
-    //         return (
-    //           <Pressable
-    //             onPress={() => navigation.navigate('ShortsDetail', shorts)}
-    //             key={index}>
-    //             <View style={[styles.videoContainer, styles.show]}>
-    //               <Image
-    //                 source={require('../../assets/image/basicProfile.png')}
-    //                 style={styles.image}
-    //               />
-    //             </View>
-    //           </Pressable>
-    //         );
-    //       })} */}
-    //     {data2.map((stories, index) => {
-    //       let cnt = 0;
-    //       for (var i = 0; i < stories.stories.length; i++) {
-    //         if (stories.stories[i].show === true) {
-    //           cnt = cnt + 1;
-    //         }
-    //       }
-
-    //       if (cnt === stories.stories.length) {
-    //         return (
-    //           <Pressable
-    //             onPress={() =>
-    //               navigation.navigate(
-    //                 PheedStackScreens.ShortsDetail,
-    //                 stories.stories,
-    //               )
-    //             }
-    //             key={index}>
-    //             <View style={[styles.videoContainer, styles.show]}>
-    //               <Image
-    //                 source={require('../../assets/image/basicProfile.png')}
-    //                 style={styles.image}
-    //               />
-    //             </View>
-    //           </Pressable>
-    //         );
-    //       } else {
-    //         return (
-    //           <Pressable
-    //             onPress={() =>
-    //               navigation.navigate('ShortsDetail', stories.stories)
-    //             }
-    //             key={index}>
-    //             <View style={[styles.videoContainer, styles.notshow]}>
-    //               <Image
-    //                 source={require('../../assets/image/basicProfile.png')}
-    //                 style={styles.image}
-    //               />
-    //             </View>
-    //           </Pressable>
-    //         );
-    //       }
-    //     })}
-    //   </View>
-    // </ScrollView>
   );
 };
 
