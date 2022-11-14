@@ -16,12 +16,14 @@ import {
   chargeCoinToWeb3,
   getTotalBalanceFromWeb3,
   getChargeList,
+  getSupportList,
+  getSupportedList,
 } from '../../api/profile';
 import {walletTabType} from '../../constants/types';
 import {AuthContext} from '../../store/auth-context';
 import Wallet from '../../components/Profile/Wallet/Wallet';
 import WalletCategory from '../../components/Profile/Wallet/WalletCategory';
-import CircleProfile from '../../components/Utils/CircleProfile';
+import ProfilePhoto from '../../components/Utils/ProfilePhoto';
 import ModalWithButton from '../../components/Utils/ModalWithButton';
 import LoadingSpinner from '../../components/Utils/LoadingSpinner';
 import Colors from '../../constants/Colors';
@@ -84,24 +86,34 @@ const WalletScreen = () => {
   } = useQuery('walletInfo', () => getUserWalletAddressAndCoin(userId!));
 
   const {
+    data: balanceData, // string coin
+    isLoading: balanceIsLoading,
+  } = useQuery('walletBalance', () => getTotalBalanceFromWeb3(walletAddress!));
+
+  const {
     data: chargeListData,
     isLoading: chargeListIsLoading,
     // isError,
   } = useQuery('chargeList', () => getChargeList(walletId!));
 
   const {
-    data: balanceData, // string coin
-    isLoading: balanceIsLoading,
-  } = useQuery('walletBalance', () => getTotalBalanceFromWeb3(walletAddress!));
+    data: supportListData,
+    isLoading: supportListIsLoading,
+    // isError,
+  } = useQuery('supportList', () => getSupportList(userId!));
 
-  // TODO change type for listData
-  let listData: any = dummyGiveList;
+  const {
+    data: supportedListData,
+    isLoading: supportedListIsLoading,
+    // isError,
+  } = useQuery('supportedList', () => getSupportedList(userId!));
+
+  let listData: any = supportListData;
   if (walletTabMode === 'receive') {
-    listData = dummyReceiveList;
+    listData = supportedListData;
   }
   if (walletTabMode === 'charge') {
     listData = chargeListData;
-    // {"ca": "0x03c43Fbd1cC2786E7567Ecb25Ae4cC892445B327", "coin": 0, "time": "2022-11-10 09:26"}]
   }
 
   const Header = () => (
@@ -122,31 +134,46 @@ const WalletScreen = () => {
     content,
     coin,
     imageURI,
+    photoUserId,
   }: {
     content: string;
     coin: number;
-    // TODO change imageURI type from boolean to string
-    imageURI?: boolean;
+    imageURI?: string;
+    photoUserId?: number;
   }) => (
     <Pressable style={styles.itemContainer}>
       <View style={styles.leftItem}>
-        {imageURI && (
-          <CircleProfile size="extraSmall" grade="normal" isGradient={true} />
-        )}
-        <Text style={[styles.text, imageURI && styles.content]}>{content}</Text>
+        {imageURI ? (
+          <ProfilePhoto
+            profileUserId={photoUserId!}
+            size="extraSmall"
+            grade="normal"
+            isGradient={true}
+            imageURI={imageURI}
+          />
+        ) : null}
+        <Text style={imageURI ? [styles.text, styles.content] : styles.text}>
+          {content}
+        </Text>
       </View>
       <Text style={styles.text}>{coin}</Text>
     </Pressable>
   );
 
   const renderItem = ({item}: {item: any}) => {
-    // TODO profile image
     let content = '';
+    let imageURI = '';
+    let photoUserId: number | undefined;
+
     if (walletTabMode === 'give') {
       content = item.busker.nickname;
+      imageURI = item.busker.image_url;
+      photoUserId = item.busker.id;
     }
     if (walletTabMode === 'receive') {
-      content = item.receive.nickname;
+      content = item.supporter.nickname;
+      imageURI = item.supporter.image_url;
+      photoUserId = item.supporter.id;
     }
     if (walletTabMode === 'charge') {
       content = item.time;
@@ -155,7 +182,8 @@ const WalletScreen = () => {
       <Item
         content={content}
         coin={item.coin}
-        imageURI={walletTabMode !== 'charge'}
+        imageURI={imageURI}
+        photoUserId={photoUserId}
       />
     );
   };
@@ -231,7 +259,8 @@ const WalletScreen = () => {
   const isLoading =
     walletDataIsLoading ||
     createRecordIsLoading ||
-    // chargeIsLoading ||
+    supportListIsLoading ||
+    supportedListIsLoading ||
     webIsLoading ||
     balanceIsLoading ||
     chargeListIsLoading;
