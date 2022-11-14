@@ -80,7 +80,8 @@ const EditProfileScreen = () => {
     },
   };
 
-  const {title, placeholder, keyboardType, modalText} = modeToScreenTitle[mode];
+  const {title, placeholder, keyboardType, modalText} =
+    modeToScreenTitle[mode as string];
 
   const changeTextHandler = (text: string) => {
     if (text.trim()) {
@@ -102,7 +103,7 @@ const EditProfileScreen = () => {
         introduction,
         holder,
       };
-      const updatedInfo = {...prevInfo, [mode]: enteredValue.trim()};
+      const updatedInfo = {...prevInfo, [mode as string]: enteredValue.trim()};
       return userInfoMutate(updatedInfo);
     }
   };
