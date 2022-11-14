@@ -5,12 +5,14 @@ import PheedCategory from '../../components/Pheed/Category/PheedCategory';
 import {Modalize} from 'react-native-modalize';
 import PheedContent from '../../components/Pheed/PheedContent';
 import MainMapView from '../../components/Map/MainMapView';
+import MapPheedContent from '../../components/Map/MapPheedContent';
 
 const deviceWidth = Dimensions.get('window').width;
 
 const MainMapScreen = () => {
   const modalizeRef = useRef<Modalize>(null);
-  const [currentCategory, SetCurrentCategory] = useState('');
+
+  const [currentCategory, SetCurrentCategory] = useState('all');
 
   const renderContent = () => (
     <View style={styles.content}>
@@ -21,7 +23,7 @@ const MainMapScreen = () => {
         SetCurrentCategory={SetCurrentCategory}
       />
       <View style={styles.pheedContent}>
-        <PheedContent category={currentCategory} width={0.9} />
+        <MapPheedContent category={currentCategory} />
       </View>
     </View>
   );
@@ -29,7 +31,7 @@ const MainMapScreen = () => {
   return (
     <>
       <MainMapView />
-      <LiveCategory CustomStyle={styles.liveCategory} />
+      {/* <LiveCategory CustomStyle={styles.liveCategory} /> */}
       <Modalize
         ref={modalizeRef}
         modalStyle={styles.content__modal}
