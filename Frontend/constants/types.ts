@@ -95,7 +95,7 @@ export type PheedStackScreenParams = {
   [PheedStackScreens.TownSearch]: undefined;
   [PheedStackScreens.LocationSearch]: undefined;
 
-  [PheedStackScreens.ShortsDetail]: Array<StoryType>;
+  [PheedStackScreens.ShortsDetail]: StoryDeatilScreenParamList;
   [PheedStackScreens.CreateShorts]: VideoParamList;
 
   [PheedStackScreens.Alarm]: undefined;
@@ -244,35 +244,29 @@ export type RootTabParamList = {
 
 // Pheed
 export type PheedDetailParamList = {
+  userId: number;
+  userImage_url: string;
+  userNickname: string;
   pheedId: number;
-  name: string;
-  profileImg: string;
+  title: string;
+  content: string;
   startTime: Date;
   latitude: number;
   longitude: number;
-  time: Date;
   location: string;
-  title: string;
-  content: string;
-  comment: string;
-  comments: Array<CommentParamList>;
+  pheedImg: {id: number; path: string}[];
+  category: string;
+  pheedTag: Array<TagDetailParamList>;
+  time: Date;
+  comment: Array<CommentParamList>;
   like: number | undefined;
   isLive: boolean | undefined;
-  pheedImg: {id: number; path: string}[];
-  pheedTag: Array<TagDetailParamList>;
-  category: string;
 };
 
 export type TagDetailParamList = {
   id: number;
   name: string;
 };
-
-// export type ShortsDetailParamList = {
-//   name: string;
-//   index: number;
-//   show: boolean;
-// };
 
 export type ShortsParamList = {
   username: string;
@@ -296,12 +290,18 @@ export type VideoParamList = {
   width: number;
 };
 
+export type StoryDeatilScreenParamList = {
+  storyData: Array<StoryType>;
+  shortsId: number;
+};
+
 export type CommentParamList = {
+  id: number;
   content: string;
-  pheedId: string;
   time: string;
   userId: string;
-  name: string;
+  userImage_url: string;
+  userNickname: string;
 };
 
 export type StoryType = {

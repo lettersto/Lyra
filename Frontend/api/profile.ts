@@ -15,6 +15,35 @@ export const getUserProfile = async (userId: number) => {
   return response.data.data;
 };
 
+export const getMyBuskingList = async (
+  pageParam: number = 0,
+  options: {user_id: number},
+) => {
+  const response = await axios({
+    url: '/pheed/mybusking',
+    method: 'GET',
+    params: {
+      ...options,
+      page: pageParam,
+    },
+  });
+  return response.data;
+};
+
+export const getFavoritePheedList = async (
+  pageParam: number = 0,
+  options: {userId: number},
+) => {
+  const response = await axios({
+    url: `/wish/pheedlist/${options.userId}`,
+    method: 'GET',
+    params: {
+      page: pageParam,
+    },
+  });
+  return response.data.data;
+};
+
 export const updateUserInfo = async ({
   userId,
   nickname,
@@ -219,10 +248,14 @@ export const sendUserLocation = async ({
   userId,
   latitude,
   longitude,
+  regionCode,
+  regionName,
 }: {
   userId: number | null;
   latitude: number;
   longitude: number;
+  regionCode: string | null;
+  regionName: string | null;
 }) => {
   const response = await axios({
     url: `/user/location/${userId}`,
@@ -231,6 +264,31 @@ export const sendUserLocation = async ({
     data: {
       latitude: latitude,
       longitude: longitude,
+      region_code: regionCode,
+      region_name: regionName,
+    },
+  });
+  return response.data;
+};
+
+// support
+export const getSupportedList = async (userId: number) => {
+  const response = await axios({
+    url: '/support/receive',
+    method: 'GET',
+    params: {
+      user_id: userId,
+    },
+  });
+  return response.data;
+};
+
+export const getSupportList = async (userId: number) => {
+  const response = await axios({
+    url: '/support/give',
+    method: 'GET',
+    params: {
+      user_id: userId,
     },
   });
   return response.data;

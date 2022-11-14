@@ -15,12 +15,14 @@ import {useNavigation} from '@react-navigation/native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Clipboard from '@react-native-clipboard/clipboard';
 import IIcon from 'react-native-vector-icons/Ionicons';
+import {useQuery} from 'react-query';
 
 import {
   PheedStackNavigationProps,
   PheedStackScreens,
 } from '../../constants/types';
 import {AuthContext} from '../../store/auth-context';
+import {getUserWalletAddressAndCoin} from '../../api/profile';
 import {createWallet} from '../../api/profile';
 import ModalWithButton from '../../components/Utils/ModalWithButton';
 import Button from '../../components/Utils/Button';
@@ -31,7 +33,8 @@ const WalletCreationScreen = () => {
   const [walletCreated, setWalletCreated] = useState<boolean>(false);
   const [walletPrivateKey, setWalletPrivateKey] = useState<string>('');
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const {userId} = useContext(AuthContext);
+  const [enableWalletInfo, setEnableWalletInfo] = useState<boolean>(true);
+  const {userId, setWalletAddress} = useContext(AuthContext);
   const guidance = !walletCreated
     ? 'Lyra를 제대로 사용하기 위해서는\n지갑이 필요합니다.'
     : '지갑이 생성되었어요!';
@@ -42,6 +45,22 @@ const WalletCreationScreen = () => {
     borderColor: Colors.gray300,
     marginRight: 24,
   };
+
+  const {
+    // data: walletData,
+    // isError,
+  } = useQuery('walletInfo', () => getUserWalletAddressAndCoin(userId!), {
+    enabled: enableWalletInfo,
+    onSuccess: async data => {
+      if (data?.address) {
+        setWalletAddress(data.address);
+        await EncryptedStorage.setItem('walletAddress', data.address);
+        navigation.navigate(PheedStackScreens.MainPheed);
+      } else {
+        setEnableWalletInfo(false);
+      }
+    },
+  });
 
   const cancleHandler = () => {
     Alert.alert(

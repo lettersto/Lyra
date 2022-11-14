@@ -15,21 +15,23 @@ import {
 } from '../../constants/types';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {sendUserLocation} from '../../api/profile';
+import {MapContext} from '../../store/map-context';
 
 const deviceWidth = Dimensions.get('window').width;
 
 const FirstTownSearchScreen = () => {
   const navigation = useNavigation<PheedStackNavigationProps>();
+  const {userId, nickname, walletAddress} = useContext(AuthContext);
   const {
-    setLatitude,
-    setLongitude,
-    townName,
-    setTownName,
-    userId,
-    nickname,
-    walletAddress,
-  } = useContext(AuthContext);
-  console.log('nicknamelocaiton', nickname);
+    userLocationInfo,
+    userRegionCode,
+    userLatitude,
+    userLongitude,
+    setUserLatitude,
+    setUserLongitude,
+    setUserLocationInfo,
+    setUserRegionCode,
+  } = useContext(MapContext);
   const [location, setLocation] = useState<Region>({
     latitudeDelta: 0.005,
     longitudeDelta: 0.005,
@@ -48,7 +50,8 @@ const FirstTownSearchScreen = () => {
       },
     );
     const result = await response.json();
-    return setTownName(result.documents[0].region_3depth_name);
+    setUserRegionCode(result.documents[0].code);
+    setUserLocationInfo(result.documents[0].region_3depth_name);
   };
 
   const pressHandler = async () => {
@@ -57,14 +60,19 @@ const FirstTownSearchScreen = () => {
         userId: userId,
         latitude: location.latitude,
         longitude: location.longitude,
+        regionCode: userRegionCode,
+        regionName: userLocationInfo,
       });
       console.log(response);
       if (response.status === 'OK') {
-        setLatitude(location.latitude);
-        setLongitude(location.longitude);
+        setUserLatitude(location.latitude);
+        setUserLongitude(location.longitude);
+        setUserRegionCode(userRegionCode);
+        setUserLocationInfo(userLocationInfo);
+
         await EncryptedStorage.setItem('latitude', `${location.latitude}`);
         await EncryptedStorage.setItem('longitude', `${location.longitude}`);
-        await EncryptedStorage.setItem('townName', `${townName}`);
+        // await EncryptedStorage.setItem('townName', `${townName}`);
         if (!walletAddress) {
           navigation.navigate(PheedStackScreens.WalletCreation);
         } else {
@@ -113,7 +121,7 @@ const FirstTownSearchScreen = () => {
           )}
           {location.latitude != 0 ? (
             <View style={{height: '25%', bottom: 0}}>
-              <Text style={styles.name}>{townName}</Text>
+              <Text style={styles.name}>{userLocationInfo}</Text>
               <Button
                 title="선택한 위치로 설정"
                 btnSize="large"

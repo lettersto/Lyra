@@ -43,6 +43,8 @@ import LocationSearchScreen from '../../screens/Map/LocationSearchScreen';
 import {TownModal} from '../Utils/TownModal';
 import EndChatScreen from '../../screens/Chat/EndChatScreen';
 
+import {PheedMapProvider} from '../../store/pheedMap-context';
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const PheedStack = () => {
@@ -50,108 +52,110 @@ export const PheedStack = () => {
     useContext(AuthContext);
 
   return (
-    <Stack.Navigator
-      initialRouteName={TabScreens.Home}
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: Colors.black500,
-        },
-        headerTintColor: Colors.gray300,
-        headerTitleStyle: {
-          fontFamily: 'NanumSquareRoundR',
-          fontSize: 20,
-        },
-      }}>
-      <Stack.Group>
-        {!isLoggedIn ? (
-          <Stack.Screen
-            name="Login"
-            component={LoginScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-        ) : null}
-        {!walletAddress ? (
-          <Stack.Screen
-            name="WalletCreation"
-            component={WalletCreationScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-        ) : null}
-        {!latitude && !longitude ? (
-          <>
+    <PheedMapProvider>
+      <Stack.Navigator
+        initialRouteName={TabScreens.Home}
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: Colors.black500,
+          },
+          headerTintColor: Colors.gray300,
+          headerTitleStyle: {
+            fontFamily: 'NanumSquareRoundR',
+            fontSize: 20,
+          },
+        }}>
+        <Stack.Group>
+          {!isLoggedIn ? (
             <Stack.Screen
-              name="LocationPermission"
-              component={LocationPermissionScreen}
+              name="Login"
+              component={LoginScreen}
               options={{
                 headerShown: false,
               }}
             />
+          ) : null}
+          {!walletAddress ? (
             <Stack.Screen
-              name="FirstTownSearch"
-              component={FirstTownSearchScreen}
-              options={{headerShown: false}}
+              name="WalletCreation"
+              component={WalletCreationScreen}
+              options={{
+                headerShown: false,
+              }}
             />
-          </>
-        ) : null}
-      </Stack.Group>
-      <Stack.Group
-        screenOptions={{
-          headerTitle: () => <PheedTitle />,
-          headerBackVisible: false,
-        }}>
-        <Stack.Group screenOptions={{presentation: 'card'}}>
-          <Stack.Screen name="MainPheed" component={MainPheedScreen} />
+          ) : null}
+          {!latitude && !longitude ? (
+            <>
+              <Stack.Screen
+                name="LocationPermission"
+                component={LocationPermissionScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="FirstTownSearch"
+                component={FirstTownSearchScreen}
+                options={{headerShown: false}}
+              />
+            </>
+          ) : null}
         </Stack.Group>
         <Stack.Group
           screenOptions={{
-            headerShown: false,
-            presentation: 'transparentModal',
+            headerTitle: () => <PheedTitle />,
+            headerBackVisible: false,
           }}>
-          <Stack.Screen name="TownModal" component={TownModal} />
-          <Stack.Screen name="TownSearch" component={TownSearchScreen} />
+          <Stack.Group screenOptions={{presentation: 'card'}}>
+            <Stack.Screen name="MainPheed" component={MainPheedScreen} />
+          </Stack.Group>
+          <Stack.Group
+            screenOptions={{
+              headerShown: false,
+              presentation: 'transparentModal',
+            }}>
+            <Stack.Screen name="TownModal" component={TownModal} />
+            <Stack.Screen name="TownSearch" component={TownSearchScreen} />
+          </Stack.Group>
         </Stack.Group>
-      </Stack.Group>
-      <Stack.Screen
-        name="SearchPheed"
-        component={SearchPheedScreen}
-        options={{title: ''}}
-      />
-      <Stack.Screen name="CreatePheed" component={CreatePheedScreen} />
-      <Stack.Screen
-        name="LocationSearch"
-        component={LocationSearchScreen}
-        options={{title: ''}}
-      />
-      <Stack.Screen name="UpdatePheed" component={UpdatePheedScreen} />
-      <Stack.Screen
-        name="ShortsDetail"
-        component={ShortsDetailScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="CreateShorts"
-        component={CreateShortsScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="DetailPheed"
-        component={DetailPheedScreen}
-        options={{
-          headerTitle: () => <PheedDetailTitle />,
-          headerBackVisible: false,
-        }}
-      />
-      <Stack.Screen name="Alarm" component={AlarmScreen} />
-      {/* </> */}
-    </Stack.Navigator>
+        <Stack.Screen
+          name="SearchPheed"
+          component={SearchPheedScreen}
+          options={{title: ''}}
+        />
+        <Stack.Screen name="CreatePheed" component={CreatePheedScreen} />
+        <Stack.Screen
+          name="LocationSearch"
+          component={LocationSearchScreen}
+          options={{title: ''}}
+        />
+        <Stack.Screen name="UpdatePheed" component={UpdatePheedScreen} />
+        <Stack.Screen
+          name="ShortsDetail"
+          component={ShortsDetailScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="CreateShorts"
+          component={CreateShortsScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="DetailPheed"
+          component={DetailPheedScreen}
+          options={{
+            headerTitle: () => <PheedDetailTitle />,
+            headerBackVisible: false,
+          }}
+        />
+        <Stack.Screen name="Alarm" component={AlarmScreen} />
+        {/* </> */}
+      </Stack.Navigator>
+    </PheedMapProvider>
   );
 };
 

@@ -96,3 +96,32 @@ export const getAllVideos = async () => {
   });
   return response.data;
 };
+
+export const getMapPheeds = async ({
+  latitude,
+  longitude,
+  zoom,
+}: {
+  latitude: number;
+  longitude: number;
+  zoom: number;
+}) => {
+  const response = await axios({
+    url: '/pheed/map',
+    method: 'GET',
+    params: {
+      latitude,
+      longitude,
+      zoom,
+    },
+  });
+  return response.data;
+};
+
+export const getPheedDetail = async (pheedId: number | null) => {
+  const response = await axios({
+    url: `/pheed/${pheedId}`,
+    method: 'GET',
+  });
+  return response.data;
+};

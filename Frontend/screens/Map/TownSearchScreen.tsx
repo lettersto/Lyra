@@ -12,14 +12,24 @@ import {RootStackParamList} from '../../constants/types';
 import {AuthContext} from '../../store/auth-context';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {sendUserLocation} from '../../api/profile';
+import {MapContext} from '../../store/map-context';
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
 const deviceWidth = Dimensions.get('window').width;
 
 const TownSearchScreen = ({navigation}: Props) => {
-  const {userId, setLatitude, setLongitude, townName, setTownName} =
-    useContext(AuthContext);
+  const {userId, setLatitude, setLongitude} = useContext(AuthContext);
+  const {
+    userLocationInfo,
+    userRegionCode,
+    userLatitude,
+    userLongitude,
+    setUserLatitude,
+    setUserLongitude,
+    setUserLocationInfo,
+    setUserRegionCode,
+  } = useContext(MapContext);
   const [location, setLocation] = useState<Region>({
     latitudeDelta: 0.005,
     longitudeDelta: 0.005,
@@ -27,7 +37,7 @@ const TownSearchScreen = ({navigation}: Props) => {
     longitude: 0,
   });
 
-  const getTownName = async (lat: number, lng: number) => {
+  const getTownNameAPI = async (lat: number, lng: number) => {
     const response = await fetch(
       `https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${lng}&y=${lat}`,
       {
@@ -38,7 +48,8 @@ const TownSearchScreen = ({navigation}: Props) => {
       },
     );
     const result = await response.json();
-    return setTownName(result.documents[0].region_3depth_name);
+    setUserRegionCode(result.documents[0].code);
+    setUserLocationInfo(result.documents[0].region_3depth_name);
   };
 
   const pressHandler = async () => {
@@ -47,14 +58,17 @@ const TownSearchScreen = ({navigation}: Props) => {
         userId: userId,
         latitude: location.latitude,
         longitude: location.longitude,
+        regionCode: userRegionCode,
+        regionName: userLocationInfo,
       });
-      console.log(response);
       if (response.status === 'OK') {
-        setLatitude(location.latitude);
-        setLongitude(location.longitude);
+        setUserLatitude(location.latitude);
+        setUserLongitude(location.longitude);
+        setUserRegionCode(userRegionCode);
+        setUserLocationInfo(userLocationInfo);
         await EncryptedStorage.setItem('latitude', `${location.latitude}`);
         await EncryptedStorage.setItem('longitude', `${location.longitude}`);
-        await EncryptedStorage.setItem('townName', `${townName}`);
+        // await EncryptedStorage.setItem('townName', `${townName}`);
 
         navigation.goBack();
       } else {
@@ -82,7 +96,7 @@ const TownSearchScreen = ({navigation}: Props) => {
                 latitude: lat,
                 longitude: lng,
               }));
-              getTownName(lat, lng);
+              getTownNameAPI(lat, lng);
             }}
           />
           {location && (
@@ -100,7 +114,7 @@ const TownSearchScreen = ({navigation}: Props) => {
           )}
           {location.latitude != 0 ? (
             <View style={{height: '25%', bottom: 0}}>
-              <Text style={styles.name}>{townName}</Text>
+              <Text style={styles.name}>{userLocationInfo}</Text>
               <Button
                 title="선택한 위치로 설정"
                 btnSize="large"
