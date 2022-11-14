@@ -47,7 +47,7 @@ public interface PheedService {
 
     List<Pheed> getPheedByUserChat(Long userId);
 
-    void updatePheedByState(Long pheedId, int state);
+    boolean updatePheedByState(Long pheedId, int state);
 
     List<Pheed> getPheedByMap(BigDecimal latitude, BigDecimal longitude, double z);
 

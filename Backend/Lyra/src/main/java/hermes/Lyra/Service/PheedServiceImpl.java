@@ -4,7 +4,6 @@ import hermes.Lyra.domain.*;
 import hermes.Lyra.domain.Repository.*;
 import hermes.Lyra.dto.PheedDto;
 import lombok.extern.slf4j.Slf4j;
-import org.joda.time.DateTime;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -210,12 +209,12 @@ public class PheedServiceImpl implements PheedService{
 
         Calendar cal = Calendar.getInstance();
         cal.setTime(stmStamp);
-        cal.add(Calendar.HOUR, -12);
+        cal.add(Calendar.HOUR, -168);
         stmStamp.setTime(cal.getTime().getTime());
 //        System.out.println(stmStamp);
 
         cal.setTime(etmStamp);
-        cal.add(Calendar.HOUR, 12);
+        cal.add(Calendar.HOUR, 168);
         etmStamp.setTime(cal.getTime().getTime());
 //        System.out.println(etmStamp);
         return pheedRepository.findByStartTimeBetweenAndState(stmStamp, etmStamp, 0);
@@ -227,10 +226,19 @@ public class PheedServiceImpl implements PheedService{
     }
 
     @Override
-    public void updatePheedByState(Long pheedId, int state) {
+    public boolean updatePheedByState(Long pheedId, int state) {
+        log.info("hello");
         Optional<Pheed> p = pheedRepository.findById(pheedId);
+        log.info("hello1");
+        User user = p.get().getUser();
+        log.info(String.valueOf(user));
+        Long cp = pheedRepository.countByUserAndState(user, 1);
+        if (cp > 0) {
+            return false;
+        }
         p.get().setState(state);
         pheedRepository.save(p.get());
+        return true;
     }
 
     @Override
