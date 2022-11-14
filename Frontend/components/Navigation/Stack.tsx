@@ -25,6 +25,7 @@ import MainMapScreen from '../../screens/Map/MainMapScreen';
 import MapTitle from './TopNavBar/MapTitle';
 // Chat
 import MainChatScreen from '../../screens/Chat/MainChatScreen';
+import ChatListScreen from '../../screens/Chat/ChatListScreen';
 import UserChatTitle from './TopNavBar/UserChatTitle';
 // import BuskerChatButtons from './TopNavBar/BuskerChatButtons';
 // Onboarding
@@ -218,6 +219,14 @@ export const ChatStack = () => {
           fontSize: 20,
         },
       }}>
+      <Stack.Screen
+        name="ChatList"
+        component={ChatListScreen}
+        // options={{
+        //   title: '',
+        //   headerTitle: () => <UserChatTitle />,
+        // }}
+      />
       <Stack.Screen
         name="MainChat"
         component={MainChatScreen}
