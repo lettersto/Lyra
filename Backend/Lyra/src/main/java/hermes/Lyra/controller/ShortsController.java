@@ -3,6 +3,7 @@ package hermes.Lyra.controller;
 import hermes.Lyra.Service.S3UploadService;
 import hermes.Lyra.Service.ShortsService;
 import hermes.Lyra.domain.Shorts;
+import hermes.Lyra.vo.RequestShorts;
 import hermes.Lyra.vo.ResponseShorts;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -32,11 +33,30 @@ public class ShortsController {
         this.shortsService = shortsService;
     }
 
+//    @ApiOperation(value = "쇼츠 작성")
+//    @PostMapping("")
+//    public ResponseEntity<String> createShorts(@RequestParam("user_id") Long userId, @RequestPart MultipartFile video, @RequestPart String title, @RequestPart String regionCode) throws IOException {
+//
+//        log.info("Before create shorts data");
+//
+//        s3UploadService.uploadShorts(userId, video, title, regionCode);
+//
+//        log.info("After create shorts data");
+//
+//        return new ResponseEntity<String>("success", HttpStatus.OK);
+//    }
+
     @ApiOperation(value = "쇼츠 작성")
     @PostMapping("")
-    public ResponseEntity<String> createShorts(@RequestParam("user_id") Long userId, @RequestPart MultipartFile video, @RequestPart String title, @RequestPart String regionCode) throws IOException {
+    public ResponseEntity<String> createShorts(@RequestParam("user_id") Long userId, @RequestPart MultipartFile video, @ModelAttribute RequestShorts request) throws IOException {
 
         log.info("Before create shorts data");
+
+        log.info(String.valueOf(request));
+
+        String title = request.getTitle();
+
+        String regionCode = request.getRegionCode();
 
         s3UploadService.uploadShorts(userId, video, title, regionCode);
 
