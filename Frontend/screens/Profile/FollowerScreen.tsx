@@ -1,5 +1,5 @@
 import React, {useLayoutEffect} from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
+import {View, StyleSheet, FlatList} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
 import {useQuery} from 'react-query';
@@ -14,25 +14,6 @@ import FollowerListItem from '../../components/Profile/Follower/FollowerListItem
 import LoadingSpinner from '../../components/Utils/LoadingSpinner';
 import Colors from '../../constants/Colors';
 
-const dummyUserList = [
-  {id: 0, nickname: '영훈'},
-  {id: 1, nickname: '유주'},
-  {id: 2, nickname: '윤혁'},
-  {id: 3, nickname: '주현'},
-  {id: 4, nickname: '혜령'},
-  {id: 5, nickname: '헤르메스'},
-  {id: 6, nickname: '나폴레옹'},
-  {id: 7, nickname: '춘식이'},
-  {id: 8, nickname: '라이언'},
-  {id: 9, nickname: '00아너무너무사랑해'},
-  {id: 10, nickname: '슈퍼노바'},
-  {id: 11, nickname: '무명가수1'},
-  {id: 12, nickname: '무명가수2'},
-  {id: 13, nickname: '무명가수3'},
-  {id: 14, nickname: '무명가수4'},
-  {id: 15, nickname: '슈퍼노바'},
-];
-
 const FollowerScreen = () => {
   const navigation = useNavigation<ProfileStackNavigationProps>();
   const route = useRoute<ProfileStackRouteProps>();
@@ -41,7 +22,7 @@ const FollowerScreen = () => {
   const title = `${name}의 ${mode === 'follower' ? '팔로워' : '팔로우'}`;
 
   const {
-    // data: followerListData,
+    data: followerListData,
     isLoading: followerListIsLoading,
     // isError: followerListIsError,
   } = useQuery('follower', () => getFollowerList(userProfileId), {
@@ -49,7 +30,7 @@ const FollowerScreen = () => {
   });
 
   const {
-    // data: followListData,
+    data: followListData,
     isLoading: followListIsLoading,
     // isError: followListIsError,
   } = useQuery('follower', () => getFollowingList(userProfileId), {
@@ -73,11 +54,18 @@ const FollowerScreen = () => {
           size="large"
         />
       ) : null}
-      <ScrollView style={styles.list}>
-        {dummyUserList.map(item => (
-          <FollowerListItem key={item.id} nickname={item.nickname} />
-        ))}
-      </ScrollView>
+      <FlatList
+        data={mode === 'follower' ? followerListData : followListData}
+        keyExtractor={item => item.id.toString()}
+        renderItem={itemData => (
+          <FollowerListItem
+            key={itemData.item.id}
+            nickname={itemData.item.nickname}
+            imageURI={itemData.item.image_url}
+            profileUserId={itemData.item.id}
+          />
+        )}
+      />
     </View>
   );
 };

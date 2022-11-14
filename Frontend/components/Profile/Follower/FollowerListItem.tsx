@@ -1,35 +1,36 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {View, Pressable, Text, StyleSheet} from 'react-native';
 
-import CircleProfile from '../../Utils/CircleProfile';
-import Button from '../../Utils/Button';
+import ProfilePhoto from '../../Utils/ProfilePhoto';
 import Colors from '../../../constants/Colors';
 
-const FollowerListItem = ({nickname}: {nickname: string}) => {
-  const [isFollowing, setIsFollowing] = useState(true);
-
+const FollowerListItem = ({
+  nickname,
+  imageURI,
+  profileUserId,
+}: {
+  nickname: string;
+  imageURI: string;
+  profileUserId: number;
+}) => {
   return (
-    <View style={styles.container}>
+    <View style={styles.followerContainer}>
       <Pressable style={styles.userProfile}>
-        <CircleProfile size="extraSmall" grade="normal" isGradient={true} />
+        <ProfilePhoto
+          imageURI={imageURI}
+          profileUserId={profileUserId}
+          size="extraSmall"
+          grade="normal"
+          isGradient={true}
+        />
         <Text style={styles.text}>{nickname}</Text>
       </Pressable>
-      <View style={styles.buttonStyle}>
-        <Button
-          title={isFollowing ? '언팔로우' : '팔로우'}
-          btnSize="medium"
-          textSize="medium"
-          isGradient={true}
-          isOutlined={isFollowing}
-          onPress={() => setIsFollowing(preV => !preV)}
-        />
-      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  followerContainer: {
     flexDirection: 'row',
     paddingVertical: 16,
     paddingHorizontal: 16,
