@@ -28,48 +28,6 @@ import ModalWithButton from '../../components/Utils/ModalWithButton';
 import LoadingSpinner from '../../components/Utils/LoadingSpinner';
 import Colors from '../../constants/Colors';
 
-const dummyGiveList = [
-  {giveId: 0, busker: {buskerId: 2, nickname: '영훈'}, coin: 300},
-  {giveId: 1, busker: {buskerId: 2, nickname: '유주'}, coin: 300},
-  {giveId: 2, busker: {buskerId: 2, nickname: '윤혁'}, coin: 300},
-  {giveId: 3, busker: {buskerId: 2, nickname: '주현'}, coin: 300},
-  {giveId: 4, busker: {buskerId: 2, nickname: '혜령'}, coin: 300},
-  {giveId: 5, busker: {buskerId: 2, nickname: '헤르메스'}, coin: 300},
-  {giveId: 6, busker: {buskerId: 2, nickname: '나폴레옹'}, coin: 300},
-  {giveId: 7, busker: {buskerId: 2, nickname: '춘식이'}, coin: 300},
-  {giveId: 8, busker: {buskerId: 2, nickname: '라이언'}, coin: 300},
-  {giveId: 9, busker: {buskerId: 2, nickname: '00아너무너무사랑해'}, coin: 300},
-  {giveId: 10, busker: {buskerId: 2, nickname: '슈퍼노바'}, coin: 300},
-  {giveId: 11, busker: {buskerId: 2, nickname: '무명가수1'}, coin: 300},
-  {giveId: 12, busker: {buskerId: 2, nickname: '무명가수2'}, coin: 300},
-  {giveId: 13, busker: {buskerId: 2, nickname: '무명가수3'}, coin: 300},
-  {giveId: 14, busker: {buskerId: 2, nickname: '무명가수4'}, coin: 300},
-  {giveId: 15, busker: {buskerId: 2, nickname: '슈퍼노바'}, coin: 300},
-];
-
-const dummyReceiveList = [
-  {receiveId: 0, receive: {receiveId: 2, nickname: 'ㅠㅠ'}, coin: 300},
-  {receiveId: 1, receive: {receiveId: 2, nickname: '유주'}, coin: 300},
-  {receiveId: 2, receive: {receiveId: 2, nickname: '윤혁'}, coin: 300},
-  {receiveId: 3, receive: {receiveId: 2, nickname: '주현'}, coin: 300},
-  {receiveId: 4, receive: {receiveId: 2, nickname: '혜령'}, coin: 300},
-  {receiveId: 5, receive: {receiveId: 2, nickname: '헤르메스'}, coin: 300},
-  {receiveId: 6, receive: {receiveId: 2, nickname: '나폴레옹'}, coin: 300},
-  {receiveId: 7, receive: {receiveId: 2, nickname: '춘식이'}, coin: 300},
-  {receiveId: 8, receive: {receiveId: 2, nickname: '라이언'}, coin: 300},
-  {
-    receiveId: 9,
-    receive: {receiveId: 2, nickname: '00아너무너무사랑해'},
-    coin: 300,
-  },
-  {receiveId: 10, receive: {receiveId: 2, nickname: '슈퍼노바'}, coin: 300},
-  {receiveId: 11, receive: {receiveId: 2, nickname: '무명가수1'}, coin: 300},
-  {receiveId: 12, receive: {receiveId: 2, nickname: '무명가수2'}, coin: 300},
-  {receiveId: 13, receive: {receiveId: 2, nickname: '무명가수3'}, coin: 300},
-  {receiveId: 14, receive: {receiveId: 2, nickname: '무명가수4'}, coin: 300},
-  {receiveId: 15, receive: {receiveId: 2, nickname: '슈퍼노바'}, coin: 300},
-];
-
 // supporter, busker
 const WalletScreen = () => {
   const queryClient = useQueryClient();
