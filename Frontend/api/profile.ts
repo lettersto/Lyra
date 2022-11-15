@@ -272,24 +272,50 @@ export const sendUserLocation = async ({
 };
 
 // support
-export const getSupportedList = async (userId: number) => {
+export const getSupportedList = async (
+  pageParam = 0,
+  options: {userId: number; startTime: string; endTime: string},
+) => {
+  const params =
+    options.startTime && options.endTime
+      ? {
+          user_id: options.userId,
+          start_time: options.startTime,
+          end_time: options.endTime,
+          page: pageParam,
+        }
+      : {
+          user_id: options.userId,
+          page: pageParam,
+        };
   const response = await axios({
     url: '/support/receive',
     method: 'GET',
-    params: {
-      user_id: userId,
-    },
+    params,
   });
   return response.data;
 };
 
-export const getSupportList = async (userId: number) => {
+export const getSupportList = async (
+  pageParam = 0,
+  options: {userId: number; startTime: string; endTime: string},
+) => {
+  const params =
+    options.startTime && options.endTime
+      ? {
+          user_id: options.userId,
+          start_time: options.startTime,
+          end_time: options.endTime,
+          page: pageParam,
+        }
+      : {
+          user_id: options.userId,
+          page: pageParam,
+        };
   const response = await axios({
     url: '/support/give',
     method: 'GET',
-    params: {
-      user_id: userId,
-    },
+    params,
   });
   return response.data;
 };
