@@ -77,17 +77,23 @@ export const updateUserInfo = async ({
 export const updateUserImg = async ({
   userId,
   imageUri,
+  imageType,
+  imageName,
 }: {
   userId: number;
   imageUri: string;
+  imageType: string;
+  imageName: string;
 }) => {
+  const image = new FormData();
+  const imageData = {uri: imageUri, type: imageType, name: imageName};
+  image.append('image', imageData);
+
   const response = await fetch(baseURL + `/user/updateImage/${userId}`, {
     method: 'PATCH',
-    body: JSON.stringify({
-      image_url: imageUri,
-    }),
+    body: image,
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'multipart/form-data',
     },
   });
   const data = await response.json();
