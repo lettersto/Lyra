@@ -1,15 +1,15 @@
 package hermes.Lyra.Service;
 
 import hermes.Lyra.domain.Follow;
-import hermes.Lyra.domain.Pheed;
 import hermes.Lyra.domain.Repository.FollowRepository;
-import hermes.Lyra.domain.Repository.PheedRepository;
 import hermes.Lyra.domain.Repository.UserRepository2;
-import hermes.Lyra.domain.Repository.WishRepository;
 import hermes.Lyra.domain.User;
-import hermes.Lyra.domain.Wish;
+import hermes.Lyra.vo.ResponseFollower;
+import hermes.Lyra.vo.ResponseFollowing;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -61,29 +61,29 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public List<User> searchFollowerList(Long userId) {
+    public List<ResponseFollower> searchFollowerList(Long userId, Pageable pageable) {
         User user = userRepository.findById(userId).orElse(null);
-        List<Follow> followerList = followRepository.findAllByFollowerId(user).orElseGet(null);
+        List<Follow> followerList = followRepository.findAllByFollowerId(user, pageable).orElseGet(null);
 //      팔로워만 뽑아내기 위한 초기화
-        List<User> followers = new ArrayList<>();
+        List<ResponseFollower> followers = new ArrayList<>();
 
         for (int i=0; i<followerList.size(); i++) {
             User follower = followerList.get(i).getFollowingId();
-            followers.add(follower);
+            followers.add(new ModelMapper().map(follower, ResponseFollower.class));
         }
         return followers;
     }
 
     @Override
-    public List<User> searchFollowingList(Long userId) {
+    public List<ResponseFollowing> searchFollowingList(Long userId, Pageable pageable) {
         User user = userRepository.findById(userId).orElse(null);
-        List<Follow> followingList = followRepository.findAllByFollowingId(user).orElseGet(null);
+        List<Follow> followingList = followRepository.findAllByFollowingId(user, pageable).orElseGet(null);
 //      팔로워만 뽑아내기 위한 초기화
-        List<User> followings = new ArrayList<>();
+        List<ResponseFollowing> followings = new ArrayList<>();
 
         for (int i=0; i<followingList.size(); i++) {
-            User follower = followingList.get(i).getFollowerId();
-            followings.add(follower);
+            User following = followingList.get(i).getFollowerId();
+            followings.add(new ModelMapper().map(following, ResponseFollowing.class));
         }
         return followings;
     }
