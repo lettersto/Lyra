@@ -48,6 +48,7 @@ export enum PheedStackScreens {
   TownModal = 'TownModal',
   TownSearch = 'TownSearch',
   LocationSearch = 'LocationSearch',
+  StoryLocationSearch = 'StoryLocationSearch',
 
   ShortsDetail = 'ShortsDetail',
   CreateShorts = 'CreateShorts',
@@ -94,6 +95,7 @@ export type PheedStackScreenParams = {
   [PheedStackScreens.TownModal]: undefined;
   [PheedStackScreens.TownSearch]: undefined;
   [PheedStackScreens.LocationSearch]: undefined;
+  [PheedStackScreens.StoryLocationSearch]: undefined;
 
   [PheedStackScreens.ShortsDetail]: StoryDeatilScreenParamList;
   [PheedStackScreens.CreateShorts]: VideoParamList;
@@ -233,6 +235,7 @@ export type RootStackParamList = {
   LocationPermission: undefined;
   WalletCreation: undefined;
   SearchPheed: undefined;
+  StoryLocationSearch: undefined;
 };
 
 export type RootTabParamList = {
@@ -380,4 +383,5 @@ export type UserProfileType = {
   following_count: number | null;
   latitude: number | null;
   longitutde: number | null;
+  end_busk_count: number;
 };
