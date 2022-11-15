@@ -1,5 +1,6 @@
 package hermes.Lyra.Service;
 
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.util.IOUtils;
@@ -146,6 +147,35 @@ public class S3UploadService {
     public void deleteShorts(Long shortsId) {
 
         shortsRepository.deleteById(shortsId);
+
+    }
+
+    public int updateProfile(Long userId, MultipartFile image) throws IOException {
+
+        try {
+            String s3FileName = UUID.randomUUID() + "-" + image.getOriginalFilename();
+            byte[] bytes = new byte[0];
+            bytes = IOUtils.toByteArray(image.getInputStream());
+
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentLength(bytes.length);
+            objectMetadata.setContentType(image.getContentType());
+
+            amazonS3.putObject(bucket, s3FileName, image.getInputStream(), objectMetadata);
+
+            URL path = amazonS3.getUrl(bucket, s3FileName);
+
+            Optional<User> user = userRepository2.findById(userId);
+
+            user.get().setImage_url(String.valueOf(path));
+
+            userRepository2.save(user.get());
+
+            return 1;
+
+        } catch (IOException e) {
+            return 0;
+        }
 
     }
 }
