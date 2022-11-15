@@ -59,7 +59,7 @@ const ProfileBody = ({
         <View style={styles.profileInfoContainer}>
           <View style={styles.profileInfo}>
             <ProfileItem
-              count={profileData?.end_busk_count}
+              count={profileData?.end_busk_count || 0}
               description="내 버스킹"
             />
             <ProfileItem
