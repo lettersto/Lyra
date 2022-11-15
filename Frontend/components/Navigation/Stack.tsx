@@ -106,17 +106,29 @@ export const PheedStack = () => {
             headerTitle: () => <PheedTitle />,
             headerBackVisible: false,
           }}>
-          <Stack.Group screenOptions={{presentation: 'card'}}>
+          <Stack.Group>
             <Stack.Screen name="MainPheed" component={MainPheedScreen} />
           </Stack.Group>
-          <Stack.Group
-            screenOptions={{
-              headerShown: false,
-              presentation: 'transparentModal',
-            }}>
-            <Stack.Screen name="TownModal" component={TownModal} />
-            <Stack.Screen name="TownSearch" component={TownSearchScreen} />
-          </Stack.Group>
+        </Stack.Group>
+        <Stack.Group
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: Colors.black500,
+            },
+            headerTintColor: Colors.gray300,
+            headerTitleStyle: {
+              fontFamily: 'NanumSquareRoundR',
+              fontSize: 20,
+            },
+          }}>
+          <Stack.Screen
+            name="TownSearch"
+            component={TownSearchScreen}
+            options={{
+              title: '동네 설정',
+              headerTitleAlign: 'center',
+            }}
+          />
         </Stack.Group>
         <Stack.Screen
           name="SearchPheed"
@@ -182,36 +194,27 @@ export const MapStack = () => {
       }}>
       <Stack.Group
         screenOptions={{
-          headerTitle: () => <MapTitle />,
+          // headerTitle: () => <MapTitle />,
+          headerShown: false,
           headerBackVisible: false,
         }}>
-        <Stack.Group screenOptions={{presentation: 'card'}}>
-          <Stack.Screen
-            name="MainMap"
-            component={MainMapScreen}
-            // options={{
-            //   headerTitle: () => <MapTitle />,
-            // }}
-          />
-        </Stack.Group>
-        <Stack.Group
-          screenOptions={{
-            headerShown: false,
-            presentation: 'transparentModal',
-          }}>
-          <Stack.Screen name="TownModal" component={TownModal} />
-          <Stack.Screen name="TownSearch" component={TownSearchScreen} />
-        </Stack.Group>
-        <Stack.Group>
-          <Stack.Screen
-            name="DetailPheed"
-            component={DetailPheedScreen}
-            options={{
-              headerTitle: () => <PheedDetailTitle />,
-              headerBackVisible: false,
-            }}
-          />
-        </Stack.Group>
+        <Stack.Screen
+          name="MainMap"
+          component={MainMapScreen}
+          // options={{
+          //   headerTitle: () => <MapTitle />,
+          // }}
+        />
+      </Stack.Group>
+      <Stack.Group>
+        <Stack.Screen
+          name="DetailPheed"
+          component={DetailPheedScreen}
+          options={{
+            headerTitle: () => <PheedDetailTitle />,
+            headerBackVisible: false,
+          }}
+        />
       </Stack.Group>
     </Stack.Navigator>
   );
