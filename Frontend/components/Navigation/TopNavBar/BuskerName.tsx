@@ -1,19 +1,27 @@
-import React, {useState} from 'react';
-import {Text, Pressable, StyleSheet, View} from 'react-native';
+import React from 'react';
+import {Text, StyleSheet, View} from 'react-native';
 
-import CircleProfile from '../../Utils/CircleProfile';
 import Colors from '../../../constants/Colors';
+import ProfilePhoto from '../../Utils/ProfilePhoto';
 
-const BuskerName = () => {
-  const [buskerName, setBuskerName] = useState('APOLLON');
+interface Props {
+  buskerId: number;
+  buskerNickname: string;
+  buskerImg: string;
+}
 
+const BuskerName = ({buskerId, buskerNickname, buskerImg}: Props) => {
   return (
-    <Pressable>
-      <View style={styles.container}>
-        <CircleProfile size="extraSmall" grade="normal" isGradient={true} />
-        <Text style={styles.title}>{buskerName}</Text>
-      </View>
-    </Pressable>
+    <View style={styles.container}>
+      <ProfilePhoto
+        size="extraSmall"
+        grade="normal"
+        isGradient={true}
+        imageURI={buskerImg}
+        profileUserId={buskerId}
+      />
+      <Text style={styles.title}>{buskerNickname}</Text>
+    </View>
   );
 };
 

@@ -5,14 +5,18 @@ import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import IIcon from 'react-native-vector-icons/Ionicons';
 
+import {
+  ProfileStackNavigationProps,
+  ProfileStackScreens,
+} from '../../../constants/types';
 import Colors from '../../../constants/Colors';
 
-const WalletBody = () => {
+const WalletBody = ({coin}: {coin: number}) => {
   const gradientColors = [Colors.pink300, Colors.purple300];
-  const navigation = useNavigation();
+  const navigation = useNavigation<ProfileStackNavigationProps>();
 
   const pressHandler = () => {
-    navigation.navigate('Wallet');
+    navigation.navigate(ProfileStackScreens.Wallet);
   };
 
   return (
@@ -35,7 +39,7 @@ const WalletBody = () => {
               </View>
               <View style={styles.money}>
                 <Text style={styles.text}>잔액</Text>
-                <Text style={styles.text}>{`${20000} 코인`}</Text>
+                <Text style={styles.text}>{`${coin} 코인`}</Text>
               </View>
             </View>
           </Pressable>

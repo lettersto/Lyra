@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useContext} from 'react';
+import React, {useLayoutEffect, useContext, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -8,9 +8,8 @@ import {
   Dimensions,
 } from 'react-native';
 
-import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import {useQuery} from 'react-query';
+import {useNavigation} from '@react-navigation/native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 import {
@@ -18,27 +17,68 @@ import {
   getKakaoProfile,
   sendUserKakaoInfoToServer,
 } from '../../api/auth';
+import {getUserWalletAddressAndCoin} from '../../api/profile';
 import {AuthContext} from '../../store/auth-context';
-import {RootStackParamList, RootTabParamList} from '../../constants/types';
+import {
+  PheedStackNavigationProps,
+  PheedStackScreens,
+} from '../../constants/types';
 import Colors from '../../constants/Colors';
 import StarEffect from '../../components/Utils/StarEffect';
 
-type LoginNavigationProps = CompositeNavigationProp<
-  BottomTabNavigationProp<RootTabParamList, 'Home'>,
-  NativeStackNavigationProp<RootStackParamList>
->;
-
 const LoginScreen = () => {
-  const navigation = useNavigation<LoginNavigationProps>();
+  const navigation = useNavigation<PheedStackNavigationProps>();
+  const [loginUserId, setLoginUserId] = useState<number | null>(null);
+
+  const {
+    setImageURL,
+    setNickname,
+    setUserId,
+    setIsLoggedIn,
+    setAccessToken,
+    setRefreshToken,
+    isLoggedIn,
+    latitude,
+    longitude,
+    walletAddress,
+    setWalletId,
+    setWalletAddress,
+  } = useContext(AuthContext);
+
+  const {
+    refetch: walletRefetch,
+    // data: walletData,
+    // isLoading: walletIsLoading,
+    // isError,
+  } = useQuery('userProfile', () => getUserWalletAddressAndCoin(loginUserId!), {
+    enabled: false,
+    onSuccess: async data => {
+      setWalletId(data.walletId);
+      setWalletAddress(data.address);
+      await EncryptedStorage.setItem('walletAddress', data.address);
+    },
+    onError: async () => {
+      setWalletId(null);
+      setWalletAddress(null);
+      await EncryptedStorage.removeItem('walletAddress');
+    },
+  });
 
   useLayoutEffect(() => {
     navigation.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
   }, [navigation]);
 
-  const LoginButton = ({title, type}: {title: string; type: string}) => {
-    const {setImageURL, setNickname, setUserId, setIsLoggedIn} =
-      useContext(AuthContext);
+  useEffect(() => {
+    if (isLoggedIn && latitude && longitude && walletAddress) {
+      navigation.navigate(PheedStackScreens.MainPheed);
+    } else if (isLoggedIn && !latitude && !longitude) {
+      navigation.navigate(PheedStackScreens.LocationPermission);
+    } else if (isLoggedIn && latitude && longitude && !walletAddress) {
+      navigation.navigate(PheedStackScreens.WalletCreation);
+    }
+  }, [isLoggedIn, latitude, longitude, navigation, walletAddress]);
 
+  const LoginButton = ({title, type}: {title: string; type: string}) => {
     const onKakaoLoginPress = async () => {
       try {
         await signInWithKakao();
@@ -47,29 +87,41 @@ const LoginScreen = () => {
           nickname,
           profileImageUrl: imageURL,
           email,
-        } = await getKakaoProfile();
+        } = (await getKakaoProfile()) as {
+          nickname: string;
+          profileImageUrl: string;
+          email: string;
+        };
 
         setImageURL(imageURL);
         setNickname(nickname);
 
-        // const {
-        //   accessToken,
-        //   refreshToken,
-        //   id: userId,
-        // } = await sendUserKakaoInfoToServer({
-        //   nickname,
-        //   imageURL,
-        //   email,
-        // });
+        const {
+          accessToken,
+          refreshToken,
+          id: userId,
+        } = await sendUserKakaoInfoToServer({
+          nickname,
+          imageURL,
+          email,
+        });
 
-        // setUserId(userId);
+        setUserId(userId);
+        setLoginUserId(userId);
         setIsLoggedIn(true);
-        await EncryptedStorage.setItem('userId', '1');
-        // await EncryptedStorage.setItem('userId', userId);
-        // await EncryptedStorage.setItem('accessToken', accessToken);
-        // await EncryptedStorage.setItem('refreshToken', refreshToken);
-
-        navigation.navigate('LocationPermission');
+        setAccessToken(accessToken);
+        setRefreshToken(refreshToken);
+        await EncryptedStorage.setItem('userId', `${userId}`);
+        await EncryptedStorage.setItem('accessToken', accessToken);
+        await EncryptedStorage.setItem('refreshToken', refreshToken);
+        walletRefetch();
+        if (!latitude && !longitude) {
+          navigation.navigate(PheedStackScreens.LocationPermission);
+        } else if (!walletAddress) {
+          navigation.navigate(PheedStackScreens.WalletCreation);
+        } else {
+          navigation.navigate(PheedStackScreens.MainPheed);
+        }
       } catch (err) {
         if (__DEV__) {
           console.error('Login Error!', err);
@@ -78,11 +130,13 @@ const LoginScreen = () => {
         setImageURL(null);
         setNickname(null);
         setIsLoggedIn(false);
+        setAccessToken(null);
+        setRefreshToken(null);
       }
     };
 
     const onGoogleLoginPress = () => {
-      navigation.navigate('Home');
+      navigation.navigate(PheedStackScreens.MainPheed);
     };
 
     return (
@@ -103,12 +157,18 @@ const LoginScreen = () => {
         style={styles.background}>
         <StarEffect />
         <View style={styles.content}>
-          <View />
+          {!isLoggedIn ? <View /> : null}
           <Text style={styles.titleText}>Lyra</Text>
-          <View>
+          {!isLoggedIn ? (
+            <View>
+              <LoginButton title={'Google로 시작하기'} type="Google" />
+              <LoginButton title={'Kakao로 시작하기'} type="Kakao" />
+            </View>
+          ) : null}
+          {/* <View>
             <LoginButton title={'Google로 시작하기'} type="Google" />
             <LoginButton title={'Kakao로 시작하기'} type="Kakao" />
-          </View>
+          </View> */}
         </View>
       </ImageBackground>
     </View>

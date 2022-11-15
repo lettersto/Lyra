@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Dispatch, SetStateAction} from 'react';
 import {
   View,
   Text,
@@ -14,14 +14,19 @@ import LinearGradient from 'react-native-linear-gradient';
 import Button from '../../Utils/Button';
 import Colors from '../../../constants/Colors';
 
-const Wallet = () => {
-  const dummyHashCode = '0x44783342dee123aidfiouekajdkfddkfljalfjakldjf';
-  const dummyCoin = 2000000;
-
-  const gradientColors = [Colors.pink300, Colors.purple300];
+const Wallet = ({
+  coin,
+  address,
+  setIsModalVisible,
+}: {
+  coin: number;
+  address: string;
+  setIsModalVisible: Dispatch<SetStateAction<boolean>>;
+}) => {
+  const gradientColors = [Colors.pink700, Colors.purple700];
 
   const copyToClipboard = () => {
-    Clipboard.setString(dummyHashCode);
+    Clipboard.setString(address);
   };
 
   return (
@@ -36,11 +41,7 @@ const Wallet = () => {
             지갑 주소
           </Text>
           <View style={styles.addressContainer}>
-            <Text
-              style={[
-                styles.text,
-                styles.textMargin,
-              ]}>{`${dummyHashCode.substring(0, 20)}...`}</Text>
+            <Text style={[styles.text, styles.textMargin]}>{address}</Text>
             <TouchableOpacity onPress={copyToClipboard}>
               <IIcons
                 name="ios-copy-outline"
@@ -52,15 +53,15 @@ const Wallet = () => {
           <View style={styles.walletBottom}>
             <View style={styles.coinContainer}>
               <Text style={[styles.text, styles.colorPink, styles.textMargin]}>
-                COIN
+                LYRA
               </Text>
-              <Text style={styles.text}>{dummyCoin}</Text>
+              <Text style={styles.text}>{coin}</Text>
             </View>
             <Button
               title="충전"
               btnSize="medium"
               textSize="medium"
-              onPress={() => {}}
+              onPress={() => setIsModalVisible(true)}
               isGradient={true}
               isOutlined={false}
             />
@@ -96,14 +97,19 @@ const styles = StyleSheet.create({
   },
   addressContainer: {
     flexDirection: 'row',
-    marginLeft: 8,
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    width: '90%',
+    paddingLeft: 8,
     marginBottom: 8,
   },
   textMargin: {
     marginRight: 8,
+    fontSize: 16,
   },
   coinContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   walletBottom: {
     flexDirection: 'row',
@@ -113,7 +119,7 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: 'NanumSquareRoundR',
     fontSize: 18,
-    color: Colors.gray300,
+    color: 'white',
   },
   colorPink: {
     color: Colors.pink300,

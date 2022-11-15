@@ -1,49 +1,91 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {View, StyleSheet, Dimensions} from 'react-native';
 
-import ProfileItem from './ProfileItem';
-import CircleProfile from '../../Utils/CircleProfile';
+import {useMutation, useQueryClient} from 'react-query';
 
+import {followAndUnfollow} from '../../../api/profile';
+import {UserProfileType} from '../../../constants/types';
+import ProfileItem from './ProfileItem';
+import ProfilePhoto from '../../Utils/ProfilePhoto';
 import Button from '../../Utils/Button';
 import MoreInfo from '../../Utils/MoreInfo';
+import {AuthContext} from '../../../store/auth-context';
 
-const ProfileBody = () => {
+const ProfileBody = ({
+  profileData,
+  isMyProfile,
+}: {
+  profileData: UserProfileType;
+  isMyProfile: boolean;
+}) => {
+  const queryClient = useQueryClient();
+  const {userId} = useContext(AuthContext);
   const [isFollowing, setIsFollowing] = useState(false);
   const buttonCustomStyle = {width: 236};
 
-  const dummyIntroduction = `안녕하세요!
-버스커 주혜입니다.\n
-어릴 때 영화 <어거스트 러쉬>를 보고 기타에 깊은 감명을 받아 버스킹을 시작하게 되었습니다.\n
-여러분에게도 따뜻한 감성을 전달하는 버스커가 되길 희망합니다.
-\n
-저는 주로 홍대 00로 00가게 앞 저녁 8시에 볼 수 있습니다.
-\n  
-많은 팔로우 부탁드려요!`;
+  const {
+    mutate: followerMutate,
+    // isLoading: followerIsLoading,
+    // isError,
+  } = useMutation(followAndUnfollow);
+
+  const followerhandler = () => {
+    if (isMyProfile) {
+      return;
+    }
+    followerMutate(
+      {
+        followerId: userId!,
+        followingId: profileData?.id,
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries('userProfile');
+          setIsFollowing(preV => !preV);
+        },
+      },
+    );
+  };
 
   return (
     <View style={styles.profileContainer}>
       <View style={styles.profileTop}>
-        <CircleProfile size="extraLarge" isGradient={false} />
+        <ProfilePhoto
+          size="extraLarge"
+          isGradient={false}
+          imageURI={profileData?.image_url}
+          profileUserId={profileData?.id}
+        />
         <View style={styles.profileInfoContainer}>
           <View style={styles.profileInfo}>
             <ProfileItem count={1} description="내 버스킹" />
-            <ProfileItem count={256} description="팔로워" />
-            <ProfileItem count={14} description="팔로우" />
+            <ProfileItem
+              count={profileData?.follower_count || 0}
+              description="팔로워"
+              userProfileId={profileData?.id}
+              profileUserNickname={profileData?.nickname || ''}
+            />
+            <ProfileItem
+              count={profileData?.following_count || 0}
+              description="팔로우"
+              userProfileId={profileData?.id}
+              profileUserNickname={profileData?.nickname || ''}
+            />
           </View>
-          <Button
-            title={isFollowing ? '팔로우 끊기' : '팔로우 하기'}
-            btnSize="small"
-            textSize="small"
-            customStyle={buttonCustomStyle}
-            isGradient={true}
-            isOutlined={true}
-            onPress={() => setIsFollowing(preV => !preV)}
-          />
+          {!isMyProfile ? (
+            <Button
+              title={isFollowing ? '팔로우 끊기' : '팔로우 하기'}
+              btnSize="small"
+              textSize="small"
+              customStyle={buttonCustomStyle}
+              isGradient={true}
+              isOutlined={true}
+              onPress={followerhandler}
+            />
+          ) : null}
         </View>
       </View>
-      <View>
-        <MoreInfo content={dummyIntroduction} />
-      </View>
+      <MoreInfo content={profileData?.introduction || ''} />
     </View>
   );
 };

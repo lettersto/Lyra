@@ -82,4 +82,31 @@ public class FollowController {
 
         return new ResponseEntity<>(message, headers, HttpStatus.OK);
     }
+
+    @ApiOperation(value = "팔로잉 -> 팔로워 팔로우 중인지 확인한다.",notes = "팔로잉 -> 팔로워 팔로우 중인지 확인한다.")
+    @GetMapping("{followerId}/{followingId}")
+    public ResponseEntity<?> check(
+            @PathVariable("followerId") Long followerId,
+            @PathVariable("followingId") Long followingId){
+        Message message = new Message();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        int check = followService.check(followerId, followingId);
+        if (check==1) {
+            message.setStatus(StatusEnum.OK);
+            message.setMessage("팔로우한 상대방입니다");
+            message.setData(true);
+            return new ResponseEntity<>(message, headers, HttpStatus.OK);
+        } else if (check==2) {
+            message.setStatus(StatusEnum.OK);
+            message.setMessage("팔로우한 상대방이 아닙니다");
+            message.setData(false);
+            return new ResponseEntity<>(message, headers, HttpStatus.OK);
+        } else {
+            message.setStatus(StatusEnum.BAD_REQUEST);
+            if (check==3) message.setMessage("팔로워 아이디를 잘못 입력했습니다");
+            else message.setMessage("팔로잉 아이디를 잘못 입력했습니다");
+            return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+        }
+    }
 }

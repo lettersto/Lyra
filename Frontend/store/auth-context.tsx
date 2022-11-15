@@ -6,14 +6,19 @@ import React, {
   Dispatch,
   SetStateAction,
 } from 'react';
+
 export interface authContextType {
   userId: null | number;
   nickname: null | string;
   imageURL: null | string;
   isLoggedIn: boolean;
-  latitude: null | number;
-  longitude: null | number;
+  latitude: number;
+  longitude: number;
   townName: null | string;
+  walletId: null | number;
+  walletAddress: null | string;
+  accessToken: null | string;
+  refreshToken: null | string;
   setUserId: Dispatch<SetStateAction<number | null>>;
   setNickname: Dispatch<SetStateAction<string | null>>;
   setImageURL: Dispatch<SetStateAction<string | null>>;
@@ -21,16 +26,24 @@ export interface authContextType {
   setLatitude: Dispatch<SetStateAction<number | null>>;
   setLongitude: Dispatch<SetStateAction<number | null>>;
   setTownName: Dispatch<SetStateAction<string | null>>;
+  setWalletId: Dispatch<SetStateAction<number | null>>;
+  setWalletAddress: Dispatch<SetStateAction<string | null>>;
+  setAccessToken: Dispatch<SetStateAction<string | null>>;
+  setRefreshToken: Dispatch<SetStateAction<string | null>>;
 }
 
 export const AuthContext = createContext<authContextType>({
   userId: null,
   nickname: null,
   imageURL: null,
-  latitude: null,
-  longitude: null,
+  latitude: 126.59,
+  longitude: 37.33,
   isLoggedIn: false,
   townName: null,
+  walletId: null,
+  walletAddress: null,
+  accessToken: null,
+  refreshToken: null,
   setUserId: () => {},
   setNickname: () => {},
   setImageURL: () => {},
@@ -38,6 +51,10 @@ export const AuthContext = createContext<authContextType>({
   setLatitude: () => {},
   setLongitude: () => {},
   setTownName: () => {},
+  setWalletId: () => {},
+  setWalletAddress: () => {},
+  setAccessToken: () => {},
+  setRefreshToken: () => {},
 });
 
 export const AuthProvider = ({children}: {children: ReactNode}) => {
@@ -48,6 +65,10 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [townName, setTownName] = useState<string | null>(null);
+  const [walletId, setWalletId] = useState<number | null>(null);
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [refreshToken, setRefreshToken] = useState<string | null>(null);
 
   const authValue = useMemo(() => {
     return {
@@ -58,6 +79,10 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
       latitude,
       longitude,
       townName,
+      walletId,
+      walletAddress,
+      accessToken,
+      refreshToken,
       setUserId,
       setNickname,
       setImageURL,
@@ -65,70 +90,26 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
       setLatitude,
       setLongitude,
       setTownName,
+      setWalletId,
+      setWalletAddress,
+      setAccessToken,
+      setRefreshToken,
     };
-  }, [userId, nickname, imageURL, isLoggedIn, latitude, longitude, townName]);
-
-  // const authValue = {
-  //   userId,
-  //   nickname,
-  //   imageURL,
-  //   isLoggedIn,
-  //   latitude,
-  //   longitude,
-  //   townName,
-  //   setUserId,
-  //   setNickname,
-  //   setImageURL,
-  //   setIsLoggedIn,
-  //   setLatitude,
-  //   setLongitude,
-  // };
+  }, [
+    userId,
+    nickname,
+    imageURL,
+    isLoggedIn,
+    latitude,
+    longitude,
+    townName,
+    walletId,
+    walletAddress,
+    accessToken,
+    refreshToken,
+  ]);
 
   return (
     <AuthContext.Provider value={authValue}>{children}</AuthContext.Provider>
   );
 };
-
-// import React, {
-//   createContext,
-//   useState,
-//   ReactNode,
-//   Dispatch,
-//   SetStateAction,
-// } from 'react';
-
-// export interface AuthValueType {
-//   // accessToken: null | string;
-//   // refreshToken: null | string;
-//   isLoggedIn: null | boolean;
-// }
-
-// export interface authContextType {
-//   authState: AuthValueType;
-//   // getAccessToken: () => string | null;
-//   setAuthState: Dispatch<SetStateAction<AuthValueType>>;
-// }
-
-// export const AuthContext = createContext<authContextType | null>(null);
-
-// export const AuthProvider = ({children}: {children: ReactNode}) => {
-//   const [authState, setAuthState] = useState<AuthValueType>({
-//     // accessToken: null,
-//     // refreshToken: null,
-//     isLoggedIn: null,
-//   });
-
-//   // const getAccessToken = (): string | null => {
-//   //   return authState.accessToken;
-//   // };
-
-//   const authValue = {
-//     authState,
-//     // getAccessToken,
-//     setAuthState,
-//   };
-
-//   return (
-//     <AuthContext.Provider value={authValue}>{children}</AuthContext.Provider>
-//   );
-// };
