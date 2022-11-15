@@ -257,9 +257,7 @@ public class UserController {
     public ResponseEntity<?> login(
             @RequestBody UserLoginRequestDto userLoginRequestDto) {
         // userId로 확인한 값이 DB에 저장되어 있는지 확인 있으면 User 가져오고, 없으면 만들어서 User에 할당
-        System.out.println("ssibal");
         User user = userService.join(userLoginRequestDto);
-        log.info("bye");
         String accessToken = jwtTokenProvider.createToken(user.getEmail(), user.getRoles());
         return ResponseEntity.ok(UserLoginResponseDto.of(200, "가입에 성공했습니다", user.getId(), user.getEmail(), user.getNickname(), accessToken, user.getRefreshToken()));
     }
