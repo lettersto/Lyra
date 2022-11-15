@@ -11,6 +11,7 @@ import CreateShortsScreen from '../../screens/Home/Shorts/CreateShortsScreen';
 import PheedDetailTitle from './TopNavBar/PheedDetailTitle';
 import SearchPheedScreen from '../../screens/Home/Pheed/SearchPheedScreen';
 import UpdatePheedScreen from '../../screens/Home/Pheed/UpdatePheedScreen';
+import StoryLocationSerachScreen from '../../screens/Map/StoryLocationSearchScreen';
 
 // Profile
 import MainProfileScreen from '../../screens/Profile/MainProfileScreen';
@@ -144,6 +145,14 @@ export const PheedStack = () => {
           }}
         />
         <Stack.Screen
+          name="StoryLocationSearch"
+          component={StoryLocationSerachScreen}
+          options={{
+            headerShown: false,
+            presentation: 'transparentModal',
+          }}
+        />
+        <Stack.Screen
           name="DetailPheed"
           component={DetailPheedScreen}
           options={{
@@ -152,7 +161,6 @@ export const PheedStack = () => {
           }}
         />
         <Stack.Screen name="Alarm" component={AlarmScreen} />
-        {/* </> */}
       </Stack.Navigator>
     </PheedMapProvider>
   );
