@@ -115,18 +115,30 @@ export const followAndUnfollow = async ({
   return response.data;
 };
 
-export const getFollowerList = async (userProfileId: number) => {
+export const getFollowerList = async (
+  pageParam = 0,
+  options: {userProfileId: number},
+) => {
   const response = await axios({
-    url: `/follow/followerList/${userProfileId}`,
+    url: `/follow/followerList/${options.userProfileId}`,
     method: 'GET',
+    params: {
+      page: pageParam,
+    },
   });
   return response.data?.data;
 };
 
-export const getFollowingList = async (userProfileId: number) => {
+export const getFollowingList = async (
+  pageParam = 0,
+  options: {userProfileId: number},
+) => {
   const response = await axios({
-    url: `/follow/followingList/${userProfileId}`,
+    url: `/follow/followingList/${options.userProfileId}`,
     method: 'GET',
+    params: {
+      page: pageParam,
+    },
   });
   return response.data?.data;
 };

@@ -25,7 +25,7 @@ const ProfileBody = ({
 
   const {data: followState} = useQuery(
     'followState',
-    () => checkIsFollowing(profileData.id, userId!),
+    () => checkIsFollowing(profileData?.id, userId!),
     {
       enabled: !isMyProfile,
       onSuccess: () => {
