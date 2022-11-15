@@ -6,9 +6,7 @@ import lombok.Data;
 
 
 @Data
-public class ResponseSupport2 {
-
-//    private User supporter;
+public class ResponseSupport3 {
 
     private Long supporterId;
 
@@ -19,7 +17,5 @@ public class ResponseSupport2 {
     private Integer coin;
 
     private String content;
-
-    private String ca;
 
 }
