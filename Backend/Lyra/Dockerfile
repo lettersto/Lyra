@@ -1,7 +1,6 @@
 FROM openjdk:11-jdk
 WORKDIR /var/jenkins_home/workspace/lyra/Backend/Lyra
 EXPOSE 8080
-RUN chmod +x ./gradlew
 CMD ["./gradlew", "clean", "build"]
 VOLUME /tmp
 ARG JAR_FILE=build/libs/app.jar
