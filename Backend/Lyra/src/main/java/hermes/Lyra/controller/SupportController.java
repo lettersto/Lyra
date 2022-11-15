@@ -90,7 +90,7 @@ public class SupportController {
 //        return ResponseEntity.status(HttpStatus.OK).body(result);
 //    }
 
-    @ApiOperation(value = "내가 후원한 정보 불러오기")
+    @ApiOperation(value = "내가 후원한 정보 불러오기, 페이징0부터&최신순")
     @GetMapping("give")
     public ResponseEntity<List<ResponseSupport>> getGive(@RequestParam("user_id") Long userId, @RequestBody RequestSupport2 data, @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
 
@@ -109,7 +109,7 @@ public class SupportController {
     }
 
 
-    @ApiOperation(value = "내가 받은 후원 정보 불러오기")
+    @ApiOperation(value = "내가 받은 후원 정보 불러오기, 페이징0부터&최신순")
     @GetMapping("receive")
     public ResponseEntity<List<ResponseSupport2>> getReceive(@RequestParam("user_id") Long userId, @RequestBody RequestSupport2 data, @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
 

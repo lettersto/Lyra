@@ -5,8 +5,13 @@ import hermes.Lyra.Service.UserService;
 import hermes.Lyra.domain.User;
 import hermes.Lyra.dto.Message;
 import hermes.Lyra.dto.StatusEnum;
+import hermes.Lyra.vo.ResponseFollower;
+import hermes.Lyra.vo.ResponseFollowing;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -51,15 +56,16 @@ public class FollowController {
         }
     }
 
-    @ApiOperation(value = "유저의 팔로워 리스트를 조회한다.",notes = "유저의 팔로워 리스트를 조회한다")
+    @ApiOperation(value = "유저의 팔로워 리스트를 조회한다. 페이징0부터&닉네임순",notes = "유저의 팔로워 리스트를 조회한다")
     @GetMapping("followerList/{userId}")
     public ResponseEntity<?> followerList(
-            @PathVariable("userId") Long userId){
+            @PathVariable("userId") Long userId,
+            @PageableDefault(size = 20, sort = "followerId.nickname", direction = Sort.Direction.ASC) Pageable pageable){
         Message message = new Message();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-        List<User> followers = followService.searchFollowerList(userId);
+        List<ResponseFollower> followers = followService.searchFollowerList(userId, pageable);
         message.setStatus(StatusEnum.OK);
         message.setMessage("팔로워 리스트 조회 성공");
         message.setData(followers);
@@ -67,15 +73,16 @@ public class FollowController {
         return new ResponseEntity<>(message, headers, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "유저의 팔로잉 리스트를 조회한다.",notes = "유저의 팔로잉 리스트를 조회한다")
+    @ApiOperation(value = "유저의 팔로잉 리스트를 조회한다. 페이징0부터&닉네임순",notes = "유저의 팔로잉 리스트를 조회한다")
     @GetMapping("followingList/{userId}")
     public ResponseEntity<?> followingList(
-            @PathVariable("userId") Long userId){
+            @PathVariable("userId") Long userId,
+            @PageableDefault(size = 20, sort = "followingId.nickname", direction = Sort.Direction.ASC) Pageable pageable){
         Message message = new Message();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-        List<User> followings = followService.searchFollowingList(userId);
+        List<ResponseFollowing> followings = followService.searchFollowingList(userId, pageable);
         message.setStatus(StatusEnum.OK);
         message.setMessage("팔로잉 리스트 조회 성공");
         message.setData(followings);
