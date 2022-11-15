@@ -62,8 +62,9 @@ public class WebSecurityConfig {
                 .and()
                 .authorizeRequests()  // 요청에 대한 사용 권한 체크
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll() // 추가
+//                .antMatchers("/admin/**").hasAnyRole("ADMIN")
                 .antMatchers(AUTH_WHITELIST).permitAll()
-//                .antMatchers("/talk/**").authenticated()
+//                .antMatchers("/**").authenticated()
 //                .antMatchers("/talk/**").hasAnyRole("ROLE_USER")
                 .anyRequest().permitAll()  // 그 외 나머지 요청은 누구나 접근 가능
                 .and()
@@ -77,9 +78,8 @@ public class WebSecurityConfig {
 //                .successHandler(successHandler)
 //                .userInfoEndpoint() // OAuth2 로그인 성공 후에 가져올 설정들
 //                .userService(oAuth2UserService); // 서버에서 사용자 정보를 가져온 상태에서 추가로 진행하고자 하는 기능 명시
-
-                http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
-                        UsernamePasswordAuthenticationFilter.class);
+//                http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+//                        UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }
