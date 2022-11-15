@@ -71,9 +71,8 @@ public class SupportServiceImpl implements SupportService{
 
     @Override
     public List<Support> getSupportBySupporterId(Long userId, Timestamp startTime, Timestamp endTime, Pageable pageable) {
-        String time = String.valueOf(startTime);
 
-        if (time != "1111-11-11 11:11:11") {
+        if (startTime != null) {
             return supportRepository.findByTimeBetweenAndSupporterId(startTime, endTime, userId, pageable);
         }
         return supportRepository.findBySupporterId(userId, pageable);
@@ -81,9 +80,8 @@ public class SupportServiceImpl implements SupportService{
 
     @Override
     public List<Support> getSupportByBuskerId(Long userId, Timestamp startTime, Timestamp endTime, Pageable pageable) {
-        String time = String.valueOf(startTime);
 
-        if (time != "1111-11-11 11:11:11") {
+        if (startTime != null) {
             return supportRepository.findByTimeBetweenAndBuskerId(startTime, endTime, userId, pageable);
         }
         return supportRepository.findByBuskerId(userId, pageable);

@@ -93,7 +93,7 @@ public class SupportController {
 
     @ApiOperation(value = "내가 후원한 정보 불러오기, 페이징0부터&최신순")
     @GetMapping("give")
-    public ResponseEntity<List<ResponseSupport>> getGive(@RequestParam("user_id") Long userId, @RequestParam("start_time") Timestamp startTime, @RequestParam("end_time") Timestamp endTime, @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
+    public ResponseEntity<List<ResponseSupport>> getGive(@RequestParam("user_id") Long userId, @RequestParam(value = "start_time", required = false) Timestamp startTime, @RequestParam(value = "end_time", required = false) Timestamp endTime, @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
 
         log.info("Before get give support data");
 
@@ -112,7 +112,7 @@ public class SupportController {
 
     @ApiOperation(value = "내가 받은 후원 정보 불러오기, 페이징0부터&최신순")
     @GetMapping("receive")
-    public ResponseEntity<List<ResponseSupport2>> getReceive(@RequestParam("user_id") Long userId, @RequestParam("start_time") Timestamp startTime, @RequestParam("end_time") Timestamp endTime, @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
+    public ResponseEntity<List<ResponseSupport2>> getReceive(@RequestParam("user_id") Long userId, @RequestParam(value = "start_time", required = false) Timestamp startTime, @RequestParam(value = "end_time", required = false) Timestamp endTime, @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
 
         log.info("Before get receive data");
 
