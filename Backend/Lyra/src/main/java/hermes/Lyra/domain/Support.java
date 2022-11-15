@@ -39,4 +39,9 @@ public class Support {
     @CreationTimestamp
     @JsonFormat(timezone = "Asia/Seoul", pattern = "yyyy-MM-dd HH:mm")
     private Timestamp time;
+
+    @ManyToOne
+    @JoinColumn(name = "pheed_id")
+    @JsonIgnore
+    private Pheed pheed;
 }
