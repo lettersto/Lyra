@@ -7,6 +7,8 @@ import hermes.Lyra.domain.Wish;
 import java.util.List;
 
 public interface WishService {
+    int isRight(Long userId, Long pheedId);
+
     int wishPheed(Long userId, Long pheedId);
 
     List<Pheed> searchPheedList(Long userId);

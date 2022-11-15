@@ -1,5 +1,6 @@
 package hermes.Lyra.Service;
 
+import hermes.Lyra.domain.Follow;
 import hermes.Lyra.domain.Wish;
 import hermes.Lyra.domain.Pheed;
 import hermes.Lyra.domain.Repository.WishRepository;
@@ -71,5 +72,17 @@ public class WishServiceImpl implements WishService {
             users.add(user);
         }
         return users;
+    }
+
+    @Override
+    public int isRight(Long userId, Long pheedId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user==null) return 3;
+        Pheed pheed = pheedRepository.findById(pheedId).orElse(null);
+        if (pheed==null) return 4;
+
+        Wish wish = wishRepository.findByUserIdAndPheedId(user, pheed).orElse(null);
+        if (wish==null) return 2;
+        return 1;
     }
 }

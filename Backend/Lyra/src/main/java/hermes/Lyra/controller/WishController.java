@@ -85,4 +85,31 @@ public class WishController {
         return new ResponseEntity<>(message, headers, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "피드를 좋아요 하고 있는지 확인한다.",notes = "피드를 좋아요 하고 있는지 확인한다.")
+    @GetMapping("{userId}/{pheedId}")
+    public ResponseEntity<?> check(
+            @PathVariable("userId") Long userId,
+            @PathVariable("pheedId") Long pheedId){
+        Message message = new Message();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        int check = wishService.isRight(userId, pheedId);
+        if (check==1) {
+            message.setStatus(StatusEnum.OK);
+            message.setMessage("좋아요한 피드입니다");
+            message.setData(true);
+            return new ResponseEntity<>(message, headers, HttpStatus.OK);
+        } else if (check==2) {
+            message.setStatus(StatusEnum.OK);
+            message.setMessage("좋아요한 피드가 아닙니다");
+            message.setData(false);
+            return new ResponseEntity<>(message, headers, HttpStatus.OK);
+        } else {
+            message.setStatus(StatusEnum.BAD_REQUEST);
+            if (check==3) message.setMessage("유저 아이디를 잘못 입력했습니다");
+            else message.setMessage("피드 아이디를 잘못 입력했습니다");
+            return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

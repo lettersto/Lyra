@@ -52,4 +52,16 @@ public class TalkController {
             return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @ApiOperation(value = "개인 메시지 읽음처리", notes = "개인 메시지 읽음처리")
+    @PatchMapping("/{talkId}")
+    public ResponseEntity<?> read(@PathVariable("talkId") Long talkId) {
+        Message message = new Message();
+        HttpHeaders headers= new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        talkService.read(talkId);
+        message.setStatus(StatusEnum.OK);
+        message.setMessage("톡 읽음처리 성공");
+        return new ResponseEntity<>(message, headers, HttpStatus.OK);
+    }
 }
