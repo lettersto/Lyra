@@ -17,7 +17,7 @@ export const profileData = [
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     },
-    img: require('../../assets/image/basicProfile.png'),
+    img: require('../../assets/image/heartImg.png'),
   },
   {
     userId: 3,
@@ -48,5 +48,15 @@ export const profileData = [
       longitudeDelta: 0.0421,
     },
     img: require('../../assets/image/basicProfile.png'),
+  },
+  {
+    userId: 6,
+    coords: {
+      latitude: 30.6936,
+      longitude: 76.845,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    },
+    img: require('../../assets/image/heartImg.png'),
   },
 ];

@@ -1,10 +1,29 @@
-import React, {useState} from 'react';
-import {View, Text, FlatList, StyleSheet, Pressable} from 'react-native';
+import React, {useState, useContext} from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Pressable,
+  TextInput,
+} from 'react-native';
 
+import {useMutation, useQuery, useQueryClient} from 'react-query';
+
+import {
+  getUserWalletAddressAndCoin,
+  createRecordInChargeList,
+  chargeCoinToWeb3,
+  getTotalBalanceFromWeb3,
+  getChargeList,
+} from '../../api/profile';
+import {walletTabType} from '../../constants/types';
+import {AuthContext} from '../../store/auth-context';
 import Wallet from '../../components/Profile/Wallet/Wallet';
 import WalletCategory from '../../components/Profile/Wallet/WalletCategory';
 import CircleProfile from '../../components/Utils/CircleProfile';
-import {walletTabType} from '../../constants/types';
+import ModalWithButton from '../../components/Utils/ModalWithButton';
+import LoadingSpinner from '../../components/Utils/LoadingSpinner';
 import Colors from '../../constants/Colors';
 
 const dummyGiveList = [
@@ -49,18 +68,31 @@ const dummyReceiveList = [
   {receiveId: 15, receive: {receiveId: 2, nickname: '슈퍼노바'}, coin: 300},
 ];
 
-const dummyChargeList = [
-  {chargeId: 0, chargeDate: '2022-10-24', coin: 4000},
-  {chargeId: 1, chargeDate: '2022-10-25', coin: 3000},
-  {chargeId: 2, chargeDate: '2022-10-26', coin: 300},
-  {chargeId: 3, chargeDate: '2022-10-27', coin: 100},
-  {chargeId: 4, chargeDate: '2022-10-28', coin: 2000},
-  {chargeId: 5, chargeDate: '2022-10-29', coin: 300},
-];
-
 // supporter, busker
 const WalletScreen = () => {
+  const queryClient = useQueryClient();
+  const {walletAddress, walletId, userId} = useContext(AuthContext);
   const [walletTabMode, setWalletTabMode] = useState<walletTabType>('give');
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [enteredCoin, setEnteredCoin] = useState<string>('');
+  const [validationWarning, setValidationWarning] = useState<string>('');
+
+  const {
+    data: walletData,
+    isLoading: walletDataIsLoading,
+    // isError,
+  } = useQuery('walletInfo', () => getUserWalletAddressAndCoin(userId!));
+
+  const {
+    data: chargeListData,
+    isLoading: chargeListIsLoading,
+    // isError,
+  } = useQuery('chargeList', () => getChargeList(walletId!));
+
+  const {
+    data: balanceData, // string coin
+    isLoading: balanceIsLoading,
+  } = useQuery('walletBalance', () => getTotalBalanceFromWeb3(walletAddress!));
 
   // TODO change type for listData
   let listData: any = dummyGiveList;
@@ -68,12 +100,17 @@ const WalletScreen = () => {
     listData = dummyReceiveList;
   }
   if (walletTabMode === 'charge') {
-    listData = dummyChargeList;
+    listData = chargeListData;
+    // {"ca": "0x03c43Fbd1cC2786E7567Ecb25Ae4cC892445B327", "coin": 0, "time": "2022-11-10 09:26"}]
   }
 
   const Header = () => (
     <View>
-      <Wallet />
+      <Wallet
+        setIsModalVisible={setIsModalVisible}
+        coin={Number(balanceData) || 0}
+        address={walletData?.address || ''}
+      />
       <WalletCategory
         walletTabMode={walletTabMode}
         setWalletTabMode={setWalletTabMode}
@@ -112,7 +149,7 @@ const WalletScreen = () => {
       content = item.receive.nickname;
     }
     if (walletTabMode === 'charge') {
-      content = item.chargeDate;
+      content = item.time;
     }
     return (
       <Item
@@ -123,8 +160,114 @@ const WalletScreen = () => {
     );
   };
 
+  const enterCoinInputHandler = (text: string) => {
+    const textLen = text.length;
+    const numText = Number(text.trim());
+    if (isNaN(numText)) {
+      setEnteredCoin('0');
+      setValidationWarning('충전할 금액을 숫자로 입력해 주세요.');
+      return;
+    }
+    if (textLen > 1 && text[0] === '0') {
+      setEnteredCoin(text.substring(1));
+      setValidationWarning('리라는 0부터 100 사이로만 충전이 가능해요!');
+      return;
+    }
+    if (textLen >= 3 && numText > 100) {
+      setEnteredCoin('100');
+      setValidationWarning('리라는 0부터 100 사이로만 충전이 가능해요!');
+      return;
+    }
+    setValidationWarning('');
+    setEnteredCoin(text.trim());
+  };
+
+  const coinInputCancleHandler = () => {
+    setEnteredCoin('');
+    setValidationWarning('');
+    setIsModalVisible(false);
+  };
+
+  const {
+    mutate: createRecordMutate,
+    isLoading: createRecordIsLoading,
+    // isError: createRecordIsError,
+  } = useMutation(createRecordInChargeList, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('walletInfo');
+      queryClient.invalidateQueries('chargeList');
+      setEnteredCoin('');
+    },
+  });
+
+  const {
+    mutate: webMutate,
+    isLoading: webIsLoading,
+    // error: webError,
+    // isError: webIsError,
+  } = useMutation(chargeCoinToWeb3, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('walletBalance');
+      createRecordMutate({
+        walletId: walletId as number,
+        walletAddress: walletAddress as string,
+        coin: Number(enteredCoin),
+      });
+    },
+  });
+
+  const chargeCoinHandler = () => {
+    if (enteredCoin === '' || enteredCoin === '0') {
+      setValidationWarning('0 Lyra 이상을 충전해주세요.');
+      return;
+    }
+    webMutate({
+      walletAddress: walletAddress as string,
+      coin: Number(enteredCoin),
+    });
+    setIsModalVisible(false);
+  };
+
+  const isLoading =
+    walletDataIsLoading ||
+    createRecordIsLoading ||
+    // chargeIsLoading ||
+    webIsLoading ||
+    balanceIsLoading ||
+    chargeListIsLoading;
+
   return (
     <View style={styles.container}>
+      {isLoading ? (
+        <LoadingSpinner
+          size="large"
+          color={Colors.purple300}
+          animating={isLoading}
+        />
+      ) : null}
+      <ModalWithButton
+        isModalVisible={isModalVisible}
+        setIsModalVisible={setIsModalVisible}
+        leftText="취소하기"
+        onLeftPress={() => coinInputCancleHandler()}
+        rightText="충전하기"
+        onRightPress={() => chargeCoinHandler()}>
+        <View style={styles.coinInputContainer}>
+          <TextInput
+            style={styles.coinInput}
+            value={enteredCoin}
+            keyboardType="numeric"
+            onChangeText={enterCoinInputHandler}
+            defaultValue="0"
+            maxLength={9}
+          />
+          {validationWarning ? (
+            <Text style={[styles.text, styles.validationWarning]}>
+              {validationWarning}
+            </Text>
+          ) : null}
+        </View>
+      </ModalWithButton>
       <FlatList
         data={listData}
         renderItem={renderItem}
@@ -159,6 +302,22 @@ const styles = StyleSheet.create({
     fontFamily: 'NanumSquareRoundR',
     fontSize: 18,
     color: Colors.gray300,
+  },
+  coinInputContainer: {
+    width: '90%',
+  },
+  coinInput: {
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.pink300,
+    color: 'white',
+    fontSize: 20,
+    textAlign: 'right',
+  },
+  validationWarning: {
+    marginTop: 8,
+    color: Colors.pink300,
+    fontSize: 12,
+    textAlign: 'right',
   },
 });
 

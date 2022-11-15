@@ -1,12 +1,11 @@
 import React from 'react';
-import {View, Dimensions, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {
   GooglePlaceData,
   GooglePlaceDetail,
   GooglePlacesAutocomplete,
 } from 'react-native-google-places-autocomplete';
 import Config from 'react-native-config';
-import LinearGradient from 'react-native-linear-gradient';
 import Colors from '../../constants/Colors';
 
 interface propsType {
@@ -16,13 +15,12 @@ interface propsType {
 }
 
 const LocationSearch = ({onPress}: propsType) => {
-  const gradientColors = [Colors.pink700, Colors.purple700];
   const homePlace = {
     description: 'Home',
     geometry: {location: {lat: 37.513, lng: 127.103}},
   };
   return (
-    <View style={{zIndex: 1}}>
+    <View style={styles.view}>
       <GooglePlacesAutocomplete
         placeholder={'도로명 또는 지번으로 검색'}
         query={{key: Config.GOOGLE_API_KEY, language: 'ko'}}
@@ -70,13 +68,7 @@ const LocationSearch = ({onPress}: propsType) => {
   );
 };
 const styles = StyleSheet.create({
-  gradientContainer: {
-    padding: 1,
-    marginVertical: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 4,
-  },
+  view: {zIndex: 1},
 });
 
 export default LocationSearch;

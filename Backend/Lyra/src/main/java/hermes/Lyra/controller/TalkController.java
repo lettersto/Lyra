@@ -2,8 +2,6 @@ package hermes.Lyra.controller;
 
 import hermes.Lyra.Service.TalkService;
 import hermes.Lyra.Service.UserService;
-//import hermes.Lyra.config.LyraUserDetails;
-import hermes.Lyra.config.LyraUserDetails;
 import hermes.Lyra.domain.Talk;
 import hermes.Lyra.dto.Message;
 import hermes.Lyra.dto.StatusEnum;
@@ -14,12 +12,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.Charset;
-import java.util.Collection;
 import java.util.List;
 
 @RestController

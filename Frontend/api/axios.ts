@@ -18,16 +18,18 @@ interface authAxiosInstance extends AxiosInstance {
   };
 }
 
+export const baseURL = 'http://k7c105.p.ssafy.io:8080';
+
 // content-type은 무엇인지
 const instance = axios.create({
-  baseURL: 'http://k7c105.p.ssafy.io:8080/',
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
 export const authAxios: authAxiosInstance = axios.create({
-  baseURL: 'http://k7c105.p.ssafy.io:8080/',
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },

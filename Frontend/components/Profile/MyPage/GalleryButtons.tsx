@@ -4,9 +4,8 @@ import {View, Pressable, Text, StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import IIcon from 'react-native-vector-icons/Ionicons';
 
+import {galleryTypes} from '../../../constants/types';
 import Colors from '../../../constants/Colors';
-
-type galleryTypes = 'visitedBusking' | 'myBusking' | 'favoriteBusking';
 
 const GalleryButtons = ({
   galleryCategory,
@@ -19,21 +18,6 @@ const GalleryButtons = ({
 
   return (
     <View style={styles.container}>
-      {galleryCategory === 'visitedBusking' ? (
-        <LinearGradient
-          colors={[...gradientColors]}
-          start={{x: 0.0, y: 0.0}}
-          end={{x: 1.0, y: 1.0}}
-          style={[styles.gradientContainer, styles.button]}>
-          <IIcon name="ios-menu-sharp" color={Colors.gray300} size={25} />
-        </LinearGradient>
-      ) : (
-        <Pressable
-          style={styles.button}
-          onPress={() => setGalleryCategory('visitedBusking')}>
-          <IIcon name="ios-menu-sharp" color={Colors.gray300} size={25} />
-        </Pressable>
-      )}
       {galleryCategory === 'myBusking' ? (
         <LinearGradient
           colors={[...gradientColors]}

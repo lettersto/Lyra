@@ -1,10 +1,23 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TextInput, FlatList} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  FlatList,
+  Pressable,
+  ActivityIndicator,
+} from 'react-native';
 
 import {useInfiniteQuery} from 'react-query';
+// import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 
-import {fetchPheeds} from '../../../api/pheed';
+import {searchPheeds, searchPheedsByTags} from '../../../api/pheed';
+// import {
+//   PheedStackNavigationProps,
+//   PheedStackScreens,
+// } from '../../../constants/types';
 import useDebounce from '../../../hooks/useDebounce';
 import CircleProfile from '../../../components/Utils/CircleProfile';
 import Colors from '../../../constants/Colors';
@@ -25,71 +38,148 @@ interface searchPheedItemType {
   userId: number;
 }
 
-const SearchPheedScreen = () => {
-  const dummyPageParam = 1;
-  const gradientColors = [Colors.pink700, Colors.purple700];
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const debouncedSearchKeyword = useDebounce(searchKeyword, 500);
+type searchType = 'default' | 'tags';
 
-  const inputEnterHandler = (text: string) => {
+const SearchPheedScreen = () => {
+  // const navigation = useNavigation<PheedStackNavigationProps>();
+  const gradientColors = [Colors.pink700, Colors.purple700];
+  const [searchMode, setSearchMode] = useState<searchType>('default');
+  const [enteredWord, setEnteredWord] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [tag, setTag] = useState('');
+  const debouncedEnteredWord = useDebounce(enteredWord, 500);
+
+  const defaultInputEnterHandler = (text: string) => {
     setSearchKeyword(text.trim());
   };
 
+  const tagInputEnterHandler = (text: string) => {
+    const _text = text.trim();
+    const hashIndex = _text.indexOf('#');
+    const firstTag = _text.substring(hashIndex + 1).split(' ')[0];
+    setTag(firstTag);
+  };
+
+  useEffect(() => {
+    if (debouncedEnteredWord.length > 0 && debouncedEnteredWord[0] === '#') {
+      setSearchMode('tags');
+      tagInputEnterHandler(debouncedEnteredWord);
+    } else {
+      setSearchMode('default');
+      defaultInputEnterHandler(debouncedEnteredWord);
+    }
+  }, [debouncedEnteredWord]);
+
+  const {
+    fetchNextPage: defaultSearchFetchNextPage,
+    hasNextPage: defaultSearchHasNextPage,
+    isFetchingNextPage: defaultSearchIsFetchingNextPage,
+    data: defaultSearchData,
+    status: defaultSearchStatus,
+  } = useInfiniteQuery(
+    ['/searchPostsByKeyword', searchKeyword],
+    ({pageParam = 0}) => searchPheeds(pageParam, {keyword: searchKeyword}),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        return lastPage.length ? allPages.length : undefined;
+      },
+      enabled: searchMode === 'default',
+    },
+  );
+
+  const requestDefaultSearchNextPage = () => {
+    if (defaultSearchHasNextPage) {
+      defaultSearchFetchNextPage();
+    }
+  };
+
+  const {
+    fetchNextPage: tagSearchFetchNextPage,
+    hasNextPage: tagSearchHasNextPage,
+    isFetchingNextPage: tagSearchIsFetchingNextPage,
+    data: tagSearchData,
+    status: tagSearchStatus,
+  } = useInfiniteQuery(
+    ['/searchPostsByTags', tag],
+    ({pageParam = 0}) => searchPheedsByTags(pageParam, {tag: tag}),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        return lastPage.length ? allPages.length : undefined;
+      },
+      enabled: searchMode === 'tags' && tag.length > 0,
+    },
+  );
+
+  const requestTagSearchNextPage = () => {
+    if (tagSearchHasNextPage) {
+      tagSearchFetchNextPage();
+    }
+  };
+
+  const loadingComponent = (
+    <View style={styles.spinnerContainer}>
+      <ActivityIndicator color={Colors.purple300} size="large" />
+    </View>
+  );
+
   const renderItem = ({item}: {item: searchPheedItemType}) => {
+    if (!item) {
+      return <View />;
+    }
+
+    let content = item.content;
+    if (content?.length > 20) {
+      content = content.substring(0, 20) + '...';
+    }
+
+    const pressHandler = () => {
+      // navigation
+    };
+
     return (
-      <View key={item.pheedId} style={styles.itemContainer}>
+      <Pressable
+        key={item.pheedId}
+        style={styles.itemContainer}
+        onPress={pressHandler}>
         <CircleProfile size="small" isGradient={false} />
-        {/* {JSON.stringify(item)} */}
-        {/* {item.userId} */}
         <View style={styles.contentContainer}>
           <Text style={[styles.text, styles.title]}>{item.title}</Text>
-          <Text style={[styles.text, styles.content]}>{item.content}</Text>
+          <Text style={[styles.text, styles.content]}>{content}</Text>
           <Text style={[styles.text, styles.time]}>{item.time}</Text>
         </View>
-      </View>
+      </Pressable>
     );
   };
 
-  // TODO useInfiniteQuery
+  let content;
 
-  const {
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    data,
-    status,
-    // error,
-  } = useInfiniteQuery(
-    ['/posts', debouncedSearchKeyword],
-    ({pageParam = 1}) =>
-      fetchPheeds(pageParam, {keyword: debouncedSearchKeyword}),
-    {
-      getNextPageParam: (lastPage, allPages) => {
-        return lastPage.length ? allPages.length + 1 : undefined;
-      },
-    },
-  );
-  // request NextPage
-  // const requestNextPage = () => {
-  //   if (hasNextPage) {
-  //     fetchNextPage();
-  //   }
-  // };
+  if (
+    (defaultSearchStatus === 'loading' && !defaultSearchIsFetchingNextPage) ||
+    (tagSearchStatus === 'loading' && !tagSearchIsFetchingNextPage)
+  ) {
+    content = loadingComponent;
+  }
 
-  let content = <Text style={styles.text}>Loading...</Text>;
-
-  if (status !== 'loading') {
+  if (defaultSearchStatus !== 'loading' && tagSearchStatus !== 'loading') {
     content = (
       <FlatList
-        data={data?.pages.map(page => page).flat()}
+        data={
+          searchMode === 'default'
+            ? defaultSearchData?.pages.flat()
+            : tagSearchData?.pages?.flat()
+        }
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
-        // onEndReached={requestNextPage}
+        onEndReached={
+          searchMode === 'default'
+            ? requestDefaultSearchNextPage
+            : requestTagSearchNextPage
+        }
         onEndReachedThreshold={0.6}
         ListFooterComponent={
-          isFetchingNextPage ? (
-            <Text style={styles.text}>Loading...</Text>
-          ) : null
+          defaultSearchIsFetchingNextPage || tagSearchIsFetchingNextPage
+            ? loadingComponent
+            : null
         }
       />
     );
@@ -106,8 +196,8 @@ const SearchPheedScreen = () => {
           style={[styles.input, styles.text]}
           placeholder="피드와 해시태그를 검색해보세요."
           placeholderTextColor={Colors.white300}
-          value={searchKeyword}
-          onChangeText={inputEnterHandler}
+          value={enteredWord}
+          onChangeText={setEnteredWord}
         />
       </LinearGradient>
       {content}
@@ -168,6 +258,12 @@ const styles = StyleSheet.create({
   time: {
     color: Colors.white300,
     fontSize: 14,
+  },
+  spinnerContainer: {
+    width: '100%',
+    paddingVertical: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
