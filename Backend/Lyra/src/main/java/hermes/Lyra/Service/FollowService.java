@@ -11,4 +11,6 @@ public interface FollowService {
     List<User> searchFollowerList(Long userId);
 
     List<User> searchFollowingList(Long userId);
+
+    int check(Long followerId, Long followingId);
 }

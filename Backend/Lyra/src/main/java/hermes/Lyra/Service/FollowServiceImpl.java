@@ -87,4 +87,19 @@ public class FollowServiceImpl implements FollowService {
         }
         return followings;
     }
+
+    @Override
+    public int check(Long followerId, Long followingId) {
+        // 팔로워 == 주체
+        User follower = userRepository.findById(followerId).orElse(null);
+        if (follower==null) return 3;
+
+        // 팔로잉 == 상대방
+        User following = userRepository.findById(followingId).orElse(null);
+        if (following==null) return 4;
+
+        Follow follow = followRepository.findByFollowerIdAndFollowingId(follower, following).orElse(null);
+        if (follow==null) return 2;
+        return 1;
+    }
 }
