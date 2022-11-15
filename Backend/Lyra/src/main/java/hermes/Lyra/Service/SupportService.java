@@ -6,6 +6,7 @@ import hermes.Lyra.dto.SupportDto;
 import hermes.Lyra.vo.RequestSupport2;
 import org.springframework.data.domain.Pageable;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface SupportService {
@@ -17,9 +18,9 @@ public interface SupportService {
 //
 //    Iterable<Support> getSupportByBuskerId(Long buskerId);
 
-    List<Support> getSupportBySupporterId(Long userId, RequestSupport2 data, Pageable pageable);
+    List<Support> getSupportBySupporterId(Long userId, Timestamp startTime, Timestamp endTime, Pageable pageable);
 
-    List<Support> getSupportByBuskerId(Long userId, RequestSupport2 data, Pageable pageable);
+    List<Support> getSupportByBuskerId(Long userId, Timestamp startTime, Timestamp endTime, Pageable pageable);
 
     Iterable<Support> getSupportsByChat(Long pheedId);
 

@@ -70,20 +70,16 @@ public class SupportServiceImpl implements SupportService{
 //    }
 
     @Override
-    public List<Support> getSupportBySupporterId(Long userId, RequestSupport2 data, Pageable pageable) {
-        if (data.getStartTime() != null) {
-            Timestamp startTime = data.getStartTime();
-            Timestamp endTime = data.getEndTime();
+    public List<Support> getSupportBySupporterId(Long userId, Timestamp startTime, Timestamp endTime, Pageable pageable) {
+        if (startTime != null) {
             return supportRepository.findByTimeBetweenAndSupporterId(startTime, endTime, userId, pageable);
         }
         return supportRepository.findBySupporterId(userId, pageable);
     }
 
     @Override
-    public List<Support> getSupportByBuskerId(Long userId, RequestSupport2 data, Pageable pageable) {
-        if (data.getStartTime() != null) {
-            Timestamp startTime = data.getStartTime();
-            Timestamp endTime = data.getEndTime();
+    public List<Support> getSupportByBuskerId(Long userId, Timestamp startTime, Timestamp endTime, Pageable pageable) {
+        if (startTime != null) {
             return supportRepository.findByTimeBetweenAndBuskerId(startTime, endTime, userId, pageable);
         }
         return supportRepository.findByBuskerId(userId, pageable);
