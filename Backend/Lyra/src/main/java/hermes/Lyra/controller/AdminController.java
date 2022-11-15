@@ -4,8 +4,10 @@ import hermes.Lyra.Service.AdminService;
 import hermes.Lyra.Service.NoticeService;
 import hermes.Lyra.Service.TalkService;
 import hermes.Lyra.domain.Notice;
+import hermes.Lyra.domain.Talk;
 import hermes.Lyra.dto.Message;
 import hermes.Lyra.dto.RequestDto.NoticeRequestDto;
+import hermes.Lyra.dto.RequestDto.TalkRequestDto;
 import hermes.Lyra.dto.ResponseDto.UserLoginResponseDto;
 import hermes.Lyra.dto.StatusEnum;
 import io.swagger.annotations.ApiOperation;
@@ -115,6 +117,62 @@ public class AdminController {
         noticeService.deleteNotice(noticeId);
         message.setStatus(StatusEnum.OK);
         message.setMessage("공지사항 삭제 성공");
+        return new ResponseEntity<>(message, headers, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "개인 메시지를 작성한다.",notes = "개인 메시지를 작성한다.")
+    @PostMapping("/talk/{userId}")
+    public ResponseEntity<?> createTalk(
+            @PathVariable("userId") Long userId,
+            @RequestBody TalkRequestDto talkRequestDto) {
+        Message message = new Message();
+        HttpHeaders headers= new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        Talk talk = talkService.createTalk(userId, talkRequestDto);
+        message.setStatus(StatusEnum.OK);
+        message.setMessage("공지사항 생성 성공");
+        message.setData(talk);
+        return new ResponseEntity<>(message, headers, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "개인 메시지를 수정한다.",notes = "개인 메시지를 수정한다.")
+    @PatchMapping("/talk/{talkId}")
+    public ResponseEntity<?> updateTalk(
+            @RequestBody TalkRequestDto talkRequestDto,
+            @PathVariable("talkId") Long talkId
+    ) {
+        Message message = new Message();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        try {
+            int result = talkService.updateTalk(talkId, talkRequestDto);
+            if (result == 1) {
+                message.setStatus(StatusEnum.OK);
+                message.setMessage("개인 메시지 수정 성공");
+                return new ResponseEntity<>(message, headers, HttpStatus.OK);
+            } else {
+                message.setStatus(StatusEnum.BAD_REQUEST);
+                message.setMessage("개인 메시지 정보가 없습니다.");
+                return new ResponseEntity<>(message, headers, HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            message.setStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+            message.setMessage("서버 에러 발생");
+            return new ResponseEntity<>(message, headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(value = "개인 메시지를 삭제한다.",notes = "개인 메시지를 삭제한다.")
+    @DeleteMapping("/talk/{talkId}")
+    public ResponseEntity<?> deleteTalk(
+            @PathVariable("talkId") Long talkId) {
+        Message message = new Message();
+        HttpHeaders headers= new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        talkService.deleteTalk(talkId);
+        message.setStatus(StatusEnum.OK);
+        message.setMessage("개인 메시지 삭제 성공");
         return new ResponseEntity<>(message, headers, HttpStatus.OK);
     }
 }
