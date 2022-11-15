@@ -48,9 +48,9 @@ public class WishServiceImpl implements WishService {
     }
 
     @Override
-    public List<Pheed> searchPheedList(Long userId) {
+    public List<Pheed> searchPheedList(Long userId, Pageable pageable) {
         User user = userRepository.findById(userId).orElse(null);
-        List<Wish> wishList = wishRepository.findAllByUserId(user).orElseGet(null);
+        List<Wish> wishList = wishRepository.findAllByUserId(user, pageable).orElseGet(null);
 //      피드만 뽑아내기 위한 초기화
         List<Pheed> pheeds = new ArrayList<>();
 

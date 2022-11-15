@@ -9,6 +9,9 @@ import hermes.Lyra.dto.Message;
 import hermes.Lyra.dto.StatusEnum;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -56,12 +59,13 @@ public class WishController {
     @ApiOperation(value = "유저가 좋아요한 피드 리스트를 조회한다.",notes = "유저가 좋아요한 피드 리스트를 조회한다")
     @GetMapping("pheedlist/{userId}")
     public ResponseEntity<?> searchWishPheedList(
-            @PathVariable("userId") Long userId){
+            @PathVariable("userId") Long userId,
+            @PageableDefault(size = 30, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
         Message message = new Message();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-        List<Pheed> pheedList = wishService.searchPheedList(userId);
+        List<Pheed> pheedList = wishService.searchPheedList(userId, pageable);
         message.setStatus(StatusEnum.OK);
         message.setMessage("좋아요한 피드 리스트 조회 성공");
         message.setData(pheedList);
