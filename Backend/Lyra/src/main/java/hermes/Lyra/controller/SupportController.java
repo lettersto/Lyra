@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,11 +93,11 @@ public class SupportController {
 
     @ApiOperation(value = "내가 후원한 정보 불러오기, 페이징0부터&최신순")
     @GetMapping("give")
-    public ResponseEntity<List<ResponseSupport>> getGive(@RequestParam("user_id") Long userId, @RequestBody RequestSupport2 data, @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
+    public ResponseEntity<List<ResponseSupport>> getGive(@RequestParam("user_id") Long userId, @RequestParam("start_time") Timestamp startTime, @RequestParam("end_time") Timestamp endTime, @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
 
         log.info("Before get give support data");
 
-        List<Support> giveSupportList = supportService.getSupportBySupporterId(userId, data, pageable);
+        List<Support> giveSupportList = supportService.getSupportBySupporterId(userId, startTime, endTime, pageable);
 
         List<ResponseSupport> result = new ArrayList<>();
         giveSupportList.forEach(v -> {
@@ -111,11 +112,11 @@ public class SupportController {
 
     @ApiOperation(value = "내가 받은 후원 정보 불러오기, 페이징0부터&최신순")
     @GetMapping("receive")
-    public ResponseEntity<List<ResponseSupport2>> getReceive(@RequestParam("user_id") Long userId, @RequestBody RequestSupport2 data, @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
+    public ResponseEntity<List<ResponseSupport2>> getReceive(@RequestParam("user_id") Long userId, @RequestParam("start_time") Timestamp startTime, @RequestParam("end_time") Timestamp endTime, @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) throws Exception {
 
         log.info("Before get receive data");
 
-        List<Support> receivedList = supportService.getSupportByBuskerId(userId, data, pageable);
+        List<Support> receivedList = supportService.getSupportByBuskerId(userId, startTime, endTime, pageable);
 
         List<ResponseSupport2> result = new ArrayList<>();
         receivedList.forEach(v -> {
