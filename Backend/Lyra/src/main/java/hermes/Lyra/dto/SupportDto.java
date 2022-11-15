@@ -1,5 +1,6 @@
 package hermes.Lyra.dto;
 
+import hermes.Lyra.domain.Pheed;
 import lombok.Data;
 
 @Data
@@ -14,5 +15,5 @@ public class SupportDto {
 
     private Long supporterId;
 
-    private Long buskerId;
+//    private Long buskerId;
 }
