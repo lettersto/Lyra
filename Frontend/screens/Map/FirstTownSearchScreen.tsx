@@ -21,7 +21,7 @@ const deviceWidth = Dimensions.get('window').width;
 
 const FirstTownSearchScreen = () => {
   const navigation = useNavigation<PheedStackNavigationProps>();
-  const {userId, nickname, walletAddress} = useContext(AuthContext);
+  const {userId, walletAddress} = useContext(AuthContext);
   const {
     userLocationInfo,
     userRegionCode,

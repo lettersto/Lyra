@@ -16,7 +16,7 @@ export interface PheedMapContextType {
   setPheedMapLocationInfo: Dispatch<SetStateAction<string>>;
   setPheedMapLocationAddInfo: Dispatch<SetStateAction<string>>;
   setPheedMapRegionCode: Dispatch<SetStateAction<string | null>>;
-  setPheedMapRegionName: Dispatch<SetStateAction<string | null>>;
+  setPheedMapRegionName: Dispatch<SetStateAction<string>>;
   setPheedMapLatitude: Dispatch<SetStateAction<number>>;
   setPheedMapLongitude: Dispatch<SetStateAction<number>>;
 }
