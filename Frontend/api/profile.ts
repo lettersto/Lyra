@@ -131,6 +131,17 @@ export const getFollowingList = async (userProfileId: number) => {
   return response.data?.data;
 };
 
+export const checkIsFollowing = async (
+  followerId: number,
+  followingId: number,
+) => {
+  const response = await axios({
+    url: `/follow/${followerId}/${followingId}`,
+    method: 'GET',
+  });
+  return response.data?.data;
+};
+
 // wallet
 export const getUserWalletAddressAndCoin = async (userId: number) => {
   const response = await axios({
