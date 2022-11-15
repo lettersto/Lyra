@@ -169,11 +169,14 @@ export const chargeCoinToWeb3 = async ({
   const senderAddress = web3.eth.defaultAccount;
   const chargeLyra = new web3.eth.Contract(ABI, Config.ERC_CONTRACT_KEY);
 
-  const response = await chargeLyra.methods
-    .transfer(walletAddress, coin)
-    .send({from: senderAddress, gas: 3000000});
-
-  return response;
+  try {
+    const response = await chargeLyra.methods
+      .transfer(walletAddress, coin)
+      .send({from: senderAddress, gas: 100000});
+    return response;
+  } catch (err) {
+    console.log('블록체인', err);
+  }
 };
 
 export const getTotalBalanceFromWeb3 = async (walletAddress: string) => {

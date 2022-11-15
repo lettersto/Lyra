@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {Dispatch, SetStateAction, useState} from 'react';
+import React, {Dispatch, SetStateAction} from 'react';
 import {Dimensions, Modal, StyleSheet, Text, View} from 'react-native';
 import Colors from '../../constants/Colors';
 import Button from '../Utils/Button';

@@ -1,4 +1,4 @@
-import React, {useState, Dispatch, SetStateAction} from 'react';
+import React, {Dispatch, SetStateAction} from 'react';
 import {StyleSheet, TextInput, Dimensions} from 'react-native';
 import Colors from '../../constants/Colors';
 import LinearGradient from 'react-native-linear-gradient';
@@ -48,8 +48,6 @@ const Input: React.FC<InputProps> = ({
     },
   });
 
-  // const [value, setValue] = useState<string>('');
-
   return (
     <>
       <LinearGradient
@@ -60,33 +58,18 @@ const Input: React.FC<InputProps> = ({
         angleCenter={{x: 0.5, y: 0.5}}
         colors={[Colors.purple300, Colors.pink500]}
         style={[styles.gradient, customStyle]}>
-        {setEnteredValue && (
-          <TextInput
-            style={{...styles.input}}
-            multiline={true}
-            blurOnSubmit
-            autoCorrect={false}
-            keyboardType={keyboard === 1 ? 'ascii-capable' : 'numeric'}
-            placeholder={placeholder}
-            placeholderTextColor={Colors.white300}
-            maxLength={maxLength}
-            value={enteredValue}
-            onChangeText={setEnteredValue}
-          />
-        )}
-        {!setEnteredValue && (
-          <TextInput
-            style={{...styles.input}}
-            multiline={true}
-            blurOnSubmit
-            autoCorrect={false}
-            keyboardType={keyboard === 1 ? 'ascii-capable' : 'numeric'}
-            placeholder={placeholder}
-            placeholderTextColor={Colors.white300}
-            maxLength={maxLength}
-            value={enteredValue}
-          />
-        )}
+        <TextInput
+          style={{...styles.input}}
+          multiline={true}
+          blurOnSubmit
+          autoCorrect={false}
+          keyboardType={keyboard === 1 ? 'ascii-capable' : 'numeric'}
+          placeholder={placeholder}
+          placeholderTextColor={Colors.white300}
+          maxLength={maxLength}
+          value={enteredValue}
+          onChangeText={setEnteredValue}
+        />
       </LinearGradient>
     </>
   );

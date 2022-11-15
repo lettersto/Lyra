@@ -95,36 +95,27 @@ const App = () => {
   useEffect(() => {
     if (socket && userId) {
       socket.emit('user connect', userId);
-      socket.on(
-        'user rooms',
-        async (buskerRooms: {buskerId: number; userCnt: number}[]) => {
-          const buskerList: BuskerInfo[] = await Promise.all(
-            buskerRooms.map(async room => {
-              const data = await getUserProfile(room.buskerId);
-              return {
-                buskerId: room.buskerId,
-                buskerNickname: data.nickname,
-                buskerImg: data.image_url,
-                userCnt: room.userCnt,
-              };
-            }),
-          );
-          setLiveBusker(buskerList);
-          // buskerRooms.forEach(room =>
-          //   getUserProfile(room.buskerId).then(res => {
-          //     buskerList.push({
-          //       buskerId: res.id,
-          //       buskerNickname: res.nickname,
-          //       buskerImg: res.image_url,
-          //     });
-          //     if (buskerList.length === buskerRooms.length) {
-          //       setLiveBusker(buskerList);
-          //       console.log(buskerList);
-          //     }
-          //   }),
-          // );
-        },
-      );
+      try {
+        socket.on(
+          'user rooms',
+          async (buskerRooms: {buskerId: number; userCnt: number}[]) => {
+            const buskerList: BuskerInfo[] = await Promise.all(
+              buskerRooms.map(async room => {
+                const data = await getUserProfile(room.buskerId);
+                return {
+                  buskerId: room.buskerId,
+                  buskerNickname: data.nickname,
+                  buskerImg: data.image_url,
+                  userCnt: room.userCnt,
+                };
+              }),
+            );
+            setLiveBusker(buskerList);
+          },
+        );
+      } catch (err) {
+        console.log(err);
+      }
     }
   }, [socket, userId, setLiveBusker]);
 
