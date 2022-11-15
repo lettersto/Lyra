@@ -58,7 +58,10 @@ const ProfileBody = ({
         />
         <View style={styles.profileInfoContainer}>
           <View style={styles.profileInfo}>
-            <ProfileItem count={1} description="내 버스킹" />
+            <ProfileItem
+              count={profileData?.end_busk_count}
+              description="내 버스킹"
+            />
             <ProfileItem
               count={profileData?.follower_count || 0}
               description="팔로워"

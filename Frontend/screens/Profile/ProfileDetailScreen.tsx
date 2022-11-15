@@ -111,7 +111,8 @@ const ProfileDetailScreen = () => {
         height: 300,
         cropping: true,
         mediaType: 'photo',
-        // includeBase64: true,
+        cropperCircleOverlay: true,
+        compressImageQuality: 0.8,
       });
       userImgMutate({userId: userId!, imageUri: newProfileImage.path});
     } catch (error) {

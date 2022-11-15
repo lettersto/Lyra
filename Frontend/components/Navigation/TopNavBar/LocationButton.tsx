@@ -1,51 +1,20 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext} from 'react';
 import {Text, Pressable, StyleSheet, View} from 'react-native';
 import MIcon from 'react-native-vector-icons/MaterialIcons';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import Colors from '../../../constants/Colors';
-import {AuthContext} from '../../../store/auth-context';
-import {getUserProfile} from '../../../api/profile';
 import {MapContext} from '../../../store/map-context';
 
 const LocationButton = () => {
   // TODO
   // 1. get Location from context API or something else. + setCurrentLocation
   // 2. onPress function to find location.
-  const {userId} = useContext(AuthContext);
-  const {
-    userLocationInfo,
-    userRegionCode,
-    userLatitude,
-    userLongitude,
-    setUserLatitude,
-    setUserLongitude,
-    setUserLocationInfo,
-    setUserRegionCode,
-  } = useContext(MapContext);
+  const {userLocationInfo} = useContext(MapContext);
   const navigation = useNavigation();
 
   const pressHandler = () => {
-    navigation.navigate('TownModal');
+    navigation.navigate('TownSearch');
   };
-
-  // useEffect(() => {
-  //   const fetch = async () => {
-  //     try {
-  //       const response = await getUserProfile(userId!);
-  //       console.log(response);
-  //       setThreeDepthName(response.regionName);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   };
-  //   fetch();
-  // });
-
-  // const getTownName = async () => {
-  //   setTownName(await EncryptedStorage.getItem('townName'));
-  // };
-  // getTownName();
 
   return (
     <>

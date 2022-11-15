@@ -11,6 +11,7 @@ import CreateShortsScreen from '../../screens/Home/Shorts/CreateShortsScreen';
 import PheedDetailTitle from './TopNavBar/PheedDetailTitle';
 import SearchPheedScreen from '../../screens/Home/Pheed/SearchPheedScreen';
 import UpdatePheedScreen from '../../screens/Home/Pheed/UpdatePheedScreen';
+import StoryLocationSerachScreen from '../../screens/Map/StoryLocationSearchScreen';
 
 // Profile
 import MainProfileScreen from '../../screens/Profile/MainProfileScreen';
@@ -106,17 +107,29 @@ export const PheedStack = () => {
             headerTitle: () => <PheedTitle />,
             headerBackVisible: false,
           }}>
-          <Stack.Group screenOptions={{presentation: 'card'}}>
+          <Stack.Group>
             <Stack.Screen name="MainPheed" component={MainPheedScreen} />
           </Stack.Group>
-          <Stack.Group
-            screenOptions={{
-              headerShown: false,
-              presentation: 'transparentModal',
-            }}>
-            <Stack.Screen name="TownModal" component={TownModal} />
-            <Stack.Screen name="TownSearch" component={TownSearchScreen} />
-          </Stack.Group>
+        </Stack.Group>
+        <Stack.Group
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: Colors.black500,
+            },
+            headerTintColor: Colors.gray300,
+            headerTitleStyle: {
+              fontFamily: 'NanumSquareRoundR',
+              fontSize: 20,
+            },
+          }}>
+          <Stack.Screen
+            name="TownSearch"
+            component={TownSearchScreen}
+            options={{
+              title: '동네 설정',
+              headerTitleAlign: 'center',
+            }}
+          />
         </Stack.Group>
         <Stack.Screen
           name="SearchPheed"
@@ -145,6 +158,14 @@ export const PheedStack = () => {
           }}
         />
         <Stack.Screen
+          name="StoryLocationSearch"
+          component={StoryLocationSerachScreen}
+          options={{
+            headerShown: false,
+            presentation: 'transparentModal',
+          }}
+        />
+        <Stack.Screen
           name="DetailPheed"
           component={DetailPheedScreen}
           options={{
@@ -153,7 +174,6 @@ export const PheedStack = () => {
           }}
         />
         <Stack.Screen name="Alarm" component={AlarmScreen} />
-        {/* </> */}
       </Stack.Navigator>
     </PheedMapProvider>
   );
@@ -175,36 +195,27 @@ export const MapStack = () => {
       }}>
       <Stack.Group
         screenOptions={{
-          headerTitle: () => <MapTitle />,
+          // headerTitle: () => <MapTitle />,
+          headerShown: false,
           headerBackVisible: false,
         }}>
-        <Stack.Group screenOptions={{presentation: 'card'}}>
-          <Stack.Screen
-            name="MainMap"
-            component={MainMapScreen}
-            // options={{
-            //   headerTitle: () => <MapTitle />,
-            // }}
-          />
-        </Stack.Group>
-        <Stack.Group
-          screenOptions={{
-            headerShown: false,
-            presentation: 'transparentModal',
-          }}>
-          <Stack.Screen name="TownModal" component={TownModal} />
-          <Stack.Screen name="TownSearch" component={TownSearchScreen} />
-        </Stack.Group>
-        <Stack.Group>
-          <Stack.Screen
-            name="DetailPheed"
-            component={DetailPheedScreen}
-            options={{
-              headerTitle: () => <PheedDetailTitle />,
-              headerBackVisible: false,
-            }}
-          />
-        </Stack.Group>
+        <Stack.Screen
+          name="MainMap"
+          component={MainMapScreen}
+          // options={{
+          //   headerTitle: () => <MapTitle />,
+          // }}
+        />
+      </Stack.Group>
+      <Stack.Group>
+        <Stack.Screen
+          name="DetailPheed"
+          component={DetailPheedScreen}
+          options={{
+            headerTitle: () => <PheedDetailTitle />,
+            headerBackVisible: false,
+          }}
+        />
       </Stack.Group>
     </Stack.Navigator>
   );

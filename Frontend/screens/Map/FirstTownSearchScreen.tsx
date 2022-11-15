@@ -21,12 +21,10 @@ const deviceWidth = Dimensions.get('window').width;
 
 const FirstTownSearchScreen = () => {
   const navigation = useNavigation<PheedStackNavigationProps>();
-  const {userId, nickname, walletAddress} = useContext(AuthContext);
+  const {userId, walletAddress} = useContext(AuthContext);
   const {
     userLocationInfo,
     userRegionCode,
-    userLatitude,
-    userLongitude,
     setUserLatitude,
     setUserLongitude,
     setUserLocationInfo,
@@ -35,9 +33,10 @@ const FirstTownSearchScreen = () => {
   const [location, setLocation] = useState<Region>({
     latitudeDelta: 0.005,
     longitudeDelta: 0.005,
-    latitude: 0,
-    longitude: 0,
+    latitude: 37.5666805,
+    longitude: 126.9784147,
   });
+  const [regionThreeName, setRegionThreeName] = useState('');
 
   const getTownName = async (lat: number, lng: number) => {
     const response = await fetch(
@@ -51,6 +50,7 @@ const FirstTownSearchScreen = () => {
     );
     const result = await response.json();
     setUserRegionCode(result.documents[0].code);
+    setRegionThreeName(result.documents[0].region_3depth_name);
     setUserLocationInfo(result.documents[0].region_3depth_name);
   };
 
@@ -63,7 +63,6 @@ const FirstTownSearchScreen = () => {
         regionCode: userRegionCode,
         regionName: userLocationInfo,
       });
-      console.log(response);
       if (response.status === 'OK') {
         setUserLatitude(location.latitude);
         setUserLongitude(location.longitude);
@@ -72,7 +71,7 @@ const FirstTownSearchScreen = () => {
 
         await EncryptedStorage.setItem('latitude', `${location.latitude}`);
         await EncryptedStorage.setItem('longitude', `${location.longitude}`);
-        // await EncryptedStorage.setItem('townName', `${townName}`);
+
         if (!walletAddress) {
           navigation.navigate(PheedStackScreens.WalletCreation);
         } else {
@@ -119,9 +118,9 @@ const FirstTownSearchScreen = () => {
               </Marker>
             </MapView>
           )}
-          {location.latitude != 0 ? (
+          {regionThreeName !== '' ? (
             <View style={{height: '25%', bottom: 0}}>
-              <Text style={styles.name}>{userLocationInfo}</Text>
+              <Text style={styles.name}>{regionThreeName}</Text>
               <Button
                 title="선택한 위치로 설정"
                 btnSize="large"
