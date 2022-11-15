@@ -25,7 +25,7 @@ const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
-  donationBtn: {
+  heartBtn: {
     position: 'absolute',
     bottom: 60,
     right: 20,
@@ -92,6 +92,9 @@ const ChatRoom = ({socket, buskerId}: Props) => {
       console.log('왔다!');
       setMessages(prvMessages => [msg, ...prvMessages]);
     });
+    socket.on('heart', () => {
+      heartUp();
+    });
   }, [socket, buskerId]);
 
   // 채팅방에 들어오면 채팅 참여!
@@ -141,8 +144,13 @@ const ChatRoom = ({socket, buskerId}: Props) => {
     setModalVisible(true);
   };
 
-  // 하트 날리기
+  // 하트 날리기 버튼 클릭
   const clickHeartHandler = () => {
+    socket.emit('heart', buskerId);
+  };
+
+  // 하트 날리기
+  const heartUp = () => {
     setHeartVisible(true);
     // console.log('heart');
     setTimeout(() => {
@@ -177,7 +185,7 @@ const ChatRoom = ({socket, buskerId}: Props) => {
           )}
           placeholder={''}
         />
-        <View style={styles.donationBtn}>
+        <View style={styles.heartBtn}>
           <TouchableOpacity onPress={clickHeartHandler}>
             <CircleGradient grade="normal" size="medium">
               <Image source={require('../../assets/image/heartImg.png')} />
