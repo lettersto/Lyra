@@ -26,7 +26,6 @@ const MapPheedModal = ({pheedId, isModalVisible, setIsModalVisible}: Props) => {
     const fetch = async () => {
       const res = await getPheedDetail(pheedId);
       setPheed(res);
-      console.log('메롱..');
       console.log(res);
     };
     fetch();
