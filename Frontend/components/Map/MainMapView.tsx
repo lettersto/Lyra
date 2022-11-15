@@ -22,13 +22,20 @@ interface ILocation {
 
 const MainMapView = () => {
   const map: LegacyRef<MapView> = useRef(null);
-  const {mapLatitude, mapLongitude, setMapLatitude, setMapLongitude} =
-    useContext(MapContext);
+  const {
+    mapLatitude,
+    mapLongitude,
+    pheeds,
+    setMapLatitude,
+    setMapLongitude,
+    setPheeds,
+  } = useContext(MapContext);
   const [location, setLocation] = useState<ILocation | undefined>(undefined);
   const [zoom, setZoom] = useState(0);
   const [pheedId, setPheedId] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [contents, setContents] = useState<any[]>([]);
+  // const [pheeds, setPheeds] = useState<any[]>([]);
+
   useEffect(() => {
     Geolocation.getCurrentPosition(
       pos => {
@@ -57,7 +64,7 @@ const MainMapView = () => {
     // res.reduce((a, b, c, d) => {
     //   console.log(a, b, c, d);
     // }, []);
-    setContents(res);
+    setPheeds(res);
   };
 
   if (!location) {
@@ -101,25 +108,25 @@ const MainMapView = () => {
           customMapStyle={MapStyle}
           showsUserLocation={true}
           showsMyLocationButton={true}>
-          {contents.map((val, i) => {
+          {pheeds.map((pheed, i) => {
             return (
               <View key={i} style={[styles.profile]}>
                 <Marker
                   coordinate={{
-                    latitude: val.latitude,
-                    longitude: val.longitude,
+                    latitude: pheed.latitude,
+                    longitude: pheed.longitude,
                   }}
                   onPress={() => {
-                    setPheedId(val.pheedId);
+                    setPheedId(pheed.pheedId);
                     setIsModalVisible(true);
                   }}>
                   {/* <CircleProfile grade="hot" size="medium" isGradient={true} /> */}
                   <ProfilePhoto
-                    imageURI={val.userImage_url}
+                    imageURI={pheed.userImage_url}
                     grade="hot"
                     size="medium"
                     isGradient={true}
-                    profileUserId={val.userId}
+                    profileUserId={pheed.userId}
                   />
                 </Marker>
               </View>
