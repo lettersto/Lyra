@@ -5,6 +5,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {WithLocalSvg} from 'react-native-svg';
 
 import FIcons from 'react-native-vector-icons/MaterialIcons';
+import {changeChatState, getLiveChatPheedUser} from '../../../api/chat';
 
 import Colors from '../../../constants/Colors';
 import {AuthContext} from '../../../store/auth-context';
@@ -47,6 +48,17 @@ const UserChatButtons = ({buskerId}: Props) => {
     if (socket) {
       socket.emit('room close', buskerId);
     }
+
+    if (userId && userId === buskerId) {
+      getLiveChatPheedUser(String(userId)).then(res => {
+        const livePheedId = res[0].pheedId;
+        // 피드 상태 종료인 2로 변경
+        changeChatState(livePheedId, '2')
+          .then(msg => console.log(msg))
+          .catch(err => console.log(err));
+      });
+    }
+
     setIsModalVisible(false);
   };
 
