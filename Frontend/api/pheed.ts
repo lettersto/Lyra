@@ -1,3 +1,4 @@
+import {number} from 'prop-types';
 import axios from './axios';
 import {baseURL} from './axios';
 
@@ -44,6 +45,63 @@ export const getPheeds = async () => {
   } catch (err) {
     throw err;
   }
+};
+
+export const uploadPheed = async ({
+  userId,
+  imageFile,
+  title,
+  category,
+  Content,
+  latitude,
+  longitude,
+  pheedTag,
+  startTime,
+  location,
+  regionCode,
+}: {
+  userId: number;
+  // imageFile: {
+  //   height: number;
+  //   mime: string;
+  //   path: string;
+  //   size: number;
+  //   width: number;
+  // };
+  imageFile: {
+    uri: string | undefined;
+    type: string | undefined;
+    name: string | undefined;
+  };
+  title: string;
+  category: string;
+  Content: string;
+  latitude: number;
+  longitude: number;
+  pheedTag: string[];
+  startTime: Date;
+  location: string;
+  regionCode: string;
+}) => {
+  const images = new FormData();
+  images.append('image', imageFile);
+  images.append('regionCode', regionCode);
+  images.append('title', title);
+  images.append('category', category);
+  images.append('Content', Content);
+  images.append('latitude', latitude);
+  images.append('longitude', longitude);
+  images.append('pheedTag', pheedTag);
+  images.append('startTime', startTime);
+  images.append('location', location);
+
+  const response = await fetch(baseURL + `/pheed/?user_id=${userId}`, {
+    method: 'POST',
+    body: images,
+    headers: {'Content-Type': 'multipart/form-data'},
+  });
+
+  return response;
 };
 
 // shorts

@@ -6,7 +6,6 @@ import {
   Dimensions,
   ScrollView,
   Pressable,
-  Image,
 } from 'react-native';
 import Colors from '../../constants/Colors';
 import LinearGradient from 'react-native-linear-gradient';
@@ -311,7 +310,11 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
                       )} */}
                 </View>
                 <Pressable
-                  onPress={() => navigation.navigate('DetailPheed', content)}>
+                  onPress={() =>
+                    navigation.navigate('DetailPheed', {
+                      pheedId: content.pheedId,
+                    })
+                  }>
                   <View style={styles.contentContainer}>
                     <Text style={styles.boldtext}>{content.title}</Text>
                     <MoreInfo content={content.content} />

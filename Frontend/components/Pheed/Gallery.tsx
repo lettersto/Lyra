@@ -5,8 +5,13 @@ import Button from '../Utils/Button';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import ImagePicker from 'react-native-image-crop-picker';
+import {ImageParamList} from '../../constants/types';
 
-const Gallery = ({SetPhotos}: {SetPhotos: Dispatch<SetStateAction<any[]>>}) => {
+const Gallery = ({
+  SetPhotos,
+}: {
+  SetPhotos: Dispatch<SetStateAction<ImageParamList[]>>;
+}) => {
   const [images, SetImages] = useState<any[]>([]);
   const openPicker = async () => {
     try {
