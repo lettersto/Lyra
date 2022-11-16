@@ -39,12 +39,11 @@ export const getPheedbyUser = async (user_id: string) => {
 };
 
 export const getPheeds = async () => {
-  try {
-    const res = await axios.get('/pheed/all');
-    return res;
-  } catch (err) {
-    throw err;
-  }
+  const response = await axios({
+    url: '/pheed/all',
+    method: 'GET',
+  });
+  return response.data;
 };
 
 export const uploadPheed = async ({
