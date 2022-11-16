@@ -9,9 +9,9 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
+  changeChatState,
   getCanOpenChatList,
   getLiveChatPheedUser,
-  pickOpenChatPheed,
 } from '../../api/chat';
 import {ChatRoomInfo} from '../../constants/types';
 import {AuthContext} from '../../store/auth-context';
@@ -89,7 +89,7 @@ const MyChat = ({clickChatRoomHandler}: Props) => {
 
   // 라이브 채팅 열기
   const onLiveChatHandler = () => {
-    pickOpenChatPheed(String(selectedPheedId), '1')
+    changeChatState(String(selectedPheedId), '1')
       .then(() => fetchLiveChat())
       .catch(err => console.log(err))
       .finally(setIsModalVisible(false));
