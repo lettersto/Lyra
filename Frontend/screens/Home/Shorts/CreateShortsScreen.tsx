@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useState, useContext} from 'react';
+import React, {useLayoutEffect, useState, useContext, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -23,17 +23,9 @@ import {
   VideoParamList,
 } from '../../../constants/types';
 import {AuthContext} from '../../../store/auth-context';
+import {PheedMapContext} from '../../../store/pheedMap-context';
 import Colors from '../../../constants/Colors';
 import LoadingSpinner from '../../../components/Utils/LoadingSpinner';
-
-/**
- * {"duration": 9053,
- * "height": 1280,
- * "mime": "video/mp4",
- * "path": "file:///data/user/0/com.frontend/cache/react-native-image-crop-picker/VID_20221111_042924.mp4",
- * "size": 6923430,
- * "width": 720}
- */
 
 const CreateShortsScreen = () => {
   const navigation = useNavigation<PheedStackNavigationProps>();
@@ -46,10 +38,16 @@ const CreateShortsScreen = () => {
   } = useRoute<PheedStackRouteProps>().params as VideoParamList;
   const queryClient = useQueryClient();
   const {userId} = useContext(AuthContext);
+  const {
+    pheedMapRegionCode,
+    setPheedMapLatitude,
+    setPheedMapLongitude,
+    setPheedMapRegionCode,
+  } = useContext(PheedMapContext);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [isTitleAvailable, setIsTitleAvailable] = useState<boolean>(false);
+  const [titleMsg, setTitleMessage] = useState<string>('');
   const [title, setTitle] = useState('');
-  // 임시 regionCode
-  const [regionCode, setRegionCode] = useState<string>('2920012300');
 
   const {
     mutate: uploadVideoMutate,
@@ -58,27 +56,57 @@ const CreateShortsScreen = () => {
   } = useMutation(uploadVideo, {
     onSuccess: () => {
       queryClient.invalidateQueries('videoInNeighborhood');
+      setPheedMapLatitude(0);
+      setPheedMapLongitude(0);
+      setPheedMapRegionCode(null);
       navigation.navigate(PheedStackScreens.MainPheed);
     },
   });
+
+  const checkTitleValidation = (text: string) => {
+    const _title = text.trim();
+    if (!_title) {
+      setIsTitleAvailable(false);
+      setTitleMessage('스토리 제목을 작성해주세요.');
+      setTitle(text);
+    } else if (_title.length > 30) {
+      setIsTitleAvailable(false);
+      setTitleMessage('제목은 30자 이내여야 합니다');
+      setTitle(text.substring(0, 30));
+    } else {
+      setTitle(text);
+      setTitleMessage('');
+      setIsTitleAvailable(true);
+    }
+  };
 
   const titlePressHandler = () => {
     setIsModalVisible(true);
   };
 
   const locationPressHandler = () => {
-    setIsModalVisible(true);
-    // location 선택 화면으로 이동
+    navigation.navigate(PheedStackScreens.StoryLocationSearch);
   };
 
   const videoUploadPressHandler = async () => {
     const _title = title.trim();
 
     if (!_title) {
-      Alert.alert('제목을 작성해주세요.');
+      Alert.alert('스토리 제목을 작성해주세요.');
       return;
     }
-    // TODO 위치 설정 안 했을 경우 alert
+
+    if (!isTitleAvailable) {
+      Alert.alert(
+        '스토리 제목을 다시 작성해주세요. 제목은 30자 이내여야 합니다.',
+      );
+      return;
+    }
+
+    if (!pheedMapRegionCode) {
+      Alert.alert('위치를 설정해주세요.');
+      return;
+    }
 
     const pathParts = videoUri.split('/');
     uploadVideoMutate({
@@ -89,9 +117,13 @@ const CreateShortsScreen = () => {
         name: pathParts[pathParts.length - 1],
       },
       title: _title,
-      regionCode,
+      regionCode: pheedMapRegionCode,
     });
   };
+
+  useEffect(() => {
+    setPheedMapRegionCode(null);
+  }, [setPheedMapRegionCode]);
 
   useLayoutEffect(() => {
     navigation.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
@@ -117,8 +149,9 @@ const CreateShortsScreen = () => {
           <TextInput
             style={styles.textInput}
             value={title}
-            onChangeText={setTitle}
+            onChangeText={checkTitleValidation}
           />
+          <Text style={styles.titleWarning}>{titleMsg}</Text>
           <View style={styles.buttonContainer}>
             <Pressable
               onPress={() => setIsModalVisible(false)}
@@ -263,6 +296,12 @@ const styles = StyleSheet.create({
     color: 'white',
     fontFamily: 'NanumSquareRoundR',
     fontSize: 16,
+  },
+  titleWarning: {
+    marginTop: 4,
+    fontFamily: 'NanumSquareRoundR',
+    fontSize: 14,
+    color: 'white',
   },
 });
 

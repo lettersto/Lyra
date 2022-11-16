@@ -15,6 +15,35 @@ export const getUserProfile = async (userId: number) => {
   return response.data.data;
 };
 
+export const getMyBuskingList = async (
+  pageParam: number = 0,
+  options: {user_id: number},
+) => {
+  const response = await axios({
+    url: '/pheed/mybusking',
+    method: 'GET',
+    params: {
+      ...options,
+      page: pageParam,
+    },
+  });
+  return response.data;
+};
+
+export const getFavoritePheedList = async (
+  pageParam: number = 0,
+  options: {userId: number},
+) => {
+  const response = await axios({
+    url: `/wish/pheedlist/${options.userId}`,
+    method: 'GET',
+    params: {
+      page: pageParam,
+    },
+  });
+  return response.data.data;
+};
+
 export const updateUserInfo = async ({
   userId,
   nickname,
@@ -48,17 +77,23 @@ export const updateUserInfo = async ({
 export const updateUserImg = async ({
   userId,
   imageUri,
+  imageType,
+  imageName,
 }: {
   userId: number;
   imageUri: string;
+  imageType: string;
+  imageName: string;
 }) => {
+  const image = new FormData();
+  const imageData = {uri: imageUri, type: imageType, name: imageName};
+  image.append('image', imageData);
+
   const response = await fetch(baseURL + `/user/updateImage/${userId}`, {
     method: 'PATCH',
-    body: JSON.stringify({
-      image_url: imageUri,
-    }),
+    body: image,
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'multipart/form-data',
     },
   });
   const data = await response.json();
@@ -80,17 +115,40 @@ export const followAndUnfollow = async ({
   return response.data;
 };
 
-export const getFollowerList = async (userProfileId: number) => {
+export const getFollowerList = async (
+  pageParam = 0,
+  options: {userProfileId: number},
+) => {
   const response = await axios({
-    url: `/follow/followerList/${userProfileId}`,
+    url: `/follow/followerList/${options.userProfileId}`,
     method: 'GET',
+    params: {
+      page: pageParam,
+    },
   });
   return response.data?.data;
 };
 
-export const getFollowingList = async (userProfileId: number) => {
+export const getFollowingList = async (
+  pageParam = 0,
+  options: {userProfileId: number},
+) => {
   const response = await axios({
-    url: `/follow/followingList/${userProfileId}`,
+    url: `/follow/followingList/${options.userProfileId}`,
+    method: 'GET',
+    params: {
+      page: pageParam,
+    },
+  });
+  return response.data?.data;
+};
+
+export const checkIsFollowing = async (
+  followerId: number,
+  followingId: number,
+) => {
+  const response = await axios({
+    url: `/follow/${followerId}/${followingId}`,
     method: 'GET',
   });
   return response.data?.data;
@@ -140,11 +198,14 @@ export const chargeCoinToWeb3 = async ({
   const senderAddress = web3.eth.defaultAccount;
   const chargeLyra = new web3.eth.Contract(ABI, Config.ERC_CONTRACT_KEY);
 
-  const response = await chargeLyra.methods
-    .transfer(walletAddress, coin)
-    .send({from: senderAddress, gas: 3000000});
-
-  return response;
+  try {
+    const response = await chargeLyra.methods
+      .transfer(walletAddress, coin)
+      .send({from: senderAddress, gas: 100000});
+    return response;
+  } catch (err) {
+    console.log('블록체인', err);
+  }
 };
 
 export const getTotalBalanceFromWeb3 = async (walletAddress: string) => {
@@ -225,8 +286,8 @@ export const sendUserLocation = async ({
   userId: number | null;
   latitude: number;
   longitude: number;
-  regionCode: string;
-  regionName: string;
+  regionCode: string | null;
+  regionName: string | null;
 }) => {
   const response = await axios({
     url: `/user/location/${userId}`,
@@ -238,6 +299,55 @@ export const sendUserLocation = async ({
       region_code: regionCode,
       region_name: regionName,
     },
+  });
+  return response.data;
+};
+
+// support
+export const getSupportedList = async (
+  pageParam = 0,
+  options: {userId: number; startTime: string; endTime: string},
+) => {
+  const params =
+    options.startTime && options.endTime
+      ? {
+          user_id: options.userId,
+          start_time: options.startTime,
+          end_time: options.endTime,
+          page: pageParam,
+        }
+      : {
+          user_id: options.userId,
+          page: pageParam,
+        };
+  const response = await axios({
+    url: '/support/receive',
+    method: 'GET',
+    params,
+  });
+  return response.data;
+};
+
+export const getSupportList = async (
+  pageParam = 0,
+  options: {userId: number; startTime: string; endTime: string},
+) => {
+  const params =
+    options.startTime && options.endTime
+      ? {
+          user_id: options.userId,
+          start_time: options.startTime,
+          end_time: options.endTime,
+          page: pageParam,
+        }
+      : {
+          user_id: options.userId,
+          page: pageParam,
+        };
+  const response = await axios({
+    url: '/support/give',
+    method: 'GET',
+    params,
   });
   return response.data;
 };

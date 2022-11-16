@@ -1,6 +1,6 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useContext, useState} from 'react';
-import {Alert, Dimensions, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import Config from 'react-native-config';
 import MapView, {Marker, PROVIDER_GOOGLE, Region} from 'react-native-maps';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -12,21 +12,29 @@ import {RootStackParamList} from '../../constants/types';
 import {AuthContext} from '../../store/auth-context';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {sendUserLocation} from '../../api/profile';
+import {MapContext} from '../../store/map-context';
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
 const deviceWidth = Dimensions.get('window').width;
 
 const TownSearchScreen = ({navigation}: Props) => {
-  const {userId, setLatitude, setLongitude} = useContext(AuthContext);
-  const [regionCode, setRegionCode] = useState('');
-  const [threeDepthName, setThreeDepthName] = useState('');
+  const {userId} = useContext(AuthContext);
+  const {
+    userLocationInfo,
+    userRegionCode,
+    setUserLatitude,
+    setUserLongitude,
+    setUserLocationInfo,
+    setUserRegionCode,
+  } = useContext(MapContext);
   const [location, setLocation] = useState<Region>({
     latitudeDelta: 0.005,
     longitudeDelta: 0.005,
-    latitude: 0,
-    longitude: 0,
+    latitude: 37.5666805,
+    longitude: 126.9784147,
   });
+  const [regionThreeName, setRegionThreeName] = useState('');
 
   const getTownNameAPI = async (lat: number, lng: number) => {
     const response = await fetch(
@@ -39,8 +47,9 @@ const TownSearchScreen = ({navigation}: Props) => {
       },
     );
     const result = await response.json();
-    setRegionCode(result.documents[0].code);
-    setThreeDepthName(result.documents[0].region_3depth_name);
+    setUserRegionCode(result.documents[0].code);
+    setRegionThreeName(result.documents[0].region_3depth_name);
+    setUserLocationInfo(result.documents[0].region_3depth_name);
   };
 
   const pressHandler = async () => {
@@ -49,15 +58,16 @@ const TownSearchScreen = ({navigation}: Props) => {
         userId: userId,
         latitude: location.latitude,
         longitude: location.longitude,
-        regionCode: regionCode,
+        regionCode: userRegionCode,
+        regionName: userLocationInfo,
       });
       if (response.status === 'OK') {
-        setLatitude(location.latitude);
-        setLongitude(location.longitude);
-        setRegionCode(regionCode);
+        setUserLatitude(location.latitude);
+        setUserLongitude(location.longitude);
+        setUserRegionCode(userRegionCode);
+        setUserLocationInfo(userLocationInfo);
         await EncryptedStorage.setItem('latitude', `${location.latitude}`);
         await EncryptedStorage.setItem('longitude', `${location.longitude}`);
-        // await EncryptedStorage.setItem('townName', `${townName}`);
 
         navigation.goBack();
       } else {
@@ -72,7 +82,6 @@ const TownSearchScreen = ({navigation}: Props) => {
     <>
       <View style={styles.body}>
         <View style={{flex: 1}}>
-          <Text style={styles.title}>동네 설정</Text>
           <LocationSearch
             onPress={(data, detail) => {
               const {
@@ -101,9 +110,9 @@ const TownSearchScreen = ({navigation}: Props) => {
               </Marker>
             </MapView>
           )}
-          {location.latitude != 0 ? (
+          {regionThreeName !== '' ? (
             <View style={{height: '25%', bottom: 0}}>
-              <Text style={styles.name}>{threeDepthName}</Text>
+              <Text style={styles.name}>{regionThreeName}</Text>
               <Button
                 title="선택한 위치로 설정"
                 btnSize="large"
@@ -127,13 +136,6 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     backgroundColor: Colors.black500,
-  },
-  title: {
-    textAlign: 'center',
-    fontFamily: 'NanumSquareRoundR',
-    fontSize: 18,
-    color: Colors.gray300,
-    margin: 20,
   },
   location: {
     position: 'absolute',

@@ -19,29 +19,22 @@ import {MapContext} from '../../store/map-context';
 import ProfilePhoto from '../Utils/ProfilePhoto';
 
 const MapPheedContent = ({category}: {category?: string}) => {
-  const {
-    mapLatitude,
-    mapLongitude,
-    setMapLatitude,
-    setMapLongitude,
-    mapZoomLv,
-    setMapZoomLv,
-  } = useContext(MapContext);
+  const {pheeds} = useContext(MapContext);
   const navigation = useNavigation();
-  const [pheeds, setPheeds] = useState<any[]>([]);
+  // const [pheeds, setPheeds] = useState<any[]>([]);
 
-  useEffect(() => {
-    const fetch = async () => {
-      const res = await getMapPheedsApi({
-        latitude: mapLatitude,
-        longitude: mapLongitude,
-        zoom: mapZoomLv,
-      });
-      setPheeds(res);
-      console.log(res);
-    };
-    fetch();
-  }, []);
+  // useEffect(() => {
+  //   const fetch = async () => {
+  //     const res = await getMapPheedsApi({
+  //       latitude: mapLatitude,
+  //       longitude: mapLongitude,
+  //       zoom: mapZoomLv,
+  //     });
+  //     setPheeds(res);
+  //     console.log(res);
+  //   };
+  //   fetch();
+  // }, []);
 
   return (
     <ScrollView style={styles.pheedCotainer}>
@@ -63,9 +56,10 @@ const MapPheedContent = ({category}: {category?: string}) => {
                     <View style={styles.profileDatetime}>
                       <View style={styles.profileImg}>
                         <ProfilePhoto
+                          profileUserId={pheed.userId}
                           imageURI={pheed.userImage_url}
                           grade="hot"
-                          size="medium"
+                          size="small"
                           isGradient={true}
                         />
                       </View>

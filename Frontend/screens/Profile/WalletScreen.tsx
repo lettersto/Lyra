@@ -1,14 +1,21 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect, useCallback} from 'react';
 import {
+  Alert,
   View,
   Text,
   FlatList,
   StyleSheet,
   Pressable,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 
-import {useMutation, useQuery, useQueryClient} from 'react-query';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useInfiniteQuery,
+} from 'react-query';
 
 import {
   getUserWalletAddressAndCoin,
@@ -16,59 +23,19 @@ import {
   chargeCoinToWeb3,
   getTotalBalanceFromWeb3,
   getChargeList,
+  getSupportList,
+  getSupportedList,
 } from '../../api/profile';
 import {walletTabType} from '../../constants/types';
 import {AuthContext} from '../../store/auth-context';
 import Wallet from '../../components/Profile/Wallet/Wallet';
 import WalletCategory from '../../components/Profile/Wallet/WalletCategory';
-import CircleProfile from '../../components/Utils/CircleProfile';
+import ProfilePhoto from '../../components/Utils/ProfilePhoto';
+import TimeSelector from '../../components/Profile/Wallet/TimeSelector';
 import ModalWithButton from '../../components/Utils/ModalWithButton';
 import LoadingSpinner from '../../components/Utils/LoadingSpinner';
 import Colors from '../../constants/Colors';
 
-const dummyGiveList = [
-  {giveId: 0, busker: {buskerId: 2, nickname: '영훈'}, coin: 300},
-  {giveId: 1, busker: {buskerId: 2, nickname: '유주'}, coin: 300},
-  {giveId: 2, busker: {buskerId: 2, nickname: '윤혁'}, coin: 300},
-  {giveId: 3, busker: {buskerId: 2, nickname: '주현'}, coin: 300},
-  {giveId: 4, busker: {buskerId: 2, nickname: '혜령'}, coin: 300},
-  {giveId: 5, busker: {buskerId: 2, nickname: '헤르메스'}, coin: 300},
-  {giveId: 6, busker: {buskerId: 2, nickname: '나폴레옹'}, coin: 300},
-  {giveId: 7, busker: {buskerId: 2, nickname: '춘식이'}, coin: 300},
-  {giveId: 8, busker: {buskerId: 2, nickname: '라이언'}, coin: 300},
-  {giveId: 9, busker: {buskerId: 2, nickname: '00아너무너무사랑해'}, coin: 300},
-  {giveId: 10, busker: {buskerId: 2, nickname: '슈퍼노바'}, coin: 300},
-  {giveId: 11, busker: {buskerId: 2, nickname: '무명가수1'}, coin: 300},
-  {giveId: 12, busker: {buskerId: 2, nickname: '무명가수2'}, coin: 300},
-  {giveId: 13, busker: {buskerId: 2, nickname: '무명가수3'}, coin: 300},
-  {giveId: 14, busker: {buskerId: 2, nickname: '무명가수4'}, coin: 300},
-  {giveId: 15, busker: {buskerId: 2, nickname: '슈퍼노바'}, coin: 300},
-];
-
-const dummyReceiveList = [
-  {receiveId: 0, receive: {receiveId: 2, nickname: 'ㅠㅠ'}, coin: 300},
-  {receiveId: 1, receive: {receiveId: 2, nickname: '유주'}, coin: 300},
-  {receiveId: 2, receive: {receiveId: 2, nickname: '윤혁'}, coin: 300},
-  {receiveId: 3, receive: {receiveId: 2, nickname: '주현'}, coin: 300},
-  {receiveId: 4, receive: {receiveId: 2, nickname: '혜령'}, coin: 300},
-  {receiveId: 5, receive: {receiveId: 2, nickname: '헤르메스'}, coin: 300},
-  {receiveId: 6, receive: {receiveId: 2, nickname: '나폴레옹'}, coin: 300},
-  {receiveId: 7, receive: {receiveId: 2, nickname: '춘식이'}, coin: 300},
-  {receiveId: 8, receive: {receiveId: 2, nickname: '라이언'}, coin: 300},
-  {
-    receiveId: 9,
-    receive: {receiveId: 2, nickname: '00아너무너무사랑해'},
-    coin: 300,
-  },
-  {receiveId: 10, receive: {receiveId: 2, nickname: '슈퍼노바'}, coin: 300},
-  {receiveId: 11, receive: {receiveId: 2, nickname: '무명가수1'}, coin: 300},
-  {receiveId: 12, receive: {receiveId: 2, nickname: '무명가수2'}, coin: 300},
-  {receiveId: 13, receive: {receiveId: 2, nickname: '무명가수3'}, coin: 300},
-  {receiveId: 14, receive: {receiveId: 2, nickname: '무명가수4'}, coin: 300},
-  {receiveId: 15, receive: {receiveId: 2, nickname: '슈퍼노바'}, coin: 300},
-];
-
-// supporter, busker
 const WalletScreen = () => {
   const queryClient = useQueryClient();
   const {walletAddress, walletId, userId} = useContext(AuthContext);
@@ -77,11 +44,57 @@ const WalletScreen = () => {
   const [enteredCoin, setEnteredCoin] = useState<string>('');
   const [validationWarning, setValidationWarning] = useState<string>('');
 
+  const [startTime, setStartTime] = useState<Date>();
+  const [endTime, setEndTime] = useState<Date>();
+  const [startTimeForSelector, setStartTimeForSelector] = useState<string>('');
+  const [endTimeForSelector, setEndTimeForSelector] = useState<string>('');
+
+  const twoDigit = (date: number) =>
+    `${date}`.length === 2 ? `${date}` : `0${date}`;
+
+  const dateFormatter = useCallback(
+    (enteredDate: Date | undefined, selector = 'false') => {
+      if (!enteredDate) {
+        return '';
+      }
+      const year = enteredDate.getFullYear().toString();
+      const month = twoDigit(enteredDate.getMonth() + 1);
+      const date = twoDigit(enteredDate.getDate());
+      if (selector) {
+        return `${year}-${month}-${date} 00:00:00`;
+      } else {
+        return `${year}-${month}-${date}`;
+      }
+    },
+    [],
+  );
+
+  useEffect(() => {
+    setStartTimeForSelector(dateFormatter(startTime, false));
+  }, [dateFormatter, startTime]);
+
+  useEffect(() => {
+    setEndTimeForSelector(dateFormatter(endTime, false));
+  }, [dateFormatter, endTime]);
+
+  useEffect(() => {
+    if (startTime && endTime && startTime >= endTime) {
+      Alert.alert('기간을 올바르게 입력해주세요.');
+      setStartTime(undefined);
+      setEndTime(undefined);
+    }
+  }, [startTime, endTime]);
+
   const {
     data: walletData,
     isLoading: walletDataIsLoading,
     // isError,
   } = useQuery('walletInfo', () => getUserWalletAddressAndCoin(userId!));
+
+  const {
+    data: balanceData, // string coin
+    isLoading: balanceIsLoading,
+  } = useQuery('walletBalance', () => getTotalBalanceFromWeb3(walletAddress!));
 
   const {
     data: chargeListData,
@@ -90,18 +103,74 @@ const WalletScreen = () => {
   } = useQuery('chargeList', () => getChargeList(walletId!));
 
   const {
-    data: balanceData, // string coin
-    isLoading: balanceIsLoading,
-  } = useQuery('walletBalance', () => getTotalBalanceFromWeb3(walletAddress!));
+    data: supportListData,
+    fetchNextPage: supportListFetchNextPage,
+    hasNextPage: supportListHasNextPage,
+    isFetchingNextPage: supportListIsFetchingNextPage,
+    isLoading: supportListIsLoading,
+    // isError: supportListIsError,
+  } = useInfiniteQuery(
+    ['suppportList', startTime, endTime],
+    ({pageParam = 0}) =>
+      getSupportList(pageParam, {
+        userId: userId!,
+        startTime: dateFormatter(startTime),
+        endTime: dateFormatter(endTime),
+      }),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        return lastPage.length ? allPages.length : undefined;
+      },
+      enabled: !!(!startTime && !endTime) || !!(startTime && endTime),
+    },
+  );
 
-  // TODO change type for listData
-  let listData: any = dummyGiveList;
+  const {
+    data: supportedListData,
+    fetchNextPage: supportedListFetchNextPage,
+    hasNextPage: supportedListHasNextPage,
+    isFetchingNextPage: supportedListIsFetchingNextPage,
+    isLoading: supportedListIsLoading,
+    // isError: supportedListIsError,
+  } = useInfiniteQuery(
+    ['supportedList', startTime, endTime],
+    ({pageParam = 0}) =>
+      getSupportedList(pageParam, {
+        userId: userId!,
+        startTime: dateFormatter(startTime),
+        endTime: dateFormatter(endTime),
+      }),
+    {
+      getNextPageParam: (lastPage: any, allPages) => {
+        return lastPage.length ? allPages.length : undefined;
+      },
+      enabled:
+        !!(!startTime && !endTime) ||
+        !!(startTime && endTime && startTime < endTime),
+    },
+  );
+
+  const requestSupportListNextPage = () => {
+    if (supportListHasNextPage) {
+      supportListFetchNextPage();
+    }
+  };
+
+  const requestSupportedListNextPage = () => {
+    if (supportedListHasNextPage) {
+      supportedListFetchNextPage();
+    }
+  };
+
+  let endReachHandler = requestSupportListNextPage;
+  let listData: any = supportListData?.pages?.flat();
   if (walletTabMode === 'receive') {
-    listData = dummyReceiveList;
+    listData = supportedListData?.pages?.flat();
+    endReachHandler = requestSupportedListNextPage;
   }
   if (walletTabMode === 'charge') {
     listData = chargeListData;
-    // {"ca": "0x03c43Fbd1cC2786E7567Ecb25Ae4cC892445B327", "coin": 0, "time": "2022-11-10 09:26"}]
+    endReachHandler = () => {};
   }
 
   const Header = () => (
@@ -115,6 +184,20 @@ const WalletScreen = () => {
         walletTabMode={walletTabMode}
         setWalletTabMode={setWalletTabMode}
       />
+      {walletTabMode !== 'charge' ? (
+        <View style={styles.timeContainer}>
+          <TimeSelector
+            setTime={setStartTime}
+            time={startTime}
+            content={startTimeForSelector || '시작 날짜'}
+          />
+          <TimeSelector
+            setTime={setEndTime}
+            time={endTime}
+            content={endTimeForSelector || '종료 날짜'}
+          />
+        </View>
+      ) : null}
     </View>
   );
 
@@ -122,31 +205,46 @@ const WalletScreen = () => {
     content,
     coin,
     imageURI,
+    photoUserId,
   }: {
     content: string;
     coin: number;
-    // TODO change imageURI type from boolean to string
-    imageURI?: boolean;
+    imageURI?: string;
+    photoUserId?: number;
   }) => (
     <Pressable style={styles.itemContainer}>
       <View style={styles.leftItem}>
-        {imageURI && (
-          <CircleProfile size="extraSmall" grade="normal" isGradient={true} />
-        )}
-        <Text style={[styles.text, imageURI && styles.content]}>{content}</Text>
+        {imageURI ? (
+          <ProfilePhoto
+            profileUserId={photoUserId!}
+            size="extraSmall"
+            grade="normal"
+            isGradient={true}
+            imageURI={imageURI}
+          />
+        ) : null}
+        <Text style={imageURI ? [styles.text, styles.content] : styles.text}>
+          {content}
+        </Text>
       </View>
       <Text style={styles.text}>{coin}</Text>
     </Pressable>
   );
 
   const renderItem = ({item}: {item: any}) => {
-    // TODO profile image
     let content = '';
+    let imageURI = '';
+    let photoUserId: number | undefined;
+
     if (walletTabMode === 'give') {
-      content = item.busker.nickname;
+      content = item.buskerNickname;
+      imageURI = item.buskerImage_url;
+      photoUserId = item.buskerId;
     }
     if (walletTabMode === 'receive') {
-      content = item.receive.nickname;
+      content = item.supporterNickname;
+      imageURI = item.supporterImage_url;
+      photoUserId = item.supporterId;
     }
     if (walletTabMode === 'charge') {
       content = item.time;
@@ -155,7 +253,8 @@ const WalletScreen = () => {
       <Item
         content={content}
         coin={item.coin}
-        imageURI={walletTabMode !== 'charge'}
+        imageURI={imageURI}
+        photoUserId={photoUserId}
       />
     );
   };
@@ -214,6 +313,7 @@ const WalletScreen = () => {
         coin: Number(enteredCoin),
       });
     },
+    retry: 0, // TODO remove retry when it works normally
   });
 
   const chargeCoinHandler = () => {
@@ -231,10 +331,27 @@ const WalletScreen = () => {
   const isLoading =
     walletDataIsLoading ||
     createRecordIsLoading ||
-    // chargeIsLoading ||
+    supportListIsLoading ||
+    supportedListIsLoading ||
     webIsLoading ||
     balanceIsLoading ||
-    chargeListIsLoading;
+    chargeListIsLoading ||
+    (supportListIsLoading && !supportListIsFetchingNextPage) ||
+    (supportedListIsLoading && !supportedListIsFetchingNextPage);
+
+  const loadingComponent = () => {
+    if (
+      (!supportListIsLoading && supportListIsFetchingNextPage) ||
+      (!supportedListIsLoading && supportedListIsFetchingNextPage)
+    ) {
+      return (
+        <View style={styles.spinnerContainer}>
+          <ActivityIndicator color={Colors.purple300} size="large" />
+        </View>
+      );
+    }
+    return null;
+  };
 
   return (
     <View style={styles.container}>
@@ -272,6 +389,8 @@ const WalletScreen = () => {
         data={listData}
         renderItem={renderItem}
         ListHeaderComponent={Header}
+        onEndReached={endReachHandler}
+        ListFooterComponent={loadingComponent}
       />
     </View>
   );
@@ -318,6 +437,15 @@ const styles = StyleSheet.create({
     color: Colors.pink300,
     fontSize: 12,
     textAlign: 'right',
+  },
+  timeContainer: {
+    flexDirection: 'row',
+  },
+  spinnerContainer: {
+    width: '100%',
+    paddingVertical: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

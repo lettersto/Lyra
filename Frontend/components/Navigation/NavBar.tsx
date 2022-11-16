@@ -3,6 +3,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon2 from 'react-native-vector-icons/Ionicons';
+import {WithLocalSvg} from 'react-native-svg';
 
 import {PheedStack, MapStack, ChatStack, ProfileStack} from './Stack';
 import Colors from '../../constants/Colors';
@@ -59,10 +60,13 @@ const NavBar = () => {
         options={{
           tabBarLabel: 'Chat',
           tabBarIcon: ({color, size}) => (
-            <Icon2
-              name="chatbubble-ellipses-outline"
+            <WithLocalSvg
+              asset={require('../../assets/image/live_streaming.svg')}
               color={color}
-              size={size}
+              width={50}
+              height={size}
+              stroke={color}
+              strokeWidth={30}
             />
           ),
         }}

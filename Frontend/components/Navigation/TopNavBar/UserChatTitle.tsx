@@ -36,7 +36,7 @@ const UserChatTitle = () => {
         />
         <Text style={styles.cnt}>{cnt}</Text>
       </View>
-      <UserChatButtons />
+      <UserChatButtons buskerId={buskerId} />
     </View>
   );
 };

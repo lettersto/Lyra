@@ -5,7 +5,8 @@ import {
   StyleSheet,
   ImageBackground,
   TouchableOpacity,
-  Dimensions,
+  StatusBar,
+  Image,
 } from 'react-native';
 
 import {useQuery} from 'react-query';
@@ -23,7 +24,6 @@ import {
   PheedStackNavigationProps,
   PheedStackScreens,
 } from '../../constants/types';
-import Colors from '../../constants/Colors';
 import StarEffect from '../../components/Utils/StarEffect';
 
 const LoginScreen = () => {
@@ -76,9 +76,16 @@ const LoginScreen = () => {
     } else if (isLoggedIn && latitude && longitude && !walletAddress) {
       navigation.navigate(PheedStackScreens.WalletCreation);
     }
-  }, [isLoggedIn, latitude, longitude, navigation, walletAddress]);
+  }, [
+    isLoggedIn,
+    latitude,
+    longitude,
+    navigation,
+    walletAddress,
+    walletRefetch,
+  ]);
 
-  const LoginButton = ({title, type}: {title: string; type: string}) => {
+  const LoginButton = () => {
     const onKakaoLoginPress = async () => {
       try {
         await signInWithKakao();
@@ -114,7 +121,6 @@ const LoginScreen = () => {
         await EncryptedStorage.setItem('userId', `${userId}`);
         await EncryptedStorage.setItem('accessToken', accessToken);
         await EncryptedStorage.setItem('refreshToken', refreshToken);
-        walletRefetch();
         if (!latitude && !longitude) {
           navigation.navigate(PheedStackScreens.LocationPermission);
         } else if (!walletAddress) {
@@ -135,22 +141,16 @@ const LoginScreen = () => {
       }
     };
 
-    const onGoogleLoginPress = () => {
-      navigation.navigate(PheedStackScreens.MainPheed);
-    };
-
     return (
-      <TouchableOpacity
-        style={styles.buttonContainer}
-        activeOpacity={0.7}
-        onPress={type === 'Kakao' ? onKakaoLoginPress : onGoogleLoginPress}>
-        <Text style={styles.buttonText}>{title}</Text>
+      <TouchableOpacity activeOpacity={0.7} onPress={onKakaoLoginPress}>
+        <Image source={require('../../assets/image/kakao_login.png')} />
       </TouchableOpacity>
     );
   };
 
   return (
     <View style={styles.container}>
+      <StatusBar hidden={true} />
       <ImageBackground
         source={require('../../assets/image/star_background.jpg')}
         resizeMode="cover"
@@ -159,33 +159,20 @@ const LoginScreen = () => {
         <View style={styles.content}>
           {!isLoggedIn ? <View /> : null}
           <Text style={styles.titleText}>Lyra</Text>
-          {!isLoggedIn ? (
-            <View>
-              <LoginButton title={'Google로 시작하기'} type="Google" />
-              <LoginButton title={'Kakao로 시작하기'} type="Kakao" />
-            </View>
-          ) : null}
-          {/* <View>
-            <LoginButton title={'Google로 시작하기'} type="Google" />
-            <LoginButton title={'Kakao로 시작하기'} type="Kakao" />
-          </View> */}
+          {!isLoggedIn ? <LoginButton /> : null}
         </View>
       </ImageBackground>
     </View>
   );
 };
 
-const {width, height} = Dimensions.get('window');
-
 const styles = StyleSheet.create({
   container: {
-    width,
-    height,
+    flex: 1,
     overflow: 'hidden',
   },
   background: {
-    width,
-    height,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -194,27 +181,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
   },
-  buttonContainer: {
-    width: 300,
-    height: 72,
-    marginBottom: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.blackTransparent,
-    borderRadius: 150,
-    borderColor: Colors.pink300,
-    borderWidth: 1,
-  },
   titleText: {
     textAlign: 'center',
     fontFamily: 'DancingScript-Bold',
     fontSize: 50,
     color: 'white',
-  },
-  buttonText: {
-    fontFamily: 'NanumSquareRoundR',
-    fontSize: 24,
-    color: Colors.pink300,
   },
 });
 

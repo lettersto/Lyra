@@ -11,7 +11,6 @@ import {Text, View, StyleSheet, Dimensions} from 'react-native';
 import MapStyle from './MapStyle';
 import Colors from '../../constants/Colors';
 import MapPheedModal from './MapPheedModal';
-import {AuthContext} from '../../store/auth-context';
 import {getMapPheeds as getMapPheedsApi} from '../../api/pheed';
 import ProfilePhoto from '../Utils/ProfilePhoto';
 import {MapContext} from '../../store/map-context';
@@ -23,13 +22,20 @@ interface ILocation {
 
 const MainMapView = () => {
   const map: LegacyRef<MapView> = useRef(null);
-  const {mapLatitude, mapLongitude, setMapLatitude, setMapLongitude} =
-    useContext(MapContext);
-  const {userId} = useContext(AuthContext);
+  const {
+    mapLatitude,
+    mapLongitude,
+    pheeds,
+    setMapLatitude,
+    setMapLongitude,
+    setPheeds,
+  } = useContext(MapContext);
   const [location, setLocation] = useState<ILocation | undefined>(undefined);
   const [zoom, setZoom] = useState(0);
+  const [pheedId, setPheedId] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [contents, setContents] = useState<any[]>([]);
+  // const [pheeds, setPheeds] = useState<any[]>([]);
+
   useEffect(() => {
     Geolocation.getCurrentPosition(
       pos => {
@@ -46,7 +52,7 @@ const MainMapView = () => {
         maximumAge: 3600,
       },
     );
-  }, []);
+  }, [setMapLatitude, setMapLongitude]);
 
   const getMapPheeds = async (zoomLv: number) => {
     const res = await getMapPheedsApi({
@@ -58,7 +64,7 @@ const MainMapView = () => {
     // res.reduce((a, b, c, d) => {
     //   console.log(a, b, c, d);
     // }, []);
-    setContents(res);
+    setPheeds(res);
   };
 
   if (!location) {
@@ -69,8 +75,6 @@ const MainMapView = () => {
     );
   }
   const onRegionChange = (region: Region, details: Details) => {
-    console.log(region);
-    console.log(details);
     map.current?.getCamera().then((cam: Camera) => {
       if (cam.zoom) {
         // console.log(`줌 : ${cam.zoom}`);
@@ -104,35 +108,38 @@ const MainMapView = () => {
           customMapStyle={MapStyle}
           showsUserLocation={true}
           showsMyLocationButton={true}>
-          {contents.map((val, i) => {
+          {pheeds.map((pheed, i) => {
             return (
               <View key={i} style={[styles.profile]}>
                 <Marker
                   coordinate={{
-                    latitude: val.latitude,
-                    longitude: val.longitude,
+                    latitude: pheed.latitude,
+                    longitude: pheed.longitude,
                   }}
                   onPress={() => {
+                    setPheedId(pheed.pheedId);
                     setIsModalVisible(true);
                   }}>
                   {/* <CircleProfile grade="hot" size="medium" isGradient={true} /> */}
                   <ProfilePhoto
-                    imageURI={val.userImage_url}
+                    imageURI={pheed.userImage_url}
                     grade="hot"
                     size="medium"
                     isGradient={true}
-                    profileUserId={val.userId}
+                    profileUserId={pheed.userId}
                   />
                 </Marker>
               </View>
             );
           })}
         </MapView>
-        <MapPheedModal
-          userId={userId}
-          isModalVisible={isModalVisible}
-          setIsModalVisible={setIsModalVisible}
-        />
+        {pheedId && (
+          <MapPheedModal
+            pheedId={pheedId}
+            isModalVisible={isModalVisible}
+            setIsModalVisible={setIsModalVisible}
+          />
+        )}
       </View>
     </>
   );

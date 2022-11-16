@@ -146,6 +146,11 @@ io.on("connection", (socket) => {
     // socket.broadcast.to(방의 아이디).emit('이벤트명', 데이터);
   });
 
+  // 하트 날리기
+  socket.on("heart", (buskerId) => {
+    io.to(buskerId).emit("heart");
+  });
+
   // 버스커 방에서 나간다.
   socket.on("leave room", async (buskerId) => {
     await socket.leave(buskerId);
@@ -156,8 +161,8 @@ io.on("connection", (socket) => {
   socket.on("room close", async (buskerId) => {
     if (buskerId === socket.data.userId) {
       io.to(buskerId).emit("end", buskerTotalDict[buskerId].size);
+      await userAllOut(buskerId);
       io.in(buskerId).socketsLeave(buskerId);
-      userAllOut(buskerId);
     } else {
       console.log("방장이 아닙니다!");
     }

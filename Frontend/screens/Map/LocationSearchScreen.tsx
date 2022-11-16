@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import Config from 'react-native-config';
 import MapView, {Marker, PROVIDER_GOOGLE, Region} from 'react-native-maps';
@@ -11,22 +11,31 @@ import Button from '../../components/Utils/Button';
 import Input from '../../components/Utils/Input';
 import Colors from '../../constants/Colors';
 import {RootStackParamList} from '../../constants/types';
+import {PheedMapContext} from '../../store/pheedMap-context';
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
 const deviceWidth = Dimensions.get('window').width;
 
 const LocationSearchScreen = ({navigation}: Props) => {
-  const [location, setLocation] = useState<Region>({
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005,
-    latitude: 0,
-    longitude: 0,
-  });
-  const [regionCode, setRegionCode] = useState('');
-  const [threeDepthName, setThreeDepthName] = useState('');
-  const [locationAddInfo, setLocationAddInfo] = useState('');
-  const [name, setName] = useState('');
+  // const [location, setLocation] = useState<Region>({
+  //   latitudeDelta: 0.005,
+  //   longitudeDelta: 0.005,
+  //   latitude: 0,
+  //   longitude: 0,
+  // });
+  const {
+    pheedMapLocationInfo,
+    pheedMapLocationAddInfo,
+    pheedMapLatitude,
+    pheedMapLongitude,
+    setPheedMapLocationInfo,
+    setPheedMapLocationAddInfo,
+    setPheedMapRegionCode,
+    setPheedMapRegionName,
+    setPheedMapLatitude,
+    setPheedMapLongitude,
+  } = useContext(PheedMapContext);
 
   const getTownName = async (lat: number, lng: number) => {
     const response = await fetch(
@@ -39,8 +48,8 @@ const LocationSearchScreen = ({navigation}: Props) => {
       },
     );
     const result = await response.json();
-    setRegionCode(result.documents[0].code);
-    setThreeDepthName(result.documents[0].region_3depth_name);
+    setPheedMapRegionCode(result.documents[0].code);
+    setPheedMapRegionName(result.documents[0].region_3depth_name);
   };
 
   const pressHandler = () => {
@@ -59,34 +68,37 @@ const LocationSearchScreen = ({navigation}: Props) => {
                   location: {lat, lng},
                 },
               } = detail!;
-              setLocation(prev => ({
-                ...prev,
-                latitude: lat,
-                longitude: lng,
-              }));
-              setName(data.description);
+              setPheedMapLatitude(lat);
+              setPheedMapLongitude(lng);
+              setPheedMapLocationInfo(data.description);
               getTownName(lat, lng);
             }}
           />
-          {location && (
-            <MapView
-              style={styles.map}
-              provider={PROVIDER_GOOGLE}
-              customMapStyle={MapStyle}
-              region={
-                location.latitude && location.longitude ? location : undefined
-              }>
-              <Marker coordinate={location}>
-                <Icon name="map-marker" size={20} color="white" />
-              </Marker>
-            </MapView>
-          )}
-          {location.latitude != 0 ? (
+          <MapView
+            style={styles.map}
+            provider={PROVIDER_GOOGLE}
+            customMapStyle={MapStyle}
+            region={{
+              latitude: pheedMapLatitude,
+              longitude: pheedMapLongitude,
+              latitudeDelta: 0.005,
+              longitudeDelta: 0.005,
+            }}>
+            <Marker
+              coordinate={{
+                latitude: pheedMapLatitude,
+                longitude: pheedMapLongitude,
+              }}>
+              <Icon name="map-marker" size={20} color="white" />
+            </Marker>
+          </MapView>
+
+          {pheedMapLatitude !== 0 && (
             <View style={{height: '35%', bottom: 0}}>
-              <Text style={styles.name}>{name}</Text>
+              <Text style={styles.name}>{pheedMapLocationInfo}</Text>
               <Input
-                setEnteredValue={setLocationAddInfo}
-                enteredValue={locationAddInfo}
+                setEnteredValue={setPheedMapLocationAddInfo}
+                enteredValue={pheedMapLocationAddInfo}
                 width={0.8}
                 height={0.05}
                 borderRadius={25}
@@ -105,7 +117,7 @@ const LocationSearchScreen = ({navigation}: Props) => {
                 customStyle={styles.button}
               />
             </View>
-          ) : null}
+          )}
         </View>
       </View>
     </>

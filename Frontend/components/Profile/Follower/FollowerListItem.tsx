@@ -1,35 +1,48 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {View, Pressable, Text, StyleSheet} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
-import CircleProfile from '../../Utils/CircleProfile';
-import Button from '../../Utils/Button';
+import {
+  ProfileStackScreens,
+  ProfileStackNavigationProps,
+} from '../../../constants/types';
+import ProfilePhoto from '../../Utils/ProfilePhoto';
 import Colors from '../../../constants/Colors';
 
-const FollowerListItem = ({nickname}: {nickname: string}) => {
-  const [isFollowing, setIsFollowing] = useState(true);
+const FollowerListItem = ({
+  nickname,
+  imageURI,
+  profileUserId,
+}: {
+  nickname: string;
+  imageURI: string;
+  profileUserId: number;
+}) => {
+  const navigation = useNavigation<ProfileStackNavigationProps>();
+  const pressHandler = () => {
+    navigation.navigate(ProfileStackScreens.MainProfile, {
+      param: profileUserId,
+    });
+  };
 
   return (
-    <View style={styles.container}>
-      <Pressable style={styles.userProfile}>
-        <CircleProfile size="extraSmall" grade="normal" isGradient={true} />
+    <View style={styles.followerContainer}>
+      <Pressable style={styles.userProfile} onPress={pressHandler}>
+        <ProfilePhoto
+          imageURI={imageURI}
+          profileUserId={profileUserId}
+          size="extraSmall"
+          grade="normal"
+          isGradient={true}
+        />
         <Text style={styles.text}>{nickname}</Text>
       </Pressable>
-      <View style={styles.buttonStyle}>
-        <Button
-          title={isFollowing ? '언팔로우' : '팔로우'}
-          btnSize="medium"
-          textSize="medium"
-          isGradient={true}
-          isOutlined={isFollowing}
-          onPress={() => setIsFollowing(preV => !preV)}
-        />
-      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  followerContainer: {
     flexDirection: 'row',
     paddingVertical: 16,
     paddingHorizontal: 16,
@@ -39,6 +52,7 @@ const styles = StyleSheet.create({
   userProfile: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
   },
   buttonStyle: {
     marginLeft: 'auto',

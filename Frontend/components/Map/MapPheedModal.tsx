@@ -7,25 +7,29 @@ import CircleProfile from '../Utils/CircleProfile';
 import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
 import Icon2 from 'react-native-vector-icons/Ionicons';
+import {getPheedDetail} from '../../api/pheed';
+import {PheedDetailParamList} from '../../constants/types';
+import ProfilePhoto from '../Utils/ProfilePhoto';
 
 interface Props {
-  userId: number | null;
+  pheedId: number | null;
   isModalVisible: boolean;
   setIsModalVisible: Dispatch<SetStateAction<boolean>>;
 }
 
-const MapPheedModal = ({isModalVisible, setIsModalVisible}: Props) => {
+const MapPheedModal = ({pheedId, isModalVisible, setIsModalVisible}: Props) => {
   const gradientColors = [Colors.pink300, Colors.purple300];
   const navigation = useNavigation();
-  const [pheeds, setPheeds] = useState<any[]>([]);
-  // useEffect(() => {
-  //   const fetch = async () => {
-  //     const res = await getPheedbyUser(userId);
-  //     // console.log(res);
-  //     setContents(res.data);
-  //   };
-  //   fetch();
-  // });
+  const [pheed, setPheed] = useState<PheedDetailParamList>();
+
+  useEffect(() => {
+    const fetch = async () => {
+      const res = await getPheedDetail(pheedId);
+      setPheed(res);
+      console.log(res);
+    };
+    fetch();
+  }, [pheedId]);
 
   return (
     <ReactNativeModal
@@ -37,16 +41,22 @@ const MapPheedModal = ({isModalVisible, setIsModalVisible}: Props) => {
           start={{x: 0.0, y: 0.0}}
           end={{x: 1.0, y: 1.0}}
           style={styles.gradientContainer}>
-          <View style={styles.modal}>
-            <View style={styles.container}>
-              <View style={styles.profileContainer}>
-                <View style={styles.profileImg}>
-                  <CircleProfile size="small" isGradient={false} />
-                </View>
-                <View style={styles.profileInfo}>
-                  <Text style={styles.boldtext}>APOLLON</Text>
-                  {/* <Text style={styles.boldtext}>{name}</Text> */}
-                  <View style={styles.liveInfo}>
+          {pheed && (
+            <View style={styles.modal}>
+              <View style={styles.container}>
+                <View style={styles.profileContainer}>
+                  <View style={styles.profileImg}>
+                    <ProfilePhoto
+                      profileUserId={pheed.userId}
+                      imageURI={pheed.userImage_url}
+                      grade="hot"
+                      size="small"
+                      isGradient={true}
+                    />
+                  </View>
+                  <View style={styles.profileInfo}>
+                    <Text style={styles.boldtext}>{pheed!.userNickname}</Text>
+                    {/* <View style={styles.liveInfo}> */}
                     <View style={styles.dateContainer}>
                       <Icon
                         name="clock"
@@ -54,7 +64,7 @@ const MapPheedModal = ({isModalVisible, setIsModalVisible}: Props) => {
                         size={16}
                         style={styles.clock}
                       />
-                      <Text style={styles.text}>시간</Text>
+                      <Text style={styles.text}>{pheed!.startTime}</Text>
                     </View>
                     <View style={styles.dateContainer}>
                       <Icon2
@@ -63,47 +73,52 @@ const MapPheedModal = ({isModalVisible, setIsModalVisible}: Props) => {
                         size={16}
                         style={styles.clock}
                       />
-                      <Text style={styles.text}>장소</Text>
+                      <Text style={styles.text}>{pheed.location}</Text>
                     </View>
+                    {/* </View> */}
                   </View>
                 </View>
-              </View>
-              <Pressable onPress={() => {}}>
-                <View style={styles.contentContainer}>
-                  <Text style={styles.titleText}>타이틀</Text>
-                  <Text style={styles.contentText}>
-                    오랜만에 여수에 오니 좋네요. 오늘은 신청곡을 받아 연주할
-                    예정입니다. 그리고 특별 게스트가 있습니다. 많이 기대해
-                    주세요!
-                  </Text>
-                </View>
-              </Pressable>
-              <View style={styles.bottomContainer}>
-                <View style={styles.viewerCnt}>
-                  <Icon2
-                    name="person-outline"
-                    color={Colors.gray300}
-                    size={20}
-                  />
-                  <Text style={styles.text}>22</Text>
-                </View>
-                <Pressable onPress={() => navigation.navigate('Chat')}>
-                  <Icon2
-                    name="chatbubble-ellipses-outline"
-                    color={Colors.gray300}
-                    size={20}
-                  />
+                <Pressable
+                  onPress={() => navigation.navigate('DetailPheed', pheed)}>
+                  <View style={styles.contentContainer}>
+                    <Text style={styles.titleText}>{pheed!.title}</Text>
+                    <Text style={styles.contentText}>{pheed!.content}</Text>
+                  </View>
                 </Pressable>
+                <View style={styles.bottomContainer}>
+                  <View style={styles.viewerCnt}>
+                    <Icon2
+                      name="person-outline"
+                      color={Colors.gray300}
+                      size={20}
+                    />
+                    <Text style={styles.text}>22</Text>
+                  </View>
+                  <Pressable
+                    onPress={() => {
+                      navigation.navigate('MainChat', {
+                        buskerId: pheed.userId,
+                        buskerNickname: pheed.userNickname,
+                        buskerImg: pheed.userImage_url,
+                      });
+                    }}>
+                    <Icon2
+                      name="chatbubble-ellipses-outline"
+                      color={Colors.gray300}
+                      size={20}
+                    />
+                  </Pressable>
+                </View>
               </View>
             </View>
-          </View>
+          )}
         </LinearGradient>
       </View>
     </ReactNativeModal>
   );
 };
 const deviceWidth = Dimensions.get('window').width;
-const deviceHeight = Dimensions.get('window').height;
+// const deviceHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   body: {
@@ -147,7 +162,6 @@ const styles = StyleSheet.create({
   },
   modal: {
     width: deviceWidth * 0.9,
-    height: deviceWidth * 0.5,
     borderRadius: 20,
     backgroundColor: Colors.black500,
   },
@@ -157,8 +171,8 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   contentContainer: {
-    justifyContent: 'center',
-    // alignItems: 'center',
+    width: deviceWidth * 0.85,
+    alignItems: 'flex-start',
     margin: 5,
   },
   profileContainer: {
@@ -173,7 +187,6 @@ const styles = StyleSheet.create({
   profileDatetime: {
     flexDirection: 'row',
     left: 5,
-    alignItems: 'center',
   },
   profileImg: {
     marginRight: 5,
@@ -191,7 +204,7 @@ const styles = StyleSheet.create({
   bottomContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     width: '100%',
   },
   viewerCnt: {flexDirection: 'row', alignItems: 'center'},

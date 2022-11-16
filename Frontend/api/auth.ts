@@ -23,7 +23,6 @@ export const signOutWithKakao = async (): Promise<string> => {
 export const getKakaoProfile = async () => {
   const profile = await getProfile();
   return profile;
-  // return JSON.stringify(profile);
 };
 
 export const unlinkKakao = async (): Promise<string> => {
@@ -50,7 +49,6 @@ export const sendUserKakaoInfoToServer = async ({
       nickname,
     },
   });
-  console.log('===============', response.data);
   return response.data;
 };
 
