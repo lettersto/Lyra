@@ -39,6 +39,7 @@ import GestureRecognizer from 'react-native-swipe-gestures';
 import axios from '../../../api/axios';
 import Tooltip from 'react-native-walkthrough-tooltip';
 import {useQuery} from 'react-query';
+import ImageCarousel from '../../../components/Pheed/ImageCarousel';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DetailPheed'>;
 
@@ -157,7 +158,7 @@ const DetailPheedScreen = ({route}: Props) => {
   const [showTooltip, SetShowTooltip] = useState(false);
 
   const getPheedDetail = async () => {
-    const res = await axios.get<PheedDetailParamList[]>(
+    const res = await axios.get<PheedDetailParamList>(
       `/pheed/${route.params.pheedId}`,
     );
     return res.data;
@@ -303,9 +304,17 @@ const DetailPheedScreen = ({route}: Props) => {
                 <GradientLine />
               </View>
               <View style={styles.contentContainer}>
-                <ScrollView horizontal>
+                {/* <ScrollView horizontal>
                   {data.pheedImg &&
-                    data.pheedImg.map(imgs => {
+                    data.pheedImg.map(imgs => { */}
+                {data.pheedImg.length == 0 ? (
+                  <></>
+                ) : (
+                  <ImageCarousel images={data.pheedImg} />
+                )}
+                {/* <ScrollView horizontal>
+                  {imgUrl &&
+                    imgUrl.map(imgs => {
                       return (
                         <Image
                           style={{width: 100, height: 100}}
@@ -315,7 +324,7 @@ const DetailPheedScreen = ({route}: Props) => {
                         />
                       );
                     })}
-                </ScrollView>
+                </ScrollView> */}
               </View>
               <View style={styles.titleContainer}>
                 <Text style={styles.titleText}>{data.title}</Text>
