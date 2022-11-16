@@ -1,14 +1,21 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect, useCallback} from 'react';
 import {
+  Alert,
   View,
   Text,
   FlatList,
   StyleSheet,
   Pressable,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 
-import {useMutation, useQuery, useQueryClient} from 'react-query';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useInfiniteQuery,
+} from 'react-query';
 
 import {
   getUserWalletAddressAndCoin,
@@ -24,11 +31,11 @@ import {AuthContext} from '../../store/auth-context';
 import Wallet from '../../components/Profile/Wallet/Wallet';
 import WalletCategory from '../../components/Profile/Wallet/WalletCategory';
 import ProfilePhoto from '../../components/Utils/ProfilePhoto';
+import TimeSelector from '../../components/Profile/Wallet/TimeSelector';
 import ModalWithButton from '../../components/Utils/ModalWithButton';
 import LoadingSpinner from '../../components/Utils/LoadingSpinner';
 import Colors from '../../constants/Colors';
 
-// supporter, busker
 const WalletScreen = () => {
   const queryClient = useQueryClient();
   const {walletAddress, walletId, userId} = useContext(AuthContext);
@@ -36,6 +43,47 @@ const WalletScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [enteredCoin, setEnteredCoin] = useState<string>('');
   const [validationWarning, setValidationWarning] = useState<string>('');
+
+  const [startTime, setStartTime] = useState<Date>();
+  const [endTime, setEndTime] = useState<Date>();
+  const [startTimeForSelector, setStartTimeForSelector] = useState<string>('');
+  const [endTimeForSelector, setEndTimeForSelector] = useState<string>('');
+
+  const twoDigit = (date: number) =>
+    `${date}`.length === 2 ? `${date}` : `0${date}`;
+
+  const dateFormatter = useCallback(
+    (enteredDate: Date | undefined, selector = 'false') => {
+      if (!enteredDate) {
+        return '';
+      }
+      const year = enteredDate.getFullYear().toString();
+      const month = twoDigit(enteredDate.getMonth() + 1);
+      const date = twoDigit(enteredDate.getDate());
+      if (selector) {
+        return `${year}-${month}-${date} 00:00:00`;
+      } else {
+        return `${year}-${month}-${date}`;
+      }
+    },
+    [],
+  );
+
+  useEffect(() => {
+    setStartTimeForSelector(dateFormatter(startTime, false));
+  }, [dateFormatter, startTime]);
+
+  useEffect(() => {
+    setEndTimeForSelector(dateFormatter(endTime, false));
+  }, [dateFormatter, endTime]);
+
+  useEffect(() => {
+    if (startTime && endTime && startTime >= endTime) {
+      Alert.alert('기간을 올바르게 입력해주세요.');
+      setStartTime(undefined);
+      setEndTime(undefined);
+    }
+  }, [startTime, endTime]);
 
   const {
     data: walletData,
@@ -56,22 +104,73 @@ const WalletScreen = () => {
 
   const {
     data: supportListData,
+    fetchNextPage: supportListFetchNextPage,
+    hasNextPage: supportListHasNextPage,
+    isFetchingNextPage: supportListIsFetchingNextPage,
     isLoading: supportListIsLoading,
-    // isError,
-  } = useQuery('supportList', () => getSupportList(userId!));
+    // isError: supportListIsError,
+  } = useInfiniteQuery(
+    ['suppportList', startTime, endTime],
+    ({pageParam = 0}) =>
+      getSupportList(pageParam, {
+        userId: userId!,
+        startTime: dateFormatter(startTime),
+        endTime: dateFormatter(endTime),
+      }),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        return lastPage.length ? allPages.length : undefined;
+      },
+      enabled: !!(!startTime && !endTime) || !!(startTime && endTime),
+    },
+  );
 
   const {
     data: supportedListData,
+    fetchNextPage: supportedListFetchNextPage,
+    hasNextPage: supportedListHasNextPage,
+    isFetchingNextPage: supportedListIsFetchingNextPage,
     isLoading: supportedListIsLoading,
-    // isError,
-  } = useQuery('supportedList', () => getSupportedList(userId!));
+    // isError: supportedListIsError,
+  } = useInfiniteQuery(
+    ['supportedList', startTime, endTime],
+    ({pageParam = 0}) =>
+      getSupportedList(pageParam, {
+        userId: userId!,
+        startTime: dateFormatter(startTime),
+        endTime: dateFormatter(endTime),
+      }),
+    {
+      getNextPageParam: (lastPage: any, allPages) => {
+        return lastPage.length ? allPages.length : undefined;
+      },
+      enabled:
+        !!(!startTime && !endTime) ||
+        !!(startTime && endTime && startTime < endTime),
+    },
+  );
 
-  let listData: any = supportListData;
+  const requestSupportListNextPage = () => {
+    if (supportListHasNextPage) {
+      supportListFetchNextPage();
+    }
+  };
+
+  const requestSupportedListNextPage = () => {
+    if (supportedListHasNextPage) {
+      supportedListFetchNextPage();
+    }
+  };
+
+  let endReachHandler = requestSupportListNextPage;
+  let listData: any = supportListData?.pages?.flat();
   if (walletTabMode === 'receive') {
-    listData = supportedListData;
+    listData = supportedListData?.pages?.flat();
+    endReachHandler = requestSupportedListNextPage;
   }
   if (walletTabMode === 'charge') {
     listData = chargeListData;
+    endReachHandler = () => {};
   }
 
   const Header = () => (
@@ -85,6 +184,20 @@ const WalletScreen = () => {
         walletTabMode={walletTabMode}
         setWalletTabMode={setWalletTabMode}
       />
+      {walletTabMode !== 'charge' ? (
+        <View style={styles.timeContainer}>
+          <TimeSelector
+            setTime={setStartTime}
+            time={startTime}
+            content={startTimeForSelector || '시작 날짜'}
+          />
+          <TimeSelector
+            setTime={setEndTime}
+            time={endTime}
+            content={endTimeForSelector || '종료 날짜'}
+          />
+        </View>
+      ) : null}
     </View>
   );
 
@@ -124,14 +237,14 @@ const WalletScreen = () => {
     let photoUserId: number | undefined;
 
     if (walletTabMode === 'give') {
-      content = item.busker.nickname;
-      imageURI = item.busker.image_url;
-      photoUserId = item.busker.id;
+      content = item.buskerNickname;
+      imageURI = item.buskerImage_url;
+      photoUserId = item.buskerId;
     }
     if (walletTabMode === 'receive') {
-      content = item.supporter.nickname;
-      imageURI = item.supporter.image_url;
-      photoUserId = item.supporter.id;
+      content = item.supporterNickname;
+      imageURI = item.supporterImage_url;
+      photoUserId = item.supporterId;
     }
     if (walletTabMode === 'charge') {
       content = item.time;
@@ -200,6 +313,7 @@ const WalletScreen = () => {
         coin: Number(enteredCoin),
       });
     },
+    retry: 0, // TODO remove retry when it works normally
   });
 
   const chargeCoinHandler = () => {
@@ -221,7 +335,23 @@ const WalletScreen = () => {
     supportedListIsLoading ||
     webIsLoading ||
     balanceIsLoading ||
-    chargeListIsLoading;
+    chargeListIsLoading ||
+    (supportListIsLoading && !supportListIsFetchingNextPage) ||
+    (supportedListIsLoading && !supportedListIsFetchingNextPage);
+
+  const loadingComponent = () => {
+    if (
+      (!supportListIsLoading && supportListIsFetchingNextPage) ||
+      (!supportedListIsLoading && supportedListIsFetchingNextPage)
+    ) {
+      return (
+        <View style={styles.spinnerContainer}>
+          <ActivityIndicator color={Colors.purple300} size="large" />
+        </View>
+      );
+    }
+    return null;
+  };
 
   return (
     <View style={styles.container}>
@@ -259,6 +389,8 @@ const WalletScreen = () => {
         data={listData}
         renderItem={renderItem}
         ListHeaderComponent={Header}
+        onEndReached={endReachHandler}
+        ListFooterComponent={loadingComponent}
       />
     </View>
   );
@@ -305,6 +437,15 @@ const styles = StyleSheet.create({
     color: Colors.pink300,
     fontSize: 12,
     textAlign: 'right',
+  },
+  timeContainer: {
+    flexDirection: 'row',
+  },
+  spinnerContainer: {
+    width: '100%',
+    paddingVertical: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

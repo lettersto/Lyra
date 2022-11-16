@@ -1,9 +1,9 @@
 import React, {useState, useContext} from 'react';
 import {View, StyleSheet, Dimensions} from 'react-native';
 
-import {useMutation, useQueryClient} from 'react-query';
+import {useQuery, useMutation, useQueryClient} from 'react-query';
 
-import {followAndUnfollow} from '../../../api/profile';
+import {checkIsFollowing, followAndUnfollow} from '../../../api/profile';
 import {UserProfileType} from '../../../constants/types';
 import ProfileItem from './ProfileItem';
 import ProfilePhoto from '../../Utils/ProfilePhoto';
@@ -23,9 +23,19 @@ const ProfileBody = ({
   const [isFollowing, setIsFollowing] = useState(false);
   const buttonCustomStyle = {width: 236};
 
+  const {data: followState} = useQuery(
+    'followState',
+    () => checkIsFollowing(profileData?.id, userId!),
+    {
+      enabled: !isMyProfile,
+      onSuccess: () => {
+        setIsFollowing(followState);
+      },
+    },
+  );
+
   const {
     mutate: followerMutate,
-    // isLoading: followerIsLoading,
     // isError,
   } = useMutation(followAndUnfollow);
 
@@ -41,7 +51,7 @@ const ProfileBody = ({
       {
         onSuccess: () => {
           queryClient.invalidateQueries('userProfile');
-          setIsFollowing(preV => !preV);
+          queryClient.invalidateQueries('followState');
         },
       },
     );
@@ -59,7 +69,7 @@ const ProfileBody = ({
         <View style={styles.profileInfoContainer}>
           <View style={styles.profileInfo}>
             <ProfileItem
-              count={profileData?.end_busk_count}
+              count={profileData?.end_busk_count || 0}
               description="내 버스킹"
             />
             <ProfileItem
@@ -81,7 +91,7 @@ const ProfileBody = ({
               btnSize="small"
               textSize="small"
               customStyle={buttonCustomStyle}
-              isGradient={true}
+              isGradient={isFollowing ? true : false}
               isOutlined={true}
               onPress={followerhandler}
             />

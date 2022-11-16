@@ -2,7 +2,7 @@ import React, {useLayoutEffect} from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
-import {useQuery} from 'react-query';
+import {useInfiniteQuery} from 'react-query';
 
 import {
   FollowerParam,
@@ -23,19 +23,49 @@ const FollowerScreen = () => {
 
   const {
     data: followerListData,
+    fetchNextPage: followerListFetchNextPage,
+    hasNextPage: followerListHasNextPage,
+    // isFetchingNextPage: followerListIsFetchingNextPage,
     isLoading: followerListIsLoading,
-    // isError: followerListIsError,
-  } = useQuery('follower', () => getFollowerList(userProfileId), {
-    enabled: mode === 'follower',
-  });
+  } = useInfiniteQuery(
+    'follower',
+    ({pageParam = 0}) => getFollowerList(pageParam, {userProfileId}),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        return lastPage.length ? allPages.length : undefined;
+      },
+      enabled: mode === 'follower',
+    },
+  );
 
   const {
     data: followListData,
+    fetchNextPage: followListFetchNextPage,
+    hasNextPage: followListHasNextPage,
+    // isFetchingNextPage: followListIsFetchingNextPage,
     isLoading: followListIsLoading,
-    // isError: followListIsError,
-  } = useQuery('follower', () => getFollowingList(userProfileId), {
-    enabled: mode === 'follow',
-  });
+  } = useInfiniteQuery(
+    'follow',
+    ({pageParam = 0}) => getFollowingList(pageParam, {userProfileId}),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        return lastPage.length ? allPages.length : undefined;
+      },
+      enabled: mode === 'follow',
+    },
+  );
+
+  const requestFollowerListNextPage = () => {
+    if (followerListHasNextPage) {
+      followerListFetchNextPage();
+    }
+  };
+
+  const requestFollowListNextPage = () => {
+    if (followListHasNextPage) {
+      followListFetchNextPage();
+    }
+  };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -55,16 +85,25 @@ const FollowerScreen = () => {
         />
       ) : null}
       <FlatList
-        data={mode === 'follower' ? followerListData : followListData}
-        keyExtractor={item => item.id.toString()}
+        data={
+          mode === 'follower'
+            ? followerListData?.pages?.flat()
+            : followListData?.pages?.flat()
+        }
+        keyExtractor={(_item, index) => index.toString()}
         renderItem={itemData => (
           <FollowerListItem
-            key={itemData.item.id}
-            nickname={itemData.item.nickname}
-            imageURI={itemData.item.image_url}
-            profileUserId={itemData.item.id}
+            key={itemData.item.userId}
+            nickname={itemData.item.userNickname}
+            imageURI={itemData.item.userImage_url}
+            profileUserId={itemData.item.userId}
           />
         )}
+        onEndReached={
+          mode === 'follower'
+            ? requestFollowerListNextPage
+            : requestFollowListNextPage
+        }
       />
     </View>
   );
