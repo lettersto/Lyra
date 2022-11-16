@@ -7,16 +7,21 @@ import Input from '../Utils/Input';
 interface Props {
   modalVisible: boolean;
   setModalVisible: Dispatch<SetStateAction<boolean>>;
-  sendDonation: (message: string, donation: number) => void;
+  sendDonation: (message: string, donation: string) => void;
+  warningMsg: string;
+  balance: number;
 }
 
 const DonationModal = ({
   modalVisible,
   setModalVisible,
   sendDonation,
+  warningMsg,
+  balance,
 }: Props) => {
   const [message, setMessage] = useState('');
   const [donation, setDonation] = useState('');
+
   return (
     <View>
       <Modal
@@ -25,6 +30,8 @@ const DonationModal = ({
         visible={modalVisible}
         onRequestClose={() => {
           setModalVisible(!modalVisible);
+          setDonation('');
+          setMessage('');
         }}>
         <View
           style={styles.blankSpace}
@@ -37,6 +44,9 @@ const DonationModal = ({
         <View style={styles.bottomView}>
           <View style={styles.modalView}>
             <Text style={[styles.modalText, styles.titleText]}>후원하기</Text>
+            <Text style={[styles.modalText, styles.balanceText]}>
+              잔액 : {balance}
+            </Text>
             <Text style={styles.modalText}>
               금액 및 메시지가 공개적으로 표시됩니다.
             </Text>
@@ -63,6 +73,11 @@ const DonationModal = ({
               customStyle={styles.input}
               maxLength={30}
             />
+            {warningMsg !== '' && (
+              <Text style={[styles.modalText, styles.warningText]}>
+                {warningMsg}
+              </Text>
+            )}
             <Button
               title="후원하기"
               btnSize="extraLarge"
@@ -70,7 +85,7 @@ const DonationModal = ({
               isOutlined={false}
               isGradient={true}
               customStyle={styles.button}
-              onPress={() => sendDonation(message, Number(donation))}
+              onPress={() => sendDonation(message, donation)}
             />
           </View>
         </View>
@@ -117,6 +132,12 @@ const styles = StyleSheet.create({
     height: Dimensions.get('screen').height,
     backgroundColor: '#000000',
     opacity: 0.5,
+  },
+  warningText: {
+    color: 'orange',
+  },
+  balanceText: {
+    textAlign: 'right',
   },
 });
 export default DonationModal;

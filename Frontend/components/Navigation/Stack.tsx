@@ -42,6 +42,7 @@ import FirstTownSearchScreen from '../../screens/Map/FirstTownSearchScreen';
 import TownSearchScreen from '../../screens/Map/TownSearchScreen';
 import LocationSearchScreen from '../../screens/Map/LocationSearchScreen';
 import {TownModal} from '../Utils/TownModal';
+import EndChatScreen from '../../screens/Chat/EndChatScreen';
 
 import {PheedMapProvider} from '../../store/pheedMap-context';
 
@@ -173,6 +174,16 @@ export const PheedStack = () => {
           }}
         />
         <Stack.Screen name="Alarm" component={AlarmScreen} />
+        <Stack.Screen
+          name="MainChat"
+          component={MainChatScreen}
+          options={{
+            title: '',
+            // TODO differentiate between user & busker
+            // headerRight: () => <BuskerChatButtons />,
+            headerRight: () => <UserChatTitle />,
+          }}
+        />
       </Stack.Navigator>
     </PheedMapProvider>
   );

@@ -94,7 +94,14 @@ const MapPheedModal = ({pheedId, isModalVisible, setIsModalVisible}: Props) => {
                     />
                     <Text style={styles.text}>22</Text>
                   </View>
-                  <Pressable onPress={() => navigation.navigate('Chat')}>
+                  <Pressable
+                    onPress={() => {
+                      navigation.navigate('MainChat', {
+                        buskerId: pheed.userId,
+                        buskerNickname: pheed.userNickname,
+                        buskerImg: pheed.userImage_url,
+                      });
+                    }}>
                     <Icon2
                       name="chatbubble-ellipses-outline"
                       color={Colors.gray300}

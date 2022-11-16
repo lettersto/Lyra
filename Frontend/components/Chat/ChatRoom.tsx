@@ -20,15 +20,17 @@ import {Socket} from 'socket.io-client';
 import {AuthContext} from '../../store/auth-context';
 import DonationModal from './DonationModal';
 import LottieView from 'lottie-react-native';
+import {getTotalBalanceFromWeb3} from '../../api/profile';
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
-  donationBtn: {
+  heartBtn: {
     position: 'absolute',
     bottom: 60,
     right: 20,
+    zIndex: 1000,
   },
   inputToolbar: {
     left: '5%',
@@ -59,7 +61,10 @@ const ChatRoom = ({socket, buskerId}: Props) => {
     name: useContext(AuthContext).nickname!,
     avatar: useContext(AuthContext).imageURL!,
   });
+  const {walletAddress} = useContext(AuthContext);
   const [heartVisible, setHeartVisible] = useState(false);
+  const [warningMsg, setWarningMsg] = useState('');
+  const [balance, setBalance] = useState(0);
 
   // 채팅 전송
   const onSend = (messages: IMessage[]) => {
@@ -68,7 +73,18 @@ const ChatRoom = ({socket, buskerId}: Props) => {
   };
 
   // 후원 채팅
-  const sendDonation = (message: string, donation: number) => {
+  const sendDonation = (message: string, donation: string) => {
+    // check
+    if (!/^[0-9]*$/.test(donation)) {
+      setWarningMsg('숫자만 입력해주세요!');
+      return;
+    }
+
+    if (Number(donation) === 0) {
+      setWarningMsg('0보다 큰 정수를 입력해주세요!');
+      return;
+    }
+
     socket.emit(
       'send message',
       {
@@ -80,17 +96,8 @@ const ChatRoom = ({socket, buskerId}: Props) => {
       },
       buskerId,
     );
+    setWarningMsg('');
     setModalVisible(false);
-  };
-
-  // 채팅 나가기
-  const leaveChat = () => {
-    socket.emit('leave_room', buskerId);
-  };
-
-  // 채팅방 종료
-  const closeChat = () => {
-    socket.emit('room_close', buskerId);
   };
 
   // 채팅 시작
@@ -102,17 +109,29 @@ const ChatRoom = ({socket, buskerId}: Props) => {
       console.log('왔다!');
       setMessages(prvMessages => [msg, ...prvMessages]);
     });
+    socket.on('heart', () => {
+      heartUp();
+    });
   }, [socket, buskerId]);
 
-  // 채팅방에 들어오면 채팅 참여!
   useEffect(() => {
+    // 채팅방에 들어오면 채팅 참여!
     participateChat();
+    // 지갑 잔액 받아오기
+    if (walletAddress) {
+      getTotalBalanceFromWeb3(walletAddress)
+        .then(bal => {
+          setBalance(bal);
+        })
+        .catch(err => console.log(err));
+    }
+
     return () => {
-      // socket!.emit('user rooms');
       socket.removeAllListeners('receive message');
       socket.removeAllListeners('fetch user');
+      socket.removeAllListeners('heart');
     };
-  }, [participateChat, socket]);
+  }, [participateChat, socket, walletAddress]);
 
   // 대화상자 커스텀
   const renderBubble = (props: any) => {
@@ -152,8 +171,13 @@ const ChatRoom = ({socket, buskerId}: Props) => {
     setModalVisible(true);
   };
 
-  // 하트 날리기
+  // 하트 날리기 버튼 클릭
   const clickHeartHandler = () => {
+    socket.emit('heart', buskerId);
+  };
+
+  // 하트 날리기
+  const heartUp = () => {
     setHeartVisible(true);
     // console.log('heart');
     setTimeout(() => {
@@ -166,6 +190,7 @@ const ChatRoom = ({socket, buskerId}: Props) => {
       resizeMode="cover"
       source={require('../../assets/image/chatBackGroundImg.png')}>
       <View style={styles.chatContainer}>
+        {}
         <GiftedChat
           messages={totalMessages}
           onSend={onSend}
@@ -187,7 +212,7 @@ const ChatRoom = ({socket, buskerId}: Props) => {
           )}
           placeholder={''}
         />
-        <View style={styles.donationBtn}>
+        <View style={styles.heartBtn}>
           <TouchableOpacity onPress={clickHeartHandler}>
             <CircleGradient grade="normal" size="medium">
               <Image source={require('../../assets/image/heartImg.png')} />
@@ -210,6 +235,8 @@ const ChatRoom = ({socket, buskerId}: Props) => {
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         sendDonation={sendDonation}
+        warningMsg={warningMsg}
+        balance={balance}
       />
     </ImageBackground>
   );

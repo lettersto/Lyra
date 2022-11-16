@@ -35,12 +35,6 @@ const ChatListScreen = () => {
     });
   };
 
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket!.emit('user rooms');
-  //   }
-  // }, [socket]);
-
   useEffect(() => {
     if (socket) {
       socket!.emit('user rooms');
