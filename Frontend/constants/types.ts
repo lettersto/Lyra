@@ -54,6 +54,8 @@ export enum PheedStackScreens {
   CreateShorts = 'CreateShorts',
 
   Alarm = 'Alarm',
+
+  MainChat = 'MainChat',
 }
 
 export enum MapStackScreens {
@@ -102,6 +104,8 @@ export type PheedStackScreenParams = {
   [PheedStackScreens.CreateShorts]: VideoParamList;
 
   [PheedStackScreens.Alarm]: undefined;
+
+  [PheedStackScreens.MainChat]: BuskerInfo;
 };
 
 export type MapStackScreenParams = {
