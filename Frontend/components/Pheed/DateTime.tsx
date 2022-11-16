@@ -33,9 +33,9 @@ const DateTime = ({SetDate}: {SetDate: Dispatch<SetStateAction<Date>>}) => {
       SetDate(date);
       onChangeText(
         [sliceYear(date.getFullYear())] +
-          '.' +
+          '-' +
           [padTo2Digits(date.getMonth() + 1)] +
-          '.' +
+          '-' +
           [padTo2Digits(date.getDate())] +
           ' ' +
           [padTo2Digits(date.getHours())] +

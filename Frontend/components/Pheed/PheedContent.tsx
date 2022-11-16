@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {
   Text,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   Dimensions,
   ScrollView,
   Pressable,
+  ActivityIndicator,
 } from 'react-native';
 import Colors from '../../constants/Colors';
 import LinearGradient from 'react-native-linear-gradient';
@@ -21,14 +22,20 @@ import {useQuery} from 'react-query';
 import {PheedDetailParamList} from '../../constants/types';
 import ProfilePhoto from '../../components/Utils/ProfilePhoto';
 import ImageCarousel from './ImageCarousel';
+import {AuthContext} from '../../store/auth-context';
+import Button from '../Utils/Button';
+import {MapContext} from '../../store/map-context';
 
 const PheedContent = ({category, width}: {category: string; width: number}) => {
   // const [contents, SetContents] = useState<any[]>([]);
   // const isFocused = useIsFocused();
+
+  const {latitude, longitude} = useContext(AuthContext);
+  const {userRegionCode} = useContext(MapContext);
   const navigation = useNavigation();
-  // const goChat = () => {
-  //   navigation.navigate('Chat');
-  // };
+  const goChat = () => {
+    navigation.navigate('Chat');
+  };
   const [isLike, setIsLike] = useState(false);
   const activeLike = () => {
     if (isLike === true) {
@@ -43,6 +50,13 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
     return res.data;
   };
 
+  // const getPheedContents = async () => {
+  //   const res = await axios.get<PheedDetailParamList[]>(
+  //     `/pheed/${userRegionCode}`,
+  //   );
+  //   return res.data;
+  // };
+
   const result = useQuery('PheedContent', getPheedContents);
   const {data, error} = result;
 
@@ -56,9 +70,14 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
   // }, [isFocused, data]);
 
   if (!data) {
-    return <Text style={styles.boldtext}>로딩</Text>;
+    return (
+      <>
+        <Text style={styles.boldtext}> 로딩중 </Text>
+        <ActivityIndicator size="large" color={Colors.purple300} />
+      </>
+    );
   }
-  const contents = data;
+  const contents = data.reverse();
 
   const customStyles = StyleSheet.create({
     gradientContainer: {
@@ -69,9 +88,12 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
     },
   });
 
+  console.log('동코드', userRegionCode);
+
   return (
     <ScrollView style={styles.pheedCotainer}>
-      {contents.reverse().map((content, i) => {
+      {contents.map((content, i) => {
+        // console.log(content);
         return category === content.category ? (
           <View key={i}>
             <LinearGradient
@@ -123,7 +145,7 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
                     </View>
                   </View>
                   <View style={styles.liveContainer}>
-                    {/* {content.isLive ? (
+                    {content.isLive ? (
                       <Button
                         title="LIVE"
                         btnSize="medium"
@@ -142,7 +164,7 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
                         onPress={goChat}
                         disabled
                       />
-                    )} */}
+                    )}
                   </View>
                 </View>
                 <View style={styles.lineContainer}>
@@ -162,7 +184,7 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
                       ) : (
                         <></>
                       )} */}
-                  {content.pheedImg.length == 0 ? (
+                  {content.pheedImg.length === 0 ? (
                     <></>
                   ) : (
                     <ImageCarousel images={content.pheedImg} />
@@ -264,7 +286,7 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
                     </View>
                   </View>
                   <View style={styles.liveContainer}>
-                    {/* {content.isLive ? (
+                    {content.isLive ? (
                       <Button
                         title="LIVE"
                         btnSize="medium"
@@ -283,7 +305,7 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
                         onPress={goChat}
                         disabled
                       />
-                    )} */}
+                    )}
                   </View>
                 </View>
                 <View style={styles.lineContainer}>

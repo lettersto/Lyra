@@ -14,8 +14,8 @@ const UpDateTime = ({
   SetDate: Dispatch<SetStateAction<Date>>;
 }) => {
   const [isDatePickerVisible, setDatePickerVIsibility] = useState(false);
+  const [changeDate, onChangeDate] = useState<Date>();
   const [text, onChangeText] = useState<string>('');
-  const changeDate = new Date(pheedDate);
 
   function sliceYear(num: number) {
     return num.toString().slice(2, 4);
@@ -37,18 +37,19 @@ const UpDateTime = ({
     if (date <= new Date()) {
       Alert.alert('현재보다 이후 시간을 선택해주세요.');
     } else {
-      SetDate(date);
+      onChangeDate(date);
       onChangeText(
         [sliceYear(date.getFullYear())] +
-          '.' +
+          '-' +
           [padTo2Digits(date.getMonth() + 1)] +
-          '.' +
+          '-' +
           [padTo2Digits(date.getDate())] +
           ' ' +
           [padTo2Digits(date.getHours())] +
           ':' +
           [padTo2Digits(date.getMinutes())],
       );
+      SetDate(date);
     }
     hideDatePicker();
   };
@@ -65,26 +66,17 @@ const UpDateTime = ({
         style={styles.gradient}>
         <Pressable onPress={showDatePicker}>
           <Text style={styles.text}>
-            {text === '' ? (
+            {changeDate !== undefined ? (
+              //수정후
               <>
                 <Icon name="clock" color={Colors.gray300} size={16} />
-                <Text>
-                  {' '}
-                  {[sliceYear(changeDate.getFullYear())] +
-                    '.' +
-                    [padTo2Digits(changeDate.getMonth() + 1)] +
-                    '.' +
-                    [padTo2Digits(changeDate.getDate())] +
-                    ' ' +
-                    [padTo2Digits(changeDate.getHours())] +
-                    ':' +
-                    [padTo2Digits(changeDate.getMinutes())]}
-                </Text>
+                <Text>{text}</Text>
               </>
             ) : (
+              //수정전
               <>
                 <Icon name="clock" color={Colors.gray300} size={16} />
-                <Text> {text}</Text>
+                <Text>{pheedDate}</Text>
               </>
             )}
           </Text>
