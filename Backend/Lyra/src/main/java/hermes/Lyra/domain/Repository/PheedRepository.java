@@ -36,4 +36,6 @@ public interface PheedRepository extends CrudRepository<Pheed, Long> {
     List<Pheed> findByState(int i);
 
     Long countByUserAndState(User user, int i);
+
+    List<Pheed> findByRegionCodeAndState(String code, int i);
 }

@@ -47,7 +47,8 @@ public class Pheed {
     @ColumnDefault("0")
     private int state;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
+//    @Column
     private String regionCode;
 
     @OneToMany(mappedBy = "pheed",cascade = CascadeType.ALL)
@@ -83,4 +84,5 @@ public class Pheed {
     @OneToMany(orphanRemoval = true, mappedBy = "pheedId", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Wish> wishList = new ArrayList<>();
+
 }

@@ -14,10 +14,7 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -38,6 +35,8 @@ public class PheedServiceImpl implements PheedService{
     private final CommentRepository commentRepository;
 
     private final UserRepository2 userRepository2;
+
+    WishRepository wishRepository;
 
     @Autowired
     public PheedServiceImpl(PheedRepository pheedRepository, TagRepository tagRepository, PheedTagRepository pheedTagRepository, CommentRepository commentRepository, UserRepository2 userRepository2) {
@@ -234,13 +233,11 @@ public class PheedServiceImpl implements PheedService{
 
     @Override
     public boolean updatePheedByState(Long pheedId, int state) {
-        log.info("hello");
         Optional<Pheed> p = pheedRepository.findById(pheedId);
-        log.info("hello1");
         User user = p.get().getUser();
         log.info(String.valueOf(user));
         Long cp = pheedRepository.countByUserAndState(user, 1);
-        if (cp > 0) {
+        if (cp > 0 && state == 1) {
             return false;
         }
         p.get().setState(state);
@@ -279,5 +276,19 @@ public class PheedServiceImpl implements PheedService{
     @Override
     public List<Pheed> getPheedByUser(Long userId, Pageable pageable) {
         return pheedRepository.findByUserId(userId, pageable);
+    }
+
+    @Override
+    public List<Pheed> getPheedByBanner(String code) {
+
+        List<Pheed> pheeds = pheedRepository.findByRegionCodeAndState(code, 1);
+
+        for (Pheed p : pheeds) {
+            log.info(String.valueOf(p.getId()));
+            log.info(String.valueOf(p.getWishList().size()));
+        }
+        pheeds.sort(Comparator.comparingInt(p -> p.getWishList().size()));
+
+        return pheeds.subList(pheeds.size()-3, pheeds.size());
     }
 }

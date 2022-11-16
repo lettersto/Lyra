@@ -27,7 +27,7 @@ public class RequestPheed {
 
     private List<String> pheedTag;
 
-    private String regionCode;
+//    private String regionCode;
 
 
 }
