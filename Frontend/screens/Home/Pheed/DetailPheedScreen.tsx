@@ -1,4 +1,4 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {
   RootStackParamList,
   RootTabParamList,
@@ -10,7 +10,6 @@ import {
   Text,
   Dimensions,
   ScrollView,
-  Image,
   Pressable,
   BackHandler,
 } from 'react-native';
@@ -40,6 +39,7 @@ import axios from '../../../api/axios';
 import Tooltip from 'react-native-walkthrough-tooltip';
 import {useQuery} from 'react-query';
 import ImageCarousel from '../../../components/Pheed/ImageCarousel';
+import {AuthContext} from '../../../store/auth-context';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DetailPheed'>;
 
@@ -53,6 +53,7 @@ const DetailPheedScreen = ({route}: Props) => {
   const [change, setChange] = useState(false);
   const isFocused = useIsFocused();
   const navigation = useNavigation();
+  const {userId} = useContext(AuthContext);
 
   useLayoutEffect(() => {
     navigate.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
@@ -71,7 +72,7 @@ const DetailPheedScreen = ({route}: Props) => {
   }, [route.params.pheedId, change, isFocused]);
 
   // const like = route.params?.like;
-  const isLive = route.params?.isLive;
+  // const isLive = data.isLive;
   const [comments, SetComments] = useState<any[]>([]);
 
   const goChat = () => {
@@ -84,7 +85,7 @@ const DetailPheedScreen = ({route}: Props) => {
 
   const register = () => {
     axios
-      .post(`/pheed/${route.params.pheedId}/comment?user_id=1`, {
+      .post(`/pheed/${route.params.pheedId}/comment?user_id=${userId}`, {
         content: registerComment,
       })
       .then(function (response) {
@@ -232,7 +233,7 @@ const DetailPheedScreen = ({route}: Props) => {
                   </View>
                 </View>
                 <View style={styles.liveContainer}>
-                  {isLive ? (
+                  {data.isLive ? (
                     <Button
                       title="LIVE"
                       btnSize="medium"
@@ -259,7 +260,9 @@ const DetailPheedScreen = ({route}: Props) => {
                       <>
                         <Pressable
                           onPress={() => (
-                            navigation.navigate('UpdatePheed', route.params),
+                            navigation.navigate('UpdatePheed', {
+                              pheedId: route.params.pheedId,
+                            }),
                             SetShowTooltip(false)
                           )}>
                           <View style={styles.tooltipIcon}>
@@ -514,7 +517,7 @@ const DetailPheedScreen = ({route}: Props) => {
                 />
               )}
             </View>
-            {isLive ? (
+            {data.isLive ? (
               <Button
                 title="채팅하기"
                 btnSize="medium"

@@ -231,8 +231,8 @@ export type RootStackParamList = {
   MainChat: BuskerInfo;
   MainProfile: undefined;
   ProfileDetail: undefined;
-  DetailPheed: PheedDetailParamList;
-  UpdatePheed: PheedDetailParamList;
+  DetailPheed: {pheedId: number};
+  UpdatePheed: {pheedId: number};
   ShortsDetail: Array<ShortsDetailParamList>;
   Splash: undefined;
   Login: undefined;
@@ -293,6 +293,14 @@ export type ShortsDetailParamList = {
 export type VideoParamList = {
   duration: number | null;
   height: number;
+  mime: string;
+  path: string;
+  size: number;
+  width: number;
+};
+
+export type ImageParamList = {
+  height: number | null;
   mime: string;
   path: string;
   size: number;
