@@ -227,6 +227,16 @@ export const MapStack = () => {
           }}
         />
       </Stack.Group>
+      <Stack.Screen
+        name="MainChat"
+        component={MainChatScreen}
+        options={{
+          title: '',
+          // TODO differentiate between user & busker
+          // headerRight: () => <BuskerChatButtons />,
+          headerRight: () => <UserChatTitle />,
+        }}
+      />
     </Stack.Navigator>
   );
 };
