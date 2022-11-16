@@ -20,6 +20,7 @@ import {Socket} from 'socket.io-client';
 import {AuthContext} from '../../store/auth-context';
 import DonationModal from './DonationModal';
 import LottieView from 'lottie-react-native';
+import {getTotalBalanceFromWeb3} from '../../api/profile';
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
@@ -29,6 +30,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 60,
     right: 20,
+    zIndex: 1000,
   },
   inputToolbar: {
     left: '5%',
@@ -59,7 +61,10 @@ const ChatRoom = ({socket, buskerId}: Props) => {
     name: useContext(AuthContext).nickname!,
     avatar: useContext(AuthContext).imageURL!,
   });
+  const {walletAddress} = useContext(AuthContext);
   const [heartVisible, setHeartVisible] = useState(false);
+  const [warningMsg, setWarningMsg] = useState('');
+  const [balance, setBalance] = useState(0);
 
   // 채팅 전송
   const onSend = (messages: IMessage[]) => {
@@ -68,7 +73,18 @@ const ChatRoom = ({socket, buskerId}: Props) => {
   };
 
   // 후원 채팅
-  const sendDonation = (message: string, donation: number) => {
+  const sendDonation = (message: string, donation: string) => {
+    // check
+    if (!/^[0-9]*$/.test(donation)) {
+      setWarningMsg('숫자만 입력해주세요!');
+      return;
+    }
+
+    if (Number(donation) === 0) {
+      setWarningMsg('0보다 큰 정수를 입력해주세요!');
+      return;
+    }
+
     socket.emit(
       'send message',
       {
@@ -80,6 +96,7 @@ const ChatRoom = ({socket, buskerId}: Props) => {
       },
       buskerId,
     );
+    setWarningMsg('');
     setModalVisible(false);
   };
 
@@ -97,14 +114,24 @@ const ChatRoom = ({socket, buskerId}: Props) => {
     });
   }, [socket, buskerId]);
 
-  // 채팅방에 들어오면 채팅 참여!
   useEffect(() => {
+    // 채팅방에 들어오면 채팅 참여!
     participateChat();
+    // 지갑 잔액 받아오기
+    if (walletAddress) {
+      getTotalBalanceFromWeb3(walletAddress)
+        .then(bal => {
+          setBalance(bal);
+        })
+        .catch(err => console.log(err));
+    }
+
     return () => {
       socket.removeAllListeners('receive message');
       socket.removeAllListeners('fetch user');
+      socket.removeAllListeners('heart');
     };
-  }, [participateChat, socket]);
+  }, [participateChat, socket, walletAddress]);
 
   // 대화상자 커스텀
   const renderBubble = (props: any) => {
@@ -208,6 +235,8 @@ const ChatRoom = ({socket, buskerId}: Props) => {
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         sendDonation={sendDonation}
+        warningMsg={warningMsg}
+        balance={balance}
       />
     </ImageBackground>
   );
