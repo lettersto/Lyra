@@ -44,10 +44,10 @@ const ImageCarousel = ({images}: {images: {id: number; path: string}[]}) => {
           })}
         </ScrollView>
         <View style={styles.wrapDot}>
-          {images.map(imgs => (
+          {images.map((imgs, index) => (
             <Text
               key={imgs.id}
-              style={imgActive == imgs.id ? styles.dotActive : styles.dot}>
+              style={imgActive == index ? styles.dotActive : styles.dot}>
               ⬤
             </Text>
           ))}
@@ -76,11 +76,11 @@ const styles = StyleSheet.create({
   },
   dotActive: {
     margin: 3,
-    color: 'black',
+    color: 'white',
   },
   dot: {
     margin: 3,
-    color: 'white',
+    color: 'black',
   },
 });
 

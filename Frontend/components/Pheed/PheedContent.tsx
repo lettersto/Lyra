@@ -21,6 +21,7 @@ import axios from '../../api/axios';
 import {useQuery} from 'react-query';
 import {PheedDetailParamList} from '../../constants/types';
 import ProfilePhoto from '../../components/Utils/ProfilePhoto';
+import ImageCarousel from './ImageCarousel';
 
 const PheedContent = ({category, width}: {category: string; width: number}) => {
   // const [contents, SetContents] = useState<any[]>([]);
@@ -148,11 +149,8 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
                 <View style={styles.lineContainer}>
                   <GradientLine />
                 </View>
-                <Pressable
-                  onPress={() => navigation.navigate('DetailPheed', content)}>
-                  <View style={styles.contentContainer}>
-                    <View style={styles.imgContainer}>
-                      {content.pheedImg.length !== 0 ? (
+                <View style={styles.imgContainer}>
+                  {/* {content.pheedImg.length !== 0 ? (
                         content.pheedImg.map(imgs => {
                           return (
                             <Image
@@ -164,8 +162,16 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
                         })
                       ) : (
                         <></>
-                      )}
-                    </View>
+                      )} */}
+                  {content.pheedImg.length == 0 ? (
+                    <></>
+                  ) : (
+                    <ImageCarousel images={content.pheedImg} />
+                  )}
+                </View>
+                <Pressable
+                  onPress={() => navigation.navigate('DetailPheed', content)}>
+                  <View style={styles.contentContainer}>
                     <Text style={styles.boldtext}>{content.title}</Text>
                     <MoreInfo content={content.content} />
                   </View>
@@ -284,11 +290,13 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
                 <View style={styles.lineContainer}>
                   <GradientLine />
                 </View>
-                <Pressable
-                  onPress={() => navigation.navigate('DetailPheed', content)}>
-                  <View style={styles.contentContainer}>
-                    <View style={styles.imgContainer}>
-                      {content.pheedImg.length !== 0 ? (
+                <View style={styles.imgContainer}>
+                  {content.pheedImg.length == 0 ? (
+                    <></>
+                  ) : (
+                    <ImageCarousel images={content.pheedImg} />
+                  )}
+                  {/* {content.pheedImg.length !== 0 ? (
                         content.pheedImg.map(imgs => {
                           return (
                             <Image
@@ -300,8 +308,11 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
                         })
                       ) : (
                         <></>
-                      )}
-                    </View>
+                      )} */}
+                </View>
+                <Pressable
+                  onPress={() => navigation.navigate('DetailPheed', content)}>
+                  <View style={styles.contentContainer}>
                     <Text style={styles.boldtext}>{content.title}</Text>
                     <MoreInfo content={content.content} />
                   </View>

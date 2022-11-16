@@ -307,7 +307,7 @@ const DetailPheedScreen = ({route}: Props) => {
                 {/* <ScrollView horizontal>
                   {data.pheedImg &&
                     data.pheedImg.map(imgs => { */}
-                {data.pheedImg ? (
+                {data.pheedImg.length == 0 ? (
                   <></>
                 ) : (
                   <ImageCarousel images={data.pheedImg} />
