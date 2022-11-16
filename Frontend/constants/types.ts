@@ -63,6 +63,7 @@ export enum MapStackScreens {
   TownSearch = 'TownSearch',
 
   DetailPheed = 'DetailPheed',
+  MainChat = 'MainChat',
 }
 
 export enum ChatStackScreens {
@@ -110,6 +111,7 @@ export type MapStackScreenParams = {
   [MapStackScreens.TownSearch]: undefined;
 
   [MapStackScreens.DetailPheed]: PheedDetailParamList;
+  [MapStackScreens.MainChat]: BuskerInfo;
 };
 
 export type ChatStackScreenParams = {

@@ -174,6 +174,16 @@ export const PheedStack = () => {
           }}
         />
         <Stack.Screen name="Alarm" component={AlarmScreen} />
+        <Stack.Screen
+          name="MainChat"
+          component={MainChatScreen}
+          options={{
+            title: '',
+            // TODO differentiate between user & busker
+            // headerRight: () => <BuskerChatButtons />,
+            headerRight: () => <UserChatTitle />,
+          }}
+        />
       </Stack.Navigator>
     </PheedMapProvider>
   );
