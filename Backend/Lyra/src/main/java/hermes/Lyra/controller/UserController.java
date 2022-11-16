@@ -186,7 +186,7 @@ public class UserController {
     @ApiOperation(value = "access token 재발급 요청",notes = "refresh 토큰으로 access 토큰을 재발급 신청한다.")
     @PostMapping(value = "/refresh")
     public ResponseEntity<?> refreshToken(
-            @RequestHeader(value="X-AUTH-TOKEN") String token,
+            @RequestHeader(value="Authorization") String token,
             @RequestHeader(value="REFRESH-TOKEN") String refreshToken ) {
         Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
