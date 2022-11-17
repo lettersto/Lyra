@@ -300,11 +300,14 @@ export type VideoParamList = {
 };
 
 export type ImageParamList = {
-  height: number | null;
-  mime: string;
-  path: string;
-  size: number;
-  width: number;
+  uri: string | undefined;
+  type: string | undefined;
+  name: string | undefined;
+  // height: number | null;
+  // mime: string;
+  // path: string;
+  // size: number;
+  // width: number;
 };
 
 export type StoryDeatilScreenParamList = {
