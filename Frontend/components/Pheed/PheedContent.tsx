@@ -456,6 +456,7 @@ const PheedContent = ({width}: {width: number}) => {
             Category="main"
             currentCategory={currentCategory}
             SetCurrentCategory={SetCurrentCategory}
+            CustomStyle={styles.categoryContainer}
           />
         </View>
         <GradientLine />
@@ -546,10 +547,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: 5,
     marginRight: 5,
-    marginBottom: 10,
+    marginVertical: 10,
   },
   imgContainer: {
-    flexDirection: 'row',
+    alignItems: 'center',
   },
   bottomContainer: {
     flexDirection: 'row',
@@ -575,9 +576,7 @@ const styles = StyleSheet.create({
   videoContainer: {
     height: 80,
   },
-  categoryContainer: {
-    marginBottom: 8,
-  },
+  categoryContainer: {},
   flatlist: {
     flex: 1,
     marginBottom: 30,
