@@ -1,6 +1,6 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useContext, useState} from 'react';
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, StyleSheet, Text, View, Alert} from 'react-native';
 import Config from 'react-native-config';
 import MapView, {Marker, PROVIDER_GOOGLE, Region} from 'react-native-maps';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -71,7 +71,7 @@ const TownSearchScreen = ({navigation}: Props) => {
 
         navigation.goBack();
       } else {
-        alert('다시 확인해주세요.');
+        Alert.alert('다시 확인해주세요.');
       }
     } catch (error) {
       console.log(error);

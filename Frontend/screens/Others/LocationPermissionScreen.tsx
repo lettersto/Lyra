@@ -79,7 +79,6 @@ const LocationPermissionScreen = () => {
         source={require('../../assets/image/permission_background.png')}
         resizeMode="cover"
         style={styles.background}>
-        {/* TODO 어떤 정보를 가져가는지 약관 필요 */}
         <View style={styles.permissionContainer}>
           <IIcon name="ios-location-outline" size={30} color={Colors.gray300} />
           <Text style={styles.text}>{guidance}</Text>
