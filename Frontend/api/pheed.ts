@@ -1,3 +1,7 @@
+import {AxiosRequestConfig} from 'axios';
+import {number} from 'prop-types';
+import {Image} from 'react-native-image-crop-picker';
+import {ImageParamList} from '../constants/types';
 import axios from './axios';
 import {baseURL} from './axios';
 
@@ -12,7 +16,11 @@ export const searchPheeds = async (pageParam = 0, options = {keyword: ''}) => {
   });
   return response.data;
 };
-
+interface ImgType {
+  uri: string;
+  type: string;
+  name: string;
+}
 export const searchPheedsByTags = async (
   pageParam = 0,
   options = {tag: ''},
@@ -47,10 +55,10 @@ export const getPheeds = async () => {
 
 export const uploadPheed = async ({
   userId,
-  imageFile,
+  images,
   title,
   category,
-  Content,
+  content,
   latitude,
   longitude,
   pheedTag,
@@ -59,14 +67,10 @@ export const uploadPheed = async ({
   regionCode,
 }: {
   userId: number;
-  imageFile: {
-    uri: string | undefined;
-    type: string | undefined;
-    name: string | undefined;
-  };
+  images: ImgType[] | undefined;
   title: string;
   category: string;
-  Content: string;
+  content: string;
   latitude: number;
   longitude: number;
   pheedTag: string[];
@@ -74,25 +78,55 @@ export const uploadPheed = async ({
   location: string;
   regionCode: string;
 }) => {
-  const images = new FormData();
-  images.append('image', imageFile);
-  images.append('regionCode', regionCode);
-  images.append('title', title);
-  images.append('category', category);
-  images.append('Content', Content);
-  images.append('latitude', latitude);
-  images.append('longitude', longitude);
-  images.append('pheedTag', pheedTag);
-  images.append('startTime', startTime);
-  images.append('location', location);
+  const image = new FormData();
+  images?.map(img => image.append('images', img));
+  // image.append('images', images);
+  // image.append('images', {
+  //   uri: 'file:///data/user/0/com.frontend/cache/react-native-image-crop-picker/IMG_20221114_155136_1.jpg',
+  //   type: 'image/jpeg',
+  //   name: 'asdasdasd',
+  // });
+  // image.append('images', {
+  //   uri: 'file:///data/user/0/com.frontend/cache/react-native-image-crop-picker/IMG_20221114_155136_1.jpg',
+  //   type: 'image/jpeg',
+  //   name: 'asdasdasd',
+  // });
+  image.append('regionCode', regionCode);
+  image.append('title', title);
+  image.append('category', category);
+  image.append('Content', content);
+  image.append('latitude', latitude);
+  image.append('longitude', longitude);
+  image.append('pheedTag', pheedTag);
+  image.append(
+    'startTime',
+    startTime.toJSON().substring(0, 10) +
+      ' ' +
+      startTime.toJSON().substring(11, startTime.toJSON().length - 5),
+  );
+  image.append('location', location);
 
   const response = await fetch(baseURL + `/pheed/?user_id=${userId}`, {
     method: 'POST',
-    body: images,
+    body: image,
     headers: {'Content-Type': 'multipart/form-data'},
   });
-
   return response;
+
+  // const config: AxiosRequestConfig = {
+  //   url: baseURL + `/pheed/?user_id=${userId}`,
+  //   method: 'POST',
+  //   responseType: 'json',
+  //   headers: {
+  //     'Content-Type': 'multipart/form-data',
+  //   },
+  //   transformRequest: (_data, _headers) => {
+  //     return image;
+  //   },
+  //   data: image,
+  // };
+  // const response = await axios.request(config);
+  // return response;
 };
 
 // shorts
@@ -117,7 +151,6 @@ export const uploadVideo = async ({
     body: video,
     headers: {'Content-Type': 'multipart/form-data'},
   });
-
   return response;
 };
 
