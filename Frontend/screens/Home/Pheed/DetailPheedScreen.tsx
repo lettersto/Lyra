@@ -1,9 +1,5 @@
 import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
-import {
-  RootStackParamList,
-  RootTabParamList,
-  PheedDetailParamList,
-} from '../../../constants/types';
+import {RootStackParamList, RootTabParamList} from '../../../constants/types';
 import {
   StyleSheet,
   View,
@@ -27,16 +23,11 @@ import Icon3 from 'react-native-vector-icons/AntDesign';
 import Icon4 from 'react-native-vector-icons/Ionicons';
 import GradientLine from '../../../components/Utils/GradientLine';
 import Button from '../../../components/Utils/Button';
-import {
-  CompositeNavigationProp,
-  useIsFocused,
-  useNavigation,
-} from '@react-navigation/native';
+import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
 import Input from '../../../components/Utils/Input';
 import MoreInfo from './MoreInfo';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import GestureRecognizer from 'react-native-swipe-gestures';
-import axios from '../../../api/axios';
 import Tooltip from 'react-native-walkthrough-tooltip';
 import {useMutation, useQuery, useQueryClient} from 'react-query';
 import ImageCarousel from '../../../components/Pheed/ImageCarousel';
@@ -60,8 +51,6 @@ type DetailPheedNavigationProps = CompositeNavigationProp<
 
 const DetailPheedScreen = ({route}: Props) => {
   const navigate = useNavigation<DetailPheedNavigationProps>();
-  const [change, setChange] = useState(false);
-  const isFocused = useIsFocused();
   const navigation = useNavigation();
   const {userId} = useContext(AuthContext);
   const pheedId = route.params.pheedId;
@@ -275,7 +264,7 @@ const DetailPheedScreen = ({route}: Props) => {
                           <Pressable
                             onPress={() => (
                               navigation.navigate('UpdatePheed', {
-                                pheedId: route.params.pheedId,
+                                pheedId: pheedId,
                               }),
                               SetShowTooltip(false)
                             )}>
@@ -335,16 +324,10 @@ const DetailPheedScreen = ({route}: Props) => {
                   <ImageCarousel images={pheedData.pheedImg} />
                 )}
               </View>
+              <GradientLine />
               <View style={styles.titleContainer}>
                 <Text style={styles.titleText}>{pheedData.title}</Text>
-                <Icon2
-                  name="play-box-multiple-outline"
-                  color={Colors.gray300}
-                  size={25}
-                  style={styles.clock}
-                />
               </View>
-              <GradientLine />
               <View style={styles.contentText}>
                 <MoreInfo content={pheedData.content} />
               </View>
@@ -404,7 +387,7 @@ const DetailPheedScreen = ({route}: Props) => {
           <View style={styles.commentWriteContainer}>
             <Input
               width={0.8}
-              height={0.05}
+              height={0.06}
               keyboard={1}
               borderRadius={15}
               placeholder="  댓글을 입력해주세요."
@@ -446,6 +429,7 @@ const DetailPheedScreen = ({route}: Props) => {
                         userImage_url: string;
                         userId: number;
                         content: string;
+                        userNickname: string;
                       },
                       idx: number,
                     ) => {
@@ -510,7 +494,7 @@ const DetailPheedScreen = ({route}: Props) => {
                 name="star"
                 color={Colors.gray300}
                 size={25}
-                style={styles.clock}
+                style={styles.star}
               />
             </Pressable>
           ) : (
@@ -525,7 +509,7 @@ const DetailPheedScreen = ({route}: Props) => {
                 name="staro"
                 color={Colors.gray300}
                 size={25}
-                style={styles.clock}
+                style={styles.star}
               />
             </Pressable>
           )}
@@ -599,7 +583,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginVertical: 5,
   },
   titleText: {
     color: Colors.gray300,
@@ -611,7 +595,8 @@ const styles = StyleSheet.create({
   contentText: {
     color: Colors.gray300,
     fontFamily: 'NanumSquareRoundR',
-    marginVertical: 10,
+    marginTop: 5,
+    marginBottom: 10,
   },
   boldtext: {
     color: Colors.gray300,
@@ -677,6 +662,9 @@ const styles = StyleSheet.create({
   locationContainer: {
     flexDirection: 'row',
   },
+  star: {
+    marginLeft: 15,
+  },
   clock: {
     marginRight: 5,
   },
@@ -697,9 +685,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   contentContainer: {
-    justifyContent: 'center',
-    marginLeft: 5,
-    marginRight: 5,
+    alignItems: 'center',
     marginBottom: 10,
   },
   tagsContainer: {
@@ -771,12 +757,14 @@ const styles = StyleSheet.create({
   },
   bottomBtnContainer: {
     flexDirection: 'row',
+    marginRight: 15,
   },
   alarmBtn: {
     marginRight: 5,
   },
   container: {
     flex: 1,
+    backgroundColor: Colors.black500,
   },
   tooltipContent: {
     backgroundColor: Colors.black500,
