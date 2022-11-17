@@ -12,6 +12,7 @@ import {
   ScrollView,
   Pressable,
   BackHandler,
+  ActivityIndicator,
 } from 'react-native';
 import {
   NativeStackNavigationProp,
@@ -88,8 +89,9 @@ const DetailPheedScreen = ({route}: Props) => {
       .post(`/pheed/${route.params.pheedId}/comment?user_id=${userId}`, {
         content: registerComment,
       })
-      .then(function (response) {
-        console.log(response);
+      .then(function () {
+        // console.log(response);
+        // console.log('comment success');
       })
       .catch(function (error) {
         console.log(error);
@@ -122,7 +124,6 @@ const DetailPheedScreen = ({route}: Props) => {
           position: 'absolute',
         },
       });
-      // navigation.navigate('MainPheed');
       navigation.goBack();
       return true;
     };
@@ -149,6 +150,7 @@ const DetailPheedScreen = ({route}: Props) => {
           },
         });
         navigation.navigate('MainPheed');
+        console.log('삭제완료');
       })
       .catch(function (error) {
         console.log(error);
@@ -166,7 +168,7 @@ const DetailPheedScreen = ({route}: Props) => {
   };
 
   const result = useQuery('PheedDetail', getPheedDetail);
-  const {data, error} = result;
+  const {data, error, isLoading} = result;
 
   if (error) {
     console.log(error);
@@ -182,8 +184,21 @@ const DetailPheedScreen = ({route}: Props) => {
   // const commentResult = useQuery('PheedComments', getPheedComments);
   // const {commentData, commentError} = commentResult;
 
+  if (isLoading) {
+    return (
+      <>
+        <Text style={styles.boldtext}> 로딩중 </Text>
+        <ActivityIndicator size="large" color={Colors.purple300} />
+      </>
+    );
+  }
   if (!data) {
-    return <Text style={styles.boldtext}>로딩</Text>;
+    return (
+      <>
+        <Text style={styles.boldtext}> 로딩중 </Text>
+        <ActivityIndicator size="large" color={Colors.purple300} />
+      </>
+    );
   }
 
   return (
@@ -253,54 +268,57 @@ const DetailPheedScreen = ({route}: Props) => {
                       disabled
                     />
                   )}
-
-                  <Tooltip
-                    isVisible={showTooltip}
-                    content={
-                      <>
-                        <Pressable
-                          onPress={() => (
-                            navigation.navigate('UpdatePheed', {
-                              pheedId: route.params.pheedId,
-                            }),
-                            SetShowTooltip(false)
-                          )}>
-                          <View style={styles.tooltipIcon}>
-                            <Text style={styles.tooltipText}>수정</Text>
-                            <Icon2
-                              name="pencil-outline"
-                              color={Colors.gray300}
-                              size={25}
-                              style={styles.dots}
-                            />
-                          </View>
-                        </Pressable>
-                        <Pressable onPress={PheedDelete}>
-                          <View style={styles.tooltipIcon}>
-                            <Text style={styles.tooltipText}>삭제</Text>
-                            <Icon4
-                              name="trash-outline"
-                              color={Colors.gray300}
-                              size={25}
-                              style={styles.dots}
-                            />
-                          </View>
-                        </Pressable>
-                      </>
-                    }
-                    placement="bottom"
-                    contentStyle={styles.tooltipContent}
-                    arrowStyle={styles.tooltipArrow}
-                    onClose={() => SetShowTooltip(false)}>
-                    <Pressable onPress={() => SetShowTooltip(true)}>
-                      <Icon2
-                        name="dots-vertical"
-                        color={Colors.gray300}
-                        size={20}
-                        style={styles.dots}
-                      />
-                    </Pressable>
-                  </Tooltip>
+                  {userId === data.userId ? (
+                    <Tooltip
+                      isVisible={showTooltip}
+                      content={
+                        <>
+                          <Pressable
+                            onPress={() => (
+                              navigation.navigate('UpdatePheed', {
+                                pheedId: route.params.pheedId,
+                              }),
+                              SetShowTooltip(false)
+                            )}>
+                            <View style={styles.tooltipIcon}>
+                              <Text style={styles.tooltipText}>수정</Text>
+                              <Icon2
+                                name="pencil-outline"
+                                color={Colors.gray300}
+                                size={25}
+                                style={styles.dots}
+                              />
+                            </View>
+                          </Pressable>
+                          <Pressable onPress={PheedDelete}>
+                            <View style={styles.tooltipIcon}>
+                              <Text style={styles.tooltipText}>삭제</Text>
+                              <Icon4
+                                name="trash-outline"
+                                color={Colors.gray300}
+                                size={25}
+                                style={styles.dots}
+                              />
+                            </View>
+                          </Pressable>
+                        </>
+                      }
+                      placement="bottom"
+                      contentStyle={styles.tooltipContent}
+                      arrowStyle={styles.tooltipArrow}
+                      onClose={() => SetShowTooltip(false)}>
+                      <Pressable onPress={() => SetShowTooltip(true)}>
+                        <Icon2
+                          name="dots-vertical"
+                          color={Colors.gray300}
+                          size={20}
+                          style={styles.dots}
+                        />
+                      </Pressable>
+                    </Tooltip>
+                  ) : (
+                    <></>
+                  )}
                 </View>
               </View>
               <View style={styles.lineContainer}>
@@ -427,7 +445,6 @@ const DetailPheedScreen = ({route}: Props) => {
                 <View style={styles.commentsContainer}>
                   {comments.map((value, idx) => {
                     const commentId = value.id;
-
                     return (
                       <View style={styles.commentCt} key={idx}>
                         <View style={styles.commentContentCt}>
@@ -442,27 +459,32 @@ const DetailPheedScreen = ({route}: Props) => {
                             <Text style={styles.text}>{value.content}</Text>
                           </View>
                         </View>
-                        <Pressable
-                          onPress={() => (
-                            axios
-                              .delete(
-                                `/pheed/${route.params.pheedId}/comment/${commentId}`,
-                              )
-                              .then(function (response) {
-                                console.log(response);
-                              })
-                              .catch(function (error) {
-                                console.log(error);
-                              }),
-                            setChange(!change)
-                          )}>
-                          <Icon4
-                            name="trash-outline"
-                            color={Colors.gray300}
-                            size={16}
-                            style={styles.clock}
-                          />
-                        </Pressable>
+
+                        {userId === value.userId ? (
+                          <Pressable
+                            onPress={() => (
+                              axios
+                                .delete(
+                                  `/pheed/${route.params.pheedId}/comment/${commentId}`,
+                                )
+                                .then(function () {
+                                  console.log('삭제', commentId);
+                                })
+                                .catch(function (err) {
+                                  console.log(err);
+                                }),
+                              setChange(!change)
+                            )}>
+                            <Icon4
+                              name="trash-outline"
+                              color={Colors.gray300}
+                              size={16}
+                              style={styles.clock}
+                            />
+                          </Pressable>
+                        ) : (
+                          <></>
+                        )}
                       </View>
                     );
                   })}

@@ -12,28 +12,44 @@ import Location from '../../../components/Pheed/Location';
 import axios from '../../../api/axios';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../../constants/types';
+import {
+  PheedDetailParamList,
+  RootStackParamList,
+} from '../../../constants/types';
+import {useQuery} from 'react-query';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DetailPheed'>;
 
 const UpdatePheedScreen = ({route}: Props) => {
   const navigation = useNavigation();
 
+  const getPheedDetail = async () => {
+    const res = await axios.get<PheedDetailParamList>(
+      `/pheed/${route.params.pheedId}`,
+    );
+    return res.data;
+  };
+
+  const result = useQuery('PheedDetail', getPheedDetail);
+  const {data, error} = result;
+
+  if (error) {
+    console.log(error);
+  }
+
   const [photos, SetPhotos] = useState<any[]>([]);
-  const [category, SetCategory] = useState(route.params.category);
-  const [enteredTitle, setEnteredTitle] = useState<string>(route.params.title);
-  const [enteredContent, setEnteredContent] = useState<string>(
-    route.params.content,
-  );
-  const [date, SetDate] = useState<Date>(route.params.startTime);
+  const [category, SetCategory] = useState(data?.category);
+  const [enteredTitle, setEnteredTitle] = useState(data?.title);
+  const [enteredContent, setEnteredContent] = useState(data?.content);
+  const [date, SetDate] = useState(data?.startTime);
 
   const currentTags = [];
 
-  for (var i = 0; i < route.params.pheedTag.length; i++) {
-    if (route.params.pheedTag[i].id === undefined) {
-      currentTags.push(route.params.pheedTag[i]);
+  for (var i = 0; i < data.pheedTag.length; i++) {
+    if (data.pheedTag[i].id === undefined) {
+      currentTags.push(data.pheedTag[i]);
     } else {
-      currentTags.push(route.params.pheedTag[i].name);
+      currentTags.push(data.pheedTag[i].name);
     }
   }
 
@@ -55,26 +71,11 @@ const UpdatePheedScreen = ({route}: Props) => {
         // console.log(response);
         // navigation.goBack();
         navigation.navigate('DetailPheed', {
-          category: category,
-          content: enteredContent,
-          latitude: 1,
-          longitude: 1,
-          pheedTag: tags,
-          startTime: date,
-          title: enteredTitle,
-          location: '하남산단로',
           pheedId: route.params.pheedId,
-          pheedImg: route.params.pheedImg,
-          name: route.params.name,
-          profileImg: route.params.profileImg,
-          isLive: route.params.isLive,
-          time: route.params.time,
-          comments: route.params.comments,
-          like: route.params.like,
         });
       })
-      .catch(function (error) {
-        console.log(error);
+      .catch(function (err) {
+        console.log(err);
       });
   };
 
