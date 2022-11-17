@@ -19,6 +19,7 @@ import {
 } from '../../api/auth';
 import {getUserProfile, getUserWalletAddressAndCoin} from '../../api/profile';
 import {AuthContext} from '../../store/auth-context';
+import {MapContext} from '../../store/map-context';
 import {
   PheedStackNavigationProps,
   PheedStackScreens,
@@ -35,7 +36,10 @@ const LoginScreen = () => {
     setNickname,
     setImageURL,
     setUserId,
+    setLatitude,
+    setLongitude,
   } = useContext(AuthContext);
+  const {setUserLocationInfo, setUserRegionCode} = useContext(MapContext);
 
   useLayoutEffect(() => {
     navigation.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
@@ -74,6 +78,13 @@ const LoginScreen = () => {
         if (!userInfo?.latitude || !userInfo?.longitude) {
           navigation.navigate(PheedStackScreens.LocationPermission);
         } else {
+          setUserId(userInfo.id);
+          setNickname(userInfo.nickname);
+          setImageURL(userInfo.image_url);
+          setLatitude(userInfo.latitude);
+          setLongitude(userInfo.latitude);
+          setUserRegionCode(userInfo.region_code);
+          setUserLocationInfo(userInfo.region_name);
           const walletInfo = await getUserWalletAddressAndCoin(userId);
           if (!walletInfo?.address) {
             navigation.navigate(PheedStackScreens.WalletCreation);
