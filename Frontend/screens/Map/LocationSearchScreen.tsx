@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import Config from 'react-native-config';
 import MapView, {Marker, PROVIDER_GOOGLE, Region} from 'react-native-maps';
@@ -37,6 +37,22 @@ const LocationSearchScreen = ({navigation}: Props) => {
     setPheedMapLongitude,
   } = useContext(PheedMapContext);
 
+  useEffect(() => {
+    setPheedMapRegionCode(null);
+    setPheedMapLocationInfo('');
+    setPheedMapRegionName('');
+    setPheedMapLatitude(0);
+    setPheedMapLongitude(0);
+    setPheedMapLocationAddInfo('');
+  }, [
+    setPheedMapRegionCode,
+    setPheedMapLocationInfo,
+    setPheedMapRegionName,
+    setPheedMapLatitude,
+    setPheedMapLongitude,
+    setPheedMapLocationAddInfo,
+  ]);
+
   const getTownName = async (lat: number, lng: number) => {
     const response = await fetch(
       `https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${lng}&y=${lat}`,
@@ -60,7 +76,6 @@ const LocationSearchScreen = ({navigation}: Props) => {
     <>
       <View style={styles.body}>
         <View style={{flex: 1}}>
-          {/* <Text style={styles.title}>주소 찾기</Text> */}
           <LocationSearch
             onPress={(data, detail) => {
               const {
