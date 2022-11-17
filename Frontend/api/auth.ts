@@ -7,7 +7,8 @@ import {
   unlink,
 } from '@react-native-seoul/kakao-login';
 
-import axios from './axios';
+import axios, {baseURL} from './axios';
+import publicAxios from 'axios';
 
 // KakaoLogin
 export const signInWithKakao = async (): Promise<string> => {
@@ -40,8 +41,11 @@ export const sendUserKakaoInfoToServer = async ({
   imageURL: string;
   nickname: string;
 }) => {
-  const response = await axios({
-    url: '/user/login',
+  const response = await publicAxios({
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    url: baseURL + '/user/login',
     method: 'POST',
     data: {
       email,

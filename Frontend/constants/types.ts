@@ -399,6 +399,6 @@ export type UserProfileType = {
   follower_count: number | null;
   following_count: number | null;
   latitude: number | null;
-  longitutde: number | null;
+  longitude: number | null;
   end_busk_count: number;
 };
