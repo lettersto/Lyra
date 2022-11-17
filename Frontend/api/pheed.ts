@@ -1,4 +1,3 @@
-import {number} from 'prop-types';
 import axios from './axios';
 import {baseURL} from './axios';
 
@@ -60,13 +59,6 @@ export const uploadPheed = async ({
   regionCode,
 }: {
   userId: number;
-  // imageFile: {
-  //   height: number;
-  //   mime: string;
-  //   path: string;
-  //   size: number;
-  //   width: number;
-  // };
   imageFile: {
     uri: string | undefined;
     type: string | undefined;
