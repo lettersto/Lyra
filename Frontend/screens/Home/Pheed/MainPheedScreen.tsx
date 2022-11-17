@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react';
-import {StyleSheet, View, ScrollView} from 'react-native';
+import {StyleSheet, View, ScrollView, Text} from 'react-native';
 import {
   useNavigation,
   CompositeNavigationProp,
@@ -21,6 +21,7 @@ import MainBanner from '../../../components/Pheed/MainBanner';
 import GradientLine from '../../../components/Utils/GradientLine';
 import PheedCategory from '../../../components/Pheed/Category/PheedCategory';
 import Story from '../../../components/Pheed/Story';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 type Props = CompositeNavigationProp<
   PheedStackNavigationProps,
@@ -28,7 +29,6 @@ type Props = CompositeNavigationProp<
 >;
 
 const MainPheedScreen = () => {
-  const {userRegionCode} = useContext(MapContext);
   const navigation = useNavigation<Props>();
   useFocusEffect(() => {
     navigation.getParent()?.setOptions({
@@ -42,46 +42,13 @@ const MainPheedScreen = () => {
     });
   });
 
-  const [currentCategory, SetCurrentCategory] = useState('all');
-
-  const {
-    data: storyData,
-    // isLoading: storyIsLoading,
-    // isError: storyIsError,
-  } = useQuery(
-    'videoInNeighborhood',
-    () => getVideosInNeighborhood(userRegionCode as string),
-    {
-      enabled: !!userRegionCode,
-    },
-  );
-
   return (
     <>
-      <ScrollView style={styles.scroll}>
-        <View style={styles.mainContainer}>
-          <View style={styles.bannerContainer}>
-            <MainBanner />
-          </View>
-          {storyData?.length ? (
-            <View style={styles.videoContainer}>
-              <Story storyData={storyData} />
-            </View>
-          ) : null}
-          <GradientLine />
-          <View style={styles.categoryContainer}>
-            <PheedCategory
-              Category="main"
-              currentCategory={currentCategory}
-              SetCurrentCategory={SetCurrentCategory}
-            />
-          </View>
-          <GradientLine />
-          <View style={styles.pheedContent}>
-            <PheedContent category={currentCategory} width={0.95} />
-          </View>
+      <SafeAreaView style={styles.scroll}>
+        <View style={styles.pheedContent}>
+          <PheedContent width={0.95} />
         </View>
-      </ScrollView>
+      </SafeAreaView>
       <View style={styles.createBtn}>
         <CreateButton />
       </View>
@@ -108,7 +75,6 @@ const styles = StyleSheet.create({
   },
   pheedContent: {
     flex: 1,
-    alignSelf: 'center',
   },
   scroll: {
     flex: 1,
@@ -116,6 +82,9 @@ const styles = StyleSheet.create({
   },
   createBtn: {
     marginBottom: '10%',
+  },
+  text: {
+    color: Colors.purple300,
   },
 });
 
