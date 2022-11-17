@@ -29,6 +29,7 @@ const MainMapView = () => {
     setMapLatitude,
     setMapLongitude,
     setPheeds,
+    setPheedsCnt,
   } = useContext(MapContext);
   const [location, setLocation] = useState<ILocation | undefined>(undefined);
   const [zoom, setZoom] = useState(0);
@@ -48,7 +49,7 @@ const MainMapView = () => {
       },
       {
         enableHighAccuracy: true,
-        timeout: 3600,
+        timeout: 36000,
         maximumAge: 3600,
       },
     );
@@ -65,6 +66,9 @@ const MainMapView = () => {
     //   console.log(a, b, c, d);
     // }, []);
     setPheeds(res);
+    setPheedsCnt(pheeds.length);
+    console.log(pheeds.length);
+    console.log(res);
   };
 
   if (!location) {

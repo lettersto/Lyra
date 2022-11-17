@@ -247,14 +247,18 @@ export const getMapPheeds = async ({
   longitude: number;
   zoom: number;
 }) => {
-  const response = await axios({
-    url: '/pheed/map',
-    method: 'GET',
-    params: {
-      latitude,
-      longitude,
-      zoom,
-    },
-  });
-  return response.data;
+  try {
+    const response = await axios({
+      url: '/pheed/map',
+      method: 'GET',
+      params: {
+        latitude,
+        longitude,
+        zoom,
+      },
+    });
+    return response.data;
+  } catch (err) {
+    throw err;
+  }
 };
