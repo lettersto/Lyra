@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   Text,
   StyleSheet,
@@ -41,6 +41,7 @@ import PheedCategory from './Category/PheedCategory';
 import {AuthContext} from '../../store/auth-context';
 
 const PheedContent = ({width}: {width: number}) => {
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const {userId} = useContext(AuthContext);
   const {userRegionCode} = useContext(MapContext);
   const navigation = useNavigation();
@@ -58,9 +59,14 @@ const PheedContent = ({width}: {width: number}) => {
     }
   };
 
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+  };
+
   const {
     data: storyData,
     isLoading: storyIsLoading,
+    refetch: storyRefetch,
     // isError: storyIsError,
   } = useQuery(
     'videoInNeighborhood',
@@ -76,6 +82,7 @@ const PheedContent = ({width}: {width: number}) => {
     hasNextPage: pheedContentHasNextPage,
     isFetchingNextPage: pheedContentIsFetchingNextPage,
     isLoading: pheedContentIsLoading,
+    refetch: pheedRefetch,
   } = useInfiniteQuery(
     'PheedContent',
     ({pageParam = 0}) =>
@@ -86,6 +93,14 @@ const PheedContent = ({width}: {width: number}) => {
       },
     },
   );
+
+  useEffect(() => {
+    if (isRefreshing === true) {
+      setIsRefreshing(false);
+      pheedRefetch();
+      storyRefetch();
+    }
+  }, [isRefreshing, pheedRefetch, storyRefetch]);
 
   const requestNextPage = () => {
     if (pheedContentHasNextPage) {
@@ -458,6 +473,8 @@ const PheedContent = ({width}: {width: number}) => {
         onEndReached={requestNextPage}
         ListHeaderComponent={headerItem}
         ListFooterComponent={loadingComponent}
+        refreshing={isRefreshing}
+        onRefresh={handleRefresh}
       />
     </>
   );
