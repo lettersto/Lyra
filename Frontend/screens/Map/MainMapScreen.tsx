@@ -1,20 +1,22 @@
-import React, {useRef, useState} from 'react';
-import {Button, Dimensions, StyleSheet, View} from 'react-native';
+import React, {useContext, useRef, useState} from 'react';
+import {Button, Dimensions, StyleSheet, Text, View} from 'react-native';
 import LiveCategory from '../../components/Map/LiveCategory';
 import PheedCategory from '../../components/Pheed/Category/PheedCategory';
 import {Modalize} from 'react-native-modalize';
 import PheedContent from '../../components/Pheed/PheedContent';
 import MainMapView from '../../components/Map/MainMapView';
 import MapPheedContent from '../../components/Map/MapPheedContent';
+import Colors from '../../constants/Colors';
+import {MapContext} from '../../store/map-context';
 
 const deviceWidth = Dimensions.get('window').width;
 
 const MainMapScreen = () => {
   const modalizeRef = useRef<Modalize>(null);
-
+  const {pheedsCnt} = useContext(MapContext);
   const [currentCategory, SetCurrentCategory] = useState('all');
 
-  const renderContent = () => (
+  const renderHeader = () => (
     <View style={styles.content}>
       <PheedCategory
         Category="main"
@@ -22,21 +24,26 @@ const MainMapScreen = () => {
         currentCategory={currentCategory}
         SetCurrentCategory={SetCurrentCategory}
       />
-      <View style={styles.pheedContent}>
-        <MapPheedContent category={currentCategory} />
-      </View>
+    </View>
+  );
+
+  const renderContent = () => (
+    <View style={styles.pheedContent}>
+      <MapPheedContent category={currentCategory} />
     </View>
   );
 
   return (
     <>
       <MainMapView />
+      <Text style={styles.liveCategory}>현재 {pheedsCnt}개의 버스킹</Text>
       {/* <LiveCategory CustomStyle={styles.liveCategory} /> */}
       <Modalize
         ref={modalizeRef}
         modalStyle={styles.content__modal}
         alwaysOpen={150}
         withHandle
+        HeaderComponent={renderHeader}
         handleStyle={styles.handle}
         handlePosition="inside">
         {renderContent()}
@@ -49,18 +56,23 @@ const styles = StyleSheet.create({
   liveCategory: {
     position: 'absolute',
     zIndex: 1,
-    // width: deviceWidth,
-    // bottom: 114,
-    top: 0,
-    // backgroundColor: 'rgba(0, 0, 0, 0.9)',
-    paddingVertical: 5,
+    top: 14,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    padding: 5,
+    color: Colors.gray300,
+    fontFamily: 'NanumSquareRoundR',
+    fontSize: 20,
+    fontWeight: 'bold',
+    justifyContent: 'center',
+    alignSelf: 'center',
   },
   pheedCategory: {
     width: deviceWidth,
     paddingVertical: 5,
   },
   content: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 20,
   },
   handle: {
     backgroundColor: '#FFF',
@@ -71,6 +83,7 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 6},
     shadowOpacity: 0.45,
     shadowRadius: 16,
+    marginBottom: 30,
   },
   pheedContent: {
     flex: 1,

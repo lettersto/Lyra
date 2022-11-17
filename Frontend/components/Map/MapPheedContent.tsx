@@ -17,6 +17,7 @@ import GradientLine from '../Utils/GradientLine';
 import {getMapPheeds as getMapPheedsApi} from '../../api/pheed';
 import {MapContext} from '../../store/map-context';
 import ProfilePhoto from '../Utils/ProfilePhoto';
+import MoreInfo from '../Pheed/MoreInfo';
 
 const MapPheedContent = ({category}: {category?: string}) => {
   const {pheeds} = useContext(MapContext);
@@ -112,7 +113,7 @@ const MapPheedContent = ({category}: {category?: string}) => {
                       <></>
                     )} */}
                       <Text style={styles.boldtext}>{pheed.title}</Text>
-                      {/* <MoreInfo content={content.content} /> */}
+                      <MoreInfo content={pheed.content} />
                     </View>
                   </Pressable>
                   <GradientLine />
