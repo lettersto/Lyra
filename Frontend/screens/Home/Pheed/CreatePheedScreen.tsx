@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   SafeAreaView,
   View,
@@ -42,6 +42,11 @@ const CreatePheedScreen = () => {
     pheedMapRegionCode,
     pheedMapLatitude,
     pheedMapLongitude,
+    setPheedMapLatitude,
+    setPheedMapLongitude,
+    setPheedMapRegionCode,
+    setPheedMapLocationInfo,
+    setPheedMapLocationAddInfo,
   } = useContext(PheedMapContext);
   const [photos, SetPhotos] = useState<Image[]>();
   const [category, SetCategory] = useState('');
@@ -58,12 +63,31 @@ const CreatePheedScreen = () => {
   //   // size,
   // } = useRoute<PheedStackRouteProps>().params as ImageParamList;
 
+  useEffect(() => {
+    setPheedMapRegionCode(null);
+    setPheedMapLocationInfo('');
+    setPheedMapLatitude(0);
+    setPheedMapLongitude(0);
+    setPheedMapLocationAddInfo('');
+  }, [
+    setPheedMapRegionCode,
+    setPheedMapLocationInfo,
+    setPheedMapLatitude,
+    setPheedMapLongitude,
+    setPheedMapLocationAddInfo,
+  ]);
+
   const {
     mutate: uploadPheedMutate,
     // isLoading: uploadPheedIsLoading,
     // isError,
   } = useMutation(uploadPheed, {
     onSuccess: () => {
+      setPheedMapLatitude(0);
+      setPheedMapLongitude(0);
+      setPheedMapRegionCode(null);
+      setPheedMapLocationInfo('');
+      setPheedMapLocationAddInfo('');
       navigation.navigate(PheedStackScreens.MainPheed);
       // console.log('uploadsuccess');
     },
