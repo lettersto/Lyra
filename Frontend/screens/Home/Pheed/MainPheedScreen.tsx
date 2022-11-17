@@ -48,8 +48,12 @@ const MainPheedScreen = () => {
     data: storyData,
     // isLoading: storyIsLoading,
     // isError: storyIsError,
-  } = useQuery('videoInNeighborhood', () =>
-    getVideosInNeighborhood(userRegionCode as string),
+  } = useQuery(
+    'videoInNeighborhood',
+    () => getVideosInNeighborhood(userRegionCode as string),
+    {
+      enabled: !!userRegionCode,
+    },
   );
 
   return (

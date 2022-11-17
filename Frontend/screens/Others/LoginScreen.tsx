@@ -51,7 +51,7 @@ const LoginScreen = () => {
     // isLoading: walletIsLoading,
     // isError,
   } = useQuery('userProfile', () => getUserWalletAddressAndCoin(loginUserId!), {
-    enabled: false,
+    enabled: !!loginUserId,
     onSuccess: async data => {
       setWalletId(data.walletId);
       setWalletAddress(data.address);
@@ -89,7 +89,6 @@ const LoginScreen = () => {
     const onKakaoLoginPress = async () => {
       try {
         await signInWithKakao();
-        // NOTE types are strage here
         const {
           nickname,
           profileImageUrl: imageURL,

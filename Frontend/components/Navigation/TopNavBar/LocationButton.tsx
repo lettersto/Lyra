@@ -1,19 +1,22 @@
-import {useNavigation} from '@react-navigation/native';
 import React, {useContext} from 'react';
 import {Text, Pressable, StyleSheet, View} from 'react-native';
+
+import {useNavigation} from '@react-navigation/native';
+
+import {
+  PheedStackNavigationProps,
+  PheedStackScreens,
+} from '../../../constants/types';
+import {MapContext} from '../../../store/map-context';
 import MIcon from 'react-native-vector-icons/MaterialIcons';
 import Colors from '../../../constants/Colors';
-import {MapContext} from '../../../store/map-context';
 
 const LocationButton = () => {
-  // TODO
-  // 1. get Location from context API or something else. + setCurrentLocation
-  // 2. onPress function to find location.
   const {userLocationInfo} = useContext(MapContext);
-  const navigation = useNavigation();
+  const navigation = useNavigation<PheedStackNavigationProps>();
 
   const pressHandler = () => {
-    navigation.navigate('TownSearch');
+    navigation.navigate(PheedStackScreens.TownSearch);
   };
 
   return (

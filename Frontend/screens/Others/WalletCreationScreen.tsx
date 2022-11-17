@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {
   View,
   ImageBackground,
@@ -30,11 +30,11 @@ import Colors from '../../constants/Colors';
 
 const WalletCreationScreen = () => {
   const navigation = useNavigation<PheedStackNavigationProps>();
+  const {userId, setWalletAddress} = useContext(AuthContext);
   const [walletCreated, setWalletCreated] = useState<boolean>(false);
   const [walletPrivateKey, setWalletPrivateKey] = useState<string>('');
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [enableWalletInfo, setEnableWalletInfo] = useState<boolean>(true);
-  const {userId, setWalletAddress} = useContext(AuthContext);
   const guidance = !walletCreated
     ? 'Lyra를 제대로 사용하기 위해서는\n지갑이 필요합니다.'
     : '지갑이 생성되었어요!';
@@ -47,10 +47,11 @@ const WalletCreationScreen = () => {
   };
 
   const {
+    refetch: walletInfoRefetch,
     // data: walletData,
     // isError,
   } = useQuery('walletInfo', () => getUserWalletAddressAndCoin(userId!), {
-    enabled: enableWalletInfo,
+    enabled: enableWalletInfo && !!userId,
     onSuccess: async data => {
       if (data?.address) {
         setWalletAddress(data.address);
@@ -95,6 +96,12 @@ const WalletCreationScreen = () => {
   const startPressHandler = () => {
     navigation.navigate(PheedStackScreens.MainPheed);
   };
+
+  useEffect(() => {
+    if (userId && enableWalletInfo) {
+      walletInfoRefetch();
+    }
+  }, [userId, enableWalletInfo, walletInfoRefetch]);
 
   return (
     <View style={styles.container}>
