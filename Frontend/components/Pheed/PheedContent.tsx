@@ -17,14 +17,14 @@ import Icon4 from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import GradientLine from '../Utils/GradientLine';
 import MoreInfo from './MoreInfo';
-import axios from '../../api/axios';
 import {useQuery} from 'react-query';
-import {PheedDetailParamList} from '../../constants/types';
 import ProfilePhoto from '../../components/Utils/ProfilePhoto';
 import ImageCarousel from './ImageCarousel';
 import {AuthContext} from '../../store/auth-context';
 import Button from '../Utils/Button';
 import {MapContext} from '../../store/map-context';
+import {getPheeds} from '../../api/pheed';
+import {PheedDetailParamList} from '../../constants/types';
 
 const PheedContent = ({category, width}: {category: string; width: number}) => {
   // const [contents, SetContents] = useState<any[]>([]);
@@ -45,10 +45,10 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
     }
   };
 
-  const getPheedContents = async () => {
-    const res = await axios.get<PheedDetailParamList[]>('/pheed/all');
-    return res.data;
-  };
+  // const getPheedContents = async () => {
+  //   const res = await axios.get<PheedDetailParamList[]>('/pheed/all');
+  //   return res.data;
+  // };
 
   // const getPheedContents = async () => {
   //   const res = await axios.get<PheedDetailParamList[]>(
@@ -57,19 +57,20 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
   //   return res.data;
   // };
 
-  const result = useQuery('PheedContent', getPheedContents);
-  const {data, error} = result;
+  const {
+    isLoading: pheedIsLoading,
+    data: pheedData,
+    error: pheedDetailError,
+  } = useQuery('PheedContent', getPheeds);
 
-  if (error) {
-    console.log(error);
+  // const result = useQuery<PheedDetailParamList[]>('PheedContent', getPheeds);
+  // const {data, error} = result;
+
+  if (pheedDetailError) {
+    console.log(pheedDetailError);
   }
 
-  // React.useEffect(() => {
-  //   getPheedContents();
-  //   data?.reverse();
-  // }, [isFocused, data]);
-
-  if (!data) {
+  if (!pheedData || pheedIsLoading) {
     return (
       <>
         <Text style={styles.boldtext}> 로딩중 </Text>
@@ -77,7 +78,7 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
       </>
     );
   }
-  const contents = data.reverse();
+  const contents = pheedData;
 
   const customStyles = StyleSheet.create({
     gradientContainer: {
@@ -88,11 +89,11 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
     },
   });
 
-  console.log('동코드', userRegionCode);
+  // console.log('동코드', userRegionCode);
 
   return (
-    <ScrollView style={styles.pheedCotainer}>
-      {contents.map((content, i) => {
+    <ScrollView style={styles.pheedContainer}>
+      {contents.map((content: PheedDetailParamList, i: number) => {
         // console.log(content);
         return category === content.category ? (
           <View key={i}>
@@ -392,7 +393,7 @@ const PheedContent = ({category, width}: {category: string; width: number}) => {
 };
 
 const styles = StyleSheet.create({
-  pheedCotainer: {
+  pheedContainer: {
     marginTop: 12,
   },
   text: {

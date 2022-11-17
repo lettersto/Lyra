@@ -53,6 +53,65 @@ export const getPheeds = async () => {
   return response.data;
 };
 
+export const getPheedDetail = async (pheedId: number | null) => {
+  const response = await axios({
+    url: `/pheed/${pheedId}`,
+    method: 'GET',
+  });
+  return response.data;
+};
+
+//comment
+export const getComments = async (pheedId: number | null) => {
+  const response = await axios({
+    url: `/pheed/${pheedId}/comment`,
+    method: 'GET',
+  });
+  return response.data;
+};
+
+export const createComments = async ({
+  userId,
+  pheedId,
+  content,
+}: {
+  userId: number | null;
+  pheedId: number | null;
+  content: string;
+}) => {
+  const response = await axios({
+    url: baseURL + `/pheed/${pheedId}/comment`,
+    method: 'POST',
+    params: {user_id: userId},
+    data: {content},
+  });
+  return response;
+};
+
+export const deletePheed = async ({pheedId}: {pheedId: number | null}) => {
+  const response = await axios({
+    url: `/pheed/${pheedId}`,
+    method: 'DELETE',
+    params: {pheed_id: pheedId},
+  });
+  return response.data;
+};
+
+export const deleteComment = async ({
+  commentId,
+  pheedId,
+}: {
+  commentId: number | null;
+  pheedId: number | null;
+}) => {
+  const response = await axios({
+    url: `/pheed/${pheedId}/comment/${commentId}`,
+    method: 'DELETE',
+    params: {comment_id: commentId},
+  });
+  return response.data;
+};
+
 export const uploadPheed = async ({
   userId,
   images,
@@ -196,14 +255,6 @@ export const getMapPheeds = async ({
       longitude,
       zoom,
     },
-  });
-  return response.data;
-};
-
-export const getPheedDetail = async (pheedId: number | null) => {
-  const response = await axios({
-    url: `/pheed/${pheedId}`,
-    method: 'GET',
   });
   return response.data;
 };
