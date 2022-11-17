@@ -12,7 +12,7 @@ import {
 import Input from '../../../components/Utils/Input';
 import DateTime from '../../../components/Pheed/DateTime';
 import Colors from '../../../constants/Colors';
-import Gallery from '../../../components/Pheed/Gallery';
+import Gallery, {Photo} from '../../../components/Pheed/Gallery';
 import PheedCategory from '../../../components/Pheed/Category/PheedCategory';
 import Tag from '../../../components/Pheed/Tag';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -29,6 +29,7 @@ import {
 } from '../../../constants/types';
 import {uploadPheed} from '../../../api/pheed';
 import {useMutation, useQueryClient} from 'react-query';
+import {Image} from 'react-native-image-crop-picker';
 
 const CreatePheedScreen = () => {
   const navigation = useNavigation();
@@ -42,7 +43,7 @@ const CreatePheedScreen = () => {
     pheedMapLatitude,
     pheedMapLongitude,
   } = useContext(PheedMapContext);
-  const [photos, SetPhotos] = useState<ImageParamList>();
+  const [photos, SetPhotos] = useState<Image[]>();
   const [category, SetCategory] = useState('');
   const [enteredTitle, setEnteredTitle] = useState<string>('');
   const [enteredContent, setEnteredContent] = useState<string>('');
@@ -64,7 +65,7 @@ const CreatePheedScreen = () => {
   } = useMutation(uploadPheed, {
     onSuccess: () => {
       navigation.navigate(PheedStackScreens.MainPheed);
-      console.log('uploadsuccess');
+      // console.log('uploadsuccess');
     },
   });
 
@@ -106,11 +107,36 @@ const CreatePheedScreen = () => {
     }
 
     // const pathParts = imageUri.split('/');
+    // console.log(photos);
+    // [
+    //   {
+    //     height: 1280,
+    //     mime: 'image/jpeg',
+    //     modificationDate: '1668578306000',
+    //     path: 'file:///data/user/0/com.frontend/cache/react-native-image-crop-picker/IMG_20221114_155136_1.jpg',
+    //     size: 145550,
+    //     width: 960,
+    //   },
+    // ];
+    // console.log(
+    //   photos?.map(photo => ({
+    //     ...photo,
+    //     uri: photo.path,
+    //     type: photo.mime,
+    //     name: photo.path,
+    //   })),
+    // );
     uploadPheedMutate({
       userId: userId!,
-      imageFile: {uri: photos?.path, type: photos?.mime, name: photos?.path},
+      // images: {uri: photos?.path, type: photos?.mime, name: photos?.path},
+      images: photos?.map(photo => ({
+        uri: photo.path,
+        type: photo.mime,
+        name: photo.path,
+        // name: 'test',
+      })),
       category: category,
-      Content: enteredContent,
+      content: enteredContent,
       latitude: pheedMapLatitude,
       longitude: pheedMapLongitude,
       pheedTag: tags,
@@ -119,6 +145,31 @@ const CreatePheedScreen = () => {
       location: pheedMapLocationAddInfo,
       regionCode: pheedMapRegionCode,
     });
+    //   try {
+    //     const response = await uploadPheed({
+    //       userId: userId!,
+    //       // images: {uri: photos?.path, type: photos?.mime, name: photos?.path},
+    //       images: photos?.map(photo => ({
+    //         uri: photo.path,
+    //         type: photo.mime,
+    //         name: photo.path,
+    //         // name: 'test',
+    //       })),
+    //       category: category,
+    //       content: enteredContent,
+    //       latitude: pheedMapLatitude,
+    //       longitude: pheedMapLongitude,
+    //       pheedTag: tags,
+    //       startTime: date,
+    //       title: enteredTitle,
+    //       location: pheedMapLocationAddInfo,
+    //       regionCode: pheedMapRegionCode,
+    //     });
+    //     console.log(response);
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    //   console.log('등록');
   };
 
   return (
