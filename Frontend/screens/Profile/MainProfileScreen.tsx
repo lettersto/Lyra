@@ -8,11 +8,18 @@ import {
   Pressable,
   // ActivityIndicator,
 } from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {
+  useNavigation,
+  useRoute,
+  CompositeNavigationProp,
+} from '@react-navigation/native';
 
 import {useQuery, useInfiniteQuery} from 'react-query';
 
 import {
+  BottomTabNavigationProps,
+  BottomTabScreens,
+  PheedStackScreens,
   ProfileStackNavigationProps,
   ProfileStackRouteProps,
   galleryTypes,
@@ -32,6 +39,11 @@ import GradientLine from '../../components/Utils/GradientLine';
 import LoadingSpinner from '../../components/Utils/LoadingSpinner';
 import Colors from '../../constants/Colors';
 
+type navigationType = CompositeNavigationProp<
+  BottomTabNavigationProps,
+  ProfileStackNavigationProps
+>;
+
 const MainProfileScreen = () => {
   const route = useRoute<ProfileStackRouteProps>();
   const {
@@ -40,7 +52,7 @@ const MainProfileScreen = () => {
     userId: MyUserId,
     walletAddress,
   } = useContext(AuthContext);
-  const navigation = useNavigation<ProfileStackNavigationProps>();
+  const navigation = useNavigation<navigationType>();
   const [galleryCategory, setGalleryCategory] =
     useState<galleryTypes>('myBusking');
 
@@ -184,27 +196,29 @@ const MainProfileScreen = () => {
   //   </View>
   // );
 
-  const dummyColor = [
-    '#91a3dd',
-    '#0f0e2b',
-    '#2a1e47',
-    '#3ba0e88a',
-    '#2c1b5bff',
-  ];
+  const dummyColor = ['#91a3dd'];
 
   const renderItem = ({item}: {item: any}) => {
+    const pheedId = item?.pheedId;
+    const pressHandler = () => {
+      navigation.navigate(BottomTabScreens.Home, {
+        screen: PheedStackScreens.DetailPheed,
+        params: {pheedId},
+      });
+    };
+
     if (item.pheedImg.length > 0) {
       return (
-        <Pressable>
+        <Pressable onPress={pressHandler}>
           <Image source={{uri: item.pheedImg[0].path}} style={styles.image} />
         </Pressable>
       );
     } else {
       const dummyImageStyles = {
-        backgroundColor: dummyColor[Math.floor(Math.random() * 5)],
+        backgroundColor: dummyColor[0],
       };
       return (
-        <Pressable>
+        <Pressable onPress={pressHandler}>
           <View style={[styles.image, dummyImageStyles]} />
         </Pressable>
       );
