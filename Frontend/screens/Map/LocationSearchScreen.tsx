@@ -69,7 +69,8 @@ const LocationSearchScreen = ({navigation}: Props) => {
   };
 
   const pressHandler = () => {
-    navigation.navigate('CreatePheed');
+    navigation.goBack();
+    // navigation.navigate('CreatePheed');
   };
 
   return (

@@ -121,7 +121,7 @@ const UpdatePheedScreen = ({route}: Props) => {
             </View>
             <View style={styles.dateplace}>
               <UpDateTime pheedDate={date} SetDate={SetDate} />
-              <Location />
+              <Location pheedMapLocation={data.location} />
             </View>
             <Tag PheedTags={tags} SetPheedTags={SetTags} />
             <View style={styles.registerBtn}>
