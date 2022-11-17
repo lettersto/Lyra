@@ -461,7 +461,7 @@ const DetailPheedScreen = ({route}: Props) => {
                             />
                             <View style={styles.commentTextContainer}>
                               <Text style={styles.boldtext}>
-                                {value.userId}
+                                {value.userNickname}
                               </Text>
                               <Text style={styles.text}>{value.content}</Text>
                             </View>
