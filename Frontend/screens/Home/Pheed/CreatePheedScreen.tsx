@@ -4,10 +4,10 @@ import {
   View,
   StyleSheet,
   Dimensions,
-  Alert,
   Pressable,
   Text,
   TextInput,
+  Modal,
 } from 'react-native';
 import Input from '../../../components/Utils/Input';
 import DateTime from '../../../components/Pheed/DateTime';
@@ -18,8 +18,7 @@ import Tag from '../../../components/Pheed/Tag';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Button from '../../../components/Utils/Button';
 import Location from '../../../components/Pheed/Location';
-import axios from '../../../api/axios';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {PheedMapContext} from '../../../store/pheedMap-context';
 import {AuthContext} from '../../../store/auth-context';
 import {
@@ -37,7 +36,6 @@ const CreatePheedScreen = () => {
   const {userId} = useContext(AuthContext);
 
   const {
-    pheedMapLocationInfo,
     pheedMapLocationAddInfo,
     pheedMapRegionCode,
     pheedMapLatitude,
@@ -54,6 +52,8 @@ const CreatePheedScreen = () => {
   const [enteredContent, setEnteredContent] = useState<string>('');
   const [date, SetDate] = useState<Date>(new Date());
   const [tags, SetTags] = useState<string[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [titleMsg, setTitleMessage] = useState<string>('');
 
   // const {
   //   // duration,
@@ -88,6 +88,7 @@ const CreatePheedScreen = () => {
       setPheedMapRegionCode(null);
       setPheedMapLocationInfo('');
       setPheedMapLocationAddInfo('');
+      queryClient.invalidateQueries('PheedContent');
       navigation.navigate(PheedStackScreens.MainPheed);
       // console.log('uploadsuccess');
     },
@@ -114,20 +115,31 @@ const CreatePheedScreen = () => {
     //     console.log(error);
     //   });
     const _title = enteredTitle.trim();
-
-    if (!_title) {
-      Alert.alert('피드 제목을 작성해주세요.');
-      return;
-    }
+    const _content = enteredContent.trim();
 
     if (!pheedMapRegionCode) {
-      Alert.alert('위치를 설정해주세요.');
-      return;
+      setIsModalVisible(true);
+      setTitleMessage('위치를 설정해주세요.');
     }
 
-    if (!date) {
-      Alert.alert('날짜를 설정해주세요.');
-      return;
+    if (date <= new Date()) {
+      setIsModalVisible(true);
+      setTitleMessage('날짜를 설정해주세요.');
+    }
+
+    if (!_content) {
+      setIsModalVisible(true);
+      setTitleMessage('피드 내용을 작성해주세요.');
+    }
+
+    if (!_title) {
+      setIsModalVisible(true);
+      setTitleMessage('피드 제목을 작성해주세요.');
+    }
+
+    if (!category) {
+      setIsModalVisible(true);
+      setTitleMessage('카테고리를 설정해주세요.');
     }
 
     // const pathParts = imageUri.split('/');
@@ -199,6 +211,27 @@ const CreatePheedScreen = () => {
   return (
     <>
       <KeyboardAwareScrollView>
+        <Modal
+          style={styles.modal}
+          transparent={true}
+          animationType="fade"
+          visible={isModalVisible}>
+          <View style={styles.modalBackground}>
+            <View style={styles.modalContainer}>
+              <Text style={styles.titleWarning}>{titleMsg}</Text>
+              <View style={styles.buttonContainer}>
+                <Button
+                  title="확인"
+                  btnSize="medium"
+                  textSize="medium"
+                  isGradient={true}
+                  isOutlined={false}
+                  onPress={() => setIsModalVisible(false)}
+                />
+              </View>
+            </View>
+          </View>
+        </Modal>
         <SafeAreaView>
           <View style={styles.container}>
             <Gallery SetPhotos={SetPhotos} />
@@ -284,6 +317,38 @@ const styles = StyleSheet.create({
   },
   pheedcategory: {
     marginLeft: '4%',
+  },
+  modal: {
+    flex: 1,
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#202020ee',
+  },
+  modalContainer: {
+    backgroundColor: Colors.black500,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '80%',
+    height: '20%',
+    borderColor: Colors.purple300,
+    borderWidth: 1,
+  },
+  titleWarning: {
+    marginVertical: 5,
+    fontFamily: 'NanumSquareRoundR',
+    fontSize: 18,
+    color: 'white',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    position: 'relative',
+    marginTop: 15,
   },
 });
 

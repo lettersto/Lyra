@@ -1,5 +1,4 @@
 import {AxiosRequestConfig} from 'axios';
-import {number} from 'prop-types';
 import {Image} from 'react-native-image-crop-picker';
 import {ImageParamList} from '../constants/types';
 import axios from './axios';
@@ -45,10 +44,15 @@ export const getPheedbyUser = async (user_id: string) => {
   return response.data;
 };
 
-export const getPheeds = async () => {
+export const getPheeds = async (pageParam = 0, options = {regionCode: ''}) => {
   const response = await axios({
-    url: '/pheed/all',
+    url: '/pheed/region',
     method: 'GET',
+    params: {
+      page: pageParam,
+      // code: options.regionCode,
+      code: '11111111',
+    },
   });
   return response.data;
 };
@@ -86,6 +90,51 @@ export const createComments = async ({
     data: {content},
   });
   return response;
+};
+
+export const pushWish = async ({
+  userId,
+  pheedId,
+}: {
+  userId: number | null;
+  pheedId: number | null;
+}) => {
+  const response = await axios({
+    url: baseURL + `/wish/${userId}/${pheedId}`,
+    method: 'POST',
+    params: {user_id: userId, pheed_id: pheedId},
+  });
+  return response;
+};
+
+export const getWishbyPheed = async (pheed_id: number) => {
+  const response = await axios({
+    url: `/wish/userlist/${pheed_id}`,
+    method: 'GET',
+    params: {pheed_id},
+  });
+  return response.data;
+};
+
+export const getWishbyUser = async (user_id: number | null) => {
+  const response = await axios({
+    url: `/wish/pheedlist/${user_id}`,
+    method: 'GET',
+    params: {user_id},
+  });
+  return response.data;
+};
+
+export const getWishbyUserPheed = async (
+  pheed_id: number,
+  user_id: number | null,
+) => {
+  const response = await axios({
+    url: `/wish/${user_id}/${pheed_id}`,
+    method: 'GET',
+    params: {pheed_id, user_id},
+  });
+  return response.data;
 };
 
 export const deletePheed = async ({pheedId}: {pheedId: number | null}) => {
@@ -135,7 +184,7 @@ export const uploadPheed = async ({
   pheedTag: string[];
   startTime: Date;
   location: string;
-  regionCode: string;
+  regionCode: string | null;
 }) => {
   const image = new FormData();
   images?.map(img => image.append('images', img));

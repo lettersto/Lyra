@@ -47,6 +47,8 @@ import {
   deletePheed,
   getComments,
   getPheedDetail,
+  getWishbyUserPheed,
+  pushWish,
 } from '../../../api/pheed';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DetailPheed'>;
@@ -69,16 +71,13 @@ const DetailPheedScreen = ({route}: Props) => {
     navigate.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
   }, [navigate]);
 
-  // const like = route.params?.like;
   // const isLive = data.isLive;
-  // const [comments, SetComments] = useState<any[]>([]);
 
   const goChat = () => {
     navigation.navigate('Chat');
   };
 
   const [registerComment, setRegisterComment] = useState('');
-  const [isLike, setIsLike] = useState(false);
   const [isAlarm, setIsAlarm] = useState(false);
 
   const goHome = () => {
@@ -163,11 +162,27 @@ const DetailPheedScreen = ({route}: Props) => {
     },
   });
 
+  const {
+    data: wishUserPheedData,
+    isLoading: wishUserPheedIsLoading,
+    // isError,
+  } = useQuery('wishUserPheed', () => getWishbyUserPheed(pheedId, userId));
+
+  const {
+    mutate: pushWishMutate,
+    // isLoading: pushWishIsLoading,
+    // isError: pushWishIsError,
+  } = useMutation(pushWish, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('wishUserPheed');
+    },
+  });
+
   if (pheedDetailError) {
     console.log(pheedDetailError);
   }
 
-  if (pheedDetailIsLoading || commentsIsLoading) {
+  if (pheedDetailIsLoading || commentsIsLoading || wishUserPheedIsLoading) {
     return (
       <>
         <Text style={styles.boldtext}> 로딩중 </Text>
@@ -200,7 +215,6 @@ const DetailPheedScreen = ({route}: Props) => {
               <View style={styles.profileContainer}>
                 <View style={styles.profileDatetime}>
                   <View style={styles.profileImg}>
-                    {/* <CircleProfile size="small" isGradient={false} /> */}
                     <ProfilePhoto
                       size="small"
                       isGradient={false}
@@ -315,27 +329,11 @@ const DetailPheedScreen = ({route}: Props) => {
                 <GradientLine />
               </View>
               <View style={styles.contentContainer}>
-                {/* <ScrollView horizontal>
-                  {pheedData.pheedImg &&
-                    pheedData.pheedImg.map(imgs => { */}
                 {pheedData.pheedImg.length === 0 ? (
                   <></>
                 ) : (
                   <ImageCarousel images={pheedData.pheedImg} />
                 )}
-                {/* <ScrollView horizontal>
-                  {imgUrl &&
-                    imgUrl.map(imgs => {
-                      return (
-                        <Image
-                          style={{width: 100, height: 100}}
-                          source={{uri: imgs.path}}
-                          // style={styles.text}
-                          key={imgs.id}
-                        />
-                      );
-                    })}
-                </ScrollView> */}
               </View>
               <View style={styles.titleContainer}>
                 <Text style={styles.titleText}>{pheedData.title}</Text>
@@ -500,8 +498,14 @@ const DetailPheedScreen = ({route}: Props) => {
 
       <View style={styles.textContainerBottom}>
         <View style={styles.goPheed}>
-          {isLike ? (
-            <Pressable onPress={() => setIsLike(false)}>
+          {wishUserPheedData.data ? (
+            <Pressable
+              onPress={() =>
+                pushWishMutate({
+                  pheedId: pheedId,
+                  userId: userId,
+                })
+              }>
               <Icon3
                 name="star"
                 color={Colors.gray300}
@@ -510,7 +514,13 @@ const DetailPheedScreen = ({route}: Props) => {
               />
             </Pressable>
           ) : (
-            <Pressable onPress={() => setIsLike(true)}>
+            <Pressable
+              onPress={() =>
+                pushWishMutate({
+                  pheedId: pheedId,
+                  userId: userId,
+                })
+              }>
               <Icon3
                 name="staro"
                 color={Colors.gray300}
