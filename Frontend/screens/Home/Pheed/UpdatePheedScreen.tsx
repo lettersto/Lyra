@@ -1,5 +1,11 @@
 import React, {useState} from 'react';
-import {SafeAreaView, View, StyleSheet, Dimensions} from 'react-native';
+import {
+  SafeAreaView,
+  View,
+  StyleSheet,
+  Dimensions,
+  ActivityIndicator,
+} from 'react-native';
 import Input from '../../../components/Utils/Input';
 import UpDateTime from '../../../components/Pheed/UpdateDateTime';
 import Colors from '../../../constants/Colors';
@@ -12,29 +18,29 @@ import Location from '../../../components/Pheed/Location';
 import axios from '../../../api/axios';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {
-  PheedDetailParamList,
-  RootStackParamList,
-} from '../../../constants/types';
+import {RootStackParamList} from '../../../constants/types';
 import {useQuery} from 'react-query';
+import {getPheedDetail} from '../../../api/pheed';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DetailPheed'>;
 
 const UpdatePheedScreen = ({route}: Props) => {
   const navigation = useNavigation();
+  const pheedId = route.params.pheedId;
 
-  const getPheedDetail = async () => {
-    const res = await axios.get<PheedDetailParamList>(
-      `/pheed/${route.params.pheedId}`,
-    );
-    return res.data;
-  };
-
-  const result = useQuery('PheedDetail', getPheedDetail);
-  const {data, error} = result;
+  const {isLoading, data, error} = useQuery(['PheedDetail', pheedId], () =>
+    getPheedDetail(pheedId),
+  );
 
   if (error) {
     console.log(error);
+  }
+  if (isLoading) {
+    return (
+      <>
+        <ActivityIndicator size="large" color={Colors.purple300} />
+      </>
+    );
   }
 
   const [photos, SetPhotos] = useState<any[]>([]);
@@ -68,8 +74,6 @@ const UpdatePheedScreen = ({route}: Props) => {
         location: '하남산단로',
       })
       .then(function () {
-        // console.log(response);
-        // navigation.goBack();
         navigation.navigate('DetailPheed', {
           pheedId: route.params.pheedId,
         });
