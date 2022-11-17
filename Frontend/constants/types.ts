@@ -90,9 +90,9 @@ export type PheedStackScreenParams = {
   [PheedStackScreens.FirstTownSearch]: undefined;
 
   [PheedStackScreens.MainPheed]: undefined;
-  [PheedStackScreens.DetailPheed]: PheedDetailParamList;
+  [PheedStackScreens.DetailPheed]: {pheedId: number};
   [PheedStackScreens.CreatePheed]: undefined;
-  [PheedStackScreens.UpdatePheed]: PheedDetailParamList;
+  [PheedStackScreens.UpdatePheed]: {pheedId: number};
   [PheedStackScreens.SearchPheed]: undefined;
 
   [PheedStackScreens.TownModal]: undefined;
