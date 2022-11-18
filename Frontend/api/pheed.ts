@@ -1,3 +1,6 @@
+import {AxiosRequestConfig} from 'axios';
+import {Image} from 'react-native-image-crop-picker';
+import {ImageParamList} from '../constants/types';
 import axios from './axios';
 import {baseURL} from './axios';
 import EncryptedStorage from 'react-native-encrypted-storage';
@@ -223,12 +226,19 @@ export const uploadPheed = async ({
   );
   image.append('location', location);
 
-  const response = await fetch(baseURL + `/pheed/?user_id=${userId}`, {
-    method: 'POST',
-    body: image,
-    headers: {'Content-Type': 'multipart/form-data'},
-  });
-  return response;
+  const refreshToken = await EncryptedStorage.getItem('refreshToken');
+
+  if (refreshToken) {
+    const response = await fetch(baseURL + `/pheed/?user_id=${userId}`, {
+      method: 'POST',
+      body: image,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: refreshToken,
+      },
+    });
+    return response;
+  }
 
   // const config: AxiosRequestConfig = {
   //   url: baseURL + `/pheed/?user_id=${userId}`,
