@@ -14,6 +14,7 @@ import {
   PermissionsAndroid,
   Platform,
   Alert,
+  Image,
 } from 'react-native';
 import MapStyle from './MapStyle';
 import Colors from '../../constants/Colors';
@@ -171,13 +172,19 @@ const MainMapView = () => {
                     setPheedId(pheed.pheedId);
                     setIsModalVisible(true);
                   }}>
-                  <ProfilePhoto
-                    imageURI={pheed.userImage_url}
-                    grade="hot"
-                    size="medium"
-                    isGradient={true}
-                    profileUserId={pheed.userId}
-                  />
+                  <View>
+                    <ProfilePhoto
+                      imageURI={pheed.userImage_url}
+                      grade="hot"
+                      size="medium"
+                      isGradient={true}
+                      profileUserId={pheed.userId}
+                    />
+                    <Image
+                      style={styles.star}
+                      source={require('../../assets/image/fourstars.png')}
+                    />
+                  </View>
                 </Marker>
               </View>
             );
@@ -227,6 +234,9 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 50,
+  },
+  star: {
+    position: 'absolute',
   },
   backdrop: {
     flex: 1,
