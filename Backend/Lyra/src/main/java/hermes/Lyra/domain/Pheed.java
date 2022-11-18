@@ -47,8 +47,7 @@ public class Pheed {
     @ColumnDefault("0")
     private int state;
 
-//    @Column(nullable = false)
-//    @Column
+    @Column(nullable = false)
     private String regionCode;
 
     @OneToMany(mappedBy = "pheed",cascade = CascadeType.ALL)
@@ -57,6 +56,7 @@ public class Pheed {
 
 //    @Enumerated(EnumType.STRING)
     @Convert(converter = CategoryConverter.class)
+    @Column(nullable = false)
     private Category category;
 
     @OneToMany(mappedBy = "pheed",cascade = CascadeType.ALL)
