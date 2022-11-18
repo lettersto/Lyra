@@ -199,7 +199,7 @@ const MainProfileScreen = () => {
   const dummyColor = ['#91a3dd'];
 
   const renderItem = ({item}: {item: any}) => {
-    const pheedId = item?.pheedId;
+    const pheedId = galleryCategory === 'myBusking' ? item?.pheedId : item?.id;
     const pressHandler = () => {
       navigation.navigate(BottomTabScreens.Home, {
         screen: PheedStackScreens.DetailPheed,
