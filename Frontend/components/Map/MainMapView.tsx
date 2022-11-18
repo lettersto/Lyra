@@ -1,13 +1,20 @@
 import React, {LegacyRef, useContext, useEffect, useRef, useState} from 'react';
 import MapView, {
   Camera,
-  Details,
   Marker,
   PROVIDER_GOOGLE,
   Region,
 } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
-import {Text, View, StyleSheet, Dimensions} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  Dimensions,
+  PermissionsAndroid,
+  Platform,
+  Alert,
+} from 'react-native';
 import MapStyle from './MapStyle';
 import Colors from '../../constants/Colors';
 import MapPheedModal from './MapPheedModal';
@@ -29,13 +36,54 @@ const MainMapView = () => {
     setMapLatitude,
     setMapLongitude,
     setPheeds,
+    setPheedsCnt,
   } = useContext(MapContext);
   const [location, setLocation] = useState<ILocation | undefined>(undefined);
-  const [zoom, setZoom] = useState(0);
-  const [pheedId, setPheedId] = useState(null);
+  // const [zoomLv, setZoomLv] = useState(18);
+  const [pheedId, setPheedId] = useState<number | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  // const [pheeds, setPheeds] = useState<any[]>([]);
 
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      const requestPermission = async () => {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          );
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            // Alert.alert('Lyra', '위치 정보를 허용했습니다.');
+            getPosition();
+          } else {
+            Alert.alert(
+              'Lyra',
+              '위치 정보를 허용하지 않으면 앱을 쓸 수 없어요. 그래도 괜찮겠어요?',
+            );
+          }
+        } catch (err) {
+          Alert.alert('다시 시도해주세요.');
+        }
+      };
+      requestPermission();
+    }
+  }, []);
+
+  const getPosition = () => {
+    Geolocation.getCurrentPosition(
+      pos => {
+        setLocation(pos.coords);
+        setMapLatitude(pos.coords.latitude);
+        setMapLongitude(pos.coords.longitude);
+      },
+      error => {
+        console.log(error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 36000,
+        maximumAge: 3600,
+      },
+    );
+  };
   useEffect(() => {
     Geolocation.getCurrentPosition(
       pos => {
@@ -48,24 +96,24 @@ const MainMapView = () => {
       },
       {
         enableHighAccuracy: true,
-        timeout: 3600,
+        timeout: 36000,
         maximumAge: 3600,
       },
     );
   }, [setMapLatitude, setMapLongitude]);
 
-  const getMapPheeds = async (zoomLv: number) => {
+  const getMapPheeds = async (testZoomLv: number) => {
     const res = await getMapPheedsApi({
       latitude: mapLatitude,
       longitude: mapLongitude,
-      zoom: zoomLv,
+      zoom: testZoomLv,
     });
-    // console.log('================');
-    // res.reduce((a, b, c, d) => {
-    //   console.log(a, b, c, d);
-    // }, []);
     setPheeds(res);
   };
+
+  useEffect(() => {
+    setPheedsCnt(pheeds.length);
+  }, [pheeds, setPheedsCnt]);
 
   if (!location) {
     return (
@@ -74,24 +122,27 @@ const MainMapView = () => {
       </View>
     );
   }
-  const onRegionChange = (region: Region, details: Details) => {
+  const onRegionChange = (region: Region) => {
+    setMapLatitude(region.latitude);
+    setMapLongitude(region.longitude);
     map.current?.getCamera().then((cam: Camera) => {
       if (cam.zoom) {
-        // console.log(`줌 : ${cam.zoom}`);
-        getMapPheeds(zoom);
+        // setZoomLv(Math.round(cam.zoom * 10) / 10);
+        const testZoomLv = Math.round(cam.zoom * 10) / 10;
+        getMapPheeds(testZoomLv);
       }
     });
   };
   return (
     <>
       <View style={{flex: 1, position: 'relative'}}>
-        {/* <Button title="Zoom" onPress={onZoomInPress} /> */}
         <MapView
           onMapReady={() => {
             map.current?.getCamera().then((cam: Camera) => {
               if (cam.zoom) {
-                setZoom(Math.round(cam.zoom));
-                getMapPheeds(zoom);
+                // setZoomLv(Math.round(cam.zoom * 10) / 10);
+                const testZoomLv = Math.round(cam.zoom * 10) / 10;
+                getMapPheeds(testZoomLv);
               }
             });
           }}
@@ -120,7 +171,6 @@ const MainMapView = () => {
                     setPheedId(pheed.pheedId);
                     setIsModalVisible(true);
                   }}>
-                  {/* <CircleProfile grade="hot" size="medium" isGradient={true} /> */}
                   <ProfilePhoto
                     imageURI={pheed.userImage_url}
                     grade="hot"
@@ -136,6 +186,7 @@ const MainMapView = () => {
         {pheedId && (
           <MapPheedModal
             pheedId={pheedId}
+            setPheedId={setPheedId}
             isModalVisible={isModalVisible}
             setIsModalVisible={setIsModalVisible}
           />

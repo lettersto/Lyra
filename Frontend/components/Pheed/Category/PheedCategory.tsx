@@ -34,7 +34,10 @@ const PheedCategory = ({
 }) => {
   return (
     <View style={[styles.buttons, CustomStyle]}>
-      <ScrollView horizontal style={scrollStyle}>
+      <ScrollView
+        horizontal
+        style={scrollStyle}
+        showsHorizontalScrollIndicator={false}>
         {Category === 'phead' ? (
           PHEED_CATEGORY.map(category => {
             return (
@@ -75,12 +78,13 @@ const PheedCategory = ({
 const styles = StyleSheet.create({
   buttons: {
     flexDirection: 'row',
-    width: '90%',
     textAlign: 'center',
-    marginTop: 10,
+    marginStart: 10,
+    marginEnd: 10,
+    marginVertical: 10,
   },
   button: {
-    margin: 5,
+    marginRight: 5,
     alignSelf: 'center',
   },
 });

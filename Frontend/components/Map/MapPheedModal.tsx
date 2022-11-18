@@ -3,23 +3,40 @@ import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import ReactNativeModal from 'react-native-modal';
 import Colors from '../../constants/Colors';
-import CircleProfile from '../Utils/CircleProfile';
 import Icon from 'react-native-vector-icons/Feather';
-import {useNavigation} from '@react-navigation/native';
+import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 import {getPheedDetail} from '../../api/pheed';
-import {PheedDetailParamList} from '../../constants/types';
+import {
+  PheedDetailParamList,
+  BottomTabNavigationProps,
+  BottomTabScreens,
+  MapStackNavigationProps,
+  ChatStackScreens,
+  PheedStackScreens,
+} from '../../constants/types';
 import ProfilePhoto from '../Utils/ProfilePhoto';
+
+type navigationProps = CompositeNavigationProp<
+  BottomTabNavigationProps,
+  MapStackNavigationProps
+>;
 
 interface Props {
   pheedId: number | null;
   isModalVisible: boolean;
+  setPheedId: Dispatch<SetStateAction<number | null>>;
   setIsModalVisible: Dispatch<SetStateAction<boolean>>;
 }
 
-const MapPheedModal = ({pheedId, isModalVisible, setIsModalVisible}: Props) => {
+const MapPheedModal = ({
+  pheedId,
+  setPheedId,
+  isModalVisible,
+  setIsModalVisible,
+}: Props) => {
   const gradientColors = [Colors.pink300, Colors.purple300];
-  const navigation = useNavigation();
+  const navigation = useNavigation<navigationProps>();
   const [pheed, setPheed] = useState<PheedDetailParamList>();
 
   useEffect(() => {
@@ -79,7 +96,14 @@ const MapPheedModal = ({pheedId, isModalVisible, setIsModalVisible}: Props) => {
                   </View>
                 </View>
                 <Pressable
-                  onPress={() => navigation.navigate('DetailPheed', pheed)}>
+                  onPress={() => {
+                    setPheedId(null);
+                    setIsModalVisible(false);
+                    navigation.navigate(BottomTabScreens.Home, {
+                      screen: PheedStackScreens.DetailPheed,
+                      params: {pheedId: pheed.pheedId},
+                    });
+                  }}>
                   <View style={styles.contentContainer}>
                     <Text style={styles.titleText}>{pheed!.title}</Text>
                     <Text style={styles.contentText}>{pheed!.content}</Text>
@@ -96,10 +120,13 @@ const MapPheedModal = ({pheedId, isModalVisible, setIsModalVisible}: Props) => {
                   </View>
                   <Pressable
                     onPress={() => {
-                      navigation.navigate('MainChat', {
-                        buskerId: pheed.userId,
-                        buskerNickname: pheed.userNickname,
-                        buskerImg: pheed.userImage_url,
+                      navigation.navigate(BottomTabScreens.Chat, {
+                        screen: ChatStackScreens.MainChat,
+                        params: {
+                          buskerId: pheed.userId,
+                          buskerNickname: pheed.userNickname,
+                          buskerImg: pheed.userImage_url,
+                        },
                       });
                     }}>
                     <Icon2
