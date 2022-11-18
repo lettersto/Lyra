@@ -384,46 +384,7 @@ public class PheedController {
 
         double z = 23 * Math.pow(2, zoom);
 
-        log.info(String.valueOf(z));
-
-
-//        if (zoom == 3) {
-//            z = 3072000;
-//        } else if (zoom == 4) {
-//            z = 1536000;
-//        } else if (zoom == 5) {
-//            z = 768000;
-//        } else if (zoom == 6) {
-//            z = 384000;
-//        } else if (zoom == 7) {
-//            z = 192000;
-//        } else if (zoom == 8) {
-//            z = 96000;
-//        } else if (zoom == 9) {
-//            z = 48000;
-//        } else if (zoom == 10) {
-//            z = 24000;
-//        } else if (zoom == 11) {
-//            z = 12000;
-//        } else if (zoom == 12) {
-//            z = 6000;
-//        } else if (zoom == 13) {
-//            z = 3000;
-//        } else if (zoom == 14) {
-//            z = 1500;
-//        } else if (zoom == 15) {
-//            z = 750;
-//        } else if (zoom == 16) {
-//            z = 375;
-//        } else if (zoom == 17) {
-//            z = 187;
-//        } else if (zoom == 18) {
-//            z = 94;
-//        } else if (zoom == 19) {
-//            z = 47;
-//        } else if (zoom == 20) {
-//            z = 23;
-//        }
+//        log.info(String.valueOf(z));
 
         List<Pheed> pheedList = pheedService.getPheedByMap(latitude, longitude, z);
 
