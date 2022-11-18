@@ -1,9 +1,7 @@
 import React, {useContext, useRef, useState} from 'react';
-import {Button, Dimensions, StyleSheet, Text, View} from 'react-native';
-import LiveCategory from '../../components/Map/LiveCategory';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import PheedCategory from '../../components/Pheed/Category/PheedCategory';
 import {Modalize} from 'react-native-modalize';
-import PheedContent from '../../components/Pheed/PheedContent';
 import MainMapView from '../../components/Map/MainMapView';
 import MapPheedContent from '../../components/Map/MapPheedContent';
 import Colors from '../../constants/Colors';
@@ -67,6 +65,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   pheedCategory: {
+    justifyContent: 'center',
     width: deviceWidth,
     paddingVertical: 5,
   },
