@@ -258,11 +258,17 @@ public class PheedServiceImpl implements PheedService{
             double newLon = p.getLongitude().doubleValue();
             double theta = Math.abs(lon - newLon);
 
+            double dLat = Math.toRadians(newLat - lat);
+            double dLon = Math.toRadians(newLon - lon);
+
             double dist = Math.sin(Math.toRadians(lat)) * Math.sin(Math.toRadians(newLat)) + Math.cos(Math.toRadians(lat)) * Math.cos(Math.toRadians(newLat)) * Math.cos(Math.toRadians(theta));
             dist = Math.acos(dist);
             dist = Math.toDegrees(dist);
             dist = dist*60*1.1515;
-            dist = dist*1.609344;
+            dist = dist*1609.344;
+
+            log.info(String.valueOf(dist));
+
 
             if (z >= dist) {
                 result.add(p);
