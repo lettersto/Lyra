@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react';
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {Alert, Dimensions, StyleSheet, Text, View} from 'react-native';
 import Config from 'react-native-config';
 import MapView, {Marker, PROVIDER_GOOGLE, Region} from 'react-native-maps';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -21,7 +21,8 @@ const deviceWidth = Dimensions.get('window').width;
 
 const FirstTownSearchScreen = () => {
   const navigation = useNavigation<PheedStackNavigationProps>();
-  const {userId, walletAddress} = useContext(AuthContext);
+  const {userId, walletAddress, setLatitude, setLongitude} =
+    useContext(AuthContext);
   const {
     userLocationInfo,
     userRegionCode,
@@ -66,6 +67,8 @@ const FirstTownSearchScreen = () => {
       if (response.status === 'OK') {
         setUserLatitude(location.latitude);
         setUserLongitude(location.longitude);
+        setLatitude(location.latitude);
+        setLongitude(location.longitude);
         setUserRegionCode(userRegionCode);
         setUserLocationInfo(userLocationInfo);
 
@@ -78,7 +81,7 @@ const FirstTownSearchScreen = () => {
           navigation.navigate(PheedStackScreens.MainPheed);
         }
       } else {
-        alert('다시 확인해주세요.');
+        Alert.alert('다시 확인해주세요.');
       }
     } catch (error) {
       console.log(error);
