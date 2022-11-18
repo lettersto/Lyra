@@ -8,7 +8,6 @@ import AlarmScreen from '../../screens/Others/AlarmScreen';
 import DetailPheedScreen from '../../screens/Home/Pheed/DetailPheedScreen';
 import ShortsDetailScreen from '../../screens/Home/Shorts/ShortsDetailScreen';
 import CreateShortsScreen from '../../screens/Home/Shorts/CreateShortsScreen';
-import PheedDetailTitle from './TopNavBar/PheedDetailTitle';
 import SearchPheedScreen from '../../screens/Home/Pheed/SearchPheedScreen';
 import UpdatePheedScreen from '../../screens/Home/Pheed/UpdatePheedScreen';
 import StoryLocationSerachScreen from '../../screens/Map/StoryLocationSearchScreen';
@@ -77,16 +76,7 @@ export const PheedStack = () => {
               }}
             />
           ) : null}
-          {!walletAddress ? (
-            <Stack.Screen
-              name={PheedStackScreens.WalletCreation}
-              component={WalletCreationScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-          ) : null}
-          {!latitude && !longitude ? (
+          {!latitude || !longitude ? (
             <>
               <Stack.Screen
                 name={PheedStackScreens.LocationPermission}
@@ -102,8 +92,17 @@ export const PheedStack = () => {
               />
             </>
           ) : null}
+          {!walletAddress ? (
+            <Stack.Screen
+              name={PheedStackScreens.WalletCreation}
+              component={WalletCreationScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+          ) : null}
         </Stack.Group>
-        {isLoggedIn ? (
+        {isLoggedIn && latitude && walletAddress ? (
           <Stack.Group>
             <Stack.Screen
               name={PheedStackScreens.MainPheed}
@@ -135,7 +134,6 @@ export const PheedStack = () => {
               name={PheedStackScreens.DetailPheed}
               component={DetailPheedScreen}
               options={{
-                // headerTitle: () => <PheedDetailTitle />,
                 headerBackVisible: false,
               }}
             />

@@ -1,5 +1,3 @@
-// /* eslint-disable react-native/no-inline-styles */
-
 /* eslint-disable react-native/no-inline-styles */
 import './global';
 import React, {useCallback, useContext, useEffect} from 'react';
@@ -10,13 +8,12 @@ import SplashScreen from 'react-native-splash-screen';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Config from 'react-native-config';
 import {io} from 'socket.io-client';
-import {QueryClient} from 'react-query';
 
 import {BuskerInfo, UserProfileType} from './constants/types';
 import {AuthContext} from './store/auth-context';
 import {MapContext} from './store/map-context';
 import {ChatContext} from './store/chat-context';
-import {getUserProfile} from './api/profile';
+import {getUserProfile, getUserWalletAddressAndCoin} from './api/profile';
 import NavBar from './components/Navigation/NavBar';
 import Colors from './constants/Colors';
 
@@ -32,6 +29,7 @@ const App = () => {
     setLongitude,
     setImageURL,
     setNickname,
+    setWalletAddress,
   } = useContext(AuthContext);
   const {setUserLocationInfo, setUserRegionCode} = useContext(MapContext);
 
@@ -61,6 +59,9 @@ const App = () => {
 
         await EncryptedStorage.setItem('refreshToken', userInfo.refresh_token);
         await EncryptedStorage.setItem('userId', `${userInfo.id}`);
+
+        const walletInfo = await getUserWalletAddressAndCoin(userInfo.id);
+        setWalletAddress(walletInfo?.address);
       } else {
         setIsLoggedIn(false);
       }
@@ -80,6 +81,7 @@ const App = () => {
     setUserId,
     setUserLocationInfo,
     setUserRegionCode,
+    setWalletAddress,
   ]);
 
   useEffect(() => {
