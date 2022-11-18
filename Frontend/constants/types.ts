@@ -270,6 +270,7 @@ export type PheedDetailParamList = {
   comment: Array<CommentParamList>;
   like: number | undefined;
   isLive: boolean | undefined;
+  wishList: {userId: number; userImage_url: string; userNickname: string}[];
 };
 
 export type TagDetailParamList = {

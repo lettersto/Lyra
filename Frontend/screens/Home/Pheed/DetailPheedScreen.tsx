@@ -9,6 +9,7 @@ import {
   Pressable,
   BackHandler,
   ActivityIndicator,
+  Modal,
 } from 'react-native';
 import {
   NativeStackNavigationProp,
@@ -55,6 +56,7 @@ const DetailPheedScreen = ({route}: Props) => {
   const {userId} = useContext(AuthContext);
   const pheedId = route.params.pheedId;
   const queryClient = useQueryClient();
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   useLayoutEffect(() => {
     navigate.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
@@ -67,7 +69,7 @@ const DetailPheedScreen = ({route}: Props) => {
   };
 
   const [registerComment, setRegisterComment] = useState('');
-  const [isAlarm, setIsAlarm] = useState(false);
+  // const [isAlarm, setIsAlarm] = useState(false);
 
   const goHome = () => {
     navigate.getParent()?.setOptions({
@@ -164,6 +166,7 @@ const DetailPheedScreen = ({route}: Props) => {
   } = useMutation(pushWish, {
     onSuccess: () => {
       queryClient.invalidateQueries('wishUserPheed');
+      queryClient.invalidateQueries('PheedDetail');
     },
   });
 
@@ -173,24 +176,57 @@ const DetailPheedScreen = ({route}: Props) => {
 
   if (pheedDetailIsLoading || commentsIsLoading || wishUserPheedIsLoading) {
     return (
-      <>
-        <Text style={styles.boldtext}> 로딩중 </Text>
+      <View style={styles.detailpheed}>
         <ActivityIndicator size="large" color={Colors.purple300} />
-      </>
+      </View>
     );
   }
   if (!pheedData) {
     return (
-      <>
-        <Text style={styles.boldtext}> 로딩중 </Text>
+      <View style={styles.detailpheed}>
         <ActivityIndicator size="large" color={Colors.purple300} />
-      </>
+      </View>
     );
   }
 
   return (
     <GestureRecognizer onSwipeRight={goHome} style={styles.container}>
       <ScrollView style={styles.detailpheed}>
+        <Modal
+          style={styles.modal}
+          transparent={true}
+          animationType="fade"
+          visible={isModalVisible}>
+          <View style={styles.modalBackground}>
+            <View style={styles.modalContainer}>
+              <Text style={styles.titleWarning}>삭제하시겠습니까?</Text>
+              <View style={styles.buttonContainer}>
+                <Button
+                  title="취소"
+                  btnSize="medium"
+                  textSize="medium"
+                  isGradient={true}
+                  isOutlined={true}
+                  onPress={() => (
+                    setIsModalVisible(false), SetShowTooltip(false)
+                  )}
+                />
+                <Button
+                  title="삭제"
+                  btnSize="medium"
+                  textSize="medium"
+                  isGradient={true}
+                  isOutlined={false}
+                  onPress={() =>
+                    deletePheedMutate({
+                      pheedId: pheedId,
+                    })
+                  }
+                />
+              </View>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.background}>
           <LinearGradient
             start={{x: 0, y: 0}}
@@ -211,7 +247,7 @@ const DetailPheedScreen = ({route}: Props) => {
                       profileUserId={pheedData.userId}
                     />
                   </View>
-                  <View>
+                  <View style={styles.userContainer}>
                     <Text style={styles.boldtext}>
                       {pheedData.userNickname}
                     </Text>
@@ -278,12 +314,7 @@ const DetailPheedScreen = ({route}: Props) => {
                               />
                             </View>
                           </Pressable>
-                          <Pressable
-                            onPress={() =>
-                              deletePheedMutate({
-                                pheedId: pheedId,
-                              })
-                            }>
+                          <Pressable onPress={() => setIsModalVisible(true)}>
                             <View style={styles.tooltipIcon}>
                               <Text style={styles.tooltipText}>삭제</Text>
                               <Icon4
@@ -327,6 +358,40 @@ const DetailPheedScreen = ({route}: Props) => {
               <GradientLine />
               <View style={styles.titleContainer}>
                 <Text style={styles.titleText}>{pheedData.title}</Text>
+                <View style={styles.likeContainer}>
+                  {wishUserPheedData.data ? (
+                    <Pressable
+                      onPress={() =>
+                        pushWishMutate({
+                          pheedId: pheedId,
+                          userId: userId,
+                        })
+                      }>
+                      <Icon3
+                        name="star"
+                        color={Colors.gray300}
+                        size={25}
+                        style={styles.star}
+                      />
+                    </Pressable>
+                  ) : (
+                    <Pressable
+                      onPress={() =>
+                        pushWishMutate({
+                          pheedId: pheedId,
+                          userId: userId,
+                        })
+                      }>
+                      <Icon3
+                        name="staro"
+                        color={Colors.gray300}
+                        size={25}
+                        style={styles.star}
+                      />
+                    </Pressable>
+                  )}
+                  <Text style={styles.text}>{pheedData.wishList.length}</Text>
+                </View>
               </View>
               <View style={styles.contentText}>
                 <MoreInfo content={pheedData.content} />
@@ -515,7 +580,7 @@ const DetailPheedScreen = ({route}: Props) => {
           )}
 
           <View style={styles.bottomBtnContainer}>
-            <View style={styles.alarmBtn}>
+            {/* <View style={styles.alarmBtn}>
               {isAlarm ? (
                 <Button
                   title="⏰ 알림 받기"
@@ -535,7 +600,7 @@ const DetailPheedScreen = ({route}: Props) => {
                   onPress={() => setIsAlarm(true)}
                 />
               )}
-            </View>
+            </View> */}
             {pheedData.isLive ? (
               <Button
                 title="채팅하기"
@@ -566,6 +631,8 @@ const DetailPheedScreen = ({route}: Props) => {
 const styles = StyleSheet.create({
   detailpheed: {
     backgroundColor: Colors.black500,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
   },
   name: {
     color: Colors.gray300,
@@ -578,12 +645,18 @@ const styles = StyleSheet.create({
   text: {
     color: Colors.gray300,
     fontFamily: 'NanumSquareRoundR',
+    fontSize: 14,
   },
   titleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginVertical: 5,
+    marginRight: 10,
+  },
+  likeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   titleText: {
     color: Colors.gray300,
@@ -597,11 +670,13 @@ const styles = StyleSheet.create({
     fontFamily: 'NanumSquareRoundR',
     marginTop: 5,
     marginBottom: 10,
+    fontSize: 14,
   },
   boldtext: {
     color: Colors.gray300,
     fontFamily: 'NanumSquareRoundR',
     fontWeight: 'bold',
+    fontSize: 14,
   },
   gradientContainer: {
     width: Dimensions.get('window').width * 0.95,
@@ -654,6 +729,9 @@ const styles = StyleSheet.create({
     marginTop: 30,
     paddingVertical: 5,
   },
+  userContainer: {
+    marginLeft: 5,
+  },
   dateContainer: {
     flexDirection: 'row',
     marginBottom: 5,
@@ -664,6 +742,7 @@ const styles = StyleSheet.create({
   },
   star: {
     marginLeft: 15,
+    marginRight: 5,
   },
   clock: {
     marginRight: 5,
@@ -786,6 +865,39 @@ const styles = StyleSheet.create({
     color: Colors.gray300,
     marginRight: 3,
     fontFamily: 'NanumSquareRoundR',
+  },
+  modal: {
+    flex: 1,
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#202020ee',
+  },
+  modalContainer: {
+    backgroundColor: Colors.black500,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '80%',
+    height: '20%',
+    borderColor: Colors.purple300,
+    borderWidth: 1,
+  },
+  titleWarning: {
+    marginVertical: 5,
+    fontFamily: 'NanumSquareRoundR',
+    fontSize: 18,
+    color: 'white',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    width: '50%',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    position: 'relative',
+    marginTop: 15,
   },
 });
 

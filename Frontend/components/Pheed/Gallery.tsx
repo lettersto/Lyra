@@ -15,8 +15,14 @@ export interface Photo {
   size: number;
   width: number;
 }
-const Gallery = ({SetPhotos}: {SetPhotos: (photos: Image[]) => void}) => {
-  const [images, SetImages] = useState<any[]>([]);
+const Gallery = ({
+  photos,
+  SetPhotos,
+}: {
+  SetPhotos: (photos: Image[]) => void;
+  photos: any[];
+}) => {
+  const [images, SetImages] = useState<any[] | undefined>(photos);
   const openPicker = async () => {
     try {
       const response = await ImagePicker.openPicker({
