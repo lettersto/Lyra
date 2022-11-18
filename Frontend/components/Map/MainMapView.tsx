@@ -14,6 +14,7 @@ import MapPheedModal from './MapPheedModal';
 import {getMapPheeds as getMapPheedsApi} from '../../api/pheed';
 import ProfilePhoto from '../Utils/ProfilePhoto';
 import {MapContext} from '../../store/map-context';
+import {type} from 'os';
 
 interface ILocation {
   latitude: number;
@@ -32,7 +33,7 @@ const MainMapView = () => {
     setPheedsCnt,
   } = useContext(MapContext);
   const [location, setLocation] = useState<ILocation | undefined>(undefined);
-  const [zoom, setZoom] = useState(0);
+  const [zoomLv, setZoomLv] = useState(18);
   const [pheedId, setPheedId] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   // const [pheeds, setPheeds] = useState<any[]>([]);
@@ -55,21 +56,25 @@ const MainMapView = () => {
     );
   }, [setMapLatitude, setMapLongitude]);
 
-  const getMapPheeds = async (zoomLv: number) => {
+  const getMapPheeds = async (testZoomLv: number) => {
     const res = await getMapPheedsApi({
       latitude: mapLatitude,
       longitude: mapLongitude,
-      zoom: zoomLv,
+      zoom: testZoomLv,
     });
+    console.log(testZoomLv, zoomLv, mapLatitude, mapLongitude);
     // console.log('================');
     // res.reduce((a, b, c, d) => {
     //   console.log(a, b, c, d);
     // }, []);
     setPheeds(res);
-    setPheedsCnt(pheeds.length);
-    console.log(pheeds.length);
+    // setPheedsCnt(pheeds.length);
     console.log(res);
   };
+
+  useEffect(() => {
+    setPheedsCnt(pheeds.length);
+  }, [pheeds, setPheedsCnt]);
 
   if (!location) {
     return (
@@ -78,11 +83,19 @@ const MainMapView = () => {
       </View>
     );
   }
-  const onRegionChange = (region: Region, details: Details) => {
+  const onRegionChange = (region: Region) => {
+    setMapLatitude(region.latitude);
+    setMapLongitude(region.longitude);
+    console.log(region);
     map.current?.getCamera().then((cam: Camera) => {
       if (cam.zoom) {
-        // console.log(`줌 : ${cam.zoom}`);
-        getMapPheeds(zoom);
+        setZoomLv(Math.round(cam.zoom * 10) / 10);
+        // setZoomLv(Math.round(cam.zoom));
+        const testZoomLv = Math.round(cam.zoom * 10) / 10;
+        // setZoomLv(cam.zoom);
+        // console.log(`줌 : ${zoomLv}`);
+        getMapPheeds(testZoomLv);
+        console.log(testZoomLv);
       }
     });
   };
@@ -94,8 +107,11 @@ const MainMapView = () => {
           onMapReady={() => {
             map.current?.getCamera().then((cam: Camera) => {
               if (cam.zoom) {
-                setZoom(Math.round(cam.zoom));
-                getMapPheeds(zoom);
+                setZoomLv(Math.round(cam.zoom * 10) / 10);
+                // setZoomLv(Math.round(cam.zoom));
+                const testZoomLv = Math.round(cam.zoom * 10) / 10;
+                // setZoomLv(cam.zoom);
+                getMapPheeds(testZoomLv);
               }
             });
           }}
