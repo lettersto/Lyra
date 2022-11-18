@@ -32,4 +32,6 @@ public class PheedDto {
     private Timestamp time;
 
     private Long userId;
+
+    private String regionCode;
 }
