@@ -68,17 +68,7 @@ const MainProfileScreen = () => {
     data: profileData,
     isLoading: profileIsLoading,
     // isError: profileIsError,
-  } = useQuery(
-    ['userProfile', userId],
-    () => getUserProfile(userId as number),
-    {
-      onSuccess: () => {
-        if (isMyProfile && userId) {
-          balanceRefetch();
-        }
-      },
-    },
-  );
+  } = useQuery(['userProfile', userId], () => getUserProfile(userId as number));
 
   const nickname = profileData?.nickname;
 
@@ -91,21 +81,25 @@ const MainProfileScreen = () => {
   const {
     data: balanceData, // string coin
     isLoading: balanceIsLoading,
-    refetch: balanceRefetch,
+    // refetch: balanceRefetch,
     // isError: balanceIsError,
   } = useQuery('walletBalance', () => getTotalBalanceFromWeb3(walletAddress!), {
-    enabled: false,
+    enabled: !!walletAddress,
   });
 
-  const {isLoading: walletIsLoading} = useQuery(
+  const {
+    isLoading: walletIsLoading,
+    // data: walletInfoData,
+    // isError: walletIsError,
+  } = useQuery(
     'walletInfo',
     () => getUserWalletAddressAndCoin(userId as number),
     {
       onSuccess: data => {
         setWalletId(data.walletId);
         setWalletAddress(data.address);
-        balanceRefetch();
       },
+      enabled: !!userId,
     },
   );
 
@@ -199,7 +193,7 @@ const MainProfileScreen = () => {
   const dummyColor = ['#91a3dd'];
 
   const renderItem = ({item}: {item: any}) => {
-    const pheedId = item?.pheedId;
+    const pheedId = galleryCategory === 'myBusking' ? item?.pheedId : item?.id;
     const pressHandler = () => {
       navigation.navigate(BottomTabScreens.Home, {
         screen: PheedStackScreens.DetailPheed,
@@ -210,7 +204,11 @@ const MainProfileScreen = () => {
     if (item.pheedImg.length > 0) {
       return (
         <Pressable onPress={pressHandler}>
-          <Image source={{uri: item.pheedImg[0].path}} style={styles.image} />
+          <Image
+            source={{uri: item.pheedImg[0].path}}
+            style={styles.image}
+            resizeMethod="resize"
+          />
         </Pressable>
       );
     } else {
