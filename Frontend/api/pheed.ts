@@ -57,6 +57,17 @@ export const getPheeds = async (pageParam = 0, options = {regionCode: ''}) => {
   return response.data;
 };
 
+export const getRank = async (regionCode: string | null) => {
+  const response = await axios({
+    url: '/pheed/banner',
+    method: 'GET',
+    params: {
+      code: regionCode,
+    },
+  });
+  return response.data;
+};
+
 export const getPheedDetail = async (pheedId: number | null) => {
   const response = await axios({
     url: `/pheed/${pheedId}`,
