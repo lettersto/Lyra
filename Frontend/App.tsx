@@ -10,6 +10,7 @@ import SplashScreen from 'react-native-splash-screen';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Config from 'react-native-config';
 import {io} from 'socket.io-client';
+import {QueryClient} from 'react-query';
 
 import {BuskerInfo, UserProfileType} from './constants/types';
 import {AuthContext} from './store/auth-context';
@@ -41,13 +42,11 @@ const App = () => {
     }, 2000);
   }, []);
 
-  // 2. 토큰이 있는지 체크
   const checkTokensInStorage = useCallback(async () => {
     try {
       const refreshToken = await EncryptedStorage.getItem('refreshToken');
       const _userId = await EncryptedStorage.getItem('userId');
-      // 3. refreshToken이 있다면 profile을 불러오는 것이 가능한지 확인
-      // => refreshToken이 유효한지 체크하는 것
+
       if (refreshToken && _userId) {
         const userInfo: UserProfileType = await getUserProfile(Number(_userId));
 
@@ -62,6 +61,8 @@ const App = () => {
 
         await EncryptedStorage.setItem('refreshToken', userInfo.refresh_token);
         await EncryptedStorage.setItem('userId', `${userInfo.id}`);
+      } else {
+        setIsLoggedIn(false);
       }
     } catch (error) {
       await EncryptedStorage.removeItem('refreshToken');

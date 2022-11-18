@@ -11,10 +11,12 @@ import {AuthContext} from '../../store/auth-context';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {sendUserLocation} from '../../api/profile';
 import {MapContext} from '../../store/map-context';
+import {useQueryClient} from 'react-query';
 
 const deviceWidth = Dimensions.get('window').width;
 
 const TownSearchScreen = ({navigation}: any) => {
+  const queryClient = useQueryClient();
   const {userId} = useContext(AuthContext);
   const {
     userLocationInfo,
@@ -64,6 +66,9 @@ const TownSearchScreen = ({navigation}: any) => {
         setUserLocationInfo(userLocationInfo);
         await EncryptedStorage.setItem('latitude', `${location.latitude}`);
         await EncryptedStorage.setItem('longitude', `${location.longitude}`);
+
+        queryClient.invalidateQueries('videoInNeighborhood');
+        queryClient.invalidateQueries('PheedContent');
 
         navigation.goBack();
       } else {

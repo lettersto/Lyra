@@ -1,8 +1,6 @@
-import {AxiosRequestConfig} from 'axios';
-import {Image} from 'react-native-image-crop-picker';
-import {ImageParamList} from '../constants/types';
 import axios from './axios';
 import {baseURL} from './axios';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 export const searchPheeds = async (pageParam = 0, options = {keyword: ''}) => {
   const response = await axios({
@@ -317,12 +315,19 @@ export const uploadVideo = async ({
   video.append('regionCode', regionCode);
   video.append('title', title);
 
-  const response = await fetch(baseURL + `/shorts/?user_id=${userId}`, {
-    method: 'POST',
-    body: video,
-    headers: {'Content-Type': 'multipart/form-data'},
-  });
-  return response;
+  const refreshToken = await EncryptedStorage.getItem('refreshToken');
+
+  if (refreshToken) {
+    const response = await fetch(baseURL + `/shorts/?user_id=${userId}`, {
+      method: 'POST',
+      body: video,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: refreshToken,
+      },
+    });
+    return response;
+  }
 };
 
 export const deleteVideo = async (shortsId: number) => {
