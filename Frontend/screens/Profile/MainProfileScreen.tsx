@@ -210,7 +210,11 @@ const MainProfileScreen = () => {
     if (item.pheedImg.length > 0) {
       return (
         <Pressable onPress={pressHandler}>
-          <Image source={{uri: item.pheedImg[0].path}} style={styles.image} />
+          <Image
+            source={{uri: item.pheedImg[0].path}}
+            style={styles.image}
+            resizeMethod="resize"
+          />
         </Pressable>
       );
     } else {
