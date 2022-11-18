@@ -52,4 +52,6 @@ public interface PheedService {
     List<Pheed> getPheedByMap(BigDecimal latitude, BigDecimal longitude, double z);
 
     List<Pheed> getPheedByUser(Long userId, Pageable pageable);
+
+    List<Pheed> getPheedByBanner(String code);
 }
