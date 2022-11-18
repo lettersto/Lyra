@@ -27,13 +27,7 @@ import ProfilePhoto from '../../components/Utils/ProfilePhoto';
 import ImageCarousel from './ImageCarousel';
 import Button from '../Utils/Button';
 import {MapContext} from '../../store/map-context';
-import {
-  getPheeds,
-  getVideosInNeighborhood,
-  getWishbyUser,
-  getWishbyUserPheed,
-  pushWish,
-} from '../../api/pheed';
+import {getPheeds, getVideosInNeighborhood, pushWish} from '../../api/pheed';
 import {PheedDetailParamList} from '../../constants/types';
 import MainBanner from './MainBanner';
 import Story from './Story';
@@ -50,13 +44,6 @@ const PheedContent = ({width}: {width: number}) => {
     navigation.navigate('Chat');
   };
   const [currentCategory, SetCurrentCategory] = useState('all');
-  const activeLike = () => {
-    if (isLike === true) {
-      setIsLike(false);
-    } else {
-      setIsLike(true);
-    }
-  };
 
   const handleRefresh = () => {
     setIsRefreshing(true);
@@ -90,6 +77,7 @@ const PheedContent = ({width}: {width: number}) => {
       getNextPageParam: (lastPage, allPages) => {
         return lastPage.length ? allPages.length : undefined;
       },
+      enabled: !!userRegionCode,
     },
   );
 
@@ -111,8 +99,7 @@ const PheedContent = ({width}: {width: number}) => {
     if (
       pheedContentIsLoading ||
       pheedContentIsFetchingNextPage ||
-      storyIsLoading ||
-      wishUserIsLoading
+      storyIsLoading
     ) {
       return (
         <View>
@@ -122,12 +109,6 @@ const PheedContent = ({width}: {width: number}) => {
     }
     return null;
   };
-
-  const {
-    data: wishUserData,
-    isLoading: wishUserIsLoading,
-    // isError,
-  } = useQuery('wishUserPheed', () => getWishbyUser(userId));
 
   const {
     mutate: pushWishMutate,

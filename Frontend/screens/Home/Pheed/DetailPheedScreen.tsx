@@ -57,6 +57,9 @@ const DetailPheedScreen = ({route}: Props) => {
   const pheedId = route.params.pheedId;
   const queryClient = useQueryClient();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [isCommentModalVisible, setIsCommentModalVisible] =
+    useState<boolean>(false);
+  const [commentId, setCommentId] = useState<number | null>(null);
 
   useLayoutEffect(() => {
     navigate.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
@@ -227,6 +230,45 @@ const DetailPheedScreen = ({route}: Props) => {
             </View>
           </View>
         </Modal>
+
+        <Modal
+          style={styles.modal}
+          transparent={true}
+          animationType="fade"
+          visible={isCommentModalVisible}>
+          <View style={styles.modalBackground}>
+            <View style={styles.modalContainer}>
+              <Text style={styles.titleWarning}>삭제하시겠습니까?</Text>
+              <View style={styles.buttonContainer}>
+                <Button
+                  title="취소"
+                  btnSize="medium"
+                  textSize="medium"
+                  isGradient={true}
+                  isOutlined={true}
+                  onPress={() => (
+                    setIsCommentModalVisible(false), SetShowTooltip(false)
+                  )}
+                />
+                <Button
+                  title="삭제"
+                  btnSize="medium"
+                  textSize="medium"
+                  isGradient={true}
+                  isOutlined={false}
+                  onPress={() => (
+                    deleteCommentMutate({
+                      pheedId: pheedId,
+                      commentId: commentId,
+                    }),
+                    setIsCommentModalVisible(false)
+                  )}
+                />
+              </View>
+            </View>
+          </View>
+        </Modal>
+
         <View style={styles.background}>
           <LinearGradient
             start={{x: 0, y: 0}}
@@ -498,7 +540,7 @@ const DetailPheedScreen = ({route}: Props) => {
                       },
                       idx: number,
                     ) => {
-                      const commentId = value.id;
+                      const commentNum = value.id;
                       return (
                         <View style={styles.commentCt} key={idx}>
                           <View style={styles.commentContentCt}>
@@ -518,11 +560,15 @@ const DetailPheedScreen = ({route}: Props) => {
 
                           {userId === value.userId ? (
                             <Pressable
-                              onPress={() =>
-                                deleteCommentMutate({
-                                  pheedId: pheedId,
-                                  commentId: commentId,
-                                })
+                              onPress={
+                                () => (
+                                  setIsCommentModalVisible(true),
+                                  setCommentId(commentNum)
+                                )
+                                // deleteCommentMutate({
+                                //   pheedId: pheedId,
+                                //   commentId: commentId,
+                                // })
                               }>
                               <Icon4
                                 name="trash-outline"
