@@ -136,7 +136,7 @@ public class PheedServiceImpl implements PheedService{
 
 
         ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+//        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         Pheed pheed = mapper.map(pheedDto, Pheed.class);
 
         pheed.setId(pheedId);
