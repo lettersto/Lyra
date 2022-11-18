@@ -1,6 +1,4 @@
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import Config from 'react-native-config';
 import MapView, {Marker, PROVIDER_GOOGLE, Region} from 'react-native-maps';
@@ -10,14 +8,16 @@ import MapStyle from '../../components/Map/MapStyle';
 import Button from '../../components/Utils/Button';
 import Input from '../../components/Utils/Input';
 import Colors from '../../constants/Colors';
-import {RootStackParamList} from '../../constants/types';
 import {PheedMapContext} from '../../store/pheedMap-context';
-
-type Props = NativeStackScreenProps<RootStackParamList>;
+import {PheedStackNavigationProps} from '../../constants/types';
 
 const deviceWidth = Dimensions.get('window').width;
 
-const LocationSearchScreen = ({navigation}: Props) => {
+const LocationSearchScreen = ({
+  navigation,
+}: {
+  navigation: PheedStackNavigationProps;
+}) => {
   // const [location, setLocation] = useState<Region>({
   //   latitudeDelta: 0.005,
   //   longitudeDelta: 0.005,
@@ -70,7 +70,6 @@ const LocationSearchScreen = ({navigation}: Props) => {
 
   const pressHandler = () => {
     navigation.goBack();
-    // navigation.navigate('CreatePheed');
   };
 
   return (

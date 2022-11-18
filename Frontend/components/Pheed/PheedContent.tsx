@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon3 from 'react-native-vector-icons/AntDesign';
 import Icon4 from 'react-native-vector-icons/Ionicons';
-import {useNavigation} from '@react-navigation/native';
+import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
 import GradientLine from '../Utils/GradientLine';
 import MoreInfo from './MoreInfo';
 import {
@@ -28,21 +28,41 @@ import ImageCarousel from './ImageCarousel';
 import Button from '../Utils/Button';
 import {MapContext} from '../../store/map-context';
 import {getPheeds, getVideosInNeighborhood, pushWish} from '../../api/pheed';
-import {PheedDetailParamList} from '../../constants/types';
+import {
+  PheedDetailParamList,
+  BottomTabNavigationProps,
+  PheedStackNavigationProps,
+  BottomTabScreens,
+  ChatStackScreens,
+  PheedStackScreens,
+} from '../../constants/types';
 import MainBanner from './MainBanner';
 import Story from './Story';
 import PheedCategory from './Category/PheedCategory';
 import {AuthContext} from '../../store/auth-context';
 
+type navigationType = CompositeNavigationProp<
+  BottomTabNavigationProps,
+  PheedStackNavigationProps
+>;
+
 const PheedContent = ({width}: {width: number}) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const {userId} = useContext(AuthContext);
   const {userRegionCode} = useContext(MapContext);
-  const navigation = useNavigation();
+  const navigation = useNavigation<navigationType>();
   const queryClient = useQueryClient();
   const goChat = () => {
-    navigation.navigate('Chat');
+    navigation.navigate(BottomTabScreens.Chat, {
+      screen: ChatStackScreens.MainChat,
+      params: {
+        buskerId: 1,
+        buskerNickname: '12345',
+        buskerImg: '',
+      },
+    });
   };
+
   const [currentCategory, SetCurrentCategory] = useState('all');
 
   const handleRefresh = () => {
@@ -218,7 +238,9 @@ const PheedContent = ({width}: {width: number}) => {
             </View>
             <Pressable
               onPress={() =>
-                navigation.navigate('DetailPheed', {pheedId: item.pheedId})
+                navigation.navigate(PheedStackScreens.DetailPheed, {
+                  pheedId: item.pheedId,
+                })
               }>
               <View style={styles.contentContainer}>
                 <Text style={styles.boldtext}>{item.title}</Text>
@@ -358,7 +380,7 @@ const PheedContent = ({width}: {width: number}) => {
             </View>
             <Pressable
               onPress={() =>
-                navigation.navigate('DetailPheed', {
+                navigation.navigate(PheedStackScreens.DetailPheed, {
                   pheedId: item.pheedId,
                 })
               }>

@@ -1,5 +1,12 @@
-import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
-import {RootStackParamList, RootTabParamList} from '../../../constants/types';
+import React, {useContext, useLayoutEffect, useState} from 'react';
+import {
+  BottomTabNavigationProps,
+  PheedStackNavigationProps,
+  PheedStackRouteProps,
+  ChatStackScreens,
+  BottomTabScreens,
+  PheedStackScreens,
+} from '../../../constants/types';
 import {
   StyleSheet,
   View,
@@ -7,14 +14,9 @@ import {
   Dimensions,
   ScrollView,
   Pressable,
-  BackHandler,
   ActivityIndicator,
   Modal,
 } from 'react-native';
-import {
-  NativeStackNavigationProp,
-  NativeStackScreenProps,
-} from '@react-navigation/native-stack';
 import Colors from '../../../constants/Colors';
 import LinearGradient from 'react-native-linear-gradient';
 import ProfilePhoto from '../../../components/Utils/ProfilePhoto';
@@ -24,10 +26,13 @@ import Icon3 from 'react-native-vector-icons/AntDesign';
 import Icon4 from 'react-native-vector-icons/Ionicons';
 import GradientLine from '../../../components/Utils/GradientLine';
 import Button from '../../../components/Utils/Button';
-import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
+import {
+  CompositeNavigationProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import Input from '../../../components/Utils/Input';
 import MoreInfo from './MoreInfo';
-import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import Tooltip from 'react-native-walkthrough-tooltip';
 import {useMutation, useQuery, useQueryClient} from 'react-query';
@@ -42,19 +47,19 @@ import {
   getWishbyUserPheed,
   pushWish,
 } from '../../../api/pheed';
+import PheedDetailTitle from '../../../components/Navigation/TopNavBar/PheedDetailTitle';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'DetailPheed'>;
-
-type DetailPheedNavigationProps = CompositeNavigationProp<
-  BottomTabNavigationProp<RootTabParamList, 'Home'>,
-  NativeStackNavigationProp<RootStackParamList>
+type navigationProps = CompositeNavigationProp<
+  PheedStackNavigationProps,
+  BottomTabNavigationProps
 >;
 
-const DetailPheedScreen = ({route}: Props) => {
-  const navigate = useNavigation<DetailPheedNavigationProps>();
-  const navigation = useNavigation();
+const DetailPheedScreen = ({navigation: screenNavigation}: any) => {
+  // const navigate = useNavigation<DetailPheedNavigationProps>();
+  const navigation = useNavigation<navigationProps>();
+  const route = useRoute<PheedStackRouteProps>();
   const {userId} = useContext(AuthContext);
-  const pheedId = route.params.pheedId;
+  const {pheedId} = route.params as {pheedId: number};
   const queryClient = useQueryClient();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [isCommentModalVisible, setIsCommentModalVisible] =
@@ -62,20 +67,26 @@ const DetailPheedScreen = ({route}: Props) => {
   const [commentId, setCommentId] = useState<number | null>(null);
 
   useLayoutEffect(() => {
-    navigate.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
-  }, [navigate]);
+    navigation.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
+    navigation.setOptions({
+      headerTitle: () => <PheedDetailTitle navigation={screenNavigation} />,
+    });
+  }, [navigation, screenNavigation]);
 
   // const isLive = data.isLive;
 
   const goChat = () => {
-    navigation.navigate('Chat');
+    navigation.navigate(BottomTabScreens.Chat, {
+      screen: ChatStackScreens.MainChat,
+      params: {buskerId: 1, buskerNickname: '12345', buskerImg: ''}, // busker info 필요
+    });
   };
 
   const [registerComment, setRegisterComment] = useState('');
   // const [isAlarm, setIsAlarm] = useState(false);
 
   const goHome = () => {
-    navigate.getParent()?.setOptions({
+    navigation.getParent()?.setOptions({
       tabBarStyle: {
         backgroundColor: Colors.black500,
         height: 62,
@@ -84,31 +95,8 @@ const DetailPheedScreen = ({route}: Props) => {
         position: 'absolute',
       },
     });
-    navigation.navigate('MainPheed');
+    navigation.navigate(PheedStackScreens.MainPheed);
   };
-
-  useEffect(() => {
-    const backAction = () => {
-      navigate.getParent()?.setOptions({
-        tabBarStyle: {
-          backgroundColor: Colors.black500,
-          height: 62,
-          paddingBottom: 8,
-          paddingTop: 10,
-          position: 'absolute',
-        },
-      });
-      navigation.goBack();
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction,
-    );
-
-    return () => backHandler.remove();
-  }, [navigate, navigation]);
 
   const [showTooltip, SetShowTooltip] = useState(false);
 
@@ -125,7 +113,7 @@ const DetailPheedScreen = ({route}: Props) => {
   } = useMutation(deletePheed, {
     onSuccess: () => {
       queryClient.invalidateQueries('PheedContent');
-      navigation.navigate('MainPheed');
+      navigation.navigate(PheedStackScreens.MainPheed);
     },
   });
 
@@ -340,12 +328,15 @@ const DetailPheedScreen = ({route}: Props) => {
                       content={
                         <>
                           <Pressable
-                            onPress={() => (
-                              navigation.navigate('UpdatePheed', {
-                                pheedId: pheedId,
-                              }),
-                              SetShowTooltip(false)
-                            )}>
+                            onPress={() => {
+                              SetShowTooltip(false);
+                              navigation.navigate(
+                                PheedStackScreens.UpdatePheed,
+                                {
+                                  pheedId: pheedId,
+                                },
+                              );
+                            }}>
                             <View style={styles.tooltipIcon}>
                               <Text style={styles.tooltipText}>수정</Text>
                               <Icon2

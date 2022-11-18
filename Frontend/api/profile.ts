@@ -209,7 +209,6 @@ export const getTotalBalanceFromWeb3 = async (walletAddress: string) => {
   const sender = web3.eth.accounts.privateKeyToAccount(
     Config.ADMIN_PRIVATE_KEY,
   );
-
   web3.eth.accounts.wallet.add(sender);
   web3.eth.defaultAccount = sender.address;
 

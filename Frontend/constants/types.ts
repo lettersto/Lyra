@@ -54,8 +54,6 @@ export enum PheedStackScreens {
   CreateShorts = 'CreateShorts',
 
   Alarm = 'Alarm',
-
-  MainChat = 'MainChat',
 }
 
 export enum MapStackScreens {
@@ -63,9 +61,6 @@ export enum MapStackScreens {
 
   TownModal = 'TownModal',
   TownSearch = 'TownSearch',
-
-  DetailPheed = 'DetailPheed',
-  MainChat = 'MainChat',
 }
 
 export enum ChatStackScreens {
@@ -104,8 +99,6 @@ export type PheedStackScreenParams = {
   [PheedStackScreens.CreateShorts]: VideoParamList;
 
   [PheedStackScreens.Alarm]: undefined;
-
-  [PheedStackScreens.MainChat]: BuskerInfo;
 };
 
 export type MapStackScreenParams = {
@@ -113,9 +106,6 @@ export type MapStackScreenParams = {
 
   [MapStackScreens.TownModal]: undefined;
   [MapStackScreens.TownSearch]: undefined;
-
-  [MapStackScreens.DetailPheed]: PheedDetailParamList;
-  [MapStackScreens.MainChat]: BuskerInfo;
 };
 
 export type ChatStackScreenParams = {
@@ -210,46 +200,39 @@ export type BottomTabRouteProps<
 
 // =========================== Before
 
-export type RootStackParamList = {
-  Home: undefined;
-  Map: undefined;
-  Chat: undefined;
-  Profile: undefined;
-  CreatePheed: undefined;
-  EditProfile: {editProfileMode: EditProfileType};
-  Follower: {followerMode: FollowerType};
-  Wallet: undefined;
-  Alarm: undefined;
-  MainPheed: undefined;
-  MainMap: undefined;
-  LocationModal: undefined;
-  TownModal: undefined;
-  LocationSearch: undefined;
-  FirstTownSearch: undefined;
-  TownSearch: undefined;
-  ChatList: undefined;
-  MainChat: BuskerInfo;
-  MainProfile: undefined;
-  ProfileDetail: undefined;
-  DetailPheed: {pheedId: number};
-  UpdatePheed: {pheedId: number};
-  ShortsDetail: Array<ShortsDetailParamList>;
-  Splash: undefined;
-  Login: undefined;
-  Onboarding: undefined;
-  CreateShorts: VideoParamList;
-  LocationPermission: undefined;
-  WalletCreation: undefined;
-  SearchPheed: undefined;
-  StoryLocationSearch: undefined;
-};
-
-export type RootTabParamList = {
-  Home: undefined;
-  Map: undefined;
-  Chat: undefined;
-  Profile: undefined;
-};
+// export type RootStackParamList = {
+//   Home: undefined;
+//   Map: undefined;
+//   Chat: undefined;
+//   Profile: undefined;
+//   CreatePheed: undefined;
+//   EditProfile: {editProfileMode: EditProfileType};
+//   Follower: {followerMode: FollowerType};
+//   Wallet: undefined;
+//   Alarm: undefined;
+//   MainPheed: undefined;
+//   MainMap: undefined;
+//   LocationModal: undefined;
+//   TownModal: undefined;
+//   LocationSearch: undefined;
+//   FirstTownSearch: undefined;
+//   TownSearch: undefined;
+//   ChatList: undefined;
+//   MainChat: BuskerInfo;
+//   MainProfile: undefined;
+//   ProfileDetail: undefined;
+//   DetailPheed: {pheedId: number};
+//   UpdatePheed: {pheedId: number};
+//   ShortsDetail: Array<ShortsDetailParamList>;
+//   Splash: undefined;
+//   Login: undefined;
+//   Onboarding: undefined;
+//   CreateShorts: VideoParamList;
+//   LocationPermission: undefined;
+//   WalletCreation: undefined;
+//   SearchPheed: undefined;
+//   StoryLocationSearch: undefined;
+// };
 
 // Pheed
 export type PheedDetailParamList = {

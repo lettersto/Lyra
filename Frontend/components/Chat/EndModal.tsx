@@ -3,6 +3,7 @@ import React, {Dispatch, SetStateAction} from 'react';
 import {Dimensions, Modal, StyleSheet, Text, View} from 'react-native';
 import Colors from '../../constants/Colors';
 import Button from '../Utils/Button';
+import {ChatStackNavigationProps} from '../../constants/types';
 
 interface Props {
   totalCnt: number;
@@ -11,7 +12,7 @@ interface Props {
 }
 
 const EndModal = ({totalCnt, modalVisible, setModalVisible}: Props) => {
-  const navigate = useNavigation();
+  const navigate = useNavigation<ChatStackNavigationProps>();
   return (
     <View>
       <Modal

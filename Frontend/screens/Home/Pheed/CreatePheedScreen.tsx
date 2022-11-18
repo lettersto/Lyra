@@ -25,13 +25,14 @@ import {
   ImageParamList,
   PheedStackRouteProps,
   PheedStackScreens,
+  PheedStackNavigationProps,
 } from '../../../constants/types';
 import {uploadPheed} from '../../../api/pheed';
 import {useMutation, useQueryClient} from 'react-query';
 import {Image} from 'react-native-image-crop-picker';
 
 const CreatePheedScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<PheedStackNavigationProps>();
   const queryClient = useQueryClient();
   const {userId} = useContext(AuthContext);
 
