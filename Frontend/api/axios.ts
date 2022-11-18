@@ -14,7 +14,7 @@ export const refresh = async (failedRequest: any) => {
   try {
     const refreshToken = await EncryptedStorage.getItem('refreshToken');
     const response = await axios({
-      url: 'http://k7c105.p.ssafy.io:8080/token/refresh',
+      url: baseURL + '/token/refresh',
       method: 'POST',
       params: {
         'REFRESH-TOKEN': refreshToken,
@@ -27,16 +27,15 @@ export const refresh = async (failedRequest: any) => {
     return failedRequest;
   } catch (err) {
     if (__DEV__) {
-      console.error(err);
+      console.error('Token Refresh Error!', err);
     }
   }
 };
 
 instance.interceptors.request.use(
   async config => {
-    const refreshToken = await EncryptedStorage.getItem('refreshToken');
-
     if (!config.headers?.Authorization) {
+      const refreshToken = await EncryptedStorage.getItem('refreshToken');
       config.headers!.Authorization = refreshToken;
     }
     return config;
