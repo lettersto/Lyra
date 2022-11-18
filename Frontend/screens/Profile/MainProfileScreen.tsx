@@ -4,11 +4,13 @@ import {
   FlatList,
   View,
   Dimensions,
-  ActivityIndicator,
+  Image,
+  Pressable,
+  // ActivityIndicator,
 } from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
-import {useQuery} from 'react-query';
+import {useQuery, useInfiniteQuery} from 'react-query';
 
 import {
   ProfileStackNavigationProps,
@@ -20,6 +22,8 @@ import {
   getUserWalletAddressAndCoin,
   getUserProfile,
   getTotalBalanceFromWeb3,
+  getMyBuskingList,
+  getFavoritePheedList,
 } from '../../api/profile';
 import ProfileBody from '../../components/Profile/MyPage/ProfileBody';
 import WalletBody from '../../components/Profile/MyPage/WalletBody';
@@ -43,16 +47,21 @@ const MainProfileScreen = () => {
   const profileUserId = route.params?.param;
   const userId = profileUserId || MyUserId;
 
+  let isMyProfile = true;
+  if (profileUserId && profileUserId !== MyUserId) {
+    isMyProfile = false;
+  }
+
   const {
     data: profileData,
     isLoading: profileIsLoading,
-    // isError,
+    // isError: profileIsError,
   } = useQuery(
     ['userProfile', userId],
     () => getUserProfile(userId as number),
     {
       onSuccess: () => {
-        if (userId) {
+        if (isMyProfile && userId) {
           balanceRefetch();
         }
       },
@@ -71,14 +80,12 @@ const MainProfileScreen = () => {
     data: balanceData, // string coin
     isLoading: balanceIsLoading,
     refetch: balanceRefetch,
+    // isError: balanceIsError,
   } = useQuery('walletBalance', () => getTotalBalanceFromWeb3(walletAddress!), {
     enabled: false,
   });
 
-  const {
-    isLoading: walletIsLoading,
-    // isError,
-  } = useQuery(
+  const {isLoading: walletIsLoading} = useQuery(
     'walletInfo',
     () => getUserWalletAddressAndCoin(userId as number),
     {
@@ -90,12 +97,74 @@ const MainProfileScreen = () => {
     },
   );
 
-  let isMyProfile = true;
-  if (profileUserId && profileUserId !== MyUserId) {
-    isMyProfile = false;
+  const {
+    fetchNextPage: myBuskingListFetchNextPage,
+    hasNextPage: myBuskingListHasNextPage,
+    // isFetchingNextPage: myBuskingListIsFetchingNextPage,
+    data: myBuskingListData,
+    isLoading: myBuskingListIsLoading,
+    // isError: myBuskingIsError,
+  } = useInfiniteQuery(
+    ['myBusking', profileUserId],
+    ({pageParam = 0}) =>
+      getMyBuskingList(pageParam, {
+        user_id: (profileUserId as number) || MyUserId!,
+      }),
+    {
+      getNextPageParam: (lastPage: any, allPages) => {
+        return lastPage.length ? allPages.length : undefined;
+      },
+      enabled: galleryCategory === 'myBusking',
+    },
+  );
+
+  const {
+    fetchNextPage: favoritePheedFetchNextPage,
+    hasNextPage: favoritePheedHasNextPage,
+    // isFetchingNextPage: favoritePheedIsFetchingNextPage,
+    data: favoritePheedData,
+    isLoading: favoritePheedIsLoading,
+    // isError: favoritePheedIsError,
+  } = useInfiniteQuery(
+    ['favoriteBusking', profileUserId],
+    ({pageParam = 0}) =>
+      getFavoritePheedList(pageParam, {
+        userId: (profileUserId as number) || MyUserId!,
+      }),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        return lastPage.length ? allPages.length : undefined;
+      },
+      enabled: galleryCategory === 'favoriteBusking',
+    },
+  );
+
+  const requestMyBuskingNextPage = () => {
+    if (myBuskingListHasNextPage) {
+      myBuskingListFetchNextPage();
+    }
+  };
+
+  const requestFavoritePheedNextPage = () => {
+    if (favoritePheedHasNextPage) {
+      favoritePheedFetchNextPage();
+    }
+  };
+
+  let renderData = myBuskingListData;
+  let requestNextPage = requestMyBuskingNextPage;
+
+  if (galleryCategory === 'favoriteBusking') {
+    renderData = favoritePheedData;
+    requestNextPage = requestFavoritePheedNextPage;
   }
 
-  const isLoading = walletIsLoading || profileIsLoading || balanceIsLoading;
+  const isLoading =
+    walletIsLoading ||
+    profileIsLoading ||
+    balanceIsLoading ||
+    myBuskingListIsLoading ||
+    favoritePheedIsLoading;
 
   const header = (
     <>
@@ -109,11 +178,11 @@ const MainProfileScreen = () => {
     </>
   );
 
-  const loadingComponent = (
-    <View style={styles.spinnerContainer}>
-      <ActivityIndicator color={Colors.purple300} size="large" />
-    </View>
-  );
+  // const loadingComponent = (
+  //   <View style={styles.spinnerContainer}>
+  //     <ActivityIndicator color={Colors.purple300} size="large" />
+  //   </View>
+  // );
 
   const dummyColor = [
     '#91a3dd',
@@ -123,11 +192,23 @@ const MainProfileScreen = () => {
     '#2c1b5bff',
   ];
 
-  const renderItem = () => {
-    const dummyImageStyles = {
-      backgroundColor: dummyColor[Math.floor(Math.random() * 5)],
-    };
-    return <View style={[styles.image, dummyImageStyles]} />;
+  const renderItem = ({item}: {item: any}) => {
+    if (item.pheedImg.length > 0) {
+      return (
+        <Pressable>
+          <Image source={{uri: item.pheedImg[0].path}} style={styles.image} />
+        </Pressable>
+      );
+    } else {
+      const dummyImageStyles = {
+        backgroundColor: dummyColor[Math.floor(Math.random() * 5)],
+      };
+      return (
+        <Pressable>
+          <View style={[styles.image, dummyImageStyles]} />
+        </Pressable>
+      );
+    }
   };
 
   return (
@@ -141,13 +222,13 @@ const MainProfileScreen = () => {
       ) : null}
       <View style={styles.wrapper}>
         <FlatList
-          key={'#'}
-          data={new Array(50).fill(1)}
+          data={renderData?.pages.flat()}
           renderItem={renderItem}
-          keyExtractor={(_item, index) => '#' + index.toString()}
+          keyExtractor={(_item, index) => index.toString()}
           ListHeaderComponent={() => header}
           numColumns={3}
-          ListFooterComponent={loadingComponent}
+          onEndReached={requestNextPage}
+          // ListFooterComponent={loadingComponent}
           style={styles.container}
         />
       </View>

@@ -15,29 +15,28 @@ import {
 } from '../../constants/types';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {sendUserLocation} from '../../api/profile';
+import {MapContext} from '../../store/map-context';
 
 const deviceWidth = Dimensions.get('window').width;
 
 const FirstTownSearchScreen = () => {
   const navigation = useNavigation<PheedStackNavigationProps>();
+  const {userId, walletAddress} = useContext(AuthContext);
   const {
-    setLatitude,
-    setLongitude,
-    townName,
-    setTownName,
-    userId,
-    nickname,
-    walletAddress,
-  } = useContext(AuthContext);
-  const [regionCode, setRegionCode] = useState('');
-  const [threeDepthName, setThreeDepthName] = useState('');
-  console.log('nicknamelocaiton', nickname);
+    userLocationInfo,
+    userRegionCode,
+    setUserLatitude,
+    setUserLongitude,
+    setUserLocationInfo,
+    setUserRegionCode,
+  } = useContext(MapContext);
   const [location, setLocation] = useState<Region>({
     latitudeDelta: 0.005,
     longitudeDelta: 0.005,
-    latitude: 0,
-    longitude: 0,
+    latitude: 37.5666805,
+    longitude: 126.9784147,
   });
+  const [regionThreeName, setRegionThreeName] = useState('');
 
   const getTownName = async (lat: number, lng: number) => {
     const response = await fetch(
@@ -50,8 +49,9 @@ const FirstTownSearchScreen = () => {
       },
     );
     const result = await response.json();
-    setRegionCode(result.documents[0].code);
-    setThreeDepthName(result.documents[0].region_3depth_name);
+    setUserRegionCode(result.documents[0].code);
+    setRegionThreeName(result.documents[0].region_3depth_name);
+    setUserLocationInfo(result.documents[0].region_3depth_name);
   };
 
   const pressHandler = async () => {
@@ -60,19 +60,18 @@ const FirstTownSearchScreen = () => {
         userId: userId,
         latitude: location.latitude,
         longitude: location.longitude,
-        regionCode: regionCode,
-        regionName: threeDepthName,
+        regionCode: userRegionCode,
+        regionName: userLocationInfo,
       });
-      console.log(response);
       if (response.status === 'OK') {
-        setLatitude(location.latitude);
-        setLongitude(location.longitude);
-        setRegionCode(regionCode);
-        setThreeDepthName(threeDepthName);
+        setUserLatitude(location.latitude);
+        setUserLongitude(location.longitude);
+        setUserRegionCode(userRegionCode);
+        setUserLocationInfo(userLocationInfo);
 
         await EncryptedStorage.setItem('latitude', `${location.latitude}`);
         await EncryptedStorage.setItem('longitude', `${location.longitude}`);
-        // await EncryptedStorage.setItem('townName', `${townName}`);
+
         if (!walletAddress) {
           navigation.navigate(PheedStackScreens.WalletCreation);
         } else {
@@ -119,9 +118,9 @@ const FirstTownSearchScreen = () => {
               </Marker>
             </MapView>
           )}
-          {location.latitude != 0 ? (
+          {regionThreeName !== '' ? (
             <View style={{height: '25%', bottom: 0}}>
-              <Text style={styles.name}>{threeDepthName}</Text>
+              <Text style={styles.name}>{regionThreeName}</Text>
               <Button
                 title="선택한 위치로 설정"
                 btnSize="large"

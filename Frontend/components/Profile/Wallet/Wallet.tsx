@@ -25,8 +25,8 @@ const Wallet = ({
 }) => {
   const gradientColors = [Colors.pink700, Colors.purple700];
 
-  const copyToClipboard = () => {
-    Clipboard.setString(address);
+  const copyToClipboard = async () => {
+    await Clipboard.setString(address);
   };
 
   return (

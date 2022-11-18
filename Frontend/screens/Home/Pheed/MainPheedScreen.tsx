@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
 import {
   useNavigation,
@@ -8,7 +8,12 @@ import {
 
 import {useQuery} from 'react-query';
 
+import {
+  PheedStackNavigationProps,
+  BottomTabNavigationProps,
+} from '../../../constants/types';
 import {getVideosInNeighborhood} from '../../../api/pheed';
+import {MapContext} from '../../../store/map-context';
 import CreateButton from '../../../components/Pheed/CreateButton';
 import PheedContent from '../../../components/Pheed/PheedContent';
 import Colors from '../../../constants/Colors';
@@ -16,10 +21,6 @@ import MainBanner from '../../../components/Pheed/MainBanner';
 import GradientLine from '../../../components/Utils/GradientLine';
 import PheedCategory from '../../../components/Pheed/Category/PheedCategory';
 import Story from '../../../components/Pheed/Story';
-import {
-  PheedStackNavigationProps,
-  BottomTabNavigationProps,
-} from '../../../constants/types';
 
 type Props = CompositeNavigationProp<
   PheedStackNavigationProps,
@@ -27,7 +28,7 @@ type Props = CompositeNavigationProp<
 >;
 
 const MainPheedScreen = () => {
-  const dummyRegionCode = '2920012300';
+  const {userRegionCode} = useContext(MapContext);
   const navigation = useNavigation<Props>();
   useFocusEffect(() => {
     navigation.getParent()?.setOptions({
@@ -48,7 +49,7 @@ const MainPheedScreen = () => {
     // isLoading: storyIsLoading,
     // isError: storyIsError,
   } = useQuery('videoInNeighborhood', () =>
-    getVideosInNeighborhood(dummyRegionCode),
+    getVideosInNeighborhood(userRegionCode as string),
   );
 
   return (

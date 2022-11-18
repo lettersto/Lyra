@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import hermes.Lyra.domain.PheedImg;
 import hermes.Lyra.domain.PheedTag;
 import hermes.Lyra.domain.User;
+import hermes.Lyra.domain.Wish;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -21,6 +22,8 @@ public class ResponsePheed {
     private String userNickname;
 
     private Long pheedId;
+
+    List<ResponseWish> wishList = new ArrayList<>();
 
     private String title;
 

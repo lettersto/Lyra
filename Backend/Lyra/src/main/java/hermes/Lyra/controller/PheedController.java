@@ -125,6 +125,25 @@ public class PheedController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    @ApiOperation(value = "배너에 사용 될 우리 동네 피드중에 좋아요 높은 순, state=1인 것 중에")
+    @GetMapping("banner")
+    public ResponseEntity<List<ResponsePheed>> getPheedsByBanner(@RequestParam(value="code") String code) throws Exception {
+
+        log.info("Before get pheeds data");
+
+        List<Pheed> pheedList = pheedService.getPheedByBanner(code);
+
+        List<ResponsePheed> result = new ArrayList<>();
+
+        pheedList.forEach(v -> {
+            result.add(new ModelMapper().map(v, ResponsePheed.class));
+        });
+
+        log.info("After got pheeds data");
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
 
     @ApiOperation(value = "피드 상세 불러오기")
     @GetMapping("{pheed_id}")

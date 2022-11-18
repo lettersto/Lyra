@@ -111,9 +111,17 @@ const ProfileDetailScreen = () => {
         height: 300,
         cropping: true,
         mediaType: 'photo',
-        // includeBase64: true,
+        cropperCircleOverlay: true,
+        compressImageQuality: 0.8,
       });
-      userImgMutate({userId: userId!, imageUri: newProfileImage.path});
+      const imageUri = newProfileImage.path;
+      const pathParts = imageUri.split('/');
+      userImgMutate({
+        userId: userId!,
+        imageUri,
+        imageType: newProfileImage.mime,
+        imageName: pathParts[pathParts.length - 1],
+      });
     } catch (error) {
       if (__DEV__) {
         console.error(error);
@@ -180,6 +188,8 @@ const ProfileDetailScreen = () => {
       if (__DEV__) {
         console.error('Logout Error!', err);
       }
+    } finally {
+      setIsLogoutModalVisible(false);
     }
   };
 

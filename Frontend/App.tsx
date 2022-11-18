@@ -16,6 +16,7 @@ import {ChatContext} from './store/chat-context';
 import Config from 'react-native-config';
 import {io} from 'socket.io-client';
 import {getUserProfile} from './api/profile';
+import {MapContext} from './store/map-context';
 
 declare global {
   namespace ReactNavigation {
@@ -38,6 +39,7 @@ const App = () => {
     setImageURL,
     accessToken: token,
   } = useContext(AuthContext);
+  const {setUserLocationInfo, setUserRegionCode} = useContext(MapContext);
 
   const checkTokensInStorage = useCallback(async () => {
     try {
@@ -58,6 +60,8 @@ const App = () => {
         );
         setNickname(userInfo.nickname);
         setImageURL(userInfo.image_url);
+        setUserRegionCode(userInfo.region_code);
+        setUserLocationInfo(userInfo.region_name);
       }
     } catch (error) {
       setIsLoggedIn(false);
@@ -74,6 +78,8 @@ const App = () => {
     setWalletAddress,
     setImageURL,
     setNickname,
+    setUserRegionCode,
+    setUserLocationInfo,
   ]);
   useEffect(() => {
     if (!appStarted) {
@@ -95,36 +101,27 @@ const App = () => {
   useEffect(() => {
     if (socket && userId) {
       socket.emit('user connect', userId);
-      socket.on(
-        'user rooms',
-        async (buskerRooms: {buskerId: number; userCnt: number}[]) => {
-          const buskerList: BuskerInfo[] = await Promise.all(
-            buskerRooms.map(async room => {
-              const data = await getUserProfile(room.buskerId);
-              return {
-                buskerId: room.buskerId,
-                buskerNickname: data.nickname,
-                buskerImg: data.image_url,
-                userCnt: room.userCnt,
-              };
-            }),
-          );
-          setLiveBusker(buskerList);
-          // buskerRooms.forEach(room =>
-          //   getUserProfile(room.buskerId).then(res => {
-          //     buskerList.push({
-          //       buskerId: res.id,
-          //       buskerNickname: res.nickname,
-          //       buskerImg: res.image_url,
-          //     });
-          //     if (buskerList.length === buskerRooms.length) {
-          //       setLiveBusker(buskerList);
-          //       console.log(buskerList);
-          //     }
-          //   }),
-          // );
-        },
-      );
+      try {
+        socket.on(
+          'user rooms',
+          async (buskerRooms: {buskerId: number; userCnt: number}[]) => {
+            const buskerList: BuskerInfo[] = await Promise.all(
+              buskerRooms.map(async room => {
+                const data = await getUserProfile(room.buskerId);
+                return {
+                  buskerId: room.buskerId,
+                  buskerNickname: data.nickname,
+                  buskerImg: data.image_url,
+                  userCnt: room.userCnt,
+                };
+              }),
+            );
+            setLiveBusker(buskerList);
+          },
+        );
+      } catch (err) {
+        console.log(err);
+      }
     }
   }, [socket, userId, setLiveBusker]);
 

@@ -19,10 +19,11 @@ import {searchPheeds, searchPheedsByTags} from '../../../api/pheed';
 //   PheedStackScreens,
 // } from '../../../constants/types';
 import useDebounce from '../../../hooks/useDebounce';
-import CircleProfile from '../../../components/Utils/CircleProfile';
+import ProfilePhoto from '../../../components/Utils/ProfilePhoto';
 import Colors from '../../../constants/Colors';
 
 interface searchPheedItemType {
+  id: number;
   category: string;
   comment: Array<any>;
   content: string;
@@ -31,11 +32,13 @@ interface searchPheedItemType {
   longitude: number;
   pheedId: number;
   pheedImg: Array<string>;
-  pheedTag: Array<string>;
+  pheedTag: Array<{id: number; name: string}>;
   startTime: number;
   time: string;
   title: string;
   userId: number;
+  userNickname: string;
+  userImage_url: string;
 }
 
 type searchType = 'default' | 'tags';
@@ -141,7 +144,12 @@ const SearchPheedScreen = () => {
         key={item.pheedId}
         style={styles.itemContainer}
         onPress={pressHandler}>
-        <CircleProfile size="small" isGradient={false} />
+        <ProfilePhoto
+          size="small"
+          isGradient={false}
+          imageURI={item.userImage_url}
+          profileUserId={item.userId}
+        />
         <View style={styles.contentContainer}>
           <Text style={[styles.text, styles.title]}>{item.title}</Text>
           <Text style={[styles.text, styles.content]}>{content}</Text>
