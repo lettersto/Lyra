@@ -354,6 +354,11 @@ export interface ChatRoomInfo {
   longitude: number;
 }
 
+export interface DonationInfo {
+  supportedId: number;
+  content: string;
+  donation: number;
+}
 // Profile
 export type EditProfileType =
   | 'nickname'
