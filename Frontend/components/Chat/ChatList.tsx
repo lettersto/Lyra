@@ -10,7 +10,18 @@ import {
 import {BuskerInfo} from '../../constants/types';
 import ChatRoomItem from './ChatRoomItem';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {useNavigation} from '@react-navigation/native';
+import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
+import {
+  BottomTabNavigationProps,
+  ChatStackNavigationProps,
+  MapStackScreens,
+  BottomTabScreens,
+} from '../../constants/types';
+
+type navigationType = CompositeNavigationProp<
+  BottomTabNavigationProps,
+  ChatStackNavigationProps
+>;
 
 const deviceHeight = Dimensions.get('window').height;
 
@@ -52,9 +63,11 @@ const styles = StyleSheet.create({
 });
 
 const ChatList = ({liveBusker, clickChatRoomHandler}: Props) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<navigationType>();
   const moveMapHandler = () => {
-    navigation.navigate('Map');
+    navigation.navigate(BottomTabScreens.Map, {
+      screen: MapStackScreens.MainMap,
+    });
   };
 
   return (

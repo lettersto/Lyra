@@ -18,20 +18,22 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Button from '../../../components/Utils/Button';
 import Location from '../../../components/Pheed/Location';
 import axios from '../../../api/axios';
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../../constants/types';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {
+  PheedStackNavigationProps,
+  PheedStackRouteProps,
+  PheedStackScreens,
+} from '../../../constants/types';
 import {useMutation, useQuery, useQueryClient} from 'react-query';
 import {getPheedDetail, updatePheed} from '../../../api/pheed';
 import {PheedMapContext} from '../../../store/pheedMap-context';
 import {AuthContext} from '../../../store/auth-context';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'DetailPheed'>;
-
-const UpdatePheedScreen = ({route}: Props) => {
-  const navigation = useNavigation();
+const UpdatePheedScreen = () => {
+  const route = useRoute<PheedStackRouteProps>();
+  const navigation = useNavigation<PheedStackNavigationProps>();
   const {userId} = useContext(AuthContext);
-  const pheedId = route.params.pheedId;
+  const {pheedId} = route.params as {pheedId: number};
   const queryClient = useQueryClient();
   const {
     pheedMapLocationAddInfo,
@@ -75,7 +77,7 @@ const UpdatePheedScreen = ({route}: Props) => {
     onSuccess: () => {
       queryClient.invalidateQueries('PheedContent');
       console.log('updatesuccess');
-      navigation.navigate('DetailPheed', {pheedId: pheedId});
+      navigation.navigate(PheedStackScreens.DetailPheed, {pheedId: pheedId});
     },
     onError: err => {
       console.log('updateerror', err);

@@ -1,4 +1,3 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useContext, useState} from 'react';
 import {Dimensions, StyleSheet, Text, View, Alert} from 'react-native';
 import Config from 'react-native-config';
@@ -8,17 +7,14 @@ import LocationSearch from '../../components/Map/LocationSearch';
 import MapStyle from '../../components/Map/MapStyle';
 import Button from '../../components/Utils/Button';
 import Colors from '../../constants/Colors';
-import {RootStackParamList} from '../../constants/types';
 import {AuthContext} from '../../store/auth-context';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {sendUserLocation} from '../../api/profile';
 import {MapContext} from '../../store/map-context';
 
-type Props = NativeStackScreenProps<RootStackParamList>;
-
 const deviceWidth = Dimensions.get('window').width;
 
-const TownSearchScreen = ({navigation}: Props) => {
+const TownSearchScreen = ({navigation}: any) => {
   const {userId} = useContext(AuthContext);
   const {
     userLocationInfo,

@@ -12,6 +12,10 @@ import {
 import ChatList from '../../components/Chat/ChatList';
 import MyChat from '../../components/Chat/MyChat';
 import {ChatContext} from '../../store/chat-context';
+import {
+  ChatStackNavigationProps,
+  ChatStackScreens,
+} from '../../constants/types';
 
 const deviceHeight = Dimensions.get('window').height;
 
@@ -22,13 +26,13 @@ const styles = StyleSheet.create({
 });
 
 const ChatListScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<ChatStackNavigationProps>();
   const {socket, liveBusker} = useContext(ChatContext);
   const isFocused = useIsFocused();
   const busker = [{buskerId: 1, buskerNickname: '아각', buskerImg: '~'}];
 
   const clickChatRoomHandler = (id: number, nickname: string, img: string) => {
-    navigation.navigate('MainChat', {
+    navigation.navigate(ChatStackScreens.MainChat, {
       buskerId: id,
       buskerNickname: nickname,
       buskerImg: img,

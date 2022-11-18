@@ -11,23 +11,13 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import Config from 'react-native-config';
 import {io} from 'socket.io-client';
 
-import {
-  RootStackParamList,
-  BuskerInfo,
-  UserProfileType,
-} from './constants/types';
+import {BuskerInfo, UserProfileType} from './constants/types';
 import {AuthContext} from './store/auth-context';
 import {MapContext} from './store/map-context';
 import {ChatContext} from './store/chat-context';
 import {getUserProfile} from './api/profile';
 import NavBar from './components/Navigation/NavBar';
 import Colors from './constants/Colors';
-
-declare global {
-  namespace ReactNavigation {
-    interface RootParamList extends RootStackParamList {}
-  }
-}
 
 let appStarted = false;
 
