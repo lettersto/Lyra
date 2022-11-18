@@ -25,10 +25,16 @@ type navigationProps = CompositeNavigationProp<
 interface Props {
   pheedId: number | null;
   isModalVisible: boolean;
+  setPheedId: Dispatch<SetStateAction<number | null>>;
   setIsModalVisible: Dispatch<SetStateAction<boolean>>;
 }
 
-const MapPheedModal = ({pheedId, isModalVisible, setIsModalVisible}: Props) => {
+const MapPheedModal = ({
+  pheedId,
+  setPheedId,
+  isModalVisible,
+  setIsModalVisible,
+}: Props) => {
   const gradientColors = [Colors.pink300, Colors.purple300];
   const navigation = useNavigation<navigationProps>();
   const [pheed, setPheed] = useState<PheedDetailParamList>();
@@ -90,12 +96,14 @@ const MapPheedModal = ({pheedId, isModalVisible, setIsModalVisible}: Props) => {
                   </View>
                 </View>
                 <Pressable
-                  onPress={() =>
+                  onPress={() => {
+                    setPheedId(null);
+                    setIsModalVisible(false);
                     navigation.navigate(BottomTabScreens.Home, {
                       screen: PheedStackScreens.DetailPheed,
                       params: {pheedId: pheed.pheedId},
-                    })
-                  }>
+                    });
+                  }}>
                   <View style={styles.contentContainer}>
                     <Text style={styles.titleText}>{pheed!.title}</Text>
                     <Text style={styles.contentText}>{pheed!.content}</Text>
