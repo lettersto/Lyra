@@ -1,6 +1,7 @@
 package hermes.Lyra.Service;
 
 import hermes.Lyra.config.JwtTokenProvider;
+import hermes.Lyra.domain.Repository.FollowRepository;
 import hermes.Lyra.domain.Repository.PheedRepository;
 import hermes.Lyra.domain.Repository.UserRepository;
 import hermes.Lyra.domain.Repository.UserRepository2;
@@ -30,6 +31,8 @@ public class UserService {
     private final PheedRepository pheedRepository;
     private final UserRepository2 userRepository2;
     private final JwtTokenProvider jwtTokenProvider;
+
+    private final FollowRepository followRepository;
 
     @Transactional
     public User addLocation(Long userId, UserLocationRequestDto userLocationRequestDto) {
@@ -63,6 +66,11 @@ public class UserService {
     public UserDto searchUser(Long userId) {
         UserDto user = userRepository.searchUser(userId);
         user.setEnd_busk_count(pheedRepository.findByUserIdAndState(userId, 2).size());
+        User user2 = userRepository2.findById(userId).get();
+        Long followerCount = followRepository.countByFollowerId(user2);
+        user.setFollower_count(followerCount);
+        Long followingCount = followRepository.countByFollowingId(user2);
+        user.setFollowing_count(followingCount);
         return user;
     }
     @Transactional
