@@ -21,17 +21,13 @@ public class UserDto {
     private String nickname;
     private String region_code;
     private String region_name;
+    private Long follower_count;
+    private Long following_count;
     private BigDecimal latitude;
     private BigDecimal longitude;
 
     @Setter
     private int end_busk_count;
-
-    @Setter
-    private Long follower_count;
-
-    @Setter
-    private Long following_count;
 
     @Builder
     public UserDto(Long id, String account, String bank, String holder, String image_url, String introduction, String refresh_token, String email, String nickname, String region_code, String region_name, BigDecimal latitude, BigDecimal longitude, Long follower_count, Long following_count) {
