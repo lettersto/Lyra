@@ -50,7 +50,6 @@ const PheedContent = ({width}: {width: number}) => {
     navigation.navigate('Chat');
   };
   const [currentCategory, SetCurrentCategory] = useState('all');
-  const [isLike, setIsLike] = useState(false);
   const activeLike = () => {
     if (isLike === true) {
       setIsLike(false);
@@ -136,7 +135,7 @@ const PheedContent = ({width}: {width: number}) => {
     // isError: pushWishIsError,
   } = useMutation(pushWish, {
     onSuccess: () => {
-      queryClient.invalidateQueries('wishUserPheed');
+      queryClient.invalidateQueries('PheedContent');
     },
   });
 
@@ -152,6 +151,12 @@ const PheedContent = ({width}: {width: number}) => {
   });
 
   const renderItem = ({item}: {item: PheedDetailParamList}) => {
+    let isLike = false;
+    item.wishList.map(wish => {
+      if (wish.userId === userId) {
+        isLike = true;
+      }
+    });
     return currentCategory === item.category ? (
       <View style={styles.itemContainer}>
         <LinearGradient
@@ -173,7 +178,7 @@ const PheedContent = ({width}: {width: number}) => {
                     profileUserId={item.userId}
                   />
                 </View>
-                <View>
+                <View style={styles.userContainer}>
                   <Text style={styles.boldtext}>{item.userNickname}</Text>
                   <View>
                     <View style={styles.dateContainer}>
@@ -239,7 +244,7 @@ const PheedContent = ({width}: {width: number}) => {
                 <MoreInfo content={item.content} />
               </View>
             </Pressable>
-            <GradientLine />
+            {/* <GradientLine /> */}
             <View style={styles.bottomContainer}>
               <View style={styles.commentContainer}>
                 <Icon2
@@ -252,7 +257,7 @@ const PheedContent = ({width}: {width: number}) => {
                   댓글 ({item.comment.length === 0 ? 0 : item.comment.length})
                 </Text>
               </View>
-              <Pressable onPress={activeLike}>
+              <Pressable>
                 <View style={styles.likeContainer}>
                   {isLike ? (
                     <Pressable
@@ -265,7 +270,7 @@ const PheedContent = ({width}: {width: number}) => {
                       <Icon3
                         name="star"
                         color={Colors.gray300}
-                        size={25}
+                        size={22}
                         style={styles.clock}
                       />
                     </Pressable>
@@ -280,12 +285,12 @@ const PheedContent = ({width}: {width: number}) => {
                       <Icon3
                         name="staro"
                         color={Colors.gray300}
-                        size={25}
+                        size={22}
                         style={styles.clock}
                       />
                     </Pressable>
                   )}
-                  {/* <Text style={styles.text}>{content.like}</Text> */}
+                  <Text style={styles.text}>{item.wishList.length}</Text>
                 </View>
               </Pressable>
             </View>
@@ -313,7 +318,7 @@ const PheedContent = ({width}: {width: number}) => {
                     profileUserId={item.userId}
                   />
                 </View>
-                <View>
+                <View style={styles.userContainer}>
                   <Text style={styles.boldtext}>{item.userNickname}</Text>
                   <View>
                     <View style={styles.dateContainer}>
@@ -381,7 +386,7 @@ const PheedContent = ({width}: {width: number}) => {
                 <MoreInfo content={item.content} />
               </View>
             </Pressable>
-            <GradientLine />
+            {/* <GradientLine /> */}
             <View style={styles.bottomContainer}>
               <View style={styles.commentContainer}>
                 <Icon2
@@ -394,7 +399,7 @@ const PheedContent = ({width}: {width: number}) => {
                   댓글 ({item.comment.length === 0 ? 0 : item.comment.length})
                 </Text>
               </View>
-              <Pressable onPress={activeLike}>
+              <Pressable>
                 <View style={styles.likeContainer}>
                   {isLike ? (
                     <Pressable
@@ -407,7 +412,7 @@ const PheedContent = ({width}: {width: number}) => {
                       <Icon3
                         name="star"
                         color={Colors.gray300}
-                        size={25}
+                        size={22}
                         style={styles.clock}
                       />
                     </Pressable>
@@ -422,12 +427,12 @@ const PheedContent = ({width}: {width: number}) => {
                       <Icon3
                         name="staro"
                         color={Colors.gray300}
-                        size={25}
+                        size={22}
                         style={styles.clock}
                       />
                     </Pressable>
                   )}
-                  {/* <Text style={styles.text}>{content.like}</Text> */}
+                  <Text style={styles.text}>{item.wishList.length}</Text>
                 </View>
               </Pressable>
             </View>
@@ -488,11 +493,13 @@ const styles = StyleSheet.create({
   text: {
     color: Colors.gray300,
     fontFamily: 'NanumSquareRoundR',
+    fontSize: 14,
   },
   boldtext: {
     color: Colors.gray300,
     fontFamily: 'NanumSquareRoundR',
     fontWeight: 'bold',
+    fontSize: 14,
   },
   gradientContainer: {
     width: Dimensions.get('window').width * 0.95,
@@ -524,6 +531,9 @@ const styles = StyleSheet.create({
     marginTop: 30,
     paddingVertical: 2,
   },
+  userContainer: {
+    marginLeft: 5,
+  },
   dateContainer: {
     flexDirection: 'row',
     marginVertical: 1.5,
@@ -545,8 +555,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     justifyContent: 'center',
-    marginLeft: 5,
-    marginRight: 5,
+    marginHorizontal: 10,
     marginVertical: 10,
   },
   imgContainer: {
@@ -562,6 +571,7 @@ const styles = StyleSheet.create({
   },
   likeContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   lineContainer: {
     marginTop: 30,

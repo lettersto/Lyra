@@ -234,7 +234,7 @@ const CreatePheedScreen = () => {
         </Modal>
         <SafeAreaView>
           <View style={styles.container}>
-            <Gallery SetPhotos={SetPhotos} />
+            <Gallery SetPhotos={SetPhotos} photos={[]} />
             <View style={styles.category}>
               <PheedCategory
                 Category="phead"

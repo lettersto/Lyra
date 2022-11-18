@@ -50,8 +50,8 @@ export const getPheeds = async (pageParam = 0, options = {regionCode: ''}) => {
     method: 'GET',
     params: {
       page: pageParam,
-      // code: options.regionCode,
-      code: '11111111',
+      code: options.regionCode,
+      // code: '11111111',
     },
   });
   return response.data;
@@ -235,6 +235,58 @@ export const uploadPheed = async ({
   // };
   // const response = await axios.request(config);
   // return response;
+};
+
+export const updatePheed = async ({
+  userId,
+  images,
+  title,
+  category,
+  content,
+  latitude,
+  longitude,
+  pheedTag,
+  startTime,
+  location,
+  regionCode,
+  pheedId,
+}: {
+  userId: number;
+  images: ImgType[] | undefined;
+  title: string;
+  category: string;
+  content: string;
+  latitude: number;
+  longitude: number;
+  pheedTag: string[];
+  startTime: Date;
+  location: string;
+  regionCode: string | null;
+  pheedId: number;
+}) => {
+  const image = new FormData();
+  images?.map(img => image.append('images', img));
+  image.append('regionCode', regionCode);
+  image.append('title', title);
+  image.append('category', category);
+  image.append('Content', content);
+  image.append('latitude', latitude);
+  image.append('longitude', longitude);
+  image.append('pheedTag', pheedTag);
+  image.append(
+    'startTime',
+    startTime.toJSON().substring(0, 10) +
+      ' ' +
+      startTime.toJSON().substring(11, startTime.toJSON().length - 5),
+  );
+  image.append('location', location);
+
+  const response = await fetch(baseURL + `/pheed/?pheed_id=${pheedId}`, {
+    method: 'PATCH',
+    body: image,
+    headers: {'Content-Type': 'multipart/form-data'},
+  });
+  return response;
 };
 
 // shorts
