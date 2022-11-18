@@ -61,9 +61,9 @@ public class WebSecurityConfig {
                 .and()
                 .authorizeRequests()  // 요청에 대한 사용 권한 체크
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll() // 추가
-//                .antMatchers("/admin/**").hasAnyRole("ADMIN")
+                .antMatchers("/admin/**").hasAnyRole("ADMIN")
                 .antMatchers(AUTH_WHITELIST).permitAll()
-//                .antMatchers("/**").authenticated()
+                .antMatchers("/**").authenticated()
                 .anyRequest().permitAll()  // 그 외 나머지 요청은 누구나 접근 가능
                 .and()
                 .cors()
