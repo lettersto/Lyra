@@ -53,7 +53,8 @@ export const giveDonation = async (
 
 export const getChatDonations = async (pheed_id: string) => {
   const response = await axios({
-    url: `/pheed/${pheed_id}`,
+    url: '/support/chat',
+    params: {pheed_id: pheed_id},
     method: 'GET',
   });
   return response.data;

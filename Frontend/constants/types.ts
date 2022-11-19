@@ -350,9 +350,12 @@ export interface ChatRoomInfo {
 }
 
 export interface DonationInfo {
-  supportedId: number;
+  supportId: number;
+  supporterId: number;
+  supporterImage_url: string;
+  supporterNickname: string;
+  coin: number;
   content: string;
-  donation: number;
 }
 // Profile
 export type EditProfileType =

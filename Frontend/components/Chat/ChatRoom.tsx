@@ -10,7 +10,7 @@ import {
   GestureResponderEvent,
 } from 'react-native';
 import {GiftedChat, InputToolbar, User} from 'react-native-gifted-chat';
-import {IMessage} from '../../constants/types';
+import {DonationInfo, IMessage} from '../../constants/types';
 import CircleGradient from '../Utils/CircleGradient';
 import CustomBubble from './CustomBubble';
 import CustomMessage from './CustomMessage';
@@ -25,6 +25,7 @@ import {
   getUserWalletAddressAndCoin,
 } from '../../api/profile';
 import {
+  getChatDonations,
   getLiveChatPheedUser,
   giveDonation,
   sendDonationWeb3,
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
     right: '5%',
     borderRadius: 25,
   },
-  chatContainer: {height: deviceHeight - 80, bottom: 80},
+  container: {height: deviceHeight - 80, bottom: 80},
   donationImg: {marginLeft: 15, marginVertical: 15},
   heart: {
     position: 'absolute',
@@ -76,6 +77,8 @@ const ChatRoom = ({socket, buskerId}: Props) => {
   const [warningMsg, setWarningMsg] = useState('');
   const [balance, setBalance] = useState(0);
   const [pheedId, setPheedId] = useState('');
+  const [donations, setDonations] = useState<DonationInfo[]>([]);
+  const [totalDonation, setTotalDonation] = useState(0);
 
   // 채팅 전송
   const onSend = (messages: IMessage[]) => {
@@ -140,16 +143,21 @@ const ChatRoom = ({socket, buskerId}: Props) => {
   // 채팅 시작
   const participateChat = useCallback(() => {
     socket.emit('enter room', buskerId);
-    console.log('참가');
     // 메시지 받기
     socket.on('receive message', (msg: IMessage) => {
-      console.log('왔다!');
       setMessages(prvMessages => [msg, ...prvMessages]);
+      // 후원 채팅 받을 시 리스트 다시 받아오기!
+      if (msg.donation) {
+        getChatDonations(pheedId).then(res => {
+          setDonations(res.data.reverse());
+          setTotalDonation(res.message);
+        });
+      }
     });
     socket.on('heart', () => {
       heartUp();
     });
-  }, [socket, buskerId]);
+  }, [socket, buskerId, pheedId]);
 
   // 버스커 지갑 주소 받아오기
   const fetchBuskerWalletAddress = useCallback(async () => {
@@ -173,10 +181,17 @@ const ChatRoom = ({socket, buskerId}: Props) => {
     fetchBuskerWalletAddress();
     // 피드 id 받아오기
     getLiveChatPheedUser(String(buskerId))
-      .then(pheed => setPheedId(pheed[0].pheedId))
+      .then(pheed => {
+        setPheedId(pheed[0].pheedId);
+        getChatDonations(pheed[0].pheedId).then(res => {
+          setDonations(res.data.reverse());
+          setTotalDonation(res.message);
+        });
+      })
       .catch(err => {
         console.log(err);
       });
+
     return () => {
       socket.removeAllListeners('receive message');
       socket.removeAllListeners('fetch user');
@@ -246,8 +261,8 @@ const ChatRoom = ({socket, buskerId}: Props) => {
     <ImageBackground
       resizeMode="cover"
       source={require('../../assets/image/chatBackGroundImg.png')}>
-      <View style={styles.chatContainer}>
-        {}
+      <View style={styles.container}>
+        <DonationList donations={donations} totalDonation={totalDonation} />
         <GiftedChat
           messages={totalMessages}
           onSend={onSend}
@@ -288,37 +303,7 @@ const ChatRoom = ({socket, buskerId}: Props) => {
           keyboardVerticalOffset={30}
         />
       </View>
-      <DonationList
-        donations={[
-          {
-            support_id: 1,
-            supporterId: 11,
-            supporterNickname: '임윤혁',
-            supporterImage_url:
-              'https://item.kakaocdn.net/do/d527e50eef755e7cade82bc8669b637a9f5287469802eca457586a25a096fd31',
-            content: 'hi',
-            coin: 30,
-          },
-          {
-            support_id: 2,
-            supporterId: 11,
-            supporterNickname: '임윤혁',
-            supporterImage_url:
-              'https://item.kakaocdn.net/do/d527e50eef755e7cade82bc8669b637a9f5287469802eca457586a25a096fd31',
-            content: '도네다',
-            coin: 30,
-          },
-          {
-            support_id: 3,
-            supporterId: 11,
-            supporterNickname: '임윤혁',
-            supporterImage_url:
-              'https://item.kakaocdn.net/do/d527e50eef755e7cade82bc8669b637a9f5287469802eca457586a25a096fd31',
-            content: '도네보내요',
-            coin: 30,
-          },
-        ]}
-      />
+
       <DonationModal
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}

@@ -1,18 +1,46 @@
 import React from 'react';
-import {FlatList, Text} from 'react-native';
+import {FlatList, StyleSheet, Text, View} from 'react-native';
 import {DonationInfo} from '../../constants/types';
+import DonationItem from './DonationItem';
 
 interface Props {
   donations: DonationInfo[];
+  totalDonation: number;
 }
 
-const DonationList = ({donations}: Props) => {
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: '20%',
+  },
+  text: {
+    fontFamily: 'NanumSquareRoundR',
+    fontWeight: 'bold',
+    color: 'white',
+    fontSize: 15,
+    margin: 5,
+  },
+  title: {
+    fontSize: 16,
+    color: 'black',
+  },
+  cntText: {marginLeft: '5%'},
+  textContainer: {marginLeft: '5%'},
+  textRowContainer: {flexDirection: 'row', alignItems: 'center'},
+});
+
+const DonationList = ({donations, totalDonation}: Props) => {
   return (
-    <FlatList
-      data={donations}
-      renderItem={donation => <Text>{donation}</Text>}
-      keyExtractor={item => String(item.supportedId)}
-    />
+    <View style={styles.container}>
+      <FlatList
+        data={donations}
+        horizontal
+        renderItem={donation => <DonationItem donation={donation.item} />}
+        keyExtractor={item => String(item.supportId)}
+      />
+      <Text style={styles.text}>Total : {totalDonation} $</Text>
+    </View>
   );
 };
 
