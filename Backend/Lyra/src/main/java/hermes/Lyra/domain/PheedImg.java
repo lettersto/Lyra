@@ -18,6 +18,8 @@ public class PheedImg {
 
     private String path;
 
+    private String mime;
+
     @ManyToOne
     @JoinColumn(name = "pheed_id")
     @JsonIgnore
