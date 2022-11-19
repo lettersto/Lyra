@@ -170,6 +170,10 @@ const MainMapView = () => {
                     coordinate={{
                       latitude: pheed.latitude,
                       longitude: pheed.longitude,
+                    }}
+                    onPress={() => {
+                      setPheedId(pheed.pheedId);
+                      setIsModalVisible(true);
                     }}>
                     {/* todo: 채팅에서 받은 인원 추가하기  */}
                     <StarImg chatCnt={3} />
@@ -180,10 +184,6 @@ const MainMapView = () => {
                     coordinate={{
                       latitude: pheed.latitude,
                       longitude: pheed.longitude,
-                    }}
-                    onPress={() => {
-                      setPheedId(pheed.pheedId);
-                      setIsModalVisible(true);
                     }}>
                     <ProfilePhoto
                       imageURI={pheed.userImage_url}
