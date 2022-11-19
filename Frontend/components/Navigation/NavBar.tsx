@@ -32,7 +32,6 @@ const NavBar = () => {
         },
         headerShown: false,
         tabBarHideOnKeyboard: true,
-        // lazy: false,
       }}>
       <Tab.Screen
         name={BottomTabScreens.Home}
