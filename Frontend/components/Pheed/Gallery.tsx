@@ -1,11 +1,10 @@
-import React, {Dispatch, SetStateAction, useState} from 'react';
+import React, {useState} from 'react';
 import {View, Alert, StyleSheet, Image as Img, ScrollView} from 'react-native';
 import Colors from '../../constants/Colors';
 import Button from '../Utils/Button';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import ImagePicker, {Image} from 'react-native-image-crop-picker';
-import {ImageParamList} from '../../constants/types';
 
 export interface Photo {
   height: number;

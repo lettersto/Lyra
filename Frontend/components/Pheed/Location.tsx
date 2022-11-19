@@ -1,5 +1,5 @@
-import React, {Dispatch, SetStateAction, useContext, useState} from 'react';
-import {StyleSheet, Text, Dimensions, Pressable, Alert} from 'react-native';
+import React, {useContext} from 'react';
+import {StyleSheet, Text, Dimensions, Pressable} from 'react-native';
 import Colors from '../../constants/Colors';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -7,7 +7,6 @@ import Icon from 'react-native-vector-icons/EvilIcons';
 import {useNavigation} from '@react-navigation/native';
 import {PheedMapContext} from '../../store/pheedMap-context';
 
-// {SetDate}: {SetDate: Dispatch<SetStateAction<string>>}
 const Location = ({pheedMapLocation}: {pheedMapLocation: string}) => {
   const navigation = useNavigation();
   const {pheedMapLocationAddInfo} = useContext(PheedMapContext);
@@ -31,7 +30,7 @@ const Location = ({pheedMapLocation}: {pheedMapLocation: string}) => {
             <Icon name="location" color={Colors.gray300} size={20} />
             {pheedMapLocationAddInfo === '' ? (
               pheedMapLocation === '' ? (
-                <Text> 장소</Text>
+                <Text>장소</Text>
               ) : (
                 <Text> {pheedMapLocation}</Text>
               )
