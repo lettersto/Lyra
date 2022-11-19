@@ -349,6 +349,14 @@ export interface ChatRoomInfo {
   longitude: number;
 }
 
+export interface DonationInfo {
+  supportId: number;
+  supporterId: number;
+  supporterImage_url: string;
+  supporterNickname: string;
+  coin: number;
+  content: string;
+}
 // Profile
 export type EditProfileType =
   | 'nickname'

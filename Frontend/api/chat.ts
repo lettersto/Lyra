@@ -1,4 +1,7 @@
 import axios from './axios';
+import Config from 'react-native-config';
+const Web3 = require('web3');
+import ABI from './ABI.json';
 
 export const getLiveChatPheedUser = async (user_id: string) => {
   const response = await axios({
@@ -50,8 +53,30 @@ export const giveDonation = async (
 
 export const getChatDonations = async (pheed_id: string) => {
   const response = await axios({
-    url: `/pheed/${pheed_id}`,
+    url: '/support/chat',
+    params: {pheed_id: pheed_id},
     method: 'GET',
   });
   return response.data;
+};
+
+// web3로 블록체인 송금
+export const sendDonationWeb3 = async (
+  myPrivateKey: string,
+  buskerWalletAddress: string,
+  coin: number,
+) => {
+  const web3 = new Web3(new Web3.providers.HttpProvider(Config.WALLET_API_KEY));
+  const sender = web3.eth.accounts.privateKeyToAccount(myPrivateKey);
+
+  web3.eth.accounts.wallet.add(sender);
+  web3.eth.defaultAccount = sender.address;
+
+  const senderAddress = web3.eth.defaultAccount;
+  const chargeLyra = new web3.eth.Contract(ABI, Config.ERC_CONTRACT_KEY);
+
+  const response = await chargeLyra.methods
+    .transfer(buskerWalletAddress, coin)
+    .send({from: senderAddress, gas: 100000, gasPrice: 0});
+  return response;
 };
