@@ -14,13 +14,16 @@ import {
   PermissionsAndroid,
   Platform,
   Alert,
+  Image,
 } from 'react-native';
+import {v4 as uuidv4} from 'uuid';
 import MapStyle from './MapStyle';
 import Colors from '../../constants/Colors';
 import MapPheedModal from './MapPheedModal';
 import {getMapPheeds as getMapPheedsApi} from '../../api/pheed';
 import ProfilePhoto from '../Utils/ProfilePhoto';
 import {MapContext} from '../../store/map-context';
+import StarImg from './StarImg';
 
 interface ILocation {
   latitude: number;
@@ -159,26 +162,45 @@ const MainMapView = () => {
           customMapStyle={MapStyle}
           showsUserLocation={true}
           showsMyLocationButton={true}>
-          {pheeds.map((pheed, i) => {
+          {pheeds.map(pheed => {
             return (
-              <View key={i} style={[styles.profile]}>
-                <Marker
-                  coordinate={{
-                    latitude: pheed.latitude,
-                    longitude: pheed.longitude,
-                  }}
-                  onPress={() => {
-                    setPheedId(pheed.pheedId);
-                    setIsModalVisible(true);
-                  }}>
-                  <ProfilePhoto
-                    imageURI={pheed.userImage_url}
-                    grade="hot"
-                    size="medium"
-                    isGradient={true}
-                    profileUserId={pheed.userId}
+              <View key={uuidv4()}>
+                <View style={[styles.profile]}>
+                  <Marker
+                    coordinate={{
+                      latitude: pheed.latitude,
+                      longitude: pheed.longitude,
+                    }}
+                    onPress={() => {
+                      setPheedId(pheed.pheedId);
+                      setIsModalVisible(true);
+                    }}>
+                    {/* todo: 채팅에서 받은 인원 추가하기  */}
+                    <StarImg chatCnt={3} />
+                  </Marker>
+                </View>
+                <View style={[styles.profile]}>
+                  <Marker
+                    coordinate={{
+                      latitude: pheed.latitude,
+                      longitude: pheed.longitude,
+                    }}>
+                    <ProfilePhoto
+                      imageURI={pheed.userImage_url}
+                      grade="hot"
+                      size="extraSmall"
+                      isGradient={true}
+                      profileUserId={pheed.userId}
+                    />
+                    <View style={{height: 50}} />
+                  </Marker>
+                  {/* <View style={{position: 'absolute'}}>
+                  <Image
+                    style={styles.star}
+                    source={require('../../assets/image/fourstars.png')}
                   />
-                </Marker>
+                </View> */}
+                </View>
               </View>
             );
           })}
@@ -227,6 +249,9 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 50,
+  },
+  star: {
+    // translateY: 50,
   },
   backdrop: {
     flex: 1,

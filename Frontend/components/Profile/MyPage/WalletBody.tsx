@@ -39,7 +39,12 @@ const WalletBody = ({coin}: {coin: number}) => {
               </View>
               <View style={styles.money}>
                 <Text style={styles.text}>잔액</Text>
-                <Text style={styles.text}>{`${coin} 코인`}</Text>
+                <View style={styles.coinContainer}>
+                  <View style={styles.coin}>
+                    <Text style={styles.coinText}>L</Text>
+                  </View>
+                  <Text style={styles.text}>{coin}</Text>
+                </View>
               </View>
             </View>
           </Pressable>
@@ -94,6 +99,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     fontSize: 16,
+  },
+  coinContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  coin: {
+    width: 20,
+    height: 20,
+    marginRight: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.pink500,
+    borderRadius: 10,
+  },
+  coinText: {
+    fontFamily: 'DancingScript-Bold',
+    fontSize: 12,
+    color: 'white',
   },
 });
 

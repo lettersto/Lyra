@@ -67,7 +67,7 @@ const CreateShortsScreen = () => {
     const _title = text.trim();
     if (!_title) {
       setIsTitleAvailable(false);
-      setTitleMessage('스토리 제목을 작성해주세요.');
+      setTitleMessage('스트릿 제목을 작성해주세요.');
       setTitle(text);
     } else if (_title.length > 30) {
       setIsTitleAvailable(false);
@@ -92,13 +92,13 @@ const CreateShortsScreen = () => {
     const _title = title.trim();
 
     if (!_title) {
-      Alert.alert('스토리 제목을 작성해주세요.');
+      Alert.alert('스트릿 제목을 작성해주세요.');
       return;
     }
 
     if (!isTitleAvailable) {
       Alert.alert(
-        '스토리 제목을 다시 작성해주세요. 제목은 30자 이내여야 합니다.',
+        '스트릿 제목을 다시 작성해주세요. 제목은 30자 이내여야 합니다.',
       );
       return;
     }

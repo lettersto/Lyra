@@ -115,7 +115,7 @@ const ShortsDetailScreen = () => {
           color={Colors.pink300}
           style={styles.warningIcon}
         />
-        <Text style={styles.storyTitle}>정말 스토리를 삭제하시겠습니까?</Text>
+        <Text style={styles.storyTitle}>정말 스트릿을 삭제하시겠습니까?</Text>
       </ModalWithButton>
       <View style={styles.storyTop}>
         <ProfilePhoto
