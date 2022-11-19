@@ -132,13 +132,6 @@ const ProfileDetailScreen = () => {
   const queryClient = useQueryClient();
 
   const {
-    // data: deleteWalletData,
-    mutate: deleteWalletMutate,
-    isLoading: deleteWalletIsLoading,
-    // isError: deleteWalletIsError,
-  } = useMutation(deleteWallet);
-
-  const {
     data: createWalletData,
     mutate: createWalletMutate,
     isLoading: createWalletIsLoading,
@@ -150,9 +143,19 @@ const ProfileDetailScreen = () => {
     },
   });
 
+  const {
+    // data: deleteWalletData,
+    mutate: deleteWalletMutate,
+    isLoading: deleteWalletIsLoading,
+    // isError: deleteWalletIsError,
+  } = useMutation(deleteWallet, {
+    onSuccess: () => {
+      createWalletMutate(userId!);
+    },
+  });
+
   const walletCreationAgainHandler = () => {
     deleteWalletMutate(userId!);
-    createWalletMutate(userId!);
   };
 
   const closeWalletCreationAgainModal = () => {

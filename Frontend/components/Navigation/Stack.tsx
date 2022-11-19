@@ -55,7 +55,7 @@ export const PheedStack = () => {
   return (
     <PheedMapProvider>
       <Stack.Navigator
-        initialRouteName={PheedStackScreens.MainPheed}
+        // initialRouteName={PheedStackScreens.MainPheed}
         screenOptions={{
           headerStyle: {
             backgroundColor: Colors.black500,
@@ -102,7 +102,7 @@ export const PheedStack = () => {
             />
           ) : null}
         </Stack.Group>
-        {isLoggedIn && latitude && walletAddress ? (
+        {isLoggedIn && latitude ? (
           <Stack.Group>
             <Stack.Screen
               name={PheedStackScreens.MainPheed}
