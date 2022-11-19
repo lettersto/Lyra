@@ -20,6 +20,8 @@ public class PheedImg {
 
     private String mime;
 
+    private String name;
+
     @ManyToOne
     @JoinColumn(name = "pheed_id")
     @JsonIgnore
