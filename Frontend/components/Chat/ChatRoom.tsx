@@ -8,7 +8,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   GestureResponderEvent,
-  Text,
 } from 'react-native';
 import {GiftedChat, InputToolbar, User} from 'react-native-gifted-chat';
 import {IMessage} from '../../constants/types';
@@ -25,7 +24,12 @@ import {
   getTotalBalanceFromWeb3,
   getUserWalletAddressAndCoin,
 } from '../../api/profile';
-import {sendDonationWeb3} from '../../api/chat';
+import {
+  getLiveChatPheedUser,
+  giveDonation,
+  sendDonationWeb3,
+} from '../../api/chat';
+import DonationList from './DonationList';
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
@@ -71,6 +75,7 @@ const ChatRoom = ({socket, buskerId}: Props) => {
   const [heartVisible, setHeartVisible] = useState(false);
   const [warningMsg, setWarningMsg] = useState('');
   const [balance, setBalance] = useState(0);
+  const [pheedId, setPheedId] = useState('');
 
   // 채팅 전송
   const onSend = (messages: IMessage[]) => {
@@ -94,19 +99,28 @@ const ChatRoom = ({socket, buskerId}: Props) => {
       setWarningMsg('0보다 큰 정수를 입력해주세요!');
       return;
     }
-    let data = '';
+    let ca = '';
     try {
-      data = await sendDonationWeb3(
+      const data = await sendDonationWeb3(
         myPrivateKey,
         buskerWalletAddress,
         Number(donation),
       );
+      ca = data.blockHash;
     } catch (error) {
       console.log(error);
       setWarningMsg('개인키를 다시 입력해주세요!');
       return;
     }
-    console.log(data);
+    // 피드에 도네이션 정보 저장
+    await giveDonation(pheedId, {
+      ca: ca,
+      coin: Number(donation),
+      content: message,
+      supporterId: Number(myInfo._id),
+    }).catch(err => {
+      console.log('피드에 도네 저장 오류', err);
+    });
 
     socket.emit(
       'send message',
@@ -157,12 +171,24 @@ const ChatRoom = ({socket, buskerId}: Props) => {
     }
     // 버스커 지갑 주소 받아오기
     fetchBuskerWalletAddress();
+    // 피드 id 받아오기
+    getLiveChatPheedUser(String(buskerId))
+      .then(pheed => setPheedId(pheed[0].pheedId))
+      .catch(err => {
+        console.log(err);
+      });
     return () => {
       socket.removeAllListeners('receive message');
       socket.removeAllListeners('fetch user');
       socket.removeAllListeners('heart');
     };
-  }, [participateChat, socket, walletAddress, fetchBuskerWalletAddress]);
+  }, [
+    participateChat,
+    socket,
+    walletAddress,
+    fetchBuskerWalletAddress,
+    buskerId,
+  ]);
 
   // 대화상자 커스텀
   const renderBubble = (props: any) => {
@@ -262,6 +288,37 @@ const ChatRoom = ({socket, buskerId}: Props) => {
           keyboardVerticalOffset={30}
         />
       </View>
+      <DonationList
+        donations={[
+          {
+            support_id: 1,
+            supporterId: 11,
+            supporterNickname: '임윤혁',
+            supporterImage_url:
+              'https://item.kakaocdn.net/do/d527e50eef755e7cade82bc8669b637a9f5287469802eca457586a25a096fd31',
+            content: 'hi',
+            coin: 30,
+          },
+          {
+            support_id: 2,
+            supporterId: 11,
+            supporterNickname: '임윤혁',
+            supporterImage_url:
+              'https://item.kakaocdn.net/do/d527e50eef755e7cade82bc8669b637a9f5287469802eca457586a25a096fd31',
+            content: '도네다',
+            coin: 30,
+          },
+          {
+            support_id: 3,
+            supporterId: 11,
+            supporterNickname: '임윤혁',
+            supporterImage_url:
+              'https://item.kakaocdn.net/do/d527e50eef755e7cade82bc8669b637a9f5287469802eca457586a25a096fd31',
+            content: '도네보내요',
+            coin: 30,
+          },
+        ]}
+      />
       <DonationModal
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
