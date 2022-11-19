@@ -10,7 +10,7 @@ import {
   GestureResponderEvent,
 } from 'react-native';
 import {GiftedChat, InputToolbar, User} from 'react-native-gifted-chat';
-import {IMessage} from '../../constants/types';
+import {DonationInfo, IMessage} from '../../constants/types';
 import CircleGradient from '../Utils/CircleGradient';
 import CustomBubble from './CustomBubble';
 import CustomMessage from './CustomMessage';
@@ -20,7 +20,17 @@ import {Socket} from 'socket.io-client';
 import {AuthContext} from '../../store/auth-context';
 import DonationModal from './DonationModal';
 import LottieView from 'lottie-react-native';
-import {getTotalBalanceFromWeb3} from '../../api/profile';
+import {
+  getTotalBalanceFromWeb3,
+  getUserWalletAddressAndCoin,
+} from '../../api/profile';
+import {
+  getChatDonations,
+  getLiveChatPheedUser,
+  giveDonation,
+  sendDonationWeb3,
+} from '../../api/chat';
+import DonationList from './DonationList';
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
@@ -30,14 +40,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 60,
     right: 20,
-    zIndex: 1000,
+    zIndex: 2,
   },
   inputToolbar: {
     left: '5%',
     right: '5%',
     borderRadius: 25,
   },
-  chatContainer: {height: deviceHeight - 80, bottom: 80},
+  container: {height: deviceHeight - 80, bottom: 80},
   donationImg: {marginLeft: 15, marginVertical: 15},
   heart: {
     position: 'absolute',
@@ -51,9 +61,10 @@ const styles = StyleSheet.create({
 interface Props {
   socket: Socket;
   buskerId: number;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ChatRoom = ({socket, buskerId}: Props) => {
+const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
   const [totalMessages, setMessages] = useState<IMessage[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [myInfo] = useState<User>({
@@ -62,9 +73,14 @@ const ChatRoom = ({socket, buskerId}: Props) => {
     avatar: useContext(AuthContext).imageURL!,
   });
   const {walletAddress} = useContext(AuthContext);
+  const [buskerWalletAddress, setBuskerWalletAddress] = useState('');
   const [heartVisible, setHeartVisible] = useState(false);
   const [warningMsg, setWarningMsg] = useState('');
   const [balance, setBalance] = useState(0);
+  const [pheedId, setPheedId] = useState('');
+  const [donations, setDonations] = useState<DonationInfo[]>([]);
+  const [totalDonation, setTotalDonation] = useState(0);
+  const [isDonationLoading, setIsDonationLoading] = useState(false);
 
   // 채팅 전송
   const onSend = (messages: IMessage[]) => {
@@ -73,17 +89,52 @@ const ChatRoom = ({socket, buskerId}: Props) => {
   };
 
   // 후원 채팅
-  const sendDonation = (message: string, donation: string) => {
+  const sendDonation = async (
+    myPrivateKey: string,
+    message: string,
+    donation: string,
+  ) => {
+    setIsDonationLoading(true);
     // check
     if (!/^[0-9]*$/.test(donation)) {
       setWarningMsg('숫자만 입력해주세요!');
+      setIsDonationLoading(false);
       return;
     }
 
     if (Number(donation) === 0) {
       setWarningMsg('0보다 큰 정수를 입력해주세요!');
+      setIsDonationLoading(false);
       return;
     }
+
+    if (Number(donation) > balance) {
+      setWarningMsg('잔액이 부족합니다!');
+      setIsDonationLoading(false);
+      return;
+    }
+    let ca = '';
+    try {
+      const data = await sendDonationWeb3(
+        myPrivateKey,
+        buskerWalletAddress,
+        Number(donation),
+      );
+      ca = data.blockHash;
+    } catch (error) {
+      console.log(error);
+      setWarningMsg('개인키를 다시 입력해주세요!');
+      return;
+    }
+    // 피드에 도네이션 정보 저장
+    await giveDonation(pheedId, {
+      ca: ca,
+      coin: Number(donation),
+      content: message,
+      supporterId: Number(myInfo._id),
+    }).catch(err => {
+      console.log('피드에 도네 저장 오류', err);
+    });
 
     socket.emit(
       'send message',
@@ -97,41 +148,93 @@ const ChatRoom = ({socket, buskerId}: Props) => {
       buskerId,
     );
     setWarningMsg('');
+    setIsLoading(false);
     setModalVisible(false);
   };
 
   // 채팅 시작
   const participateChat = useCallback(() => {
     socket.emit('enter room', buskerId);
-    console.log('참가');
     // 메시지 받기
     socket.on('receive message', (msg: IMessage) => {
-      console.log('왔다!');
       setMessages(prvMessages => [msg, ...prvMessages]);
+      // 후원 채팅 받을 시 리스트 다시 받아오기!
+      if (msg.donation) {
+        getChatDonations(pheedId).then(res => {
+          setDonations(res.data.reverse());
+          setTotalDonation(res.message);
+          // 잔액도 다시 받아오기
+          if (walletAddress) {
+            getTotalBalanceFromWeb3(walletAddress)
+              .then(bal => {
+                setBalance(bal);
+              })
+              .catch(err => console.log(err));
+          }
+        });
+      }
     });
     socket.on('heart', () => {
       heartUp();
     });
-  }, [socket, buskerId]);
+  }, [socket, buskerId, pheedId, walletAddress]);
+
+  // 버스커 지갑 주소 받아오기
+  const fetchBuskerWalletAddress = useCallback(async () => {
+    try {
+      const walletInfo = await getUserWalletAddressAndCoin(buskerId);
+      const address = walletInfo.address;
+      setBuskerWalletAddress(address);
+    } catch (error) {
+      console.log('busker 지갑 주소 받아오기', error);
+    }
+  }, [buskerId]);
 
   useEffect(() => {
     // 채팅방에 들어오면 채팅 참여!
-    participateChat();
-    // 지갑 잔액 받아오기
-    if (walletAddress) {
-      getTotalBalanceFromWeb3(walletAddress)
-        .then(bal => {
-          setBalance(bal);
+    const start = async () => {
+      setIsLoading(true);
+      participateChat();
+      // 지갑 잔액 받아오기
+      if (walletAddress) {
+        await getTotalBalanceFromWeb3(walletAddress)
+          .then(bal => {
+            setBalance(bal);
+          })
+          .catch(err => console.log('잔액 받아오기', err));
+      }
+      // 버스커 지갑 주소 받아오기
+      await fetchBuskerWalletAddress();
+      // 피드 id 받아와서 도네이션 조회
+      await getLiveChatPheedUser(String(buskerId))
+        .then(async pheed => {
+          setPheedId(pheed[0].pheedId);
+          await getChatDonations(pheed[0].pheedId)
+            .then(res => {
+              setDonations(res.data.reverse());
+              setTotalDonation(res.message);
+            })
+            .catch(err => console.log('도네이션 가져오기 에러', err));
         })
-        .catch(err => console.log(err));
-    }
-
+        .catch(err => {
+          console.log('피드 id 받아오기 에러', err);
+        });
+      setIsLoading(false);
+    };
+    start();
     return () => {
       socket.removeAllListeners('receive message');
       socket.removeAllListeners('fetch user');
       socket.removeAllListeners('heart');
     };
-  }, [participateChat, socket, walletAddress]);
+  }, [
+    participateChat,
+    socket,
+    walletAddress,
+    fetchBuskerWalletAddress,
+    buskerId,
+    setIsLoading,
+  ]);
 
   // 대화상자 커스텀
   const renderBubble = (props: any) => {
@@ -189,8 +292,8 @@ const ChatRoom = ({socket, buskerId}: Props) => {
     <ImageBackground
       resizeMode="cover"
       source={require('../../assets/image/chatBackGroundImg.png')}>
-      <View style={styles.chatContainer}>
-        {}
+      <View style={styles.container}>
+        <DonationList donations={donations} totalDonation={totalDonation} />
         <GiftedChat
           messages={totalMessages}
           onSend={onSend}
@@ -231,12 +334,15 @@ const ChatRoom = ({socket, buskerId}: Props) => {
           keyboardVerticalOffset={30}
         />
       </View>
+
       <DonationModal
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         sendDonation={sendDonation}
         warningMsg={warningMsg}
+        setWarningMsg={setWarningMsg}
         balance={balance}
+        isDonationLoading={isDonationLoading}
       />
     </ImageBackground>
   );

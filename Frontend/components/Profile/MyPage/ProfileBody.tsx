@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useContext} from 'react';
 import {View, StyleSheet, Dimensions} from 'react-native';
 
 import {useQuery, useMutation, useQueryClient} from 'react-query';
@@ -20,23 +20,20 @@ const ProfileBody = ({
 }) => {
   const queryClient = useQueryClient();
   const {userId} = useContext(AuthContext);
-  const [isFollowing, setIsFollowing] = useState(false);
   const buttonCustomStyle = {width: 236};
 
   const {data: followState} = useQuery(
     'followState',
     () => checkIsFollowing(profileData?.id, userId!),
     {
-      enabled: !isMyProfile,
-      onSuccess: () => {
-        setIsFollowing(followState);
-      },
+      enabled: !isMyProfile && !!profileData?.id && !!userId,
     },
   );
 
   const {
     mutate: followerMutate,
     // isError,
+    // isLoading,
   } = useMutation(followAndUnfollow);
 
   const followerhandler = () => {
@@ -87,11 +84,11 @@ const ProfileBody = ({
           </View>
           {!isMyProfile ? (
             <Button
-              title={isFollowing ? '팔로우 끊기' : '팔로우 하기'}
+              title={followState ? '팔로우 끊기' : '팔로우 하기'}
               btnSize="small"
               textSize="small"
               customStyle={buttonCustomStyle}
-              isGradient={isFollowing ? true : false}
+              isGradient={followState ? true : false}
               isOutlined={true}
               onPress={followerhandler}
             />

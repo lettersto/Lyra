@@ -5,17 +5,21 @@ import {useNavigation} from '@react-navigation/native';
 import IIcon from 'react-native-vector-icons/Ionicons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import {
+  PheedStackNavigationProps,
+  PheedStackScreens,
+} from '../../../constants/types';
 import Colors from '../../../constants/Colors';
 
 const PheedButtons = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<PheedStackNavigationProps>();
 
   const alarmPressHandler = () => {
-    navigation.navigate('Alarm');
+    navigation.navigate(PheedStackScreens.Alarm);
   };
 
   const searchPressHandler = () => {
-    navigation.navigate('SearchPheed');
+    navigation.navigate(PheedStackScreens.SearchPheed);
   };
 
   return (

@@ -1,8 +1,11 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useContext, useLayoutEffect, useState} from 'react';
 import {
-  RootStackParamList,
-  RootTabParamList,
-  PheedDetailParamList,
+  BottomTabNavigationProps,
+  PheedStackNavigationProps,
+  PheedStackRouteProps,
+  ChatStackScreens,
+  BottomTabScreens,
+  PheedStackScreens,
 } from '../../../constants/types';
 import {
   StyleSheet,
@@ -10,14 +13,10 @@ import {
   Text,
   Dimensions,
   ScrollView,
-  Image,
   Pressable,
-  BackHandler,
+  ActivityIndicator,
+  Modal,
 } from 'react-native';
-import {
-  NativeStackNavigationProp,
-  NativeStackScreenProps,
-} from '@react-navigation/native-stack';
 import Colors from '../../../constants/Colors';
 import LinearGradient from 'react-native-linear-gradient';
 import ProfilePhoto from '../../../components/Utils/ProfilePhoto';
@@ -29,76 +28,65 @@ import GradientLine from '../../../components/Utils/GradientLine';
 import Button from '../../../components/Utils/Button';
 import {
   CompositeNavigationProp,
-  useIsFocused,
   useNavigation,
+  useRoute,
 } from '@react-navigation/native';
 import Input from '../../../components/Utils/Input';
 import MoreInfo from './MoreInfo';
-import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import GestureRecognizer from 'react-native-swipe-gestures';
-import axios from '../../../api/axios';
 import Tooltip from 'react-native-walkthrough-tooltip';
-import {useQuery} from 'react-query';
+import {useMutation, useQuery, useQueryClient} from 'react-query';
 import ImageCarousel from '../../../components/Pheed/ImageCarousel';
+import {AuthContext} from '../../../store/auth-context';
+import {
+  createComments,
+  deleteComment,
+  deletePheed,
+  getComments,
+  getPheedDetail,
+  getWishbyUserPheed,
+  pushWish,
+} from '../../../api/pheed';
+import PheedDetailTitle from '../../../components/Navigation/TopNavBar/PheedDetailTitle';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'DetailPheed'>;
-
-type DetailPheedNavigationProps = CompositeNavigationProp<
-  BottomTabNavigationProp<RootTabParamList, 'Home'>,
-  NativeStackNavigationProp<RootStackParamList>
+type navigationProps = CompositeNavigationProp<
+  PheedStackNavigationProps,
+  BottomTabNavigationProps
 >;
 
-const DetailPheedScreen = ({route}: Props) => {
-  const navigate = useNavigation<DetailPheedNavigationProps>();
-  const [change, setChange] = useState(false);
-  const isFocused = useIsFocused();
-  const navigation = useNavigation();
+const DetailPheedScreen = ({navigation: screenNavigation}: any) => {
+  // const navigate = useNavigation<DetailPheedNavigationProps>();
+  const navigation = useNavigation<navigationProps>();
+  const route = useRoute<PheedStackRouteProps>();
+  const {userId} = useContext(AuthContext);
+  const {pheedId} = route.params as {pheedId: number};
+  const queryClient = useQueryClient();
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [isCommentModalVisible, setIsCommentModalVisible] =
+    useState<boolean>(false);
+  const [commentId, setCommentId] = useState<number | null>(null);
 
   useLayoutEffect(() => {
-    navigate.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
-  }, [navigate]);
+    navigation.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
+    navigation.setOptions({
+      headerTitle: () => <PheedDetailTitle navigation={screenNavigation} />,
+    });
+  }, [navigation, screenNavigation]);
 
-  useEffect(() => {
-    axios
-      .get(`/pheed/${route.params.pheedId}/comment`)
-      .then(function (response) {
-        SetComments(response.data.reverse());
-        // console.log(response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }, [route.params.pheedId, change, isFocused]);
-
-  // const like = route.params?.like;
-  const isLive = route.params?.isLive;
-  const [comments, SetComments] = useState<any[]>([]);
+  // const isLive = data.isLive;
 
   const goChat = () => {
-    navigation.navigate('Chat');
+    navigation.navigate(BottomTabScreens.Chat, {
+      screen: ChatStackScreens.MainChat,
+      params: {buskerId: 1, buskerNickname: '12345', buskerImg: ''}, // busker info 필요
+    });
   };
 
   const [registerComment, setRegisterComment] = useState('');
-  const [isLike, setIsLike] = useState(false);
-  const [isAlarm, setIsAlarm] = useState(false);
-
-  const register = () => {
-    axios
-      .post(`/pheed/${route.params.pheedId}/comment?user_id=1`, {
-        content: registerComment,
-      })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    setRegisterComment('');
-    setChange(!change);
-  };
+  // const [isAlarm, setIsAlarm] = useState(false);
 
   const goHome = () => {
-    navigate.getParent()?.setOptions({
+    navigation.getParent()?.setOptions({
       tabBarStyle: {
         backgroundColor: Colors.black500,
         height: 62,
@@ -107,87 +95,168 @@ const DetailPheedScreen = ({route}: Props) => {
         position: 'absolute',
       },
     });
-    navigation.navigate('MainPheed');
-  };
-
-  useEffect(() => {
-    const backAction = () => {
-      navigate.getParent()?.setOptions({
-        tabBarStyle: {
-          backgroundColor: Colors.black500,
-          height: 62,
-          paddingBottom: 8,
-          paddingTop: 10,
-          position: 'absolute',
-        },
-      });
-      // navigation.navigate('MainPheed');
-      navigation.goBack();
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction,
-    );
-
-    return () => backHandler.remove();
-  }, [navigate, navigation]);
-
-  const PheedDelete = () => {
-    axios
-      .delete(`/pheed/${route.params.pheedId}`)
-      .then(function () {
-        navigate.getParent()?.setOptions({
-          tabBarStyle: {
-            backgroundColor: Colors.black500,
-            height: 62,
-            paddingBottom: 8,
-            paddingTop: 10,
-            position: 'absolute',
-          },
-        });
-        navigation.navigate('MainPheed');
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    setChange(!change);
+    navigation.navigate(PheedStackScreens.MainPheed);
   };
 
   const [showTooltip, SetShowTooltip] = useState(false);
 
-  const getPheedDetail = async () => {
-    const res = await axios.get<PheedDetailParamList>(
-      `/pheed/${route.params.pheedId}`,
-    );
-    return res.data;
-  };
+  const {
+    isLoading: pheedDetailIsLoading,
+    data: pheedData,
+    error: pheedDetailError,
+  } = useQuery(['PheedDetail', pheedId], () => getPheedDetail(pheedId));
 
-  const result = useQuery('PheedDetail', getPheedDetail);
-  const {data, error} = result;
+  const {
+    mutate: deletePheedMutate,
+    // isLoading: deleteCommentIsLoading,
+    // isError: deleteWalletIsError,
+  } = useMutation(deletePheed, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('PheedContent');
+      navigation.navigate(PheedStackScreens.MainPheed);
+    },
+  });
 
-  if (error) {
-    console.log(error);
+  const {
+    data: commentsData,
+    isLoading: commentsIsLoading,
+    // isError,
+  } = useQuery('Comments', () => getComments(pheedId));
+
+  const {
+    mutate: createCommentsMutate,
+    // isLoading: createCommentsIsLoading,
+    // isError: createCommentsIsError,
+  } = useMutation(createComments, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('Comments');
+      setRegisterComment('');
+    },
+  });
+
+  const {
+    mutate: deleteCommentMutate,
+    // isLoading: deleteCommentIsLoading,
+    // isError: deleteWalletIsError,
+  } = useMutation(deleteComment, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('Comments');
+    },
+  });
+
+  const {
+    data: wishUserPheedData,
+    isLoading: wishUserPheedIsLoading,
+    // isError,
+  } = useQuery('wishUserPheed', () => getWishbyUserPheed(pheedId, userId));
+
+  const {
+    mutate: pushWishMutate,
+    // isLoading: pushWishIsLoading,
+    // isError: pushWishIsError,
+  } = useMutation(pushWish, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('wishUserPheed');
+      queryClient.invalidateQueries('PheedDetail');
+    },
+  });
+
+  if (pheedDetailError) {
+    console.log(pheedDetailError);
   }
 
-  // const getPheedComments = async () => {
-  //   const res = await axios.get<CommentParamList[]>(
-  //     `/pheed/${route.params.pheedId}/comment`,
-  //   );
-  //   return res.data;
-  // };
-
-  // const commentResult = useQuery('PheedComments', getPheedComments);
-  // const {commentData, commentError} = commentResult;
-
-  if (!data) {
-    return <Text style={styles.boldtext}>로딩</Text>;
+  if (pheedDetailIsLoading || commentsIsLoading || wishUserPheedIsLoading) {
+    return (
+      <View style={styles.detailpheed}>
+        <ActivityIndicator size="large" color={Colors.purple300} />
+      </View>
+    );
+  }
+  if (!pheedData) {
+    return (
+      <View style={styles.detailpheed}>
+        <ActivityIndicator size="large" color={Colors.purple300} />
+      </View>
+    );
   }
 
   return (
     <GestureRecognizer onSwipeRight={goHome} style={styles.container}>
       <ScrollView style={styles.detailpheed}>
+        <Modal
+          style={styles.modal}
+          transparent={true}
+          animationType="fade"
+          visible={isModalVisible}>
+          <View style={styles.modalBackground}>
+            <View style={styles.modalContainer}>
+              <Text style={styles.titleWarning}>삭제하시겠습니까?</Text>
+              <View style={styles.buttonContainer}>
+                <Button
+                  title="취소"
+                  btnSize="medium"
+                  textSize="medium"
+                  isGradient={true}
+                  isOutlined={true}
+                  onPress={() => (
+                    setIsModalVisible(false), SetShowTooltip(false)
+                  )}
+                />
+                <Button
+                  title="삭제"
+                  btnSize="medium"
+                  textSize="medium"
+                  isGradient={true}
+                  isOutlined={false}
+                  onPress={() =>
+                    deletePheedMutate({
+                      pheedId: pheedId,
+                    })
+                  }
+                />
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        <Modal
+          style={styles.modal}
+          transparent={true}
+          animationType="fade"
+          visible={isCommentModalVisible}>
+          <View style={styles.modalBackground}>
+            <View style={styles.modalContainer}>
+              <Text style={styles.titleWarning}>삭제하시겠습니까?</Text>
+              <View style={styles.buttonContainer}>
+                <Button
+                  title="취소"
+                  btnSize="medium"
+                  textSize="medium"
+                  isGradient={true}
+                  isOutlined={true}
+                  onPress={() => (
+                    setIsCommentModalVisible(false), SetShowTooltip(false)
+                  )}
+                />
+                <Button
+                  title="삭제"
+                  btnSize="medium"
+                  textSize="medium"
+                  isGradient={true}
+                  isOutlined={false}
+                  onPress={() => (
+                    deleteCommentMutate({
+                      pheedId: pheedId,
+                      commentId: commentId,
+                    }),
+                    setIsCommentModalVisible(false)
+                  )}
+                />
+              </View>
+            </View>
+          </View>
+        </Modal>
+
         <View style={styles.background}>
           <LinearGradient
             start={{x: 0, y: 0}}
@@ -201,16 +270,17 @@ const DetailPheedScreen = ({route}: Props) => {
               <View style={styles.profileContainer}>
                 <View style={styles.profileDatetime}>
                   <View style={styles.profileImg}>
-                    {/* <CircleProfile size="small" isGradient={false} /> */}
                     <ProfilePhoto
                       size="small"
                       isGradient={false}
-                      imageURI={data.userImage_url}
-                      profileUserId={data.userId}
+                      imageURI={pheedData.userImage_url}
+                      profileUserId={pheedData.userId}
                     />
                   </View>
-                  <View>
-                    <Text style={styles.boldtext}>{data.userNickname}</Text>
+                  <View style={styles.userContainer}>
+                    <Text style={styles.boldtext}>
+                      {pheedData.userNickname}
+                    </Text>
                     <View style={styles.dateContainer}>
                       <Icon
                         name="clock"
@@ -218,7 +288,7 @@ const DetailPheedScreen = ({route}: Props) => {
                         size={16}
                         style={styles.clock}
                       />
-                      <Text style={styles.text}>{data.startTime}</Text>
+                      <Text style={styles.text}>{pheedData.startTime}</Text>
                     </View>
                     <View style={styles.locationContainer}>
                       <Icon4
@@ -227,12 +297,12 @@ const DetailPheedScreen = ({route}: Props) => {
                         size={16}
                         style={styles.clock}
                       />
-                      <Text style={styles.text}>{data.location}</Text>
+                      <Text style={styles.text}>{pheedData.location}</Text>
                     </View>
                   </View>
                 </View>
                 <View style={styles.liveContainer}>
-                  {isLive ? (
+                  {pheedData.isLive ? (
                     <Button
                       title="LIVE"
                       btnSize="medium"
@@ -252,129 +322,151 @@ const DetailPheedScreen = ({route}: Props) => {
                       disabled
                     />
                   )}
-
-                  <Tooltip
-                    isVisible={showTooltip}
-                    content={
-                      <>
-                        <Pressable
-                          onPress={() => (
-                            navigation.navigate('UpdatePheed', route.params),
-                            SetShowTooltip(false)
-                          )}>
-                          <View style={styles.tooltipIcon}>
-                            <Text style={styles.tooltipText}>수정</Text>
-                            <Icon2
-                              name="pencil-outline"
-                              color={Colors.gray300}
-                              size={25}
-                              style={styles.dots}
-                            />
-                          </View>
-                        </Pressable>
-                        <Pressable onPress={PheedDelete}>
-                          <View style={styles.tooltipIcon}>
-                            <Text style={styles.tooltipText}>삭제</Text>
-                            <Icon4
-                              name="trash-outline"
-                              color={Colors.gray300}
-                              size={25}
-                              style={styles.dots}
-                            />
-                          </View>
-                        </Pressable>
-                      </>
-                    }
-                    placement="bottom"
-                    contentStyle={styles.tooltipContent}
-                    arrowStyle={styles.tooltipArrow}
-                    onClose={() => SetShowTooltip(false)}>
-                    <Pressable onPress={() => SetShowTooltip(true)}>
-                      <Icon2
-                        name="dots-vertical"
-                        color={Colors.gray300}
-                        size={20}
-                        style={styles.dots}
-                      />
-                    </Pressable>
-                  </Tooltip>
+                  {userId === pheedData.userId ? (
+                    <Tooltip
+                      isVisible={showTooltip}
+                      content={
+                        <>
+                          <Pressable
+                            onPress={() => {
+                              SetShowTooltip(false);
+                              navigation.navigate(
+                                PheedStackScreens.UpdatePheed,
+                                {
+                                  pheedId: pheedId,
+                                },
+                              );
+                            }}>
+                            <View style={styles.tooltipIcon}>
+                              <Text style={styles.tooltipText}>수정</Text>
+                              <Icon2
+                                name="pencil-outline"
+                                color={Colors.gray300}
+                                size={25}
+                                style={styles.dots}
+                              />
+                            </View>
+                          </Pressable>
+                          <Pressable onPress={() => setIsModalVisible(true)}>
+                            <View style={styles.tooltipIcon}>
+                              <Text style={styles.tooltipText}>삭제</Text>
+                              <Icon4
+                                name="trash-outline"
+                                color={Colors.gray300}
+                                size={25}
+                                style={styles.dots}
+                              />
+                            </View>
+                          </Pressable>
+                        </>
+                      }
+                      placement="bottom"
+                      contentStyle={styles.tooltipContent}
+                      arrowStyle={styles.tooltipArrow}
+                      onClose={() => SetShowTooltip(false)}>
+                      <Pressable onPress={() => SetShowTooltip(true)}>
+                        <Icon2
+                          name="dots-vertical"
+                          color={Colors.gray300}
+                          size={20}
+                          style={styles.dots}
+                        />
+                      </Pressable>
+                    </Tooltip>
+                  ) : (
+                    <></>
+                  )}
                 </View>
               </View>
               <View style={styles.lineContainer}>
                 <GradientLine />
               </View>
               <View style={styles.contentContainer}>
-                {/* <ScrollView horizontal>
-                  {data.pheedImg &&
-                    data.pheedImg.map(imgs => { */}
-                {data.pheedImg.length == 0 ? (
+                {pheedData.pheedImg.length === 0 ? (
                   <></>
                 ) : (
-                  <ImageCarousel images={data.pheedImg} />
+                  <ImageCarousel images={pheedData.pheedImg} />
                 )}
-                {/* <ScrollView horizontal>
-                  {imgUrl &&
-                    imgUrl.map(imgs => {
-                      return (
-                        <Image
-                          style={{width: 100, height: 100}}
-                          source={{uri: imgs.path}}
-                          // style={styles.text}
-                          key={imgs.id}
-                        />
-                      );
-                    })}
-                </ScrollView> */}
-              </View>
-              <View style={styles.titleContainer}>
-                <Text style={styles.titleText}>{data.title}</Text>
-                <Icon2
-                  name="play-box-multiple-outline"
-                  color={Colors.gray300}
-                  size={25}
-                  style={styles.clock}
-                />
               </View>
               <GradientLine />
+              <View style={styles.titleContainer}>
+                <Text style={styles.titleText}>{pheedData.title}</Text>
+                <View style={styles.likeContainer}>
+                  {wishUserPheedData.data ? (
+                    <Pressable
+                      onPress={() =>
+                        pushWishMutate({
+                          pheedId: pheedId,
+                          userId: userId,
+                        })
+                      }>
+                      <Icon3
+                        name="star"
+                        color={Colors.gray300}
+                        size={25}
+                        style={styles.star}
+                      />
+                    </Pressable>
+                  ) : (
+                    <Pressable
+                      onPress={() =>
+                        pushWishMutate({
+                          pheedId: pheedId,
+                          userId: userId,
+                        })
+                      }>
+                      <Icon3
+                        name="staro"
+                        color={Colors.gray300}
+                        size={25}
+                        style={styles.star}
+                      />
+                    </Pressable>
+                  )}
+                  <Text style={styles.text}>{pheedData.wishList.length}</Text>
+                </View>
+              </View>
               <View style={styles.contentText}>
-                <MoreInfo content={data.content} />
+                <MoreInfo content={pheedData.content} />
               </View>
             </View>
           </LinearGradient>
           {/* tag */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.tagsContainer}>
-              {data.pheedTag?.map((tag, idx) => {
-                if (tag.id === undefined) {
-                  return (
-                    <View key={idx} style={styles.tag}>
-                      <Button
-                        title={'#' + tag}
-                        btnSize="small"
-                        textSize="small"
-                        isGradient={true}
-                        isOutlined={true}
-                        onPress={goChat}
-                        disabled
-                      />
-                    </View>
-                  );
-                } else {
-                  return (
-                    <View key={idx} style={styles.tag}>
-                      <Button
-                        title={'#' + tag.name}
-                        btnSize="small"
-                        textSize="small"
-                        isGradient={true}
-                        isOutlined={true}
-                        onPress={goChat}
-                        disabled
-                      />
-                    </View>
-                  );
-                }
-              })}
+              {pheedData.pheedTag?.map(
+                (tag: {name: string; id: number}, idx: number) => {
+                  if (tag.id === undefined) {
+                    return (
+                      <View key={idx} style={styles.tag}>
+                        <Button
+                          title={'#' + tag}
+                          btnSize="small"
+                          textSize="small"
+                          isGradient={true}
+                          isOutlined={true}
+                          onPress={goChat}
+                          disabled
+                        />
+                      </View>
+                    );
+                  } else {
+                    return (
+                      <View key={idx} style={styles.tag}>
+                        <Button
+                          title={'#' + tag.name}
+                          btnSize="small"
+                          textSize="small"
+                          isGradient={true}
+                          isOutlined={true}
+                          onPress={goChat}
+                          disabled
+                        />
+                      </View>
+                    );
+                  }
+                },
+              )}
             </View>
           </ScrollView>
 
@@ -387,13 +479,13 @@ const DetailPheedScreen = ({route}: Props) => {
               style={styles.clock}
             />
             <Text style={styles.text}>
-              댓글 ({comments.length === 0 ? 0 : comments.length})
+              댓글 ({commentsData?.length === 0 ? 0 : commentsData?.length})
             </Text>
           </View>
           <View style={styles.commentWriteContainer}>
             <Input
               width={0.8}
-              height={0.05}
+              height={0.06}
               keyboard={1}
               borderRadius={15}
               placeholder="  댓글을 입력해주세요."
@@ -406,10 +498,16 @@ const DetailPheedScreen = ({route}: Props) => {
               textSize="medium"
               isGradient={true}
               isOutlined={false}
-              onPress={register}
+              onPress={() =>
+                createCommentsMutate({
+                  pheedId: pheedId,
+                  userId: userId,
+                  content: registerComment,
+                })
+              }
             />
           </View>
-          {comments.length === 0 ? (
+          {commentsData?.length === 0 ? (
             <></>
           ) : (
             <LinearGradient
@@ -422,47 +520,61 @@ const DetailPheedScreen = ({route}: Props) => {
               style={styles.gradientContainer2}>
               <View style={styles.Container2}>
                 <View style={styles.commentsContainer}>
-                  {comments.map((value, idx) => {
-                    const commentId = value.id;
-
-                    return (
-                      <View style={styles.commentCt} key={idx}>
-                        <View style={styles.commentContentCt}>
-                          <ProfilePhoto
-                            size="small"
-                            isGradient={false}
-                            imageURI={value.userImage_url}
-                            profileUserId={value.userId}
-                          />
-                          <View style={styles.commentTextContainer}>
-                            <Text style={styles.boldtext}>{value.userId}</Text>
-                            <Text style={styles.text}>{value.content}</Text>
+                  {commentsData?.map(
+                    (
+                      value: {
+                        id: number;
+                        userImage_url: string;
+                        userId: number;
+                        content: string;
+                        userNickname: string;
+                      },
+                      idx: number,
+                    ) => {
+                      const commentNum = value.id;
+                      return (
+                        <View style={styles.commentCt} key={idx}>
+                          <View style={styles.commentContentCt}>
+                            <ProfilePhoto
+                              size="small"
+                              isGradient={false}
+                              imageURI={value.userImage_url}
+                              profileUserId={value.userId}
+                            />
+                            <View style={styles.commentTextContainer}>
+                              <Text style={styles.boldtext}>
+                                {value.userNickname}
+                              </Text>
+                              <Text style={styles.text}>{value.content}</Text>
+                            </View>
                           </View>
+
+                          {userId === value.userId ? (
+                            <Pressable
+                              onPress={
+                                () => (
+                                  setIsCommentModalVisible(true),
+                                  setCommentId(commentNum)
+                                )
+                                // deleteCommentMutate({
+                                //   pheedId: pheedId,
+                                //   commentId: commentId,
+                                // })
+                              }>
+                              <Icon4
+                                name="trash-outline"
+                                color={Colors.gray300}
+                                size={16}
+                                style={styles.clock}
+                              />
+                            </Pressable>
+                          ) : (
+                            <></>
+                          )}
                         </View>
-                        <Pressable
-                          onPress={() => (
-                            axios
-                              .delete(
-                                `/pheed/${route.params.pheedId}/comment/${commentId}`,
-                              )
-                              .then(function (response) {
-                                console.log(response);
-                              })
-                              .catch(function (error) {
-                                console.log(error);
-                              }),
-                            setChange(!change)
-                          )}>
-                          <Icon4
-                            name="trash-outline"
-                            color={Colors.gray300}
-                            size={16}
-                            style={styles.clock}
-                          />
-                        </Pressable>
-                      </View>
-                    );
-                  })}
+                      );
+                    },
+                  )}
                 </View>
               </View>
             </LinearGradient>
@@ -472,28 +584,40 @@ const DetailPheedScreen = ({route}: Props) => {
 
       <View style={styles.textContainerBottom}>
         <View style={styles.goPheed}>
-          {isLike ? (
-            <Pressable onPress={() => setIsLike(false)}>
+          {wishUserPheedData.data ? (
+            <Pressable
+              onPress={() =>
+                pushWishMutate({
+                  pheedId: pheedId,
+                  userId: userId,
+                })
+              }>
               <Icon3
                 name="star"
                 color={Colors.gray300}
                 size={25}
-                style={styles.clock}
+                style={styles.star}
               />
             </Pressable>
           ) : (
-            <Pressable onPress={() => setIsLike(true)}>
+            <Pressable
+              onPress={() =>
+                pushWishMutate({
+                  pheedId: pheedId,
+                  userId: userId,
+                })
+              }>
               <Icon3
                 name="staro"
                 color={Colors.gray300}
                 size={25}
-                style={styles.clock}
+                style={styles.star}
               />
             </Pressable>
           )}
 
           <View style={styles.bottomBtnContainer}>
-            <View style={styles.alarmBtn}>
+            {/* <View style={styles.alarmBtn}>
               {isAlarm ? (
                 <Button
                   title="⏰ 알림 받기"
@@ -513,8 +637,8 @@ const DetailPheedScreen = ({route}: Props) => {
                   onPress={() => setIsAlarm(true)}
                 />
               )}
-            </View>
-            {isLive ? (
+            </View> */}
+            {pheedData.isLive ? (
               <Button
                 title="채팅하기"
                 btnSize="medium"
@@ -544,6 +668,8 @@ const DetailPheedScreen = ({route}: Props) => {
 const styles = StyleSheet.create({
   detailpheed: {
     backgroundColor: Colors.black500,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
   },
   name: {
     color: Colors.gray300,
@@ -556,12 +682,18 @@ const styles = StyleSheet.create({
   text: {
     color: Colors.gray300,
     fontFamily: 'NanumSquareRoundR',
+    fontSize: 14,
   },
   titleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginVertical: 5,
+    marginRight: 10,
+  },
+  likeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   titleText: {
     color: Colors.gray300,
@@ -573,12 +705,15 @@ const styles = StyleSheet.create({
   contentText: {
     color: Colors.gray300,
     fontFamily: 'NanumSquareRoundR',
-    marginVertical: 10,
+    marginTop: 5,
+    marginBottom: 10,
+    fontSize: 14,
   },
   boldtext: {
     color: Colors.gray300,
     fontFamily: 'NanumSquareRoundR',
     fontWeight: 'bold',
+    fontSize: 14,
   },
   gradientContainer: {
     width: Dimensions.get('window').width * 0.95,
@@ -631,6 +766,9 @@ const styles = StyleSheet.create({
     marginTop: 30,
     paddingVertical: 5,
   },
+  userContainer: {
+    marginLeft: 5,
+  },
   dateContainer: {
     flexDirection: 'row',
     marginBottom: 5,
@@ -638,6 +776,10 @@ const styles = StyleSheet.create({
   },
   locationContainer: {
     flexDirection: 'row',
+  },
+  star: {
+    marginLeft: 15,
+    marginRight: 5,
   },
   clock: {
     marginRight: 5,
@@ -659,9 +801,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   contentContainer: {
-    justifyContent: 'center',
-    marginLeft: 5,
-    marginRight: 5,
+    alignItems: 'center',
     marginBottom: 10,
   },
   tagsContainer: {
@@ -733,12 +873,14 @@ const styles = StyleSheet.create({
   },
   bottomBtnContainer: {
     flexDirection: 'row',
+    marginRight: 15,
   },
   alarmBtn: {
     marginRight: 5,
   },
   container: {
     flex: 1,
+    backgroundColor: Colors.black500,
   },
   tooltipContent: {
     backgroundColor: Colors.black500,
@@ -760,6 +902,39 @@ const styles = StyleSheet.create({
     color: Colors.gray300,
     marginRight: 3,
     fontFamily: 'NanumSquareRoundR',
+  },
+  modal: {
+    flex: 1,
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#202020ee',
+  },
+  modalContainer: {
+    backgroundColor: Colors.black500,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '80%',
+    height: '20%',
+    borderColor: Colors.purple300,
+    borderWidth: 1,
+  },
+  titleWarning: {
+    marginVertical: 5,
+    fontFamily: 'NanumSquareRoundR',
+    fontSize: 18,
+    color: 'white',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    width: '50%',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    position: 'relative',
+    marginTop: 15,
   },
 });
 

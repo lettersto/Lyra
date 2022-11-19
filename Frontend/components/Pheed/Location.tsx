@@ -8,12 +8,9 @@ import {useNavigation} from '@react-navigation/native';
 import {PheedMapContext} from '../../store/pheedMap-context';
 
 // {SetDate}: {SetDate: Dispatch<SetStateAction<string>>}
-const Location = ({}) => {
+const Location = ({pheedMapLocation}: {pheedMapLocation: string}) => {
   const navigation = useNavigation();
   const {pheedMapLocationAddInfo} = useContext(PheedMapContext);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [isDatePickerVisible, setDatePickerVIsibility] = useState(false);
-  const [text, onChangeText] = useState<string>();
 
   return (
     <>
@@ -31,16 +28,15 @@ const Location = ({}) => {
             navigation.navigate('LocationSearch');
           }}>
           <Text style={styles.text}>
+            <Icon name="location" color={Colors.gray300} size={20} />
             {pheedMapLocationAddInfo === '' ? (
-              <>
-                <Icon name="location" color={Colors.gray300} size={20} />
+              pheedMapLocation === '' ? (
                 <Text> 장소</Text>
-              </>
+              ) : (
+                <Text> {pheedMapLocation}</Text>
+              )
             ) : (
-              <>
-                <Icon name="clock" color={Colors.gray300} size={20} />
-                <Text> {pheedMapLocationAddInfo}</Text>
-              </>
+              <Text> {pheedMapLocationAddInfo}</Text>
             )}
           </Text>
           {/* <LocationModal

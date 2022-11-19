@@ -2,12 +2,16 @@ import React from 'react';
 import {Pressable, Text, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
+import {
+  ProfileStackScreens,
+  ProfileStackNavigationProps,
+} from '../../../constants/types';
 import Colors from '../../../constants/Colors';
 
 const EditProfileButton = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<ProfileStackNavigationProps>();
   const pressHandler = () => {
-    navigation.navigate('EditProfile');
+    navigation.navigate(ProfileStackScreens.EditProfile);
   };
 
   return (

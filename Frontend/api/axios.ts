@@ -1,26 +1,9 @@
-import axios, {
-  AxiosInstance,
-  AxiosInterceptorManager,
-  AxiosRequestConfig,
-  AxiosResponse,
-} from 'axios';
+import axios from 'axios';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
-type responseFormat<T = any> = {
-  response: T;
-  refreshedToken?: string; // 이름 맞게 바꿔야 한다
-};
-
-interface authAxiosInstance extends AxiosInstance {
-  interceptors: {
-    request: AxiosInterceptorManager<AxiosRequestConfig>;
-    response: AxiosInterceptorManager<AxiosResponse<responseFormat>>;
-  };
-}
-
 export const baseURL = 'http://k7c105.p.ssafy.io:8080';
+let refreshToken: string | null = null;
 
-// content-type은 무엇인지
 const instance = axios.create({
   baseURL,
   headers: {
@@ -28,42 +11,27 @@ const instance = axios.create({
   },
 });
 
-export const authAxios: authAxiosInstance = axios.create({
-  baseURL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-export const refresh = async (failedRequest: any) => {
-  // try - catch
-  try {
-    const refreshToken = await EncryptedStorage.getItem('refreshToken');
-    const response = await axios({
-      url: 'http://k7c105.p.ssafy.io:8080/token/refresh',
-      method: 'GET',
-      data: {
-        refreshToken,
-      },
-    });
-    const newAccessToken = response.data.accessToken;
-    failedRequest.response.config.headers.Authorization = `Bearer ${newAccessToken}`;
-    // set할 때 JSON.stringify가 필요한지 체크 필요
-    await EncryptedStorage.setItem('accessToken', newAccessToken);
-    return failedRequest;
-  } catch (err) {
-    if (__DEV__) {
-      console.error(err);
-    }
-  }
+export const refresh = async () => {
+  refreshToken = refreshToken
+    ? refreshToken
+    : await EncryptedStorage.getItem('refreshToken');
+  return axios({
+    url: baseURL + '/token/refresh',
+    method: 'POST',
+    params: {
+      'REFRESH-TOKEN': refreshToken,
+      Authorization: refreshToken,
+    },
+  });
 };
 
-authAxios.interceptors.request.use(
+instance.interceptors.request.use(
   async config => {
-    const accessToken = await EncryptedStorage.getItem('accessToken');
-
     if (!config.headers?.Authorization) {
-      config.headers!.Authorization = `Bearer ${accessToken}`;
+      refreshToken = refreshToken
+        ? refreshToken
+        : await EncryptedStorage.getItem('refreshToken');
+      config.headers!.Authorization = refreshToken;
     }
     return config;
   },
@@ -72,14 +40,22 @@ authAxios.interceptors.request.use(
   },
 );
 
-authAxios.interceptors.response.use(
+instance.interceptors.response.use(
   response => response,
   async error => {
     const failedRequest = error.config;
-    if (error.response.status === 403 && !failedRequest._retry) {
+    if (error?.response?.status === 403 && !failedRequest?._retry) {
       failedRequest._retry = true;
-      const RequestWithNewAccessToken = await refresh(failedRequest);
-      return authAxios(RequestWithNewAccessToken);
+      try {
+        const _response = await refresh();
+        const _refreshToken = _response?.data?.refreshToken;
+        failedRequest.response.config.headers.Authorization = _refreshToken;
+        await EncryptedStorage.setItem('refreshToken', _refreshToken);
+        // return failedRequest;
+        return instance(failedRequest);
+      } catch (err) {
+        return Promise.reject(err);
+      }
     }
     return Promise.reject(error);
   },

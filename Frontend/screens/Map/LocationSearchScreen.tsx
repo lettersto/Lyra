@@ -1,6 +1,4 @@
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import Config from 'react-native-config';
 import MapView, {Marker, PROVIDER_GOOGLE, Region} from 'react-native-maps';
@@ -10,14 +8,16 @@ import MapStyle from '../../components/Map/MapStyle';
 import Button from '../../components/Utils/Button';
 import Input from '../../components/Utils/Input';
 import Colors from '../../constants/Colors';
-import {RootStackParamList} from '../../constants/types';
 import {PheedMapContext} from '../../store/pheedMap-context';
-
-type Props = NativeStackScreenProps<RootStackParamList>;
+import {PheedStackNavigationProps} from '../../constants/types';
 
 const deviceWidth = Dimensions.get('window').width;
 
-const LocationSearchScreen = ({navigation}: Props) => {
+const LocationSearchScreen = ({
+  navigation,
+}: {
+  navigation: PheedStackNavigationProps;
+}) => {
   // const [location, setLocation] = useState<Region>({
   //   latitudeDelta: 0.005,
   //   longitudeDelta: 0.005,
@@ -37,6 +37,22 @@ const LocationSearchScreen = ({navigation}: Props) => {
     setPheedMapLongitude,
   } = useContext(PheedMapContext);
 
+  useEffect(() => {
+    setPheedMapRegionCode(null);
+    setPheedMapLocationInfo('');
+    setPheedMapRegionName('');
+    setPheedMapLatitude(0);
+    setPheedMapLongitude(0);
+    setPheedMapLocationAddInfo('');
+  }, [
+    setPheedMapRegionCode,
+    setPheedMapLocationInfo,
+    setPheedMapRegionName,
+    setPheedMapLatitude,
+    setPheedMapLongitude,
+    setPheedMapLocationAddInfo,
+  ]);
+
   const getTownName = async (lat: number, lng: number) => {
     const response = await fetch(
       `https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${lng}&y=${lat}`,
@@ -53,14 +69,13 @@ const LocationSearchScreen = ({navigation}: Props) => {
   };
 
   const pressHandler = () => {
-    navigation.navigate('CreatePheed');
+    navigation.goBack();
   };
 
   return (
     <>
       <View style={styles.body}>
         <View style={{flex: 1}}>
-          {/* <Text style={styles.title}>주소 찾기</Text> */}
           <LocationSearch
             onPress={(data, detail) => {
               const {

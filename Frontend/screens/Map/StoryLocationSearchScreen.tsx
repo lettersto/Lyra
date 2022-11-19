@@ -25,11 +25,13 @@ const StoryLocationSerachScreen = () => {
     setPheedMapLatitude,
     setPheedMapLongitude,
     setPheedMapRegionCode,
+    setPheedMapLocationInfo,
   } = useContext(PheedMapContext);
 
   useEffect(() => {
     setPheedMapRegionCode(null);
-  }, [setPheedMapRegionCode]);
+    setPheedMapLocationInfo('');
+  }, [setPheedMapRegionCode, setPheedMapLocationInfo]);
 
   const getTownName = async (lat: number, lng: number) => {
     const response = await fetch(
@@ -60,6 +62,7 @@ const StoryLocationSerachScreen = () => {
           } = detail!;
           setPheedMapLatitude(lat);
           setPheedMapLongitude(lng);
+          setPheedMapLocationInfo(_data.description);
           getTownName(lat, lng);
         }}
       />
@@ -81,7 +84,7 @@ const StoryLocationSerachScreen = () => {
           <Icon name="map-marker" size={20} color="white" />
         </Marker>
       </MapView>
-      {pheedMapLatitude !== 0 && (
+      {pheedMapLocationInfo !== '' && (
         <View style={styles.buttonContainer}>
           <Text style={styles.name}>{pheedMapLocationInfo}</Text>
           <Button

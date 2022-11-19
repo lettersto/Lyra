@@ -15,6 +15,7 @@ export interface MapContextType {
   mapLongitude: number;
   mapZoomLv: number;
   pheeds: any[];
+  pheedsCnt: number;
   setUserLocationInfo: Dispatch<SetStateAction<string | null>>;
   setUserRegionCode: Dispatch<SetStateAction<string | null>>;
   setUserLatitude: Dispatch<SetStateAction<number>>;
@@ -23,6 +24,7 @@ export interface MapContextType {
   setMapLongitude: Dispatch<SetStateAction<number>>;
   setMapZoomLv: Dispatch<SetStateAction<number>>;
   setPheeds: Dispatch<SetStateAction<any[]>>;
+  setPheedsCnt: Dispatch<SetStateAction<number>>;
 }
 
 export const MapContext = createContext<MapContextType>({
@@ -34,6 +36,7 @@ export const MapContext = createContext<MapContextType>({
   mapLongitude: 0,
   mapZoomLv: 17,
   pheeds: [],
+  pheedsCnt: 0,
   setUserLocationInfo: () => {},
   setUserRegionCode: () => {},
   setUserLatitude: () => {},
@@ -42,6 +45,7 @@ export const MapContext = createContext<MapContextType>({
   setMapLongitude: () => {},
   setMapZoomLv: () => {},
   setPheeds: () => {},
+  setPheedsCnt: () => {},
 });
 
 export const MapProvider = ({children}: {children: ReactNode}) => {
@@ -53,6 +57,7 @@ export const MapProvider = ({children}: {children: ReactNode}) => {
   const [mapLongitude, setMapLongitude] = useState<number>(0);
   const [mapZoomLv, setMapZoomLv] = useState<number>(17);
   const [pheeds, setPheeds] = useState<any[]>([]);
+  const [pheedsCnt, setPheedsCnt] = useState<number>(0);
 
   const mapValue = {
     userLocationInfo,
@@ -63,6 +68,7 @@ export const MapProvider = ({children}: {children: ReactNode}) => {
     mapLongitude,
     mapZoomLv,
     pheeds,
+    pheedsCnt,
     setUserLocationInfo,
     setUserRegionCode,
     setUserLatitude,
@@ -71,6 +77,7 @@ export const MapProvider = ({children}: {children: ReactNode}) => {
     setMapLongitude,
     setMapZoomLv,
     setPheeds,
+    setPheedsCnt,
   };
 
   return <MapContext.Provider value={mapValue}>{children}</MapContext.Provider>;
