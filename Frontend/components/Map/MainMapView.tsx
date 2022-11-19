@@ -24,6 +24,7 @@ import {getMapPheeds as getMapPheedsApi} from '../../api/pheed';
 import ProfilePhoto from '../Utils/ProfilePhoto';
 import {MapContext} from '../../store/map-context';
 import StarImg from './StarImg';
+import {ChatContext} from '../../store/chat-context';
 
 interface ILocation {
   latitude: number;
@@ -45,6 +46,7 @@ const MainMapView = () => {
   // const [zoomLv, setZoomLv] = useState(18);
   const [pheedId, setPheedId] = useState<number | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const {socket} = useContext(ChatContext);
 
   useEffect(() => {
     if (Platform.OS === 'android') {
@@ -163,6 +165,12 @@ const MainMapView = () => {
           showsUserLocation={true}
           showsMyLocationButton={true}>
           {pheeds.map(pheed => {
+            let cnt = 1;
+            socket!.on('total user cnt', (num: number) => {
+              cnt = num;
+            });
+            socket!.emit('total user cnt', pheed.userId);
+
             return (
               <View key={uuidv4()}>
                 <View style={[styles.profile]}>
@@ -176,7 +184,7 @@ const MainMapView = () => {
                       setIsModalVisible(true);
                     }}>
                     {/* todo: 채팅에서 받은 인원 추가하기  */}
-                    <StarImg chatCnt={3} />
+                    <StarImg chatCnt={cnt} />
                   </Marker>
                 </View>
                 <View style={[styles.profile]}>

@@ -181,9 +181,13 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
 
   // 버스커 지갑 주소 받아오기
   const fetchBuskerWalletAddress = useCallback(async () => {
-    const walletInfo = await getUserWalletAddressAndCoin(buskerId);
-    const address = walletInfo.address;
-    setBuskerWalletAddress(address);
+    try {
+      const walletInfo = await getUserWalletAddressAndCoin(buskerId);
+      const address = walletInfo.address;
+      setBuskerWalletAddress(address);
+    } catch (error) {
+      console.log('busker 지갑 주소 받아오기', error);
+    }
   }, [buskerId]);
 
   useEffect(() => {
@@ -197,21 +201,23 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
           .then(bal => {
             setBalance(bal);
           })
-          .catch(err => console.log(err));
+          .catch(err => console.log('잔액 받아오기', err));
       }
       // 버스커 지갑 주소 받아오기
       await fetchBuskerWalletAddress();
-      // 피드 id 받아오기
+      // 피드 id 받아와서 도네이션 조회
       await getLiveChatPheedUser(String(buskerId))
         .then(async pheed => {
           setPheedId(pheed[0].pheedId);
-          await getChatDonations(pheed[0].pheedId).then(res => {
-            setDonations(res.data.reverse());
-            setTotalDonation(res.message);
-          });
+          await getChatDonations(pheed[0].pheedId)
+            .then(res => {
+              setDonations(res.data.reverse());
+              setTotalDonation(res.message);
+            })
+            .catch(err => console.log('도네이션 가져오기 에러', err));
         })
         .catch(err => {
-          console.log(err);
+          console.log('피드 id 받아오기 에러', err);
         });
       setIsLoading(false);
     };

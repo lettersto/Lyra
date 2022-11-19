@@ -1,4 +1,10 @@
-import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import ReactNativeModal from 'react-native-modal';
@@ -17,6 +23,7 @@ import {
 } from '../../constants/types';
 import ProfilePhoto from '../Utils/ProfilePhoto';
 import Button from '../Utils/Button';
+import {ChatContext} from '../../store/chat-context';
 
 type navigationProps = CompositeNavigationProp<
   BottomTabNavigationProps,
@@ -39,15 +46,21 @@ const MapPheedModal = ({
   const gradientColors = [Colors.pink300, Colors.purple300];
   const navigation = useNavigation<navigationProps>();
   const [pheed, setPheed] = useState<PheedDetailParamList>();
+  const [userCnt, setUserCnt] = useState(0);
+  const {socket} = useContext(ChatContext);
 
   useEffect(() => {
     const fetch = async () => {
+      socket!.on('fetch user', (num: number) => {
+        setUserCnt(num);
+      });
       const res = await getPheedDetail(pheedId);
       setPheed(res);
-      console.log(res);
+      console.log(res.userId);
+      socket!.emit('fetch user', res.userId);
     };
     fetch();
-  }, [pheedId]);
+  }, [pheedId, socket]);
 
   return (
     <ReactNativeModal
@@ -111,14 +124,13 @@ const MapPheedModal = ({
                   </View>
                 </Pressable>
                 <View style={styles.bottomContainer}>
-                  {/* todo: 채팅 인원 표시하면 추가 */}
                   <View style={styles.viewerCnt}>
                     <Icon2
                       name="person-outline"
                       color={Colors.gray300}
                       size={20}
                     />
-                    {/* <Text style={styles.text}>22</Text> */}
+                    <Text style={styles.text}>{userCnt}</Text>
                   </View>
                   <Button
                     title="LIVE"
