@@ -70,7 +70,7 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public List<ResponseFollower> searchFollowerList(Long userId, Pageable pageable) {
+    public List<ResponseFollower> searchFollowingList(Long userId, Pageable pageable) {
         User user = userRepository.findById(userId).orElse(null);
         List<Follow> followerList = followRepository.findAllByFollowerId(user, pageable).orElseGet(null);
 //      팔로워만 뽑아내기 위한 초기화
@@ -84,7 +84,7 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public List<ResponseFollowing> searchFollowingList(Long userId, Pageable pageable) {
+    public List<ResponseFollowing> searchFollowerList(Long userId, Pageable pageable) {
         User user = userRepository.findById(userId).orElse(null);
         List<Follow> followingList = followRepository.findAllByFollowingId(user, pageable).orElseGet(null);
 //      팔로워만 뽑아내기 위한 초기화
