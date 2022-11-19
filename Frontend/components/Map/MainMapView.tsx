@@ -46,6 +46,7 @@ const MainMapView = () => {
   // const [zoomLv, setZoomLv] = useState(18);
   const [pheedId, setPheedId] = useState<number | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+
   const {socket} = useContext(ChatContext);
 
   useEffect(() => {
@@ -179,16 +180,17 @@ const MainMapView = () => {
                       latitude: pheed.latitude,
                       longitude: pheed.longitude,
                     }}
+                    tracksViewChanges={false}
                     onPress={() => {
                       setPheedId(pheed.pheedId);
                       setIsModalVisible(true);
                     }}>
-                    {/* todo: 채팅에서 받은 인원 추가하기  */}
                     <StarImg chatCnt={cnt} />
                   </Marker>
                 </View>
                 <View style={[styles.profile]}>
                   <Marker
+                    tracksViewChanges={false}
                     coordinate={{
                       latitude: pheed.latitude,
                       longitude: pheed.longitude,
@@ -202,12 +204,6 @@ const MainMapView = () => {
                     />
                     <View style={{height: 50}} />
                   </Marker>
-                  {/* <View style={{position: 'absolute'}}>
-                  <Image
-                    style={styles.star}
-                    source={require('../../assets/image/fourstars.png')}
-                  />
-                </View> */}
                 </View>
               </View>
             );
