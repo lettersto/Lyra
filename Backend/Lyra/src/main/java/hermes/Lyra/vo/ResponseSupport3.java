@@ -8,6 +8,8 @@ import lombok.Data;
 @Data
 public class ResponseSupport3 {
 
+    private Long supportId;
+
     private Long supporterId;
 
     private String supporterImage_url;
