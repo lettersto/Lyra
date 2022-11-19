@@ -59,6 +59,7 @@ public class PheedController {
 
 //        ResponsePheed responsePheed = mapper.map(createPheed, ResponsePheed.class);
 //        responsePheed.setPheedTag(pheedTagList);
+        log.info("hi");
 
         s3UploadService.upload(images, newPheed);
 
