@@ -102,6 +102,11 @@ const ChatRoom = ({socket, buskerId}: Props) => {
       setWarningMsg('0보다 큰 정수를 입력해주세요!');
       return;
     }
+
+    if (Number(donation) > balance) {
+      setWarningMsg('잔액이 부족합니다!');
+      return;
+    }
     let ca = '';
     try {
       const data = await sendDonationWeb3(
@@ -151,13 +156,21 @@ const ChatRoom = ({socket, buskerId}: Props) => {
         getChatDonations(pheedId).then(res => {
           setDonations(res.data.reverse());
           setTotalDonation(res.message);
+          // 잔액도 다시 받아오기
+          if (walletAddress) {
+            getTotalBalanceFromWeb3(walletAddress)
+              .then(bal => {
+                setBalance(bal);
+              })
+              .catch(err => console.log(err));
+          }
         });
       }
     });
     socket.on('heart', () => {
       heartUp();
     });
-  }, [socket, buskerId, pheedId]);
+  }, [socket, buskerId, pheedId, walletAddress]);
 
   // 버스커 지갑 주소 받아오기
   const fetchBuskerWalletAddress = useCallback(async () => {
@@ -309,6 +322,7 @@ const ChatRoom = ({socket, buskerId}: Props) => {
         setModalVisible={setModalVisible}
         sendDonation={sendDonation}
         warningMsg={warningMsg}
+        setWarningMsg={setWarningMsg}
         balance={balance}
       />
     </ImageBackground>

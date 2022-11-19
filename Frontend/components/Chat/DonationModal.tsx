@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction, useState} from 'react';
+import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import {Dimensions, Modal, StyleSheet, Text, View} from 'react-native';
 import Colors from '../../constants/Colors';
 import Button from '../Utils/Button';
@@ -13,6 +13,7 @@ interface Props {
     donation: string,
   ) => void;
   warningMsg: string;
+  setWarningMsg: Dispatch<SetStateAction<string>>;
   balance: number;
 }
 
@@ -22,10 +23,18 @@ const DonationModal = ({
   sendDonation,
   warningMsg,
   balance,
+  setWarningMsg,
 }: Props) => {
   const [message, setMessage] = useState('');
   const [donation, setDonation] = useState('');
   const [privateKey, setPrivateKey] = useState('');
+
+  useEffect(() => {
+    setMessage('');
+    setDonation('');
+    setPrivateKey('');
+    setWarningMsg('');
+  }, [modalVisible, setWarningMsg]);
 
   return (
     <View>
@@ -35,15 +44,11 @@ const DonationModal = ({
         visible={modalVisible}
         onRequestClose={() => {
           setModalVisible(!modalVisible);
-          setDonation('');
-          setMessage('');
         }}>
         <View
           style={styles.blankSpace}
           onTouchEnd={() => {
             setModalVisible(false);
-            setDonation('');
-            setMessage('');
           }}
         />
         <View style={styles.bottomView}>
