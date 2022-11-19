@@ -7,7 +7,11 @@ import Input from '../Utils/Input';
 interface Props {
   modalVisible: boolean;
   setModalVisible: Dispatch<SetStateAction<boolean>>;
-  sendDonation: (message: string, donation: string) => void;
+  sendDonation: (
+    myPrivateKey: string,
+    message: string,
+    donation: string,
+  ) => void;
   warningMsg: string;
   balance: number;
 }
@@ -21,6 +25,7 @@ const DonationModal = ({
 }: Props) => {
   const [message, setMessage] = useState('');
   const [donation, setDonation] = useState('');
+  const [privateKey, setPrivateKey] = useState('');
 
   return (
     <View>
@@ -50,6 +55,19 @@ const DonationModal = ({
             <Text style={styles.modalText}>
               금액 및 메시지가 공개적으로 표시됩니다.
             </Text>
+            <Text style={styles.modalText}>개인키</Text>
+            <Input
+              setEnteredValue={setPrivateKey}
+              enteredValue={privateKey}
+              width={0.77}
+              height={0.06}
+              borderRadius={25}
+              keyboard={1}
+              placeholder="개인키를 입력해주세요."
+              customStyle={styles.input}
+              maxLength={70}
+            />
+            <Text style={styles.modalText}>금액</Text>
             <Input
               setEnteredValue={setDonation}
               enteredValue={donation}
@@ -85,7 +103,7 @@ const DonationModal = ({
               isOutlined={false}
               isGradient={true}
               customStyle={styles.button}
-              onPress={() => sendDonation(message, donation)}
+              onPress={() => sendDonation(privateKey, message, donation)}
             />
           </View>
         </View>

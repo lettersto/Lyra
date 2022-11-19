@@ -8,6 +8,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   GestureResponderEvent,
+  Text,
 } from 'react-native';
 import {GiftedChat, InputToolbar, User} from 'react-native-gifted-chat';
 import {IMessage} from '../../constants/types';
@@ -20,7 +21,11 @@ import {Socket} from 'socket.io-client';
 import {AuthContext} from '../../store/auth-context';
 import DonationModal from './DonationModal';
 import LottieView from 'lottie-react-native';
-import {getTotalBalanceFromWeb3} from '../../api/profile';
+import {
+  getTotalBalanceFromWeb3,
+  getUserWalletAddressAndCoin,
+} from '../../api/profile';
+import {sendDonationWeb3} from '../../api/chat';
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
@@ -62,6 +67,7 @@ const ChatRoom = ({socket, buskerId}: Props) => {
     avatar: useContext(AuthContext).imageURL!,
   });
   const {walletAddress} = useContext(AuthContext);
+  const [buskerWalletAddress, setBuskerWalletAddress] = useState('');
   const [heartVisible, setHeartVisible] = useState(false);
   const [warningMsg, setWarningMsg] = useState('');
   const [balance, setBalance] = useState(0);
@@ -73,7 +79,11 @@ const ChatRoom = ({socket, buskerId}: Props) => {
   };
 
   // 후원 채팅
-  const sendDonation = (message: string, donation: string) => {
+  const sendDonation = async (
+    myPrivateKey: string,
+    message: string,
+    donation: string,
+  ) => {
     // check
     if (!/^[0-9]*$/.test(donation)) {
       setWarningMsg('숫자만 입력해주세요!');
@@ -84,6 +94,19 @@ const ChatRoom = ({socket, buskerId}: Props) => {
       setWarningMsg('0보다 큰 정수를 입력해주세요!');
       return;
     }
+    let data = '';
+    try {
+      data = await sendDonationWeb3(
+        myPrivateKey,
+        buskerWalletAddress,
+        Number(donation),
+      );
+    } catch (error) {
+      console.log(error);
+      setWarningMsg('개인키를 다시 입력해주세요!');
+      return;
+    }
+    console.log(data);
 
     socket.emit(
       'send message',
@@ -114,6 +137,13 @@ const ChatRoom = ({socket, buskerId}: Props) => {
     });
   }, [socket, buskerId]);
 
+  // 버스커 지갑 주소 받아오기
+  const fetchBuskerWalletAddress = useCallback(async () => {
+    const walletInfo = await getUserWalletAddressAndCoin(buskerId);
+    const address = walletInfo.address;
+    setBuskerWalletAddress(address);
+  }, [buskerId]);
+
   useEffect(() => {
     // 채팅방에 들어오면 채팅 참여!
     participateChat();
@@ -125,13 +155,14 @@ const ChatRoom = ({socket, buskerId}: Props) => {
         })
         .catch(err => console.log(err));
     }
-
+    // 버스커 지갑 주소 받아오기
+    fetchBuskerWalletAddress();
     return () => {
       socket.removeAllListeners('receive message');
       socket.removeAllListeners('fetch user');
       socket.removeAllListeners('heart');
     };
-  }, [participateChat, socket, walletAddress]);
+  }, [participateChat, socket, walletAddress, fetchBuskerWalletAddress]);
 
   // 대화상자 커스텀
   const renderBubble = (props: any) => {
