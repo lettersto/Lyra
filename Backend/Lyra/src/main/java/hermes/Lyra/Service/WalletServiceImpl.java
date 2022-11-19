@@ -35,8 +35,6 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public boolean createWallet(WalletDto walletDto) {
 
-
-
         try {
 
             ModelMapper mapper = new ModelMapper();
@@ -47,8 +45,6 @@ public class WalletServiceImpl implements WalletService {
 
 
             wallet.setUser(userRepository2.findById(walletDto.getUserId()).get());
-
-//            wallet.setCoin(0L);
 
             walletRepository.save(wallet);
 
