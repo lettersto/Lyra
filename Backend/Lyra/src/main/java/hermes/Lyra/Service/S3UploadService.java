@@ -68,6 +68,8 @@ public class S3UploadService {
 
             pheedImg.setMime(v.getContentType());
 
+            pheedImg.setName(v.getOriginalFilename());
+
             pheedImgRepository.save(pheedImg);
 
         }
@@ -102,6 +104,8 @@ public class S3UploadService {
             pheedImg.setPath(path.toString());
 
             pheedImg.setMime(v.getContentType());
+
+            pheedImg.setName(v.getOriginalFilename());
 
             pheedImgRepository.save(pheedImg);
 
