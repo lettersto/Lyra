@@ -47,7 +47,6 @@ const App = () => {
 
       if (refreshToken && _userId) {
         const userInfo: UserProfileType = await getUserProfile(Number(_userId));
-
         setIsLoggedIn(true);
         setUserId(userInfo.id);
         setNickname(userInfo.nickname);
@@ -66,8 +65,6 @@ const App = () => {
         setIsLoggedIn(false);
       }
     } catch (error) {
-      await EncryptedStorage.removeItem('refreshToken');
-      await EncryptedStorage.removeItem('userId');
       if (__DEV__) {
         console.error('Storage Check Error!', error);
       }
