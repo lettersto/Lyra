@@ -69,7 +69,7 @@ const UserChatButtons = ({buskerId}: Props) => {
 
   useEffect(() => {
     if (socket) {
-      socket.on('total user cnt', (cnt: number) => {
+      socket.on('end', (cnt: number) => {
         setEndModalVisible(true);
         // cnt를 저장
         setTotalCnt(cnt);
@@ -77,7 +77,7 @@ const UserChatButtons = ({buskerId}: Props) => {
     }
     return () => {
       if (socket) {
-        socket.removeAllListeners('total user cnt');
+        socket.removeAllListeners('end');
       }
     };
   }, [socket, buskerId, navigation]);
