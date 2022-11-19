@@ -16,6 +16,7 @@ import {
   PheedStackScreens,
 } from '../../constants/types';
 import ProfilePhoto from '../Utils/ProfilePhoto';
+import Button from '../Utils/Button';
 
 type navigationProps = CompositeNavigationProp<
   BottomTabNavigationProps,
@@ -110,15 +111,21 @@ const MapPheedModal = ({
                   </View>
                 </Pressable>
                 <View style={styles.bottomContainer}>
+                  {/* todo: 채팅 인원 표시하면 추가 */}
                   <View style={styles.viewerCnt}>
                     <Icon2
                       name="person-outline"
                       color={Colors.gray300}
                       size={20}
                     />
-                    <Text style={styles.text}>22</Text>
+                    {/* <Text style={styles.text}>22</Text> */}
                   </View>
-                  <Pressable
+                  <Button
+                    title="LIVE"
+                    btnSize="small"
+                    textSize="small"
+                    isGradient={true}
+                    isOutlined={false}
                     onPress={() => {
                       navigation.navigate(BottomTabScreens.Chat, {
                         screen: ChatStackScreens.MainChat,
@@ -128,13 +135,8 @@ const MapPheedModal = ({
                           buskerImg: pheed.userImage_url,
                         },
                       });
-                    }}>
-                    <Icon2
-                      name="chatbubble-ellipses-outline"
-                      color={Colors.gray300}
-                      size={20}
-                    />
-                  </Pressable>
+                    }}
+                  />
                 </View>
               </View>
             </View>
