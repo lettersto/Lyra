@@ -75,6 +75,7 @@ const UpdatePheedScreen = () => {
     // isError,
   } = useMutation(updatePheed, {
     onSuccess: () => {
+      queryClient.invalidateQueries('PheedContent');
       queryClient.invalidateQueries('PheedDetail');
       console.log('updatesuccess');
       navigation.navigate(PheedStackScreens.DetailPheed, {pheedId: pheedId});
@@ -105,13 +106,6 @@ const UpdatePheedScreen = () => {
 
   if (error) {
     console.log(error);
-  }
-  if (isLoading) {
-    return (
-      <>
-        <ActivityIndicator size="large" color={Colors.purple300} />
-      </>
-    );
   }
 
   for (var i = 0; i < pheedData.pheedTag.length; i++) {
@@ -193,6 +187,16 @@ const UpdatePheedScreen = () => {
         <View style={styles.loadingText}>
           <ActivityIndicator size="large" color={Colors.purple300} />
           <Text style={styles.text}>업로드 중입니다. 잠시만 기다려주세요.</Text>
+        </View>
+      </View>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingScreen}>
+        <View style={styles.loadingText}>
+          <ActivityIndicator size="large" color={Colors.purple300} />
         </View>
       </View>
     );

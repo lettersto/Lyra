@@ -22,9 +22,11 @@ type navigationProp = CompositeNavigationProp<
 const CreateButton = () => {
   const navigation = useNavigation<navigationProp>();
   const goPheed = () => {
+    setActive(false);
     navigation.navigate(PheedStackScreens.CreatePheed);
   };
   const goChat = () => {
+    setActive(false);
     navigation.navigate(BottomTabScreens.Chat, {
       screen: ChatStackScreens.MainChat,
     });
