@@ -15,9 +15,9 @@ public interface FollowService {
 //
 //    List<User> searchFollowingList(Long userId);
 
-    List<ResponseFollowing> searchFollowerList(Long userId, Pageable pageable);
+    List<ResponseFollower> searchFollowerList(Long userId, Pageable pageable);
 
-    List<ResponseFollower> searchFollowingList(Long userId, Pageable pageable);
+    List<ResponseFollowing> searchFollowingList(Long userId, Pageable pageable);
 
     int check(Long followerId, Long followingId);
 }
