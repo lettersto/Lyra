@@ -1,5 +1,3 @@
-// /* eslint-disable react-native/no-inline-styles */
-
 /* eslint-disable react-native/no-inline-styles */
 import './global';
 import React, {useCallback, useContext, useEffect} from 'react';
@@ -15,7 +13,7 @@ import {BuskerInfo, UserProfileType} from './constants/types';
 import {AuthContext} from './store/auth-context';
 import {MapContext} from './store/map-context';
 import {ChatContext} from './store/chat-context';
-import {getUserProfile} from './api/profile';
+import {getUserProfile, getUserWalletAddressAndCoin} from './api/profile';
 import NavBar from './components/Navigation/NavBar';
 import Colors from './constants/Colors';
 
@@ -31,6 +29,7 @@ const App = () => {
     setLongitude,
     setImageURL,
     setNickname,
+    setWalletAddress,
   } = useContext(AuthContext);
   const {setUserLocationInfo, setUserRegionCode} = useContext(MapContext);
 
@@ -41,13 +40,11 @@ const App = () => {
     }, 2000);
   }, []);
 
-  // 2. 토큰이 있는지 체크
   const checkTokensInStorage = useCallback(async () => {
     try {
       const refreshToken = await EncryptedStorage.getItem('refreshToken');
       const _userId = await EncryptedStorage.getItem('userId');
-      // 3. refreshToken이 있다면 profile을 불러오는 것이 가능한지 확인
-      // => refreshToken이 유효한지 체크하는 것
+
       if (refreshToken && _userId) {
         const userInfo: UserProfileType = await getUserProfile(Number(_userId));
 
@@ -62,6 +59,11 @@ const App = () => {
 
         await EncryptedStorage.setItem('refreshToken', userInfo.refresh_token);
         await EncryptedStorage.setItem('userId', `${userInfo.id}`);
+
+        const walletInfo = await getUserWalletAddressAndCoin(userInfo.id);
+        setWalletAddress(walletInfo?.address);
+      } else {
+        setIsLoggedIn(false);
       }
     } catch (error) {
       await EncryptedStorage.removeItem('refreshToken');
@@ -79,6 +81,7 @@ const App = () => {
     setUserId,
     setUserLocationInfo,
     setUserRegionCode,
+    setWalletAddress,
   ]);
 
   useEffect(() => {

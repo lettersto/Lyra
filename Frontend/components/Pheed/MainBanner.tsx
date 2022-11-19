@@ -1,11 +1,28 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Dimensions, StyleSheet, View, Text} from 'react-native';
 import Swiper from 'react-native-swiper';
 import Colors from '../../constants/Colors';
 import LinearGradient from 'react-native-linear-gradient';
 import CircleProfile from '../Utils/CircleProfile';
+import {useQuery} from 'react-query';
+import {getRank} from '../../api/pheed';
+import {MapContext} from '../../store/map-context';
 
 const MainBanner = () => {
+  const {userRegionCode} = useContext(MapContext);
+
+  // const {
+  //   isLoading: rankIsLoading,
+  //   data: rankData,
+  //   error: rankError,
+  // } = useQuery('PheedRank', () => getRank(userRegionCode));
+
+  // if (rankError) {
+  //   console.log('rankerr', rankError);
+  // }
+
+  // console.log('rank', rankData);
+
   return (
     <Swiper
       showsButtons={false}

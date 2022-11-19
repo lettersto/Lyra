@@ -17,7 +17,6 @@ import Tag from '../../../components/Pheed/Tag';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Button from '../../../components/Utils/Button';
 import Location from '../../../components/Pheed/Location';
-import axios from '../../../api/axios';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {
   PheedStackNavigationProps,
@@ -27,12 +26,10 @@ import {
 import {useMutation, useQuery, useQueryClient} from 'react-query';
 import {getPheedDetail, updatePheed} from '../../../api/pheed';
 import {PheedMapContext} from '../../../store/pheedMap-context';
-import {AuthContext} from '../../../store/auth-context';
 
 const UpdatePheedScreen = () => {
   const route = useRoute<PheedStackRouteProps>();
   const navigation = useNavigation<PheedStackNavigationProps>();
-  const {userId} = useContext(AuthContext);
   const {pheedId} = route.params as {pheedId: number};
   const queryClient = useQueryClient();
   const {
@@ -40,12 +37,12 @@ const UpdatePheedScreen = () => {
     pheedMapRegionCode,
     pheedMapLatitude,
     pheedMapLongitude,
-    pheedMapLocationInfo,
+    // pheedMapLocationInfo,
     setPheedMapLatitude,
     setPheedMapLongitude,
-    setPheedMapRegionCode,
+    // setPheedMapRegionCode,
     setPheedMapLocationInfo,
-    setPheedMapLocationAddInfo,
+    // setPheedMapLocationAddInfo,
   } = useContext(PheedMapContext);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [titleMsg, setTitleMessage] = useState<string>('');
@@ -141,8 +138,6 @@ const UpdatePheedScreen = () => {
     }
 
     updatePheedMutate({
-      userId: userId!,
-      // images: {uri: photos?.path, type: photos?.mime, name: photos?.path},
       images: photos?.map(photo => ({
         uri: photo.path,
         type: photo.mime,
@@ -159,33 +154,7 @@ const UpdatePheedScreen = () => {
       regionCode: pheedMapRegionCode,
       pheedId: pheedId,
     });
-    // axios
-    //   .patch(`/pheed/${pheedId}`, {
-    //     category: category,
-    //     content: enteredContent,
-    //     latitude: 1,
-    //     longitude: 1,
-    //     pheedTag: tags,
-    //     startTime: date,
-    //     title: enteredTitle,
-    //     location: '하남산단로',
-    //   })
-    //   .then(function () {
-    //     navigation.navigate('DetailPheed', {
-    //       pheedId: pheedId,
-    //     });
-    //   })
-    //   .catch(function (err) {
-    //     console.log(err);
-    //   });
   };
-  // console.log(pheedData);
-  // console.log(
-  //   pheedMapLatitude,
-  //   pheedMapLongitude,
-  //   pheedMapRegionCode,
-  //   pheedMapLocationAddInfo,
-  // );
 
   return (
     <>

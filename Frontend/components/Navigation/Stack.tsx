@@ -8,7 +8,6 @@ import AlarmScreen from '../../screens/Others/AlarmScreen';
 import DetailPheedScreen from '../../screens/Home/Pheed/DetailPheedScreen';
 import ShortsDetailScreen from '../../screens/Home/Shorts/ShortsDetailScreen';
 import CreateShortsScreen from '../../screens/Home/Shorts/CreateShortsScreen';
-import PheedDetailTitle from './TopNavBar/PheedDetailTitle';
 import SearchPheedScreen from '../../screens/Home/Pheed/SearchPheedScreen';
 import UpdatePheedScreen from '../../screens/Home/Pheed/UpdatePheedScreen';
 import StoryLocationSerachScreen from '../../screens/Map/StoryLocationSearchScreen';
@@ -77,16 +76,7 @@ export const PheedStack = () => {
               }}
             />
           ) : null}
-          {!walletAddress ? (
-            <Stack.Screen
-              name={PheedStackScreens.WalletCreation}
-              component={WalletCreationScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-          ) : null}
-          {!latitude && !longitude ? (
+          {!latitude || !longitude ? (
             <>
               <Stack.Screen
                 name={PheedStackScreens.LocationPermission}
@@ -102,84 +92,99 @@ export const PheedStack = () => {
               />
             </>
           ) : null}
+          {!walletAddress ? (
+            <Stack.Screen
+              name={PheedStackScreens.WalletCreation}
+              component={WalletCreationScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+          ) : null}
         </Stack.Group>
-        <Stack.Screen
-          name={PheedStackScreens.MainPheed}
-          component={MainPheedScreen}
-          options={{
-            headerTitle: () => <PheedTitle />,
-            headerBackVisible: false,
-          }}
-        />
-        <Stack.Screen
-          name={PheedStackScreens.SearchPheed}
-          component={SearchPheedScreen}
-          options={{title: ''}}
-        />
-        <Stack.Screen
-          name={PheedStackScreens.CreatePheed}
-          component={CreatePheedScreen}
-        />
-        <Stack.Screen
-          name={PheedStackScreens.LocationSearch}
-          component={LocationSearchScreen}
-          options={{title: ''}}
-        />
-        <Stack.Screen
-          name={PheedStackScreens.UpdatePheed}
-          component={UpdatePheedScreen}
-        />
-        <Stack.Screen
-          name={PheedStackScreens.DetailPheed}
-          component={DetailPheedScreen}
-          options={{
-            // headerTitle: () => <PheedDetailTitle />,
-            headerBackVisible: false,
-          }}
-        />
-        <Stack.Screen
-          name={PheedStackScreens.ShortsDetail}
-          component={ShortsDetailScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name={PheedStackScreens.CreateShorts}
-          component={CreateShortsScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name={PheedStackScreens.StoryLocationSearch}
-          component={StoryLocationSerachScreen}
-          options={{
-            headerShown: false,
-            presentation: 'transparentModal',
-          }}
-        />
-        <Stack.Group
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: Colors.black500,
-            },
-            headerTintColor: Colors.gray300,
-            headerTitleStyle: {
-              fontFamily: 'NanumSquareRoundR',
-              fontSize: 20,
-            },
-          }}>
-          <Stack.Screen
-            name={PheedStackScreens.TownSearch}
-            component={TownSearchScreen}
-            options={{
-              title: '동네 설정',
-              headerTitleAlign: 'center',
-            }}
-          />
-        </Stack.Group>
-        <Stack.Screen name={PheedStackScreens.Alarm} component={AlarmScreen} />
+        {isLoggedIn && latitude && walletAddress ? (
+          <Stack.Group>
+            <Stack.Screen
+              name={PheedStackScreens.MainPheed}
+              component={MainPheedScreen}
+              options={{
+                headerTitle: () => <PheedTitle />,
+                headerBackVisible: false,
+              }}
+            />
+            <Stack.Screen
+              name={PheedStackScreens.SearchPheed}
+              component={SearchPheedScreen}
+              options={{title: ''}}
+            />
+            <Stack.Screen
+              name={PheedStackScreens.CreatePheed}
+              component={CreatePheedScreen}
+            />
+            <Stack.Screen
+              name={PheedStackScreens.LocationSearch}
+              component={LocationSearchScreen}
+              options={{title: ''}}
+            />
+            <Stack.Screen
+              name={PheedStackScreens.UpdatePheed}
+              component={UpdatePheedScreen}
+            />
+            <Stack.Screen
+              name={PheedStackScreens.DetailPheed}
+              component={DetailPheedScreen}
+              options={{
+                headerBackVisible: false,
+              }}
+            />
+            <Stack.Screen
+              name={PheedStackScreens.ShortsDetail}
+              component={ShortsDetailScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name={PheedStackScreens.CreateShorts}
+              component={CreateShortsScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name={PheedStackScreens.StoryLocationSearch}
+              component={StoryLocationSerachScreen}
+              options={{
+                headerShown: false,
+                presentation: 'transparentModal',
+              }}
+            />
+            <Stack.Group
+              screenOptions={{
+                headerStyle: {
+                  backgroundColor: Colors.black500,
+                },
+                headerTintColor: Colors.gray300,
+                headerTitleStyle: {
+                  fontFamily: 'NanumSquareRoundR',
+                  fontSize: 20,
+                },
+              }}>
+              <Stack.Screen
+                name={PheedStackScreens.TownSearch}
+                component={TownSearchScreen}
+                options={{
+                  title: '동네 설정',
+                  headerTitleAlign: 'center',
+                }}
+              />
+            </Stack.Group>
+            <Stack.Screen
+              name={PheedStackScreens.Alarm}
+              component={AlarmScreen}
+            />
+          </Stack.Group>
+        ) : null}
       </Stack.Navigator>
     </PheedMapProvider>
   );

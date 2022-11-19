@@ -75,7 +75,7 @@ const PheedContent = ({width}: {width: number}) => {
     refetch: storyRefetch,
     // isError: storyIsError,
   } = useQuery(
-    'videoInNeighborhood',
+    ['videoInNeighborhood', userRegionCode],
     () => getVideosInNeighborhood(userRegionCode as string),
     {
       enabled: !!userRegionCode,
@@ -90,11 +90,11 @@ const PheedContent = ({width}: {width: number}) => {
     isLoading: pheedContentIsLoading,
     refetch: pheedRefetch,
   } = useInfiniteQuery(
-    'PheedContent',
+    ['PheedContent', userRegionCode],
     ({pageParam = 0}) =>
       getPheeds(pageParam, {regionCode: userRegionCode as string}),
     {
-      getNextPageParam: (lastPage, allPages) => {
+      getNextPageParam: (lastPage: any, allPages) => {
         return lastPage.length ? allPages.length : undefined;
       },
       enabled: !!userRegionCode,

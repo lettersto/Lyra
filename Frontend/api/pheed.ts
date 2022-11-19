@@ -1,8 +1,6 @@
-import {AxiosRequestConfig} from 'axios';
-import {Image} from 'react-native-image-crop-picker';
-import {ImageParamList} from '../constants/types';
 import axios from './axios';
 import {baseURL} from './axios';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 export const searchPheeds = async (pageParam = 0, options = {keyword: ''}) => {
   const response = await axios({
@@ -52,6 +50,17 @@ export const getPheeds = async (pageParam = 0, options = {regionCode: ''}) => {
       page: pageParam,
       code: options.regionCode,
       // code: '11111111',
+    },
+  });
+  return response.data;
+};
+
+export const getRank = async (regionCode: string | null) => {
+  const response = await axios({
+    url: '/pheed/banner',
+    method: 'GET',
+    params: {
+      code: regionCode,
     },
   });
   return response.data;
@@ -188,24 +197,15 @@ export const uploadPheed = async ({
 }) => {
   const image = new FormData();
   images?.map(img => image.append('images', img));
-  // image.append('images', images);
-  // image.append('images', {
-  //   uri: 'file:///data/user/0/com.frontend/cache/react-native-image-crop-picker/IMG_20221114_155136_1.jpg',
-  //   type: 'image/jpeg',
-  //   name: 'asdasdasd',
-  // });
-  // image.append('images', {
-  //   uri: 'file:///data/user/0/com.frontend/cache/react-native-image-crop-picker/IMG_20221114_155136_1.jpg',
-  //   type: 'image/jpeg',
-  //   name: 'asdasdasd',
-  // });
   image.append('regionCode', regionCode);
   image.append('title', title);
   image.append('category', category);
-  image.append('Content', content);
+  image.append('content', content);
   image.append('latitude', latitude);
   image.append('longitude', longitude);
-  image.append('pheedTag', pheedTag);
+  for (let i = 0; i < pheedTag.length; i++) {
+    image.append('pheedTag[]', pheedTag[i]);
+  }
   image.append(
     'startTime',
     startTime.toJSON().substring(0, 10) +
@@ -214,31 +214,22 @@ export const uploadPheed = async ({
   );
   image.append('location', location);
 
-  const response = await fetch(baseURL + `/pheed/?user_id=${userId}`, {
-    method: 'POST',
-    body: image,
-    headers: {'Content-Type': 'multipart/form-data'},
-  });
-  return response;
+  const refreshToken = await EncryptedStorage.getItem('refreshToken');
 
-  // const config: AxiosRequestConfig = {
-  //   url: baseURL + `/pheed/?user_id=${userId}`,
-  //   method: 'POST',
-  //   responseType: 'json',
-  //   headers: {
-  //     'Content-Type': 'multipart/form-data',
-  //   },
-  //   transformRequest: (_data, _headers) => {
-  //     return image;
-  //   },
-  //   data: image,
-  // };
-  // const response = await axios.request(config);
-  // return response;
+  if (refreshToken) {
+    const response = await fetch(baseURL + `/pheed/?user_id=${userId}`, {
+      method: 'POST',
+      body: image,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: refreshToken,
+      },
+    });
+    return response;
+  }
 };
 
 export const updatePheed = async ({
-  userId,
   images,
   title,
   category,
@@ -251,7 +242,6 @@ export const updatePheed = async ({
   regionCode,
   pheedId,
 }: {
-  userId: number;
   images: ImgType[] | undefined;
   title: string;
   category: string;
@@ -269,10 +259,12 @@ export const updatePheed = async ({
   image.append('regionCode', regionCode);
   image.append('title', title);
   image.append('category', category);
-  image.append('Content', content);
+  image.append('content', content);
   image.append('latitude', latitude);
   image.append('longitude', longitude);
-  image.append('pheedTag', pheedTag);
+  for (let i = 0; i < pheedTag.length; i++) {
+    image.append('pheedTag[]', pheedTag[i]);
+  }
   image.append(
     'startTime',
     startTime.toJSON().substring(0, 10) +
@@ -281,12 +273,19 @@ export const updatePheed = async ({
   );
   image.append('location', location);
 
-  const response = await fetch(baseURL + `/pheed/?pheed_id=${pheedId}`, {
-    method: 'PATCH',
-    body: image,
-    headers: {'Content-Type': 'multipart/form-data'},
-  });
-  return response;
+  const refreshToken = await EncryptedStorage.getItem('refreshToken');
+
+  if (refreshToken) {
+    const response = await fetch(baseURL + `/pheed/?pheed_id=${pheedId}`, {
+      method: 'PATCH',
+      body: image,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: refreshToken,
+      },
+    });
+    return response;
+  }
 };
 
 // shorts
@@ -306,12 +305,19 @@ export const uploadVideo = async ({
   video.append('regionCode', regionCode);
   video.append('title', title);
 
-  const response = await fetch(baseURL + `/shorts/?user_id=${userId}`, {
-    method: 'POST',
-    body: video,
-    headers: {'Content-Type': 'multipart/form-data'},
-  });
-  return response;
+  const refreshToken = await EncryptedStorage.getItem('refreshToken');
+
+  if (refreshToken) {
+    const response = await fetch(baseURL + `/shorts/?user_id=${userId}`, {
+      method: 'POST',
+      body: video,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: refreshToken,
+      },
+    });
+    return response;
+  }
 };
 
 export const deleteVideo = async (shortsId: number) => {
