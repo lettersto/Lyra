@@ -65,7 +65,7 @@ public class FollowController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-        List<ResponseFollower> followers = followService.searchFollowerList(userId, pageable);
+        List<ResponseFollowing> followers = followService.searchFollowerList(userId, pageable);
         message.setStatus(StatusEnum.OK);
         message.setMessage("팔로워 리스트 조회 성공");
         message.setData(followers);
@@ -82,7 +82,7 @@ public class FollowController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-        List<ResponseFollowing> followings = followService.searchFollowingList(userId, pageable);
+        List<ResponseFollower> followings = followService.searchFollowingList(userId, pageable);
         message.setStatus(StatusEnum.OK);
         message.setMessage("팔로잉 리스트 조회 성공");
         message.setData(followings);
