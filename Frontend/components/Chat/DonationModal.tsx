@@ -1,5 +1,12 @@
 import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
-import {Dimensions, Modal, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Dimensions,
+  Modal,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import Colors from '../../constants/Colors';
 import Button from '../Utils/Button';
 import Input from '../Utils/Input';
@@ -15,6 +22,7 @@ interface Props {
   warningMsg: string;
   setWarningMsg: Dispatch<SetStateAction<string>>;
   balance: number;
+  isDonationLoading: boolean;
 }
 
 const DonationModal = ({
@@ -24,6 +32,7 @@ const DonationModal = ({
   warningMsg,
   balance,
   setWarningMsg,
+  isDonationLoading,
 }: Props) => {
   const [message, setMessage] = useState('');
   const [donation, setDonation] = useState('');
@@ -52,6 +61,16 @@ const DonationModal = ({
           }}
         />
         <View style={styles.bottomView}>
+          {isDonationLoading ? (
+            <View style={styles.backContainer}>
+              <ActivityIndicator
+                style={styles.spinner}
+                size="large"
+                animating={isDonationLoading}
+                color={Colors.purple300}
+              />
+            </View>
+          ) : null}
           <View style={styles.modalView}>
             <Text style={[styles.modalText, styles.titleText]}>후원하기</Text>
             <Text style={[styles.modalText, styles.balanceText]}>
@@ -161,6 +180,19 @@ const styles = StyleSheet.create({
   },
   balanceText: {
     textAlign: 'right',
+  },
+  backContainer: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'black',
+    opacity: 0.5,
+    zIndex: 2,
+  },
+  spinner: {
+    position: 'absolute',
+    left: '50%',
+    top: '50%',
   },
 });
 export default DonationModal;

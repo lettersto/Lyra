@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 60,
     right: 20,
-    zIndex: 1000,
+    zIndex: 2,
   },
   inputToolbar: {
     left: '5%',
@@ -61,9 +61,10 @@ const styles = StyleSheet.create({
 interface Props {
   socket: Socket;
   buskerId: number;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ChatRoom = ({socket, buskerId}: Props) => {
+const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
   const [totalMessages, setMessages] = useState<IMessage[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [myInfo] = useState<User>({
@@ -79,6 +80,7 @@ const ChatRoom = ({socket, buskerId}: Props) => {
   const [pheedId, setPheedId] = useState('');
   const [donations, setDonations] = useState<DonationInfo[]>([]);
   const [totalDonation, setTotalDonation] = useState(0);
+  const [isDonationLoading, setIsDonationLoading] = useState(false);
 
   // 채팅 전송
   const onSend = (messages: IMessage[]) => {
@@ -92,19 +94,23 @@ const ChatRoom = ({socket, buskerId}: Props) => {
     message: string,
     donation: string,
   ) => {
+    setIsDonationLoading(true);
     // check
     if (!/^[0-9]*$/.test(donation)) {
       setWarningMsg('숫자만 입력해주세요!');
+      setIsDonationLoading(false);
       return;
     }
 
     if (Number(donation) === 0) {
       setWarningMsg('0보다 큰 정수를 입력해주세요!');
+      setIsDonationLoading(false);
       return;
     }
 
     if (Number(donation) > balance) {
       setWarningMsg('잔액이 부족합니다!');
+      setIsDonationLoading(false);
       return;
     }
     let ca = '';
@@ -142,6 +148,7 @@ const ChatRoom = ({socket, buskerId}: Props) => {
       buskerId,
     );
     setWarningMsg('');
+    setIsLoading(false);
     setModalVisible(false);
   };
 
@@ -181,30 +188,34 @@ const ChatRoom = ({socket, buskerId}: Props) => {
 
   useEffect(() => {
     // 채팅방에 들어오면 채팅 참여!
-    participateChat();
-    // 지갑 잔액 받아오기
-    if (walletAddress) {
-      getTotalBalanceFromWeb3(walletAddress)
-        .then(bal => {
-          setBalance(bal);
+    const start = async () => {
+      setIsLoading(true);
+      participateChat();
+      // 지갑 잔액 받아오기
+      if (walletAddress) {
+        await getTotalBalanceFromWeb3(walletAddress)
+          .then(bal => {
+            setBalance(bal);
+          })
+          .catch(err => console.log(err));
+      }
+      // 버스커 지갑 주소 받아오기
+      await fetchBuskerWalletAddress();
+      // 피드 id 받아오기
+      await getLiveChatPheedUser(String(buskerId))
+        .then(async pheed => {
+          setPheedId(pheed[0].pheedId);
+          await getChatDonations(pheed[0].pheedId).then(res => {
+            setDonations(res.data.reverse());
+            setTotalDonation(res.message);
+          });
         })
-        .catch(err => console.log(err));
-    }
-    // 버스커 지갑 주소 받아오기
-    fetchBuskerWalletAddress();
-    // 피드 id 받아오기
-    getLiveChatPheedUser(String(buskerId))
-      .then(pheed => {
-        setPheedId(pheed[0].pheedId);
-        getChatDonations(pheed[0].pheedId).then(res => {
-          setDonations(res.data.reverse());
-          setTotalDonation(res.message);
+        .catch(err => {
+          console.log(err);
         });
-      })
-      .catch(err => {
-        console.log(err);
-      });
-
+      setIsLoading(false);
+    };
+    start();
     return () => {
       socket.removeAllListeners('receive message');
       socket.removeAllListeners('fetch user');
@@ -216,6 +227,7 @@ const ChatRoom = ({socket, buskerId}: Props) => {
     walletAddress,
     fetchBuskerWalletAddress,
     buskerId,
+    setIsLoading,
   ]);
 
   // 대화상자 커스텀
@@ -324,6 +336,7 @@ const ChatRoom = ({socket, buskerId}: Props) => {
         warningMsg={warningMsg}
         setWarningMsg={setWarningMsg}
         balance={balance}
+        isDonationLoading={isDonationLoading}
       />
     </ImageBackground>
   );
