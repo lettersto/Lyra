@@ -83,7 +83,6 @@ const DetailPheedScreen = ({navigation: screenNavigation}: any) => {
   };
 
   const [registerComment, setRegisterComment] = useState('');
-  // const [isAlarm, setIsAlarm] = useState(false);
 
   const goHome = () => {
     navigation.getParent()?.setOptions({
@@ -167,15 +166,23 @@ const DetailPheedScreen = ({navigation: screenNavigation}: any) => {
 
   if (pheedDetailIsLoading || commentsIsLoading || wishUserPheedIsLoading) {
     return (
-      <View style={styles.detailpheed}>
+      <View style={styles.loadingScreen}>
         <ActivityIndicator size="large" color={Colors.purple300} />
+        <Text style={styles.loadingtext}>
+          로딩중입니다. 잠시만 기다려주세요.
+        </Text>
       </View>
     );
   }
   if (!pheedData) {
     return (
-      <View style={styles.detailpheed}>
-        <ActivityIndicator size="large" color={Colors.purple300} />
+      <View style={styles.loadingScreen}>
+        <View style={styles.loading}>
+          <ActivityIndicator size="large" color={Colors.purple300} />
+          <Text style={styles.loadingtext}>
+            로딩중입니다. 잠시만 기다려주세요.
+          </Text>
+        </View>
       </View>
     );
   }
@@ -378,17 +385,21 @@ const DetailPheedScreen = ({navigation: screenNavigation}: any) => {
                   )}
                 </View>
               </View>
-              <View style={styles.lineContainer}>
-                <GradientLine />
-              </View>
+              <View style={styles.lineContainer} />
               <View style={styles.contentContainer}>
                 {pheedData.pheedImg.length === 0 ? (
                   <></>
                 ) : (
-                  <ImageCarousel images={pheedData.pheedImg} />
+                  <>
+                    <GradientLine />
+                    <View style={styles.imgContainer}>
+                      <ImageCarousel images={pheedData.pheedImg} />
+                    </View>
+
+                    <GradientLine />
+                  </>
                 )}
               </View>
-              <GradientLine />
               <View style={styles.titleContainer}>
                 <Text style={styles.titleText}>{pheedData.title}</Text>
                 <View style={styles.likeContainer}>
@@ -551,16 +562,10 @@ const DetailPheedScreen = ({navigation: screenNavigation}: any) => {
 
                           {userId === value.userId ? (
                             <Pressable
-                              onPress={
-                                () => (
-                                  setIsCommentModalVisible(true),
-                                  setCommentId(commentNum)
-                                )
-                                // deleteCommentMutate({
-                                //   pheedId: pheedId,
-                                //   commentId: commentId,
-                                // })
-                              }>
+                              onPress={() => (
+                                setIsCommentModalVisible(true),
+                                setCommentId(commentNum)
+                              )}>
                               <Icon4
                                 name="trash-outline"
                                 color={Colors.gray300}
@@ -617,27 +622,6 @@ const DetailPheedScreen = ({navigation: screenNavigation}: any) => {
           )}
 
           <View style={styles.bottomBtnContainer}>
-            {/* <View style={styles.alarmBtn}>
-              {isAlarm ? (
-                <Button
-                  title="⏰ 알림 받기"
-                  btnSize="medium"
-                  textSize="medium"
-                  isGradient={true}
-                  isOutlined={true}
-                  onPress={() => setIsAlarm(false)}
-                />
-              ) : (
-                <Button
-                  title="⏰ 알림중"
-                  btnSize="medium"
-                  textSize="medium"
-                  isGradient={true}
-                  isOutlined={false}
-                  onPress={() => setIsAlarm(true)}
-                />
-              )}
-            </View> */}
             {pheedData.isLive ? (
               <Button
                 title="채팅하기"
@@ -839,7 +823,9 @@ const styles = StyleSheet.create({
     height: 300,
   },
   imgContainer: {
-    flexDirection: 'row',
+    width: '100%',
+    marginVertical: 10,
+    alignItems: 'center',
   },
 
   commentTextContainer: {
@@ -935,6 +921,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
     marginTop: 15,
+  },
+  loadingScreen: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+    backgroundColor: Colors.black500,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingtext: {
+    color: 'white',
+    marginVertical: 5,
+    fontFamily: 'NanumSquareRoundR',
+  },
+  loading: {
+    marginTop: -100,
   },
 });
 

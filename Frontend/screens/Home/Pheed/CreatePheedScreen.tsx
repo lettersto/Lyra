@@ -4,10 +4,9 @@ import {
   View,
   StyleSheet,
   Dimensions,
-  Pressable,
   Text,
-  TextInput,
   Modal,
+  ActivityIndicator,
 } from 'react-native';
 import Input from '../../../components/Utils/Input';
 import DateTime from '../../../components/Pheed/DateTime';
@@ -22,8 +21,6 @@ import {useNavigation} from '@react-navigation/native';
 import {PheedMapContext} from '../../../store/pheedMap-context';
 import {AuthContext} from '../../../store/auth-context';
 import {
-  ImageParamList,
-  PheedStackRouteProps,
   PheedStackScreens,
   PheedStackNavigationProps,
 } from '../../../constants/types';
@@ -80,7 +77,7 @@ const CreatePheedScreen = () => {
 
   const {
     mutate: uploadPheedMutate,
-    // isLoading: uploadPheedIsLoading,
+    isLoading: uploadPheedIsLoading,
     // isError,
   } = useMutation(uploadPheed, {
     onSuccess: () => {
@@ -91,30 +88,10 @@ const CreatePheedScreen = () => {
       setPheedMapLocationAddInfo('');
       queryClient.invalidateQueries('PheedContent');
       navigation.navigate(PheedStackScreens.MainPheed);
-      // console.log('uploadsuccess');
     },
   });
 
   const register = () => {
-    // axios
-    //   .post(`/pheed/?user_id=${userId}`, {
-    //     category: category,
-    //     content: enteredContent,
-    //     latitude: pheedMapLatitude,
-    //     longitude: pheedMapLongitude,
-    //     pheedTag: tags,
-    //     startTime: date,
-    //     title: enteredTitle,
-    //     location: pheedMapLocationAddInfo,
-    //     regionCode: pheedMapRegionCode,
-    //   })
-    //   .then(function (response) {
-    //     console.log(response);
-    //     navigation.navigate('MainPheed');
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   });
     const _title = enteredTitle.trim();
     const _content = enteredContent.trim();
 
@@ -143,34 +120,12 @@ const CreatePheedScreen = () => {
       setTitleMessage('카테고리를 설정해주세요.');
     }
 
-    // const pathParts = imageUri.split('/');
-    // console.log(photos);
-    // [
-    //   {
-    //     height: 1280,
-    //     mime: 'image/jpeg',
-    //     modificationDate: '1668578306000',
-    //     path: 'file:///data/user/0/com.frontend/cache/react-native-image-crop-picker/IMG_20221114_155136_1.jpg',
-    //     size: 145550,
-    //     width: 960,
-    //   },
-    // ];
-    // console.log(
-    //   photos?.map(photo => ({
-    //     ...photo,
-    //     uri: photo.path,
-    //     type: photo.mime,
-    //     name: photo.path,
-    //   })),
-    // );
     uploadPheedMutate({
       userId: userId!,
-      // images: {uri: photos?.path, type: photos?.mime, name: photos?.path},
       images: photos?.map(photo => ({
         uri: photo.path,
         type: photo.mime,
         name: photo.path,
-        // name: 'test',
       })),
       category: category,
       content: enteredContent,
@@ -182,32 +137,18 @@ const CreatePheedScreen = () => {
       location: pheedMapLocationAddInfo,
       regionCode: pheedMapRegionCode,
     });
-    //   try {
-    //     const response = await uploadPheed({
-    //       userId: userId!,
-    //       // images: {uri: photos?.path, type: photos?.mime, name: photos?.path},
-    //       images: photos?.map(photo => ({
-    //         uri: photo.path,
-    //         type: photo.mime,
-    //         name: photo.path,
-    //         // name: 'test',
-    //       })),
-    //       category: category,
-    //       content: enteredContent,
-    //       latitude: pheedMapLatitude,
-    //       longitude: pheedMapLongitude,
-    //       pheedTag: tags,
-    //       startTime: date,
-    //       title: enteredTitle,
-    //       location: pheedMapLocationAddInfo,
-    //       regionCode: pheedMapRegionCode,
-    //     });
-    //     console.log(response);
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    //   console.log('등록');
   };
+
+  if (uploadPheedIsLoading) {
+    return (
+      <View style={styles.loadingScreen}>
+        <View style={styles.loading}>
+          <ActivityIndicator size="large" color={Colors.purple300} />
+          <Text style={styles.text}>업로드 중입니다. 잠시만 기다려주세요.</Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <>
@@ -299,6 +240,8 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'white',
+    fontFamily: 'NanumSquareRoundR',
+    marginVertical: 5,
   },
   inputMargin: {
     marginTop: 10,
@@ -350,6 +293,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
     marginTop: 15,
+  },
+  loadingScreen: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+    backgroundColor: Colors.black500,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loading: {
+    marginTop: -100,
   },
 });
 
