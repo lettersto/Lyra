@@ -176,11 +176,11 @@ const MainMapView = () => {
               <View key={uuidv4()}>
                 <View style={[styles.profile]}>
                   <Marker
+                    tracksViewChanges={false}
                     coordinate={{
                       latitude: pheed.latitude,
                       longitude: pheed.longitude,
                     }}
-                    tracksViewChanges={false}
                     onPress={() => {
                       setPheedId(pheed.pheedId);
                       setIsModalVisible(true);
