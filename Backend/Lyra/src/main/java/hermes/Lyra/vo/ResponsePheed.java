@@ -49,4 +49,6 @@ public class ResponsePheed {
 
     List<ResponseComment> comment = new ArrayList<>();
 
+    private String regionCode;
+
 }
