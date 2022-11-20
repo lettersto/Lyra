@@ -25,6 +25,7 @@ const styles = {
     container: {
       flex: 1,
       alignItems: 'flex-start',
+      marginBottom: 10,
     },
     wrapper: {
       borderRadius: 15,

@@ -1,5 +1,5 @@
 import {useIsFocused} from '@react-navigation/native';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {getLiveChatPheedUser, getPheed} from '../../api/chat';
 import {BuskerInfo, ChatRoomInfo} from '../../constants/types';
@@ -41,22 +41,24 @@ const ChatRoomItem = ({clickChatRoomHandler, busker}: Props) => {
   const [chatRoom, setChatRoom] = useState<ChatRoomInfo>();
   const isFocused = useIsFocused();
   const {socket} = useContext(ChatContext);
+  const mountedRef = useRef(true);
 
   useEffect(() => {
-    getLiveChatPheedUser(String(busker.buskerId))
-      .then(pheed => {
-        getPheed(String(pheed[0].pheedId)).then(res => {
-          setChatRoom(res);
+    if (mountedRef) {
+      getLiveChatPheedUser(String(busker.buskerId))
+        .then(pheed => {
+          getPheed(String(pheed[0].pheedId))
+            .then(res => {
+              setChatRoom(res);
+            })
+            .catch(err => console.log('채팅방 정보 받아오기', err));
+        })
+        .catch(err => {
+          console.log('유저 id 받아오기 에러', err);
         });
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    }
     return () => {
-      socket!.removeAllListeners('receive message');
-      socket!.removeAllListeners('fetch user');
-      socket!.removeAllListeners('heart');
-      socket!.removeAllListeners('end');
+      mountedRef.current = false;
     };
   }, [isFocused, busker, socket]);
 

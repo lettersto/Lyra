@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1050672338380",
+    "firebase_url": "https://lyra-52f81-default-rtdb.firebaseio.com",
+    "project_id": "lyra-52f81",
+    "storage_bucket": "lyra-52f81.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1050672338380:android:6549c4c5c521eb90dc3969",
+        "android_client_info": {
+          "package_name": "com.frontend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1050672338380-knohq5u37joqp1p79h48qeb9ef5fte6o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgoY2-SkQDnNpOLNf9_cmipudTwAObKZM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1050672338380-knohq5u37joqp1p79h48qeb9ef5fte6o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
