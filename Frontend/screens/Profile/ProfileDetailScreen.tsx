@@ -278,7 +278,7 @@ const ProfileDetailScreen = () => {
             placeHolder="소개를 작성해주세요."
             onLongPress={introductionPressHandler}
           />
-          <ProfileInfoItem
+          {/* <ProfileInfoItem
             title="계좌"
             content={profileData?.bank || ''}
             placeHolder="은행을 선택하세요."
@@ -295,7 +295,7 @@ const ProfileDetailScreen = () => {
             content={profileData?.holder || ''}
             placeHolder="예금주를 입력하세요."
             onLongPress={holderPressHandler}
-          />
+          /> */}
           <View style={styles.buttomSeperator} />
           <Pressable
             onPress={() => setIsWalletModalVisible(true)}
@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 1,
     backgroundColor: '#bb92e273',
-    marginTop: 50,
+    // marginTop: 50,
   },
   button: {
     paddingTop: 8,
