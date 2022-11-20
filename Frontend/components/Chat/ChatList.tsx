@@ -72,10 +72,10 @@ const ChatList = ({liveBusker, clickChatRoomHandler}: Props) => {
 
   return (
     <View style={styles.ParticipateContainer}>
-      <Text style={[styles.text, styles.title]}>참여중인 채팅방</Text>
+      <Text style={[styles.text, styles.title]}>참여중인 Lives</Text>
       {liveBusker.length === 0 ? (
         <View style={styles.textContainer}>
-          <Text style={styles.text}>아직 참여중인 채팅방이 없습니다.</Text>
+          <Text style={styles.text}>아직 참여중인 라이브가 없습니다.</Text>
           <Pressable onPress={moveMapHandler}>
             <View style={styles.textRowContainer}>
               <Text style={[styles.text, styles.mapMoveText]}>

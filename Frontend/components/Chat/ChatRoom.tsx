@@ -3,7 +3,6 @@ import {
   ImageBackground,
   View,
   Dimensions,
-  KeyboardAvoidingView,
   Image,
   StyleSheet,
   TouchableOpacity,
@@ -47,8 +46,9 @@ const styles = StyleSheet.create({
     left: '5%',
     right: '5%',
     borderRadius: 25,
+    marginTop: '-10%',
   },
-  container: {height: deviceHeight - 80, bottom: 80},
+  container: {height: '100%', bottom: 70},
   donationImg: {marginLeft: 15, marginVertical: 15},
   heart: {
     position: 'absolute',
@@ -263,7 +263,7 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
 
   // 입력바 커스텀
   const renderInputToolbar = (props: any) => {
-    return <InputToolbar {...props} containerStyle={styles.inputToolbar} />;
+    return <InputToolbar {...props} containerStyle={[styles.inputToolbar]} />;
   };
 
   // 메시지 커스텀
@@ -332,12 +332,7 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
             autoPlay
           />
         ) : null}
-        <KeyboardAvoidingView
-          behavior={'padding'}
-          keyboardVerticalOffset={30}
-        />
       </View>
-
       <DonationModal
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}

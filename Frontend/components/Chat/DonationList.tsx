@@ -1,5 +1,6 @@
 import React from 'react';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
+import Colors from '../../constants/Colors';
 import {DonationInfo} from '../../constants/types';
 import DonationItem from './DonationItem';
 
@@ -12,7 +13,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: '20%',
+    marginTop: 70,
   },
   text: {
     fontFamily: 'NanumSquareRoundR',
@@ -28,6 +29,12 @@ const styles = StyleSheet.create({
   cntText: {marginLeft: '5%'},
   textContainer: {marginLeft: '5%'},
   textRowContainer: {flexDirection: 'row', alignItems: 'center'},
+  coinText: {
+    marginRight: 10,
+    fontFamily: 'DancingScript-Bold',
+    fontSize: 14,
+    color: 'white',
+  },
 });
 
 const DonationList = ({donations, totalDonation}: Props) => {
@@ -39,7 +46,8 @@ const DonationList = ({donations, totalDonation}: Props) => {
         renderItem={donation => <DonationItem donation={donation.item} />}
         keyExtractor={item => String(item.supportId)}
       />
-      <Text style={styles.text}>Total : {totalDonation} $</Text>
+      <Text style={styles.text}>Total : {totalDonation}</Text>
+      <Text style={styles.coinText}>L</Text>
     </View>
   );
 };

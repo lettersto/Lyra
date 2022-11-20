@@ -140,8 +140,8 @@ export default class CustomMessage<
           onLayout={onMessageLayout}
           style={[
             styles[position].container,
-            {marginVertical: '2.5%'},
-            !this.props.inverted && {marginBottom: 2},
+            // {marginVertical: 5},
+            !this.props.inverted && {marginBottom: 3},
             containerStyle && containerStyle[position],
           ]}>
           {this.renderBubble()}

@@ -21,7 +21,7 @@ const NavBar = () => {
     <Tab.Navigator
       initialRouteName={BottomTabScreens.Home}
       backBehavior="history"
-      screenOptions={{
+      screenOptions={route => ({
         tabBarActiveTintColor: Colors.purple300,
         tabBarStyle: {
           backgroundColor: Colors.black500,
@@ -31,8 +31,8 @@ const NavBar = () => {
           position: 'absolute',
         },
         headerShown: false,
-        tabBarHideOnKeyboard: true,
-      }}>
+        tabBarHideOnKeyboard: route.route.name === 'Chat' ? false : true,
+      })}>
       <Tab.Screen
         name={BottomTabScreens.Home}
         component={PheedStack}

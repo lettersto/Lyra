@@ -127,7 +127,7 @@ const MyChat = ({clickChatRoomHandler}: Props) => {
   return (
     <View style={styles.container}>
       <Text style={[styles.text, styles.title, {marginLeft: '5%'}]}>
-        나의 채팅방
+        My Live
       </Text>
 
       {myLiveRoom ? (
