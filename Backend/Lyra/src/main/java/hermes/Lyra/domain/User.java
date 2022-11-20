@@ -35,6 +35,7 @@ public class User implements UserDetails {
 
     private String introduction;
 
+    @Column(length = 500)
     private String image_url;
 
     private String refreshToken;
