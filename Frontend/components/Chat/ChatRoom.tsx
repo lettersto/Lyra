@@ -31,6 +31,7 @@ import {
   sendDonationWeb3,
 } from '../../api/chat';
 import DonationList from './DonationList';
+import {useIsFocused} from '@react-navigation/native';
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
@@ -81,6 +82,7 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
   const [donations, setDonations] = useState<DonationInfo[]>([]);
   const [totalDonation, setTotalDonation] = useState(0);
   const [isDonationLoading, setIsDonationLoading] = useState(false);
+  const isFocused = useIsFocused();
 
   // 채팅 전송
   const onSend = (messages: IMessage[]) => {
@@ -234,6 +236,7 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
     fetchBuskerWalletAddress,
     buskerId,
     setIsLoading,
+    isFocused,
   ]);
 
   // 대화상자 커스텀

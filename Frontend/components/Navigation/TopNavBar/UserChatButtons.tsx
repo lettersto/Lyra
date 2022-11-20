@@ -1,4 +1,4 @@
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -35,12 +35,13 @@ const UserChatButtons = ({buskerId}: Props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [endModalVisible, setEndModalVisible] = useState(false);
   const [totalCnt, setTotalCnt] = useState(0);
-
+  const isFocused = useIsFocused();
   // 채팅 나가기
   const leaveChat = () => {
     if (socket) {
       socket.emit('leave room', buskerId);
     }
+    setIsModalVisible(false);
     navigation.goBack();
   };
 
@@ -55,11 +56,10 @@ const UserChatButtons = ({buskerId}: Props) => {
         const livePheedId = res[0].pheedId;
         // 피드 상태 종료인 2로 변경
         changeChatState(livePheedId, '2')
-          .then(msg => console.log(msg))
+          .then(() => setEndModalVisible(true))
           .catch(err => console.log(err));
       });
     }
-    setEndModalVisible(true);
     setIsModalVisible(false);
   };
 
@@ -80,7 +80,7 @@ const UserChatButtons = ({buskerId}: Props) => {
         socket.removeAllListeners('end');
       }
     };
-  }, [socket, buskerId, navigation]);
+  }, [socket, buskerId, navigation, isFocused]);
 
   return (
     <View>
