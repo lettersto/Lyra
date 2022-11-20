@@ -168,7 +168,7 @@ const ProfileDetailScreen = () => {
     : '지갑을 재발급하면 기존의 후원 내역과 충전 내역이 날아가고, 충전한 돈이 모두 사라집니다. Lyra는 개인 부주의로 인한 손실에 대해서는 어떠한 책임도 지지 않습니다. 개인 키를 잃어버린 경우에만 신중하게 지갑을 재발급해 주세요.';
 
   const copyToClipboard = () => {
-    Clipboard.setString('hello world');
+    Clipboard.setString(createWalletData?.privateKey);
   };
 
   const logoutHandler = async () => {
@@ -278,7 +278,7 @@ const ProfileDetailScreen = () => {
             placeHolder="소개를 작성해주세요."
             onLongPress={introductionPressHandler}
           />
-          <ProfileInfoItem
+          {/* <ProfileInfoItem
             title="계좌"
             content={profileData?.bank || ''}
             placeHolder="은행을 선택하세요."
@@ -295,7 +295,7 @@ const ProfileDetailScreen = () => {
             content={profileData?.holder || ''}
             placeHolder="예금주를 입력하세요."
             onLongPress={holderPressHandler}
-          />
+          /> */}
           <View style={styles.buttomSeperator} />
           <Pressable
             onPress={() => setIsWalletModalVisible(true)}
@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 1,
     backgroundColor: '#bb92e273',
-    marginTop: 50,
+    // marginTop: 50,
   },
   button: {
     paddingTop: 8,

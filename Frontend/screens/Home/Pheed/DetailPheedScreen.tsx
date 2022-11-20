@@ -587,65 +587,6 @@ const DetailPheedScreen = ({navigation: screenNavigation}: any) => {
           )}
         </View>
       </ScrollView>
-
-      <View style={styles.textContainerBottom}>
-        <View style={styles.goPheed}>
-          {wishUserPheedData.data ? (
-            <Pressable
-              onPress={() =>
-                pushWishMutate({
-                  pheedId: pheedId,
-                  userId: userId,
-                })
-              }>
-              <Icon3
-                name="star"
-                color={Colors.gray300}
-                size={25}
-                style={styles.star}
-              />
-            </Pressable>
-          ) : (
-            <Pressable
-              onPress={() =>
-                pushWishMutate({
-                  pheedId: pheedId,
-                  userId: userId,
-                })
-              }>
-              <Icon3
-                name="staro"
-                color={Colors.gray300}
-                size={25}
-                style={styles.star}
-              />
-            </Pressable>
-          )}
-
-          <View style={styles.bottomBtnContainer}>
-            {pheedData.state ? (
-              <Button
-                title="채팅하기"
-                btnSize="medium"
-                textSize="medium"
-                isGradient={true}
-                isOutlined={false}
-                onPress={goChat}
-              />
-            ) : (
-              <Button
-                title="예정"
-                btnSize="medium"
-                textSize="medium"
-                isGradient={true}
-                isOutlined={true}
-                onPress={goChat}
-                disabled
-              />
-            )}
-          </View>
-        </View>
-      </View>
     </GestureRecognizer>
   );
 };
@@ -840,27 +781,6 @@ const styles = StyleSheet.create({
   },
   commentContentCt: {
     flexDirection: 'row',
-  },
-  goPheed: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  textContainerBottom: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: Colors.black500,
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingBottom: 10,
-    paddingTop: 10,
-    paddingHorizontal: 5,
-  },
-  bottomBtnContainer: {
-    flexDirection: 'row',
-    marginRight: 15,
   },
   alarmBtn: {
     marginRight: 5,

@@ -7,6 +7,9 @@ const PHEED_CATEGORY = [
   {label: '댄스', code: 'dance'},
   {label: '악기', code: 'instrument'},
   {label: '예술', code: 'art'},
+  {label: '마술', code: 'magic'},
+  {label: '운동', code: 'exercise'},
+  {label: '토크', code: 'talk'},
   {label: '기타', code: 'etc'},
 ];
 
@@ -16,6 +19,9 @@ const MAIN_CATEGORY = [
   {label: '댄스', code: 'dance'},
   {label: '악기', code: 'instrument'},
   {label: '예술', code: 'art'},
+  {label: '마술', code: 'magic'},
+  {label: '운동', code: 'exercise'},
+  {label: '토크', code: 'talk'},
   {label: '기타', code: 'etc'},
 ];
 

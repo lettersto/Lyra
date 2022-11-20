@@ -239,6 +239,9 @@ export const ChatStack = () => {
       <Stack.Screen
         name={ChatStackScreens.ChatList}
         component={ChatListScreen}
+        options={{
+          title: '',
+        }}
       />
       <Stack.Screen
         name={ChatStackScreens.MainChat}

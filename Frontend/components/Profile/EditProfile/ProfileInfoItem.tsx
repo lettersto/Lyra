@@ -36,7 +36,7 @@ const ProfileInfoItem = ({
         <Text style={[styles.text, styles.content, textColor]}>
           {content ? content : placeHolder}
         </Text>
-        <GradientLine />
+        {/* <GradientLine /> */}
       </Pressable>
     </View>
   );

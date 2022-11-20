@@ -10,14 +10,14 @@ import {
 } from 'react-native';
 
 import {useInfiniteQuery} from 'react-query';
-// import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 
 import {searchPheeds, searchPheedsByTags} from '../../../api/pheed';
-// import {
-//   PheedStackNavigationProps,
-//   PheedStackScreens,
-// } from '../../../constants/types';
+import {
+  PheedStackNavigationProps,
+  PheedStackScreens,
+} from '../../../constants/types';
 import useDebounce from '../../../hooks/useDebounce';
 import ProfilePhoto from '../../../components/Utils/ProfilePhoto';
 import Colors from '../../../constants/Colors';
@@ -44,13 +44,25 @@ interface searchPheedItemType {
 type searchType = 'default' | 'tags';
 
 const SearchPheedScreen = () => {
-  // const navigation = useNavigation<PheedStackNavigationProps>();
+  const navigation = useNavigation<PheedStackNavigationProps>();
   const gradientColors = [Colors.pink700, Colors.purple700];
   const [searchMode, setSearchMode] = useState<searchType>('default');
   const [enteredWord, setEnteredWord] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
   const [tag, setTag] = useState('');
   const debouncedEnteredWord = useDebounce(enteredWord, 500);
+
+  useFocusEffect(() => {
+    navigation.getParent()?.setOptions({
+      tabBarStyle: {
+        backgroundColor: Colors.black500,
+        height: 62,
+        paddingBottom: 8,
+        paddingTop: 10,
+        position: 'absolute',
+      },
+    });
+  });
 
   const defaultInputEnterHandler = (text: string) => {
     setSearchKeyword(text.trim());
@@ -136,7 +148,9 @@ const SearchPheedScreen = () => {
     }
 
     const pressHandler = () => {
-      // navigation
+      navigation.navigate(PheedStackScreens.DetailPheed, {
+        pheedId: item.pheedId,
+      });
     };
 
     return (
