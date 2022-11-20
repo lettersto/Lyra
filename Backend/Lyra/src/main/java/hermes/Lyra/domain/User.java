@@ -137,4 +137,6 @@ public class User implements UserDetails {
 //    @JsonIgnore
 //    private List<Comment> comment = new ArrayList<>();
 
+    private String fcm;
+
 }
