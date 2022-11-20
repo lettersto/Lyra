@@ -77,22 +77,29 @@ const MyChat = ({clickChatRoomHandler}: Props) => {
           if (myPheed.length > 0) {
             setMyLiveRoom(myPheed[0]);
           } else {
-            getCanOpenChatList(String(userId)).then(pheeds => {
-              setPheedList(pheeds);
-              setMyLiveRoom(null);
-            });
+            getCanOpenChatList(String(userId))
+              .then(pheeds => {
+                setPheedList(pheeds);
+                setMyLiveRoom(null);
+              })
+              .catch(err =>
+                console.log('열 수 있는 채팅 목록 받아오기 에러', err),
+              );
           }
         })
-        .catch(err => console.log(err));
+        .catch(err => console.log('라이브 피드 받아오기 에러', err));
     }
   }, [userId]);
 
   // 라이브 채팅 열기
-  const onLiveChatHandler = () => {
-    changeChatState(String(selectedPheedId), '1')
-      .then(() => fetchLiveChat())
-      .catch(err => console.log(err))
-      .finally(setIsModalVisible(false));
+  const onLiveChatHandler = async () => {
+    try {
+      await changeChatState(String(selectedPheedId), '1');
+      fetchLiveChat();
+    } catch (error) {
+      console.log('라이브 열기 에러', error);
+    }
+    setIsModalVisible(false);
   };
 
   useEffect(() => {
@@ -100,27 +107,27 @@ const MyChat = ({clickChatRoomHandler}: Props) => {
   }, [isFocused, fetchLiveChat]);
 
   useEffect(() => {
-    if (socket) {
+    if (socket && myLiveRoom) {
       console.log('참여자 수 받을 준비 완료');
       socket!.on('my room cnt', (num: number) => {
         console.log(`내 방 참여자 수 : ${num}`);
         setMyRoomCnt(num);
       });
     }
-  }, [socket]);
+  }, [socket, myLiveRoom]);
 
   useEffect(() => {
     // 참여자 수
-    if (socket) {
+    if (socket && myLiveRoom) {
       socket.emit('my room cnt', userId);
       console.log('참여자 수 알려주세요~');
     }
-  }, [isFocused, socket, userId]);
+  }, [isFocused, socket, userId, myLiveRoom]);
 
   return (
     <View style={styles.container}>
       <Text style={[styles.text, styles.title, {marginLeft: '5%'}]}>
-        나의 채팅방
+        My Live
       </Text>
 
       {myLiveRoom ? (

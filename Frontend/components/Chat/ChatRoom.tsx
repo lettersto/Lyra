@@ -3,7 +3,6 @@ import {
   ImageBackground,
   View,
   Dimensions,
-  KeyboardAvoidingView,
   Image,
   StyleSheet,
   TouchableOpacity,
@@ -31,6 +30,7 @@ import {
   sendDonationWeb3,
 } from '../../api/chat';
 import DonationList from './DonationList';
+import {useIsFocused} from '@react-navigation/native';
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
@@ -46,8 +46,9 @@ const styles = StyleSheet.create({
     left: '5%',
     right: '5%',
     borderRadius: 25,
+    marginTop: '-10%',
   },
-  container: {height: deviceHeight - 80, bottom: 80},
+  container: {height: '100%', bottom: 70},
   donationImg: {marginLeft: 15, marginVertical: 15},
   heart: {
     position: 'absolute',
@@ -81,13 +82,13 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
   const [donations, setDonations] = useState<DonationInfo[]>([]);
   const [totalDonation, setTotalDonation] = useState(0);
   const [isDonationLoading, setIsDonationLoading] = useState(false);
+  const isFocused = useIsFocused();
 
   // 채팅 전송
   const onSend = (messages: IMessage[]) => {
     const message = messages[0];
     socket.emit('send message', {...message, user: myInfo}, buskerId);
   };
-
   // 후원 채팅
   const sendDonation = async (
     myPrivateKey: string,
@@ -226,6 +227,7 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
       socket.removeAllListeners('receive message');
       socket.removeAllListeners('fetch user');
       socket.removeAllListeners('heart');
+      socket.removeAllListeners('end');
     };
   }, [
     participateChat,
@@ -234,6 +236,7 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
     fetchBuskerWalletAddress,
     buskerId,
     setIsLoading,
+    isFocused,
   ]);
 
   // 대화상자 커스텀
@@ -260,7 +263,7 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
 
   // 입력바 커스텀
   const renderInputToolbar = (props: any) => {
-    return <InputToolbar {...props} containerStyle={styles.inputToolbar} />;
+    return <InputToolbar {...props} containerStyle={[styles.inputToolbar]} />;
   };
 
   // 메시지 커스텀
@@ -329,12 +332,7 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
             autoPlay
           />
         ) : null}
-        <KeyboardAvoidingView
-          behavior={'padding'}
-          keyboardVerticalOffset={30}
-        />
       </View>
-
       <DonationModal
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}

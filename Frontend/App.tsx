@@ -1,7 +1,12 @@
 /* eslint-disable react-native/no-inline-styles */
 import './global';
 import React, {useCallback, useContext, useEffect} from 'react';
-import {SafeAreaView, StatusBar, LogBox} from 'react-native';
+import {
+  SafeAreaView,
+  StatusBar,
+  LogBox,
+  KeyboardAvoidingView,
+} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import SplashScreen from 'react-native-splash-screen';
@@ -134,9 +139,14 @@ const App = () => {
           },
         );
       } catch (err) {
-        console.log(err);
+        console.log('유저 아이디 소켓에 전송 에러', err);
       }
     }
+    return () => {
+      if (socket) {
+        socket.removeAllListeners('user rooms');
+      }
+    };
   }, [socket, userId, setLiveBusker]);
 
   LogBox.ignoreLogs([
@@ -147,10 +157,12 @@ const App = () => {
   return (
     <GestureHandlerRootView style={{flex: 1}}>
       <SafeAreaView style={{flex: 1, backgroundColor: Colors.black500}}>
-        <StatusBar
-          backgroundColor={Colors.black500}
-          barStyle={'light-content'}
-        />
+        <KeyboardAvoidingView>
+          <StatusBar
+            backgroundColor={Colors.black500}
+            barStyle={'light-content'}
+          />
+        </KeyboardAvoidingView>
         <NavBar />
       </SafeAreaView>
     </GestureHandlerRootView>
