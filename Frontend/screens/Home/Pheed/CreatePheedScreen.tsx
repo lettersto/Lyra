@@ -95,29 +95,34 @@ const CreatePheedScreen = () => {
     const _title = enteredTitle.trim();
     const _content = enteredContent.trim();
 
-    if (!pheedMapRegionCode) {
+    if (!category) {
       setIsModalVisible(true);
-      setTitleMessage('위치를 설정해주세요.');
-    }
-
-    if (date <= new Date()) {
-      setIsModalVisible(true);
-      setTitleMessage('날짜를 설정해주세요.');
-    }
-
-    if (!_content) {
-      setIsModalVisible(true);
-      setTitleMessage('피드 내용을 작성해주세요.');
+      setTitleMessage('카테고리를 설정해주세요.');
+      return;
     }
 
     if (!_title) {
       setIsModalVisible(true);
       setTitleMessage('피드 제목을 작성해주세요.');
+      return;
     }
 
-    if (!category) {
+    if (!_content) {
       setIsModalVisible(true);
-      setTitleMessage('카테고리를 설정해주세요.');
+      setTitleMessage('피드 내용을 작성해주세요.');
+      return;
+    }
+
+    if (date <= new Date()) {
+      setIsModalVisible(true);
+      setTitleMessage('날짜를 설정해주세요.');
+      return;
+    }
+
+    if (!pheedMapRegionCode) {
+      setIsModalVisible(true);
+      setTitleMessage('위치를 설정해주세요.');
+      return;
     }
 
     uploadPheedMutate({

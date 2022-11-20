@@ -120,27 +120,29 @@ const UpdatePheedScreen = () => {
     const _title = enteredTitle.trim();
     const _content = enteredContent.trim();
 
-    if (date <= new Date()) {
+    if (!category) {
       setIsModalVisible(true);
-      setTitleMessage('날짜를 설정해주세요.');
-    }
-
-    if (!_content) {
-      setIsModalVisible(true);
-      setTitleMessage('피드 내용을 작성해주세요.');
+      setTitleMessage('카테고리를 설정해주세요.');
+      return;
     }
 
     if (!_title) {
       setIsModalVisible(true);
       setTitleMessage('피드 제목을 작성해주세요.');
+      return;
     }
 
-    if (!category) {
+    if (!_content) {
       setIsModalVisible(true);
-      setTitleMessage('카테고리를 설정해주세요.');
+      setTitleMessage('피드 내용을 작성해주세요.');
+      return;
     }
 
-    // console.log('update', photos);
+    if (date <= new Date()) {
+      setIsModalVisible(true);
+      setTitleMessage('날짜를 설정해주세요.');
+      return;
+    }
 
     if (pheedMapLocationAddInfo === '') {
       updatePheedMutate({
