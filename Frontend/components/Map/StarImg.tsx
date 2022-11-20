@@ -1,16 +1,14 @@
 import React from 'react';
-import {Pressable, Image, StyleSheet, View} from 'react-native';
-
-// const ImgURI = require('../../assets/image/fourstars.png');
+import {Image} from 'react-native';
 
 function StarCnt(chatCnt: number) {
   let ImgURI;
   if (chatCnt < 4) {
-    ImgURI = require('../../assets/image/onestar.png');
-  } else if (chatCnt == 4 || (chatCnt > 4 && chatCnt < 8)) {
-    ImgURI = require('../../assets/image/twostars.png');
-  } else if (chatCnt == 8 || (chatCnt > 8 && chatCnt < 16)) {
     ImgURI = require('../../assets/image/threestars.png');
+  } else if (chatCnt == 4 || (chatCnt > 4 && chatCnt < 8)) {
+    ImgURI = require('../../assets/image/fourstars.png');
+  } else if (chatCnt == 8 || (chatCnt > 8 && chatCnt < 16)) {
+    ImgURI = require('../../assets/image/fivestars.png');
   } else if (chatCnt == 16 || (chatCnt > 16 && chatCnt < 32)) {
     ImgURI = require('../../assets/image/fourstars.png');
   } else if (chatCnt == 32 || (chatCnt > 32 && chatCnt < 64)) {

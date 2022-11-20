@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     flexDirection: 'row',
+    marginRight: 10,
   },
   innerContainer: {
     marginLeft: 12,
