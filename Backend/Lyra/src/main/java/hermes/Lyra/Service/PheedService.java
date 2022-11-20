@@ -2,6 +2,7 @@ package hermes.Lyra.Service;
 
 import hermes.Lyra.dto.PheedDto;
 import hermes.Lyra.domain.Pheed;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
@@ -53,5 +54,5 @@ public interface PheedService {
 
     List<Pheed> getPheedByUser(Long userId, Pageable pageable);
 
-    List<Pheed> getPheedByBanner(String code);
+    List<Pheed> getPheedByBanner(String code, Pageable pageable);
 }

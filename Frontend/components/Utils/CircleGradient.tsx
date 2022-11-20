@@ -11,10 +11,12 @@ const CircleGradient = ({
   children,
   grade,
   size,
+  customStyle,
 }: {
   children: ReactNode;
   grade: gradeType;
   size: sizeType;
+  customStyle?: any;
 }) => {
   const colorType = {
     new: ['#8DFFFF', '#8AF2F7', '#7CACCC', '#7177AB'],
@@ -44,7 +46,7 @@ const CircleGradient = ({
       colors={[...colorRange]}
       start={{x: 0.0, y: 0.0}}
       end={{x: 1.0, y: 1.0}}
-      style={[styles.gradientContainer, gradientStyle]}>
+      style={[styles.gradientContainer, gradientStyle, customStyle]}>
       {children}
     </LinearGradient>
   );

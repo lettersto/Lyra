@@ -61,9 +61,6 @@ export enum MapStackScreens {
 
   TownModal = 'TownModal',
   TownSearch = 'TownSearch',
-
-  DetailPheed = 'DetailPheed',
-  MainChat = 'MainChat',
 }
 
 export enum ChatStackScreens {
@@ -88,9 +85,9 @@ export type PheedStackScreenParams = {
   [PheedStackScreens.FirstTownSearch]: undefined;
 
   [PheedStackScreens.MainPheed]: undefined;
-  [PheedStackScreens.DetailPheed]: PheedDetailParamList;
+  [PheedStackScreens.DetailPheed]: {pheedId: number};
   [PheedStackScreens.CreatePheed]: undefined;
-  [PheedStackScreens.UpdatePheed]: PheedDetailParamList;
+  [PheedStackScreens.UpdatePheed]: {pheedId: number};
   [PheedStackScreens.SearchPheed]: undefined;
 
   [PheedStackScreens.TownModal]: undefined;
@@ -109,9 +106,6 @@ export type MapStackScreenParams = {
 
   [MapStackScreens.TownModal]: undefined;
   [MapStackScreens.TownSearch]: undefined;
-
-  [MapStackScreens.DetailPheed]: PheedDetailParamList;
-  [MapStackScreens.MainChat]: BuskerInfo;
 };
 
 export type ChatStackScreenParams = {
@@ -206,46 +200,39 @@ export type BottomTabRouteProps<
 
 // =========================== Before
 
-export type RootStackParamList = {
-  Home: undefined;
-  Map: undefined;
-  Chat: undefined;
-  Profile: undefined;
-  CreatePheed: undefined;
-  EditProfile: {editProfileMode: EditProfileType};
-  Follower: {followerMode: FollowerType};
-  Wallet: undefined;
-  Alarm: undefined;
-  MainPheed: undefined;
-  MainMap: undefined;
-  LocationModal: undefined;
-  TownModal: undefined;
-  LocationSearch: undefined;
-  FirstTownSearch: undefined;
-  TownSearch: undefined;
-  ChatList: undefined;
-  MainChat: BuskerInfo;
-  MainProfile: undefined;
-  ProfileDetail: undefined;
-  DetailPheed: PheedDetailParamList;
-  UpdatePheed: PheedDetailParamList;
-  ShortsDetail: Array<ShortsDetailParamList>;
-  Splash: undefined;
-  Login: undefined;
-  Onboarding: undefined;
-  CreateShorts: VideoParamList;
-  LocationPermission: undefined;
-  WalletCreation: undefined;
-  SearchPheed: undefined;
-  StoryLocationSearch: undefined;
-};
-
-export type RootTabParamList = {
-  Home: undefined;
-  Map: undefined;
-  Chat: undefined;
-  Profile: undefined;
-};
+// export type RootStackParamList = {
+//   Home: undefined;
+//   Map: undefined;
+//   Chat: undefined;
+//   Profile: undefined;
+//   CreatePheed: undefined;
+//   EditProfile: {editProfileMode: EditProfileType};
+//   Follower: {followerMode: FollowerType};
+//   Wallet: undefined;
+//   Alarm: undefined;
+//   MainPheed: undefined;
+//   MainMap: undefined;
+//   LocationModal: undefined;
+//   TownModal: undefined;
+//   LocationSearch: undefined;
+//   FirstTownSearch: undefined;
+//   TownSearch: undefined;
+//   ChatList: undefined;
+//   MainChat: BuskerInfo;
+//   MainProfile: undefined;
+//   ProfileDetail: undefined;
+//   DetailPheed: {pheedId: number};
+//   UpdatePheed: {pheedId: number};
+//   ShortsDetail: Array<ShortsDetailParamList>;
+//   Splash: undefined;
+//   Login: undefined;
+//   Onboarding: undefined;
+//   CreateShorts: VideoParamList;
+//   LocationPermission: undefined;
+//   WalletCreation: undefined;
+//   SearchPheed: undefined;
+//   StoryLocationSearch: undefined;
+// };
 
 // Pheed
 export type PheedDetailParamList = {
@@ -266,6 +253,7 @@ export type PheedDetailParamList = {
   comment: Array<CommentParamList>;
   like: number | undefined;
   isLive: boolean | undefined;
+  wishList: {userId: number; userImage_url: string; userNickname: string}[];
 };
 
 export type TagDetailParamList = {
@@ -293,6 +281,17 @@ export type VideoParamList = {
   path: string;
   size: number;
   width: number;
+};
+
+export type ImageParamList = {
+  uri: string | undefined;
+  type: string | undefined;
+  name: string | undefined;
+  // height: number | null;
+  // mime: string;
+  // path: string;
+  // size: number;
+  // width: number;
 };
 
 export type StoryDeatilScreenParamList = {
@@ -350,6 +349,14 @@ export interface ChatRoomInfo {
   longitude: number;
 }
 
+export interface DonationInfo {
+  supportId: number;
+  supporterId: number;
+  supporterImage_url: string;
+  supporterNickname: string;
+  coin: number;
+  content: string;
+}
 // Profile
 export type EditProfileType =
   | 'nickname'
@@ -384,6 +391,6 @@ export type UserProfileType = {
   follower_count: number | null;
   following_count: number | null;
   latitude: number | null;
-  longitutde: number | null;
+  longitude: number | null;
   end_busk_count: number;
 };

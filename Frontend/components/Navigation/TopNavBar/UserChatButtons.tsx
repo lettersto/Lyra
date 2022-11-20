@@ -8,6 +8,7 @@ import FIcons from 'react-native-vector-icons/MaterialIcons';
 import {changeChatState, getLiveChatPheedUser} from '../../../api/chat';
 
 import Colors from '../../../constants/Colors';
+import {ChatStackNavigationProps} from '../../../constants/types';
 import {AuthContext} from '../../../store/auth-context';
 import {ChatContext} from '../../../store/chat-context';
 import EndModal from '../../Chat/EndModal';
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
 const UserChatButtons = ({buskerId}: Props) => {
   const {userId} = useContext(AuthContext);
   const {socket} = useContext(ChatContext);
-  const navigation = useNavigation();
+  const navigation = useNavigation<ChatStackNavigationProps>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [endModalVisible, setEndModalVisible] = useState(false);
   const [totalCnt, setTotalCnt] = useState(0);

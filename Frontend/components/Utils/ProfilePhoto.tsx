@@ -81,6 +81,9 @@ const styles = StyleSheet.create({
   image: {
     overflow: 'hidden',
   },
+  star: {
+    overflow: 'hidden',
+  },
 });
 
 export default ProfilePhoto;

@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext} from 'react';
 import {
   Text,
   StyleSheet,
@@ -12,15 +12,27 @@ import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon4 from 'react-native-vector-icons/Ionicons';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, CompositeNavigationProp} from '@react-navigation/native';
 import GradientLine from '../Utils/GradientLine';
-import {getMapPheeds as getMapPheedsApi} from '../../api/pheed';
+// import {getMapPheeds as getMapPheedsApi} from '../../api/pheed';
 import {MapContext} from '../../store/map-context';
 import ProfilePhoto from '../Utils/ProfilePhoto';
+import MoreInfo from '../Pheed/MoreInfo';
+import {
+  BottomTabNavigationProps,
+  MapStackNavigationProps,
+  PheedStackScreens,
+  BottomTabScreens,
+} from '../../constants/types';
+
+type navigationProps = CompositeNavigationProp<
+  BottomTabNavigationProps,
+  MapStackNavigationProps
+>;
 
 const MapPheedContent = ({category}: {category?: string}) => {
   const {pheeds} = useContext(MapContext);
-  const navigation = useNavigation();
+  const navigation = useNavigation<navigationProps>();
   // const [pheeds, setPheeds] = useState<any[]>([]);
 
   // useEffect(() => {
@@ -95,7 +107,12 @@ const MapPheedContent = ({category}: {category?: string}) => {
                     <GradientLine />
                   </View>
                   <Pressable
-                    onPress={() => navigation.navigate('DetailPheed', pheed)}>
+                    onPress={() =>
+                      navigation.navigate(BottomTabScreens.Home, {
+                        screen: PheedStackScreens.DetailPheed,
+                        params: {pheedId: pheed.pheedId},
+                      })
+                    }>
                     <View style={styles.contentContainer}>
                       {/* {pheed.pheedImg.length !== 0 ? (
                       pheed.pheedImg.map(imgs => {
@@ -112,7 +129,7 @@ const MapPheedContent = ({category}: {category?: string}) => {
                       <></>
                     )} */}
                       <Text style={styles.boldtext}>{pheed.title}</Text>
-                      {/* <MoreInfo content={content.content} /> */}
+                      <MoreInfo content={pheed.content} />
                     </View>
                   </Pressable>
                   <GradientLine />

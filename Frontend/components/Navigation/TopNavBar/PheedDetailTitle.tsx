@@ -1,25 +1,19 @@
-import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
-import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {View, StyleSheet, Dimensions, Pressable} from 'react-native';
 import IIcon from 'react-native-vector-icons/Ionicons';
-import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Colors from '../../../constants/Colors';
-import {RootStackParamList, RootTabParamList} from '../../../constants/types';
+import {
+  PheedStackNavigationProps,
+  PheedStackScreens,
+} from '../../../constants/types';
 import Logo from './Logo';
 
-type DetailPheedNavigationProps = CompositeNavigationProp<
-  BottomTabNavigationProp<RootTabParamList, 'Home'>,
-  NativeStackNavigationProp<RootStackParamList>
->;
-
 const PheedDetailTitle = () => {
-  const navigate = useNavigation<DetailPheedNavigationProps>();
-  const navigation = useNavigation();
+  const navigation = useNavigation<PheedStackNavigationProps>();
 
   const goHome = () => {
-    navigate.getParent()?.setOptions({
+    navigation.getParent()?.setOptions({
       tabBarStyle: {
         backgroundColor: Colors.black500,
         height: 62,
@@ -28,18 +22,10 @@ const PheedDetailTitle = () => {
         position: 'absolute',
       },
     });
-    navigation.navigate('MainPheed');
+    navigation.navigate(PheedStackScreens.MainPheed);
   };
+
   const goBack = () => {
-    navigate.getParent()?.setOptions({
-      tabBarStyle: {
-        backgroundColor: Colors.black500,
-        height: 62,
-        paddingBottom: 8,
-        paddingTop: 10,
-        position: 'absolute',
-      },
-    });
     navigation.goBack();
   };
 

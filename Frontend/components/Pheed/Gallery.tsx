@@ -1,13 +1,27 @@
-import React, {Dispatch, SetStateAction, useState} from 'react';
-import {View, Alert, StyleSheet, Image, ScrollView} from 'react-native';
+import React, {useState} from 'react';
+import {View, Alert, StyleSheet, Image as Img, ScrollView} from 'react-native';
 import Colors from '../../constants/Colors';
 import Button from '../Utils/Button';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import ImagePicker from 'react-native-image-crop-picker';
+import ImagePicker, {Image} from 'react-native-image-crop-picker';
 
-const Gallery = ({SetPhotos}: {SetPhotos: Dispatch<SetStateAction<any[]>>}) => {
-  const [images, SetImages] = useState<any[]>([]);
+export interface Photo {
+  height: number;
+  mime: string;
+  modificationDate: string;
+  path: string;
+  size: number;
+  width: number;
+}
+const Gallery = ({
+  photos,
+  SetPhotos,
+}: {
+  SetPhotos: (photos: Image[]) => void;
+  photos: any[];
+}) => {
+  const [images, SetImages] = useState<any[] | undefined>(photos);
   const openPicker = async () => {
     try {
       const response = await ImagePicker.openPicker({
@@ -51,7 +65,7 @@ const Gallery = ({SetPhotos}: {SetPhotos: Dispatch<SetStateAction<any[]>>}) => {
           ) : (
             <>
               {images.map(photo => (
-                <Image
+                <Img
                   source={{uri: photo.path}}
                   style={styles.imgCnt}
                   key={photo.path}

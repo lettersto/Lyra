@@ -3,24 +3,24 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon2 from 'react-native-vector-icons/Ionicons';
-import {WithLocalSvg} from 'react-native-svg';
 
 import {PheedStack, MapStack, ChatStack, ProfileStack} from './Stack';
+import {
+  BottomTabScreens,
+  PheedStackScreens,
+  MapStackScreens,
+  ChatStackScreens,
+  ProfileStackScreens,
+} from '../../constants/types';
 import Colors from '../../constants/Colors';
 
 const Tab = createBottomTabNavigator();
 
-export enum TabScreens {
-  Home = 'Home',
-  Map = 'Map',
-  Chat = 'Chat',
-  Profile = 'Profile',
-}
-
 const NavBar = () => {
   return (
     <Tab.Navigator
-      initialRouteName={TabScreens.Home}
+      initialRouteName={BottomTabScreens.Home}
+      backBehavior="history"
       screenOptions={{
         tabBarActiveTintColor: Colors.purple300,
         tabBarStyle: {
@@ -34,8 +34,16 @@ const NavBar = () => {
         tabBarHideOnKeyboard: true,
       }}>
       <Tab.Screen
-        name={TabScreens.Home}
+        name={BottomTabScreens.Home}
         component={PheedStack}
+        listeners={({navigation}) => ({
+          tabPress: event => {
+            event.preventDefault();
+            navigation.navigate(BottomTabScreens.Home, {
+              screen: PheedStackScreens.MainPheed,
+            });
+          },
+        })}
         options={{
           tabBarLabel: 'Home',
           unmountOnBlur: true,
@@ -45,8 +53,16 @@ const NavBar = () => {
         }}
       />
       <Tab.Screen
-        name={TabScreens.Map}
+        name={BottomTabScreens.Map}
         component={MapStack}
+        listeners={({navigation}) => ({
+          tabPress: event => {
+            event.preventDefault();
+            navigation.navigate(BottomTabScreens.Map, {
+              screen: MapStackScreens.MainMap,
+            });
+          },
+        })}
         options={{
           tabBarLabel: 'Map',
           tabBarIcon: ({color, size}) => (
@@ -55,25 +71,34 @@ const NavBar = () => {
         }}
       />
       <Tab.Screen
-        name={TabScreens.Chat}
+        name={BottomTabScreens.Chat}
         component={ChatStack}
+        listeners={({navigation}) => ({
+          tabPress: event => {
+            event.preventDefault();
+            navigation.navigate(BottomTabScreens.Chat, {
+              screen: ChatStackScreens.ChatList,
+            });
+          },
+        })}
         options={{
-          tabBarLabel: 'Chat',
+          tabBarLabel: 'Live',
           tabBarIcon: ({color, size}) => (
-            <WithLocalSvg
-              asset={require('../../assets/image/live_streaming.svg')}
-              color={color}
-              width={50}
-              height={size}
-              stroke={color}
-              strokeWidth={30}
-            />
+            <Icon name="chat-outline" color={color} size={size} />
           ),
         }}
       />
       <Tab.Screen
-        name={TabScreens.Profile}
+        name={BottomTabScreens.Profile}
         component={ProfileStack}
+        listeners={({navigation}) => ({
+          tabPress: event => {
+            event.preventDefault();
+            navigation.navigate(BottomTabScreens.Profile, {
+              screen: ProfileStackScreens.MainProfile,
+            });
+          },
+        })}
         options={{
           tabBarLabel: 'Profile',
           tabBarIcon: ({color, size}) => (

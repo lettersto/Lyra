@@ -22,9 +22,11 @@ type navigationProp = CompositeNavigationProp<
 const CreateButton = () => {
   const navigation = useNavigation<navigationProp>();
   const goPheed = () => {
+    setActive(false);
     navigation.navigate(PheedStackScreens.CreatePheed);
   };
   const goChat = () => {
+    setActive(false);
     navigation.navigate(BottomTabScreens.Chat, {
       screen: ChatStackScreens.MainChat,
     });
@@ -102,7 +104,7 @@ const CreateButton = () => {
               angleCenter={{x: 0.5, y: 0.5}}
               colors={[Colors.purple300, Colors.pink500]}
               style={styles.button2}>
-              <Text style={styles.storyText}>스토리</Text>
+              <Text style={styles.storyText}>스트릿</Text>
             </LinearGradient>
           </Pressable>
           <Pressable onPress={goPheed}>

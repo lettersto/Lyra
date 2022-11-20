@@ -1,5 +1,12 @@
 import React, {Dispatch, SetStateAction, useState} from 'react';
-import {StyleSheet, Text, Dimensions, Pressable, Alert} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  Dimensions,
+  Pressable,
+  Alert,
+  View,
+} from 'react-native';
 import Colors from '../../constants/Colors';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import LinearGradient from 'react-native-linear-gradient';
@@ -14,8 +21,8 @@ const UpDateTime = ({
   SetDate: Dispatch<SetStateAction<Date>>;
 }) => {
   const [isDatePickerVisible, setDatePickerVIsibility] = useState(false);
+  const [changeDate, onChangeDate] = useState<Date>();
   const [text, onChangeText] = useState<string>('');
-  const changeDate = new Date(pheedDate);
 
   function sliceYear(num: number) {
     return num.toString().slice(2, 4);
@@ -37,18 +44,19 @@ const UpDateTime = ({
     if (date <= new Date()) {
       Alert.alert('현재보다 이후 시간을 선택해주세요.');
     } else {
-      SetDate(date);
+      onChangeDate(date);
       onChangeText(
         [sliceYear(date.getFullYear())] +
-          '.' +
+          '-' +
           [padTo2Digits(date.getMonth() + 1)] +
-          '.' +
+          '-' +
           [padTo2Digits(date.getDate())] +
           ' ' +
           [padTo2Digits(date.getHours())] +
           ':' +
           [padTo2Digits(date.getMinutes())],
       );
+      SetDate(date);
     }
     hideDatePicker();
   };
@@ -64,30 +72,41 @@ const UpDateTime = ({
         colors={[Colors.purple300, Colors.pink500]}
         style={styles.gradient}>
         <Pressable onPress={showDatePicker}>
-          <Text style={styles.text}>
-            {text === '' ? (
-              <>
-                <Icon name="clock" color={Colors.gray300} size={16} />
-                <Text>
-                  {' '}
-                  {[sliceYear(changeDate.getFullYear())] +
-                    '.' +
-                    [padTo2Digits(changeDate.getMonth() + 1)] +
-                    '.' +
-                    [padTo2Digits(changeDate.getDate())] +
-                    ' ' +
-                    [padTo2Digits(changeDate.getHours())] +
-                    ':' +
-                    [padTo2Digits(changeDate.getMinutes())]}
-                </Text>
-              </>
+          <View style={styles.container}>
+            {changeDate !== undefined ? (
+              //수정후
+              <View style={styles.text}>
+                <Icon
+                  name="clock"
+                  color={Colors.gray300}
+                  size={16}
+                  style={styles.icon}
+                />
+                <Text style={styles.dateText}>{text}</Text>
+              </View>
             ) : (
-              <>
-                <Icon name="clock" color={Colors.gray300} size={16} />
-                <Text> {text}</Text>
-              </>
+              //수정전
+              <View style={styles.text}>
+                <Icon
+                  name="clock"
+                  color={Colors.gray300}
+                  size={16}
+                  style={styles.icon}
+                />
+                <Text style={styles.dateText}>
+                  {[sliceYear(pheedDate.getFullYear())] +
+                    '-' +
+                    [padTo2Digits(pheedDate.getMonth() + 1)] +
+                    '-' +
+                    [padTo2Digits(pheedDate.getDate())] +
+                    ' ' +
+                    [padTo2Digits(pheedDate.getHours())] +
+                    ':' +
+                    [padTo2Digits(pheedDate.getMinutes())]}
+                </Text>
+              </View>
             )}
-          </Text>
+          </View>
 
           <DateTimePickerModal
             isVisible={isDatePickerVisible}
@@ -106,7 +125,6 @@ const styles = StyleSheet.create({
   gradient: {
     width: Dimensions.get('window').width * 0.4,
     height: Dimensions.get('window').height * 0.05,
-    backgroundColor: 'red',
     borderRadius: 10,
     justifyContent: 'center',
     alignSelf: 'center',
@@ -114,14 +132,24 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     color: Colors.gray300,
+    alignSelf: 'center',
+    flexDirection: 'row',
+  },
+  container: {
     height: Dimensions.get('window').height * 0.05 - 2,
     width: Dimensions.get('window').width * 0.4 - 2,
     backgroundColor: Colors.black500,
-    textAlign: 'center',
-    textAlignVertical: 'center',
+    borderRadius: 10,
     justifyContent: 'center',
     alignSelf: 'center',
-    borderRadius: 10,
+  },
+  icon: {
+    marginRight: 5,
+    color: Colors.gray300,
+    alignSelf: 'center',
+  },
+  dateText: {
+    color: Colors.gray300,
   },
 });
 

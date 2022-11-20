@@ -1,35 +1,68 @@
-import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import ReactNativeModal from 'react-native-modal';
 import Colors from '../../constants/Colors';
-import CircleProfile from '../Utils/CircleProfile';
 import Icon from 'react-native-vector-icons/Feather';
-import {useNavigation} from '@react-navigation/native';
+import {CompositeNavigationProp, useNavigation} from '@react-navigation/native';
 import Icon2 from 'react-native-vector-icons/Ionicons';
 import {getPheedDetail} from '../../api/pheed';
-import {PheedDetailParamList} from '../../constants/types';
+import {
+  PheedDetailParamList,
+  BottomTabNavigationProps,
+  BottomTabScreens,
+  MapStackNavigationProps,
+  ChatStackScreens,
+  PheedStackScreens,
+} from '../../constants/types';
 import ProfilePhoto from '../Utils/ProfilePhoto';
+import Button from '../Utils/Button';
+import {ChatContext} from '../../store/chat-context';
+
+type navigationProps = CompositeNavigationProp<
+  BottomTabNavigationProps,
+  MapStackNavigationProps
+>;
 
 interface Props {
   pheedId: number | null;
   isModalVisible: boolean;
+  setPheedId: Dispatch<SetStateAction<number | null>>;
   setIsModalVisible: Dispatch<SetStateAction<boolean>>;
 }
 
-const MapPheedModal = ({pheedId, isModalVisible, setIsModalVisible}: Props) => {
+const MapPheedModal = ({
+  pheedId,
+  setPheedId,
+  isModalVisible,
+  setIsModalVisible,
+}: Props) => {
   const gradientColors = [Colors.pink300, Colors.purple300];
-  const navigation = useNavigation();
+  const navigation = useNavigation<navigationProps>();
   const [pheed, setPheed] = useState<PheedDetailParamList>();
+  const [userCnt, setUserCnt] = useState(0);
+  const {socket} = useContext(ChatContext);
 
   useEffect(() => {
     const fetch = async () => {
+      socket!.on('fetch user', (num: number) => {
+        setUserCnt(num);
+      });
       const res = await getPheedDetail(pheedId);
       setPheed(res);
-      console.log(res);
+      socket!.emit('fetch user', res.userId);
     };
     fetch();
-  }, [pheedId]);
+    return () => {
+      socket!.removeAllListeners('fetch user');
+    };
+  }, [pheedId, socket]);
 
   return (
     <ReactNativeModal
@@ -55,7 +88,9 @@ const MapPheedModal = ({pheedId, isModalVisible, setIsModalVisible}: Props) => {
                     />
                   </View>
                   <View style={styles.profileInfo}>
-                    <Text style={styles.boldtext}>{pheed!.userNickname}</Text>
+                    <Text style={styles.boldtext} numberOfLines={1}>
+                      {pheed!.userNickname}
+                    </Text>
                     {/* <View style={styles.liveInfo}> */}
                     <View style={styles.dateContainer}>
                       <Icon
@@ -64,7 +99,9 @@ const MapPheedModal = ({pheedId, isModalVisible, setIsModalVisible}: Props) => {
                         size={16}
                         style={styles.clock}
                       />
-                      <Text style={styles.text}>{pheed!.startTime}</Text>
+                      <Text style={styles.text} numberOfLines={1}>
+                        {pheed!.startTime}
+                      </Text>
                     </View>
                     <View style={styles.dateContainer}>
                       <Icon2
@@ -73,13 +110,22 @@ const MapPheedModal = ({pheedId, isModalVisible, setIsModalVisible}: Props) => {
                         size={16}
                         style={styles.clock}
                       />
-                      <Text style={styles.text}>{pheed.location}</Text>
+                      <Text style={styles.text} numberOfLines={1}>
+                        {pheed.location}
+                      </Text>
                     </View>
                     {/* </View> */}
                   </View>
                 </View>
                 <Pressable
-                  onPress={() => navigation.navigate('DetailPheed', pheed)}>
+                  onPress={() => {
+                    setPheedId(null);
+                    setIsModalVisible(false);
+                    navigation.navigate(BottomTabScreens.Home, {
+                      screen: PheedStackScreens.DetailPheed,
+                      params: {pheedId: pheed.pheedId},
+                    });
+                  }}>
                   <View style={styles.contentContainer}>
                     <Text style={styles.titleText}>{pheed!.title}</Text>
                     <Text style={styles.contentText}>{pheed!.content}</Text>
@@ -92,22 +138,27 @@ const MapPheedModal = ({pheedId, isModalVisible, setIsModalVisible}: Props) => {
                       color={Colors.gray300}
                       size={20}
                     />
-                    <Text style={styles.text}>22</Text>
+                    <Text style={[styles.text, {flex: 0}]}>{userCnt}</Text>
                   </View>
-                  <Pressable
+                  <Button
+                    title="LIVE"
+                    btnSize="small"
+                    textSize="small"
+                    isGradient={true}
+                    isOutlined={false}
                     onPress={() => {
-                      navigation.navigate('MainChat', {
-                        buskerId: pheed.userId,
-                        buskerNickname: pheed.userNickname,
-                        buskerImg: pheed.userImage_url,
+                      setPheedId(null);
+                      setIsModalVisible(false);
+                      navigation.navigate(BottomTabScreens.Chat, {
+                        screen: ChatStackScreens.MainChat,
+                        params: {
+                          buskerId: pheed.userId,
+                          buskerNickname: pheed.userNickname,
+                          buskerImg: pheed.userImage_url,
+                        },
                       });
-                    }}>
-                    <Icon2
-                      name="chatbubble-ellipses-outline"
-                      color={Colors.gray300}
-                      size={20}
-                    />
-                  </Pressable>
+                    }}
+                  />
                 </View>
               </View>
             </View>
@@ -134,6 +185,7 @@ const styles = StyleSheet.create({
   text: {
     color: Colors.gray300,
     fontFamily: 'NanumSquareRoundR',
+    flex: 1,
   },
   boldtext: {
     color: Colors.gray300,
@@ -193,6 +245,7 @@ const styles = StyleSheet.create({
   },
   profileInfo: {
     marginLeft: 10,
+    flex: 1,
   },
   dateContainer: {
     flexDirection: 'row',

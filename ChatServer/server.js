@@ -30,7 +30,7 @@ const fetchUserRoomCnt = (socket, buskerId) => {
   if (Object.keys(buskerDict).includes(String(buskerId))) {
     cnt = buskerDict[buskerId].size;
   }
-  socket.emit("my room cnt", cnt);
+  socket.emit("total user cnt", cnt);
 };
 
 // 유저 입장
@@ -127,7 +127,16 @@ io.on("connection", (socket) => {
   });
 
   // 특정 방의 유저 수 보내주기
-  socket.on("my room cnt", (buskerId) => {
+  socket.on("fetch user", (buskerId) => {
+    let cnt = 0;
+    if (Object.keys(buskerDict).includes(String(buskerId))) {
+      cnt = buskerDict[buskerId].size;
+    }
+    socket.emit("fetch user", cnt);
+  });
+
+  // 특정 방의 총 유저 수 보내주기
+  socket.on("total user cnt", (buskerId) => {
     fetchUserRoomCnt(socket, buskerId);
   });
 

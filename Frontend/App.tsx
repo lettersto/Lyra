@@ -6,23 +6,16 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import SplashScreen from 'react-native-splash-screen';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import Config from 'react-native-config';
+import {io} from 'socket.io-client';
 
 import {BuskerInfo, UserProfileType} from './constants/types';
 import {AuthContext} from './store/auth-context';
-import {RootStackParamList} from './constants/types';
+import {MapContext} from './store/map-context';
+import {ChatContext} from './store/chat-context';
+import {getUserProfile, getUserWalletAddressAndCoin} from './api/profile';
 import NavBar from './components/Navigation/NavBar';
 import Colors from './constants/Colors';
-import {ChatContext} from './store/chat-context';
-import Config from 'react-native-config';
-import {io} from 'socket.io-client';
-import {getUserProfile} from './api/profile';
-import {MapContext} from './store/map-context';
-
-declare global {
-  namespace ReactNavigation {
-    interface RootParamList extends RootStackParamList {}
-  }
-}
 
 let appStarted = false;
 
@@ -31,56 +24,63 @@ const App = () => {
     isLoggedIn,
     userId,
     setIsLoggedIn,
-    setLongitude,
-    setWalletAddress,
-    setLatitude,
     setUserId,
-    setNickname,
+    setLatitude,
+    setLongitude,
     setImageURL,
-    accessToken: token,
+    setNickname,
+    setWalletAddress,
   } = useContext(AuthContext);
   const {setUserLocationInfo, setUserRegionCode} = useContext(MapContext);
 
+  // splash screen
+  useEffect(() => {
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 2000);
+  }, []);
+
   const checkTokensInStorage = useCallback(async () => {
     try {
-      const accessToken = await EncryptedStorage.getItem('accessToken');
-      // await EncryptedStorage.removeItem('accessToken');
-      setIsLoggedIn(!!accessToken);
-      if (accessToken) {
-        const prevUserId = await EncryptedStorage.getItem('userId');
-        const lat = await EncryptedStorage.getItem('latitude');
-        const lon = await EncryptedStorage.getItem('longitude');
-        const address = await EncryptedStorage.getItem('walletAddress');
-        setLatitude(lat ? parseInt(lat, 10) : null);
-        setLongitude(lon ? parseInt(lon, 10) : null);
-        setUserId(prevUserId ? parseInt(prevUserId, 10) : null);
-        setWalletAddress(address ? address : null);
-        const userInfo: UserProfileType = await getUserProfile(
-          Number(prevUserId),
-        );
+      const refreshToken = await EncryptedStorage.getItem('refreshToken');
+      const _userId = await EncryptedStorage.getItem('userId');
+
+      if (refreshToken && _userId) {
+        const userInfo: UserProfileType = await getUserProfile(Number(_userId));
+        setIsLoggedIn(true);
+        setUserId(userInfo.id);
         setNickname(userInfo.nickname);
+        setLatitude(userInfo.latitude);
+        setLongitude(userInfo.longitude);
         setImageURL(userInfo.image_url);
         setUserRegionCode(userInfo.region_code);
         setUserLocationInfo(userInfo.region_name);
+
+        await EncryptedStorage.setItem('refreshToken', userInfo.refresh_token);
+        await EncryptedStorage.setItem('userId', `${userInfo.id}`);
+
+        const walletInfo = await getUserWalletAddressAndCoin(userInfo.id);
+        setWalletAddress(walletInfo?.address);
+      } else {
+        setIsLoggedIn(false);
       }
     } catch (error) {
-      setIsLoggedIn(false);
-      setUserId(null);
       if (__DEV__) {
         console.error('Storage Check Error!', error);
       }
     }
   }, [
+    setImageURL,
     setIsLoggedIn,
     setLatitude,
     setLongitude,
-    setUserId,
-    setWalletAddress,
-    setImageURL,
     setNickname,
-    setUserRegionCode,
+    setUserId,
     setUserLocationInfo,
+    setUserRegionCode,
+    setWalletAddress,
   ]);
+
   useEffect(() => {
     if (!appStarted) {
       (async () => await checkTokensInStorage())();
@@ -125,19 +125,6 @@ const App = () => {
     }
   }, [socket, userId, setLiveBusker]);
 
-  useEffect(() => {
-    setTimeout(() => {
-      SplashScreen.hide();
-    }, 2000);
-  }, []);
-
-  useEffect(() => {}, [token]);
-
-  const backgroundStyle = {
-    backgroundColor: Colors.purple300,
-    height: '100%',
-  };
-
   LogBox.ignoreLogs([
     "The provided value 'moz-chunked-arraybuffer' is not a valid 'responseType'.",
     "The provided value 'ms-stream' is not a valid 'responseType'.",
@@ -145,7 +132,7 @@ const App = () => {
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>
-      <SafeAreaView style={backgroundStyle}>
+      <SafeAreaView style={{flex: 1, backgroundColor: Colors.black500}}>
         <StatusBar
           backgroundColor={Colors.black500}
           barStyle={'light-content'}
