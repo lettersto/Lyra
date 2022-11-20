@@ -29,11 +29,11 @@ const PheedButtons = () => {
           <IIcon name="ios-search-outline" size={25} color={Colors.gray300} />
         </View>
       </Pressable>
-      <Pressable onPress={alarmPressHandler}>
+      {/* <Pressable onPress={alarmPressHandler}>
         <View style={styles.innerContainer}>
           <MCIcon name="bell-outline" size={25} color={Colors.gray300} />
         </View>
-      </Pressable>
+      </Pressable> */}
     </View>
   );
 };

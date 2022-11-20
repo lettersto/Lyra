@@ -13,7 +13,9 @@ type InputProps = {
   customStyle?: any;
   maxLength?: number;
   enteredValue?: string;
+  multiline?: boolean;
   setEnteredValue?: Dispatch<SetStateAction<string>>;
+  inputCustomStyle?: any;
 };
 
 const Input: React.FC<InputProps> = ({
@@ -26,6 +28,8 @@ const Input: React.FC<InputProps> = ({
   maxLength,
   enteredValue,
   setEnteredValue,
+  multiline,
+  inputCustomStyle,
 }) => {
   const styles = StyleSheet.create({
     input: {
@@ -59,8 +63,8 @@ const Input: React.FC<InputProps> = ({
         colors={[Colors.purple300, Colors.pink500]}
         style={[styles.gradient, customStyle]}>
         <TextInput
-          style={{...styles.input}}
-          multiline={true}
+          style={[styles.input, inputCustomStyle]}
+          multiline={multiline}
           blurOnSubmit
           autoCorrect={false}
           keyboardType={keyboard === 1 ? 'ascii-capable' : 'numeric'}
