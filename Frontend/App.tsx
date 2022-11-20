@@ -120,9 +120,14 @@ const App = () => {
           },
         );
       } catch (err) {
-        console.log(err);
+        console.log('유저 아이디 소켓에 전송 에러', err);
       }
     }
+    return () => {
+      if (socket) {
+        socket.removeAllListeners('user rooms');
+      }
+    };
   }, [socket, userId, setLiveBusker]);
 
   LogBox.ignoreLogs([

@@ -5,7 +5,6 @@ import ChatRoom from '../../components/Chat/ChatRoom';
 import Colors from '../../constants/Colors';
 import {ChatStackRouteProps} from '../../constants/types';
 import {ChatContext} from '../../store/chat-context';
-import EventModal from './EventModal';
 
 const styles = StyleSheet.create({
   backContainer: {
@@ -51,7 +50,6 @@ const MainChatScreen = () => {
           setIsLoading={setIsLoading}
         />
       )}
-      {/* <EventModal /> */}
     </>
   );
 };

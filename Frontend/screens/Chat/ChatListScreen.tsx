@@ -57,7 +57,7 @@ const ChatListScreen = () => {
   useEffect(() => {
     setIsLoading(true);
     if (socket) {
-      socket!.emit('user rooms');
+      socket.emit('user rooms');
     }
     setTimeout(() => setIsLoading(false), 2000);
   }, [isFocused, socket]);

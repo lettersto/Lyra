@@ -18,10 +18,12 @@ const UserChatTitle = () => {
 
   useEffect(() => {
     // 참여자 수
-    socket!.on('fetch user', (num: number) => {
-      console.log(`참여자 수 ${num}`);
-      setCnt(num);
-    });
+    if (socket) {
+      socket.on('fetch user', (num: number) => {
+        console.log(`참여자 수 ${num}`);
+        setCnt(num);
+      });
+    }
     return;
   }, [socket]);
 

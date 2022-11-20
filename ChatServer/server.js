@@ -135,6 +135,15 @@ io.on("connection", (socket) => {
     socket.emit("fetch user", cnt);
   });
 
+  // 특정 방의 유저 수 보내주기
+  socket.on("my room cnt", (userId) => {
+    let cnt = 0;
+    if (Object.keys(buskerDict).includes(String(userId))) {
+      cnt = buskerDict[userId].size;
+    }
+    socket.emit("my room cnt", cnt);
+  });
+
   // 특정 방의 총 유저 수 보내주기
   socket.on("total user cnt", (buskerId) => {
     fetchUserRoomCnt(socket, buskerId);

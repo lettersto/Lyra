@@ -59,7 +59,7 @@ const UserChatButtons = ({buskerId}: Props) => {
           .catch(err => console.log(err));
       });
     }
-
+    setEndModalVisible(true);
     setIsModalVisible(false);
   };
 

@@ -87,7 +87,6 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
     const message = messages[0];
     socket.emit('send message', {...message, user: myInfo}, buskerId);
   };
-
   // 후원 채팅
   const sendDonation = async (
     myPrivateKey: string,
@@ -226,6 +225,7 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
       socket.removeAllListeners('receive message');
       socket.removeAllListeners('fetch user');
       socket.removeAllListeners('heart');
+      socket.removeAllListeners('end');
     };
   }, [
     participateChat,
