@@ -234,19 +234,19 @@ const PheedContent = ({width}: {width: number}) => {
             <View style={styles.lineContainer}>
               <GradientLine />
             </View>
-            <View style={styles.imgContainer}>
-              {item.pheedImg.length === 0 ? (
-                <></>
-              ) : (
-                <ImageCarousel images={item.pheedImg} />
-              )}
-            </View>
             <Pressable
               onPress={() =>
                 navigation.navigate(PheedStackScreens.DetailPheed, {
                   pheedId: item.pheedId,
                 })
               }>
+              <View style={styles.imgContainer}>
+                {item.pheedImg.length === 0 ? (
+                  <></>
+                ) : (
+                  <ImageCarousel images={item.pheedImg} />
+                )}
+              </View>
               <View style={styles.contentContainer}>
                 <Text style={styles.boldtext}>{item.title}</Text>
                 <MoreInfo content={item.content} />
@@ -376,19 +376,19 @@ const PheedContent = ({width}: {width: number}) => {
             <View style={styles.lineContainer}>
               <GradientLine />
             </View>
-            <View style={styles.imgContainer}>
-              {item.pheedImg.length === 0 ? (
-                <></>
-              ) : (
-                <ImageCarousel images={item.pheedImg} />
-              )}
-            </View>
             <Pressable
               onPress={() =>
                 navigation.navigate(PheedStackScreens.DetailPheed, {
                   pheedId: item.pheedId,
                 })
               }>
+              <View style={styles.imgContainer}>
+                {item.pheedImg.length === 0 ? (
+                  <></>
+                ) : (
+                  <ImageCarousel images={item.pheedImg} />
+                )}
+              </View>
               <View style={styles.contentContainer}>
                 <Text style={styles.boldtext}>{item.title}</Text>
                 <MoreInfo content={item.content} />
