@@ -12,7 +12,7 @@ interface Props {
 }
 
 const EndModal = ({totalCnt, modalVisible, setModalVisible}: Props) => {
-  const navigate = useNavigation<ChatStackNavigationProps>();
+  const navigation = useNavigation<ChatStackNavigationProps>();
   return (
     <View>
       <Modal
@@ -41,7 +41,11 @@ const EndModal = ({totalCnt, modalVisible, setModalVisible}: Props) => {
               isOutlined={false}
               isGradient={true}
               customStyle={styles.button}
-              onPress={() => navigate.goBack()}
+              onPress={() =>
+                navigation.reset({
+                  routes: [{name: 'ChatList', params: undefined}],
+                })
+              }
             />
           </View>
         </View>
@@ -58,8 +62,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     backgroundColor: Colors.black500,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderRadius: 20,
     padding: 15,
     paddingBottom: 30,
     alignItems: 'center',

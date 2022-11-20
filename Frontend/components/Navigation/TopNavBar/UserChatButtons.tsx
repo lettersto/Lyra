@@ -42,7 +42,7 @@ const UserChatButtons = ({buskerId}: Props) => {
       socket.emit('leave room', buskerId);
     }
     setIsModalVisible(false);
-    navigation.goBack();
+    navigation.reset({routes: [{name: 'ChatList', params: undefined}]});
   };
 
   // 채팅방 종료
@@ -106,9 +106,9 @@ const UserChatButtons = ({buskerId}: Props) => {
         onLeftPress={() => setIsModalVisible(false)}
         onRightPress={userId === buskerId ? closeChat : leaveChat}>
         {userId === buskerId ? (
-          <Text style={styles.text}>채팅방을 종료하시겠습니까?</Text>
+          <Text style={styles.text}>라이브를 종료하시겠습니까?</Text>
         ) : (
-          <Text style={styles.text}>채팅방을 나가시겠습니까?</Text>
+          <Text style={styles.text}>라이브를 나가시겠습니까?</Text>
         )}
       </ModalWithButton>
       <EndModal

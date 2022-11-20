@@ -1,4 +1,10 @@
-import React, {useState, useCallback, useEffect, useContext} from 'react';
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  useContext,
+  useRef,
+} from 'react';
 import {
   ImageBackground,
   View,
@@ -7,6 +13,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   GestureResponderEvent,
+  Animated,
 } from 'react-native';
 import {GiftedChat, InputToolbar, User} from 'react-native-gifted-chat';
 import {DonationInfo, IMessage} from '../../constants/types';
@@ -54,7 +61,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 100,
     right: 10,
-    bottom: -80,
+    bottom: '-15%',
     height: deviceHeight,
   },
 });
@@ -75,7 +82,12 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
   });
   const {walletAddress} = useContext(AuthContext);
   const [buskerWalletAddress, setBuskerWalletAddress] = useState('');
-  const [heartVisible, setHeartVisible] = useState(false);
+  const progress1 = useRef(new Animated.Value(0)).current;
+  const progress2 = useRef(new Animated.Value(0)).current;
+  const progress3 = useRef(new Animated.Value(0)).current;
+  const progress4 = useRef(new Animated.Value(0)).current;
+  const progress5 = useRef(new Animated.Value(0)).current;
+  const heartId = useRef(0);
   const [warningMsg, setWarningMsg] = useState('');
   const [balance, setBalance] = useState(0);
   const [pheedId, setPheedId] = useState('');
@@ -152,6 +164,27 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
     setModalVisible(false);
   };
 
+  // 하트 날리기
+  const heartUp = useCallback(() => {
+    heartId.current += 1;
+    heartId.current %= 5;
+    console.log(heartId.current);
+    // heartVisibles.current[heartId.current] = true;
+    // setTimeout(() => {
+    //   heartVisibles.current[heartId.current] = false;
+    // }, 3000);
+    const progress = [progress1, progress2, progress3, progress4, progress5];
+    const clickHeart = progress[heartId.current];
+    Animated.timing(clickHeart, {
+      toValue: 0.5,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+    setTimeout(() => {
+      clickHeart.setValue(0);
+    }, 1000);
+  }, [progress1, progress2, progress3, progress4, progress5]);
+
   // 채팅 시작
   const participateChat = useCallback(() => {
     socket.emit('enter room', buskerId);
@@ -177,7 +210,7 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
     socket.on('heart', () => {
       heartUp();
     });
-  }, [socket, buskerId, pheedId, walletAddress]);
+  }, [socket, buskerId, pheedId, walletAddress, heartUp]);
 
   // 버스커 지갑 주소 받아오기
   const fetchBuskerWalletAddress = useCallback(async () => {
@@ -282,15 +315,6 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
     socket.emit('heart', buskerId);
   };
 
-  // 하트 날리기
-  const heartUp = () => {
-    setHeartVisible(true);
-    // console.log('heart');
-    setTimeout(() => {
-      setHeartVisible(false);
-    }, 3000);
-  };
-
   return (
     <ImageBackground
       resizeMode="cover"
@@ -325,13 +349,31 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
             </CircleGradient>
           </TouchableOpacity>
         </View>
-        {heartVisible ? (
-          <LottieView
-            style={styles.heart}
-            source={require('./81755-hearts-feedback.json')}
-            autoPlay
-          />
-        ) : null}
+        <LottieView
+          style={styles.heart}
+          source={require('./81755-hearts-feedback.json')}
+          progress={progress1}
+        />
+        <LottieView
+          style={styles.heart}
+          source={require('./81755-hearts-feedback.json')}
+          progress={progress2}
+        />
+        <LottieView
+          style={styles.heart}
+          source={require('./81755-hearts-feedback.json')}
+          progress={progress3}
+        />
+        <LottieView
+          style={styles.heart}
+          source={require('./81755-hearts-feedback.json')}
+          progress={progress4}
+        />
+        <LottieView
+          style={styles.heart}
+          source={require('./81755-hearts-feedback.json')}
+          progress={progress5}
+        />
       </View>
       <DonationModal
         modalVisible={modalVisible}
