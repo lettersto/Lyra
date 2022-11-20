@@ -19,7 +19,7 @@ import java.util.*;
 @Service
 @Slf4j
 @Transactional
-public class PheedServiceImpl implements PheedService{
+public class PheedServiceImpl implements PheedService {
 
 //    @Value("${cloud.aws.s3.bucket}")
 //    private String bucket;
@@ -81,7 +81,7 @@ public class PheedServiceImpl implements PheedService{
 
         Long pheedId = pheedRepository.save(pheed).getId();
 
-        if(pheedTagList != null) {
+        if (pheedTagList != null) {
             for (String tag : pheedTagList) {
                 Tag t = tagRepository.findByName(tag);
                 if (t == null) {
@@ -147,12 +147,12 @@ public class PheedServiceImpl implements PheedService{
         pheedRepository.save(pheed);
 
 
-        for(PheedTag pheedTag :pheedTagRepository.findByPheedId(pheedId)){
+        for (PheedTag pheedTag : pheedTagRepository.findByPheedId(pheedId)) {
             pheedTagRepository.delete(pheedTag);
         }
 
 
-        if(pheedTagList != null) {
+        if (pheedTagList != null) {
             for (String tag : pheedTagList) {
                 Tag t = tagRepository.findByName(tag);
                 if (t == null) {
@@ -177,7 +177,7 @@ public class PheedServiceImpl implements PheedService{
     public void deletePheed(Long pheedId) {
 
 
-        for(PheedTag pheedTag :pheedTagRepository.findByPheedId(pheedId)){
+        for (PheedTag pheedTag : pheedTagRepository.findByPheedId(pheedId)) {
             pheedTagRepository.delete(pheedTag);
         }
         commentRepository.deleteByPheedId(pheedId);
@@ -264,8 +264,8 @@ public class PheedServiceImpl implements PheedService{
             double dist = Math.sin(Math.toRadians(lat)) * Math.sin(Math.toRadians(newLat)) + Math.cos(Math.toRadians(lat)) * Math.cos(Math.toRadians(newLat)) * Math.cos(Math.toRadians(theta));
             dist = Math.acos(dist);
             dist = Math.toDegrees(dist);
-            dist = dist*60*1.1515;
-            dist = dist*1609.344;
+            dist = dist * 60 * 1.1515;
+            dist = dist * 1609.344;
 
 //            log.info(String.valueOf(dist));
 
@@ -293,7 +293,11 @@ public class PheedServiceImpl implements PheedService{
 //            log.info(String.valueOf(p.getWishList().size()));
 //        }
         pheeds.sort(Comparator.comparingInt(p -> p.getWishCount()));
-        return pheeds;
+        List<Pheed> pheedList = new ArrayList<>();
+        for (int i = pheeds.size() - 1; i > -1; i--) {
+            pheedList.add(pheeds.get(i));
+        }
+        return pheedList;
 //
 //        return pheeds.subList(pheeds.size()-3, pheeds.size());
     }
