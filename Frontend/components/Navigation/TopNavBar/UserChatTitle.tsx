@@ -1,7 +1,6 @@
 import {useRoute} from '@react-navigation/native';
 import React, {useContext, useEffect, useState} from 'react';
 import {View, Dimensions, StyleSheet, Text} from 'react-native';
-import Colors from '../../../constants/Colors';
 import {ChatStackRouteProps} from '../../../constants/types';
 import {ChatContext} from '../../../store/chat-context';
 
@@ -18,10 +17,12 @@ const UserChatTitle = () => {
 
   useEffect(() => {
     // 참여자 수
-    socket!.on('fetch user', (num: number) => {
-      console.log(`참여자 수 ${num}`);
-      setCnt(num);
-    });
+    if (socket) {
+      socket.on('fetch user', (num: number) => {
+        console.log(`참여자 수 ${num}`);
+        setCnt(num);
+      });
+    }
     return;
   }, [socket]);
 
@@ -53,11 +54,12 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginRight: '8%',
   },
   cnt: {
     fontFamily: 'NanumSquareRoundR',
     fontSize: 20,
-    color: Colors.gray300,
+    color: 'gray',
     marginLeft: 8,
   },
 });

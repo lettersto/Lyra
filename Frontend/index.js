@@ -3,6 +3,7 @@ import {AppRegistry} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {QueryClient, QueryClientProvider} from 'react-query';
+
 import {AuthProvider} from './store/auth-context';
 import {MapProvider} from './store/map-context';
 import {ChatProvider} from './store/chat-context';
