@@ -252,7 +252,7 @@ export type PheedDetailParamList = {
   time: Date;
   comment: Array<CommentParamList>;
   like: number | undefined;
-  isLive: boolean | undefined;
+  state: boolean | undefined;
   wishList: {userId: number; userImage_url: string; userNickname: string}[];
 };
 
