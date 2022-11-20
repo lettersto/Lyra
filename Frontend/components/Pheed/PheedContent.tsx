@@ -249,7 +249,7 @@ const PheedContent = ({width}: {width: number}) => {
               </View>
               <View style={styles.contentContainer}>
                 <Text style={styles.boldtext}>{item.title}</Text>
-                <MoreInfo content={item.content} />
+                <MoreInfo content={item.content} pheedId={item.pheedId} />
               </View>
             </Pressable>
             {/* <GradientLine /> */}
@@ -391,7 +391,7 @@ const PheedContent = ({width}: {width: number}) => {
               </View>
               <View style={styles.contentContainer}>
                 <Text style={styles.boldtext}>{item.title}</Text>
-                <MoreInfo content={item.content} />
+                <MoreInfo content={item.content} pheedId={item.pheedId} />
               </View>
             </Pressable>
             {/* <GradientLine /> */}
