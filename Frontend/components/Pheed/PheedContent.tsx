@@ -162,6 +162,7 @@ const PheedContent = ({width}: {width: number}) => {
         isLike = true;
       }
     });
+
     return currentCategory === item.category ? (
       <View>
         <LinearGradient
@@ -208,7 +209,7 @@ const PheedContent = ({width}: {width: number}) => {
                 </View>
               </View>
               <View style={styles.liveContainer}>
-                {item.isLive ? (
+                {item.state ? (
                   <Button
                     title="LIVE"
                     btnSize="medium"
@@ -350,7 +351,7 @@ const PheedContent = ({width}: {width: number}) => {
                 </View>
               </View>
               <View style={styles.liveContainer}>
-                {item.isLive ? (
+                {item.state ? (
                   <Button
                     title="LIVE"
                     btnSize="medium"

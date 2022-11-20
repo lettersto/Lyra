@@ -73,8 +73,6 @@ const DetailPheedScreen = ({navigation: screenNavigation}: any) => {
     });
   }, [navigation, screenNavigation]);
 
-  // const isLive = data.isLive;
-
   const goChat = () => {
     navigation.navigate(BottomTabScreens.Chat, {
       screen: ChatStackScreens.MainChat,
@@ -309,7 +307,7 @@ const DetailPheedScreen = ({navigation: screenNavigation}: any) => {
                   </View>
                 </View>
                 <View style={styles.liveContainer}>
-                  {pheedData.isLive ? (
+                  {pheedData.state ? (
                     <Button
                       title="LIVE"
                       btnSize="medium"
@@ -622,7 +620,7 @@ const DetailPheedScreen = ({navigation: screenNavigation}: any) => {
           )}
 
           <View style={styles.bottomBtnContainer}>
-            {pheedData.isLive ? (
+            {pheedData.state ? (
               <Button
                 title="채팅하기"
                 btnSize="medium"
