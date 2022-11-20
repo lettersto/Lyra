@@ -39,10 +39,12 @@ public class WishServiceImpl implements WishService {
         if (check==null) {
             wish.setPheedId(pheed);
             wish.setUserId(user);
+            pheed.setWishCount(pheed.getWishCount()+1);
             wishRepository.save(wish);
             return 1;
         }
         else {
+            pheed.setWishCount(pheed.getWishCount()-1);
             wishRepository.delete(check);
             return 2;
         }

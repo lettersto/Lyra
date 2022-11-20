@@ -284,16 +284,17 @@ public class PheedServiceImpl implements PheedService{
     }
 
     @Override
-    public List<Pheed> getPheedByBanner(String code) {
+    public List<Pheed> getPheedByBanner(String code, Pageable pageable) {
 
         List<Pheed> pheeds = pheedRepository.findByRegionCodeAndState(code, 1);
 
-        for (Pheed p : pheeds) {
-            log.info(String.valueOf(p.getId()));
-            log.info(String.valueOf(p.getWishList().size()));
-        }
-        pheeds.sort(Comparator.comparingInt(p -> p.getWishList().size()));
-
-        return pheeds.subList(pheeds.size()-3, pheeds.size());
+//        for (Pheed p : pheeds) {
+//            log.info(String.valueOf(p.getId()));
+//            log.info(String.valueOf(p.getWishList().size()));
+//        }
+        pheeds.sort(Comparator.comparingInt(p -> p.getWishCount()));
+        return pheeds;
+//
+//        return pheeds.subList(pheeds.size()-3, pheeds.size());
     }
 }
