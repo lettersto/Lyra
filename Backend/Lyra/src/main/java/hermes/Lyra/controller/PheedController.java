@@ -1,8 +1,11 @@
 package hermes.Lyra.controller;
 
+import hermes.Lyra.Service.FirebaseCloudMessageService;
 import hermes.Lyra.Service.PheedService;
 import hermes.Lyra.Service.S3UploadService;
+import hermes.Lyra.Service.WishService;
 import hermes.Lyra.domain.Pheed;
+import hermes.Lyra.domain.User;
 import hermes.Lyra.dto.PheedDto;
 import hermes.Lyra.vo.RequestPheed;
 import hermes.Lyra.vo.ResponsePheed;
@@ -32,9 +35,15 @@ public class PheedController {
 
     S3UploadService s3UploadService;
 
-    public PheedController(S3UploadService s3UploadService, PheedService pheedService) {
+    WishService wishService;
+
+    FirebaseCloudMessageService firebaseCloudMessageService;
+
+    public PheedController(S3UploadService s3UploadService, PheedService pheedService, WishService wishService, FirebaseCloudMessageService firebaseCloudMessageService) {
         this.s3UploadService = s3UploadService;
         this.pheedService = pheedService;
+        this.wishService = wishService;
+        this.firebaseCloudMessageService = firebaseCloudMessageService;
     }
 
 
@@ -365,6 +374,28 @@ public class PheedController {
         if (b == true) {
 
             log.info("After updated pheed data");
+
+            if (state == 1) {
+
+                List<User> userList = wishService.searchUserList(pheedId);
+
+                Pheed pheed = pheedService.getPheedById(pheedId).get();
+
+                String nickName = pheed.getUser().getNickname();
+
+                String busk = pheed.getTitle();
+
+                String title = String.format("%s님이 버스킹을 열었습니다 ⭐", nickName);
+
+                for (User u : userList) {
+                    String targetToken = u.getFcm();
+                    System.out.println(targetToken);
+                    firebaseCloudMessageService.sendMessageTo(
+                            targetToken,
+                            title,
+                            busk);
+                }
+            }
 
             return new ResponseEntity<String>("success", HttpStatus.OK);
 
