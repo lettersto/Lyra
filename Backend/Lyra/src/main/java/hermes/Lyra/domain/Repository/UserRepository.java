@@ -143,4 +143,10 @@ public class UserRepository {
         em.persist(user);
         return 1;
     }
+
+    public void updateFcm(Long userId, String fcm) {
+        User user = searchOne(userId);
+        user.setFcm(fcm);
+        em.persist(user);
+    }
 }

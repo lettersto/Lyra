@@ -396,5 +396,13 @@ public class UserController {
 //            return new ResponseEntity<>(message, headers,  HttpStatus.INTERNAL_SERVER_ERROR);
 //        }
 //    }
+
+    @ApiOperation(value = "사용자 정보에 fcm 토큰 추가")
+    @PatchMapping("/fcm/{userId}/{fcmToken}")
+    public ResponseEntity<String> updateFcm(@PathVariable("userId") Long userId, @PathVariable("fcmToken") String fcm) {
+        userService.updateFcm(userId, fcm);
+        return null;
+    }
+
 }
 
