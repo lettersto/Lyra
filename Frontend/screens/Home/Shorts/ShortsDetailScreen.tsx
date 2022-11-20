@@ -2,8 +2,8 @@ import React, {useState, useLayoutEffect, useEffect, useContext} from 'react';
 import {
   StyleSheet,
   View,
-  NativeTouchEvent,
-  Dimensions,
+  // NativeTouchEvent,
+  // Dimensions,
   Pressable,
   Text,
 } from 'react-native';
@@ -65,13 +65,13 @@ const ShortsDetailScreen = () => {
     }
   };
 
-  const changeStory = (evt: NativeTouchEvent) => {
-    if (evt.locationX > Dimensions.get('window').width / 2) {
-      nextStory();
-    } else {
-      prevStory();
-    }
-  };
+  // const changeStory = (evt: NativeTouchEvent) => {
+  //   if (evt.locationX > Dimensions.get('window').width / 2) {
+  //     nextStory();
+  //   } else {
+  //     prevStory();
+  //   }
+  // };
 
   const goHome = () => {
     navigation.navigate(PheedStackScreens.MainPheed);
@@ -94,7 +94,11 @@ const ShortsDetailScreen = () => {
   };
 
   return (
-    <GestureRecognizer onSwipeDown={goHome} style={styles.screen}>
+    <GestureRecognizer
+      onSwipeDown={goHome}
+      onSwipeRight={nextStory}
+      onSwipeLeft={prevStory}
+      style={styles.screen}>
       {isLoading ? (
         <LoadingSpinner
           animating={isLoading}
@@ -142,7 +146,7 @@ const ShortsDetailScreen = () => {
         ) : null}
       </View>
       <Pressable
-        onPress={e => changeStory(e.nativeEvent)}
+        // onPress={e => changeStory(e.nativeEvent)}
         style={styles.wrapper}>
         <Video
           source={{
@@ -151,6 +155,13 @@ const ShortsDetailScreen = () => {
           style={styles.video}
           resizeMode={'contain'}
           repeat={true}
+          // onBuffer={() => (
+          //   <LoadingSpinner
+          //     size="large"
+          //     color={Colors.purple300}
+          //     animating={true}
+          //   />
+          // )}
         />
       </Pressable>
     </GestureRecognizer>
