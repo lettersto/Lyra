@@ -294,7 +294,7 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
   return (
     <ImageBackground
       resizeMode="cover"
-      source={require('../../assets/image/chatBackGroundImg.png')}>
+      source={require('../../assets/image/chatBackGroundImg.jpg')}>
       <View style={styles.container}>
         <DonationList donations={donations} totalDonation={totalDonation} />
         <GiftedChat

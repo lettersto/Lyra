@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useContext} from 'react';
+import React, {useLayoutEffect, useContext, useCallback} from 'react';
 import {
   View,
   Text,
@@ -11,13 +11,14 @@ import {
 
 import {useNavigation} from '@react-navigation/native';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import messaging from '@react-native-firebase/messaging';
 
 import {
   signInWithKakao,
   getKakaoProfile,
   sendUserKakaoInfoToServer,
 } from '../../api/auth';
-import {getUserProfile, getUserWalletAddressAndCoin} from '../../api/profile';
+import {addUserFCMToken, getUserProfile, getUserWalletAddressAndCoin} from '../../api/profile';
 import {AuthContext} from '../../store/auth-context';
 import {MapContext} from '../../store/map-context';
 import {
@@ -40,6 +41,11 @@ const LoginScreen = () => {
     setLongitude,
   } = useContext(AuthContext);
   const {setUserLocationInfo, setUserRegionCode} = useContext(MapContext);
+
+  const getFCMToken = useCallback(async (user_id: number) => {
+    const fcmToken = await messaging().getToken();
+    await addUserFCMToken(user_id, fcmToken);
+  }, []);
 
   useLayoutEffect(() => {
     navigation.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
@@ -73,6 +79,7 @@ const LoginScreen = () => {
         setRefreshToken(refreshToken);
         await EncryptedStorage.setItem('refreshToken', refreshToken);
         await EncryptedStorage.setItem('userId', `${userId}`);
+        await getFCMToken(userId);
 
         const userInfo: UserProfileType = await getUserProfile(Number(userId));
         if (!userInfo?.latitude || !userInfo?.longitude) {

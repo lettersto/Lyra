@@ -77,7 +77,7 @@ const ChatListScreen = () => {
       <ImageBackground
         style={styles.container}
         resizeMode="cover"
-        source={require('../../assets/image/chatBackGroundImg.png')}>
+        source={require('../../assets/image/chatBackGroundImg.jpg')}>
         <View>
           <MyChat clickChatRoomHandler={clickChatRoomHandler} />
           <ChatList
