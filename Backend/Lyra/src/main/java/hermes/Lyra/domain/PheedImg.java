@@ -16,6 +16,7 @@ public class PheedImg {
     @Column(name = "pheed_img_id")
     private Long id;
 
+    @Column(length = 500)
     private String path;
 
     private String mime;
