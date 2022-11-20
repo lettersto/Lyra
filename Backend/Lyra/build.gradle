@@ -58,7 +58,8 @@ dependencies {
 
 	// firebase
 	implementation 'com.google.firebase:firebase-admin:6.8.1'
-	implementation 'com.squareup.okhttp3:okhttp:4.2.2'
+//	implementation 'com.squareup.okhttp3:okhttp:4.2.2'
+	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
 
 }
 

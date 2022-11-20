@@ -55,4 +55,5 @@ public interface PheedService {
     List<Pheed> getPheedByUser(Long userId, Pageable pageable);
 
     List<Pheed> getPheedByBanner(String code, Pageable pageable);
+
 }

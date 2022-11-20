@@ -28,7 +28,7 @@ public class Pheed {
     @Column(nullable = false, length = 30)
     private String title;
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false)
     private String content;
 
     @Column(nullable = false)
