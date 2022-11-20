@@ -2,11 +2,9 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {View, Pressable, Text, StyleSheet} from 'react-native';
 
-import MIcon from 'react-native-vector-icons/MaterialIcons';
-
 import Colors from '../../constants/Colors';
 
-const MoreInfo = ({content}: {content: string}) => {
+const MoreInfo = ({content, pheedId}: {content: string; pheedId: number}) => {
   const navigation = useNavigation();
   const [moreIsOpen, setMoreIsOpen] = useState(false);
   // TODO 글자 수 몇에서 컷할지 생각 필요
@@ -19,7 +17,7 @@ const MoreInfo = ({content}: {content: string}) => {
   }
 
   const goDetail = () => {
-    navigation.navigate('DetailPheed');
+    navigation.navigate('DetailPheed', {pheedId: pheedId});
   };
 
   return (
