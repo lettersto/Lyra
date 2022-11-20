@@ -161,6 +161,11 @@ public class UserService {
         return userRepository.updateImage(userId, userImageRequestDto);
     }
 
+    @Transactional
+    public void updateFcm(Long userId, String fcm) {
+        userRepository.updateFcm(userId, fcm);
+    }
+
 //    @Transactional
 //    public User checkEmail(String email) {
 //        boolean userEmailDuplicate = userRepository.existsByEmail(email);
