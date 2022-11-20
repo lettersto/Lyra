@@ -47,6 +47,9 @@ public class Pheed {
     @ColumnDefault("0")
     private int state;
 
+    @ColumnDefault("0")
+    private int wishCount;
+
     @Column(nullable = false)
     private String regionCode;
 
