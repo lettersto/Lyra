@@ -69,7 +69,6 @@ const Input: React.FC<InputProps> = ({
           maxLength={maxLength}
           value={enteredValue}
           onChangeText={setEnteredValue}
-          returnKeyType="next"
         />
       </LinearGradient>
     </>
