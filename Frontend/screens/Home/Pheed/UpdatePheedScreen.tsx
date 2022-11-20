@@ -37,11 +37,11 @@ const UpdatePheedScreen = () => {
     pheedMapRegionCode,
     pheedMapLatitude,
     pheedMapLongitude,
-    // pheedMapLocationInfo,
+    pheedMapLocationInfo,
     setPheedMapLatitude,
     setPheedMapLongitude,
-    // setPheedMapRegionCode,
     setPheedMapLocationInfo,
+    setPheedMapRegionCode,
     // setPheedMapLocationAddInfo,
   } = useContext(PheedMapContext);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -57,22 +57,26 @@ const UpdatePheedScreen = () => {
     setPheedMapLocationInfo(pheedData.location);
     setPheedMapLatitude(pheedData.latitude);
     setPheedMapLongitude(pheedData.longitude);
+    setPheedMapRegionCode(pheedData.regionCode);
   }, [
     pheedData.location,
     pheedData.latitude,
     pheedData.longitude,
+    pheedData.regionCode,
     setPheedMapLocationInfo,
     setPheedMapLatitude,
     setPheedMapLongitude,
+    setPheedMapRegionCode,
   ]);
 
   const {
     mutate: updatePheedMutate,
-    // isLoading: updatePheedIsLoading,
+    isLoading: updatePheedIsLoading,
     // isError,
   } = useMutation(updatePheed, {
     onSuccess: () => {
       queryClient.invalidateQueries('PheedContent');
+      queryClient.invalidateQueries('PheedDetail');
       console.log('updatesuccess');
       navigation.navigate(PheedStackScreens.DetailPheed, {pheedId: pheedId});
     },
@@ -81,23 +85,27 @@ const UpdatePheedScreen = () => {
     },
   });
 
+  function parse(dateString: any) {
+    var year = dateString.substr(0, 4);
+    var month = dateString.substr(5, 2);
+    var day = dateString.substr(8, 2);
+    var h = dateString.substr(11, 2);
+    var s = dateString.substr(14, 2);
+    return year + '-' + month + '-' + day + 'T' + h + ':' + s;
+  }
+
+  const newDate = new Date(parse(pheedData.startTime));
+
   const [photos, SetPhotos] = useState<any[]>(pheedData.pheedImg);
   const [category, SetCategory] = useState(pheedData.category);
   const [enteredTitle, setEnteredTitle] = useState(pheedData.title);
   const [enteredContent, setEnteredContent] = useState(pheedData.content);
-  const [date, SetDate] = useState(pheedData.startTime);
+  const [date, SetDate] = useState(newDate);
   const currentTags: any[] = [];
   const [tags, SetTags] = useState<any[]>(currentTags);
 
   if (error) {
     console.log(error);
-  }
-  if (isLoading) {
-    return (
-      <>
-        <ActivityIndicator size="large" color={Colors.purple300} />
-      </>
-    );
   }
 
   for (var i = 0; i < pheedData.pheedTag.length; i++) {
@@ -111,11 +119,6 @@ const UpdatePheedScreen = () => {
   const register = () => {
     const _title = enteredTitle.trim();
     const _content = enteredContent.trim();
-
-    if (!pheedMapRegionCode) {
-      setIsModalVisible(true);
-      setTitleMessage('위치를 설정해주세요.');
-    }
 
     if (date <= new Date()) {
       setIsModalVisible(true);
@@ -137,24 +140,67 @@ const UpdatePheedScreen = () => {
       setTitleMessage('카테고리를 설정해주세요.');
     }
 
-    updatePheedMutate({
-      images: photos?.map(photo => ({
-        uri: photo.path,
-        type: photo.mime,
-        name: photo.path,
-      })),
-      category: category,
-      content: enteredContent,
-      latitude: pheedMapLatitude,
-      longitude: pheedMapLongitude,
-      pheedTag: tags,
-      startTime: date,
-      title: enteredTitle,
-      location: pheedMapLocationAddInfo,
-      regionCode: pheedMapRegionCode,
-      pheedId: pheedId,
-    });
+    // console.log('update', photos);
+
+    if (pheedMapLocationAddInfo === '') {
+      updatePheedMutate({
+        images: photos?.map(photo => ({
+          uri: photo.path,
+          type: photo.mime,
+          name: photo.path,
+        })),
+        category: category,
+        content: enteredContent,
+        latitude: pheedMapLatitude,
+        longitude: pheedMapLongitude,
+        pheedTag: tags,
+        startTime: date,
+        title: enteredTitle,
+        location: pheedData.location,
+        regionCode: pheedMapRegionCode,
+        pheedId: pheedId,
+      });
+    } else {
+      updatePheedMutate({
+        images: photos?.map(photo => ({
+          uri: photo.path,
+          type: photo.mime,
+          name: photo.path,
+        })),
+        category: category,
+        content: enteredContent,
+        latitude: pheedMapLatitude,
+        longitude: pheedMapLongitude,
+        pheedTag: tags,
+        startTime: date,
+        title: enteredTitle,
+        location: pheedMapLocationAddInfo,
+        regionCode: pheedMapRegionCode,
+        pheedId: pheedId,
+      });
+    }
   };
+
+  if (updatePheedIsLoading) {
+    return (
+      <View style={styles.loadingScreen}>
+        <View style={styles.loadingText}>
+          <ActivityIndicator size="large" color={Colors.purple300} />
+          <Text style={styles.text}>업로드 중입니다. 잠시만 기다려주세요.</Text>
+        </View>
+      </View>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingScreen}>
+        <View style={styles.loadingText}>
+          <ActivityIndicator size="large" color={Colors.purple300} />
+        </View>
+      </View>
+    );
+  }
 
   return (
     <>
@@ -246,6 +292,8 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'white',
+    marginVertical: 5,
+    fontFamily: 'NanumSquareRoundR',
   },
   inputMargin: {
     marginTop: 10,
@@ -297,6 +345,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
     marginTop: 15,
+  },
+  loadingScreen: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+    backgroundColor: Colors.black500,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: -100,
   },
 });
 

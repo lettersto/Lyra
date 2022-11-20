@@ -18,6 +18,7 @@ interface ImgType {
   type: string;
   name: string;
 }
+
 export const searchPheedsByTags = async (
   pageParam = 0,
   options = {tag: ''},
@@ -49,7 +50,6 @@ export const getPheeds = async (pageParam = 0, options = {regionCode: ''}) => {
     params: {
       page: pageParam,
       code: options.regionCode,
-      // code: '11111111',
     },
   });
   return response.data;
@@ -275,8 +275,10 @@ export const updatePheed = async ({
 
   const refreshToken = await EncryptedStorage.getItem('refreshToken');
 
+  // console.log('images', images);
+
   if (refreshToken) {
-    const response = await fetch(baseURL + `/pheed/?pheed_id=${pheedId}`, {
+    const response = await fetch(baseURL + `/pheed/${pheedId}`, {
       method: 'PATCH',
       body: image,
       headers: {

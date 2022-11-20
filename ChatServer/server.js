@@ -169,7 +169,7 @@ io.on("connection", (socket) => {
   // 버스커 방에서 모두 내보낸다.
   socket.on("room close", async (buskerId) => {
     if (buskerId === socket.data.userId) {
-      io.to(buskerId).emit("total user cnt", buskerTotalDict[buskerId].size);
+      io.to(buskerId).emit("end", buskerTotalDict[buskerId].size);
       await userAllOut(buskerId);
       io.in(buskerId).socketsLeave(buskerId);
     } else {

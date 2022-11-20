@@ -123,7 +123,11 @@ const PheedContent = ({width}: {width: number}) => {
     ) {
       return (
         <View>
-          <ActivityIndicator color={Colors.purple300} size="large" />
+          <ActivityIndicator
+            color={Colors.purple300}
+            size="large"
+            style={styles.loading}
+          />
         </View>
       );
     }
@@ -159,7 +163,7 @@ const PheedContent = ({width}: {width: number}) => {
       }
     });
     return currentCategory === item.category ? (
-      <View style={styles.itemContainer}>
+      <View>
         <LinearGradient
           start={{x: 0, y: 0}}
           end={{x: 0, y: 1}}
@@ -594,7 +598,9 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 30,
   },
-  itemContainer: {},
+  loading: {
+    marginTop: 100,
+  },
 });
 
 export default PheedContent;
