@@ -15,10 +15,6 @@ interface propsType {
 }
 
 const LocationSearch = ({onPress}: propsType) => {
-  const homePlace = {
-    description: 'Home',
-    geometry: {location: {lat: 37.513, lng: 127.103}},
-  };
   return (
     <View style={styles.view}>
       <GooglePlacesAutocomplete
@@ -62,7 +58,6 @@ const LocationSearch = ({onPress}: propsType) => {
         debounce={400}
         enablePoweredByContainer={false}
         fetchDetails={true}
-        predefinedPlaces={[homePlace]}
       />
     </View>
   );

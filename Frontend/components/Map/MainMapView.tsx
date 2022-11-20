@@ -58,7 +58,6 @@ const MainMapView = () => {
             PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
           );
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            // Alert.alert('Lyra', '위치 정보를 허용했습니다.');
             getPosition();
           } else {
             Alert.alert(
@@ -134,7 +133,6 @@ const MainMapView = () => {
     setMapLongitude(region.longitude);
     map.current?.getCamera().then((cam: Camera) => {
       if (cam.zoom) {
-        // setZoomLv(Math.round(cam.zoom * 10) / 10);
         const testZoomLv = Math.round(cam.zoom * 10) / 10;
         getMapPheeds(testZoomLv);
       }
@@ -147,7 +145,6 @@ const MainMapView = () => {
           onMapReady={() => {
             map.current?.getCamera().then((cam: Camera) => {
               if (cam.zoom) {
-                // setZoomLv(Math.round(cam.zoom * 10) / 10);
                 const testZoomLv = Math.round(cam.zoom * 10) / 10;
                 getMapPheeds(testZoomLv);
               }
@@ -185,7 +182,6 @@ const MainMapView = () => {
                       setPheedId(pheed.pheedId);
                       setIsModalVisible(true);
                     }}>
-                    {/* todo: 채팅에서 받은 인원 추가하기  */}
                     <StarImg chatCnt={userCnt} />
                   </Marker>
                 </View>

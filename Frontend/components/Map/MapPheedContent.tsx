@@ -14,7 +14,6 @@ import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon4 from 'react-native-vector-icons/Ionicons';
 import {useNavigation, CompositeNavigationProp} from '@react-navigation/native';
 import GradientLine from '../Utils/GradientLine';
-// import {getMapPheeds as getMapPheedsApi} from '../../api/pheed';
 import {MapContext} from '../../store/map-context';
 import ProfilePhoto from '../Utils/ProfilePhoto';
 import MoreInfo from '../Pheed/MoreInfo';
@@ -33,20 +32,6 @@ type navigationProps = CompositeNavigationProp<
 const MapPheedContent = ({category}: {category?: string}) => {
   const {pheeds} = useContext(MapContext);
   const navigation = useNavigation<navigationProps>();
-  // const [pheeds, setPheeds] = useState<any[]>([]);
-
-  // useEffect(() => {
-  //   const fetch = async () => {
-  //     const res = await getMapPheedsApi({
-  //       latitude: mapLatitude,
-  //       longitude: mapLongitude,
-  //       zoom: mapZoomLv,
-  //     });
-  //     setPheeds(res);
-  //     console.log(res);
-  //   };
-  //   fetch();
-  // }, []);
 
   return (
     <ScrollView style={styles.pheedCotainer}>
@@ -79,7 +64,6 @@ const MapPheedContent = ({category}: {category?: string}) => {
                         <Text style={styles.boldtext}>
                           {pheed.userNickname}
                         </Text>
-                        {/* <Text style={styles.boldtext}>{content.name}</Text> */}
                         <View>
                           <View style={styles.dateContainer}>
                             <Icon
@@ -114,20 +98,6 @@ const MapPheedContent = ({category}: {category?: string}) => {
                       })
                     }>
                     <View style={styles.contentContainer}>
-                      {/* {pheed.pheedImg.length !== 0 ? (
-                      pheed.pheedImg.map(imgs => {
-                        return (
-                          <Image
-                            style={{width: 100, height: 100}}
-                            source={{uri: imgs.path}}
-                            // style={styles.text}
-                            key={imgs.id}
-                          />
-                        );
-                      })
-                    ) : (
-                      <></>
-                    )} */}
                       <Text style={styles.boldtext}>{pheed.title}</Text>
                       <MoreInfo content={pheed.content} />
                     </View>
