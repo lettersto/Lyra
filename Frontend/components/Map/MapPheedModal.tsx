@@ -56,10 +56,12 @@ const MapPheedModal = ({
       });
       const res = await getPheedDetail(pheedId);
       setPheed(res);
-      console.log(res.userId);
       socket!.emit('fetch user', res.userId);
     };
     fetch();
+    return () => {
+      socket!.removeAllListeners('fetch user');
+    };
   }, [pheedId, socket]);
 
   return (
@@ -86,7 +88,9 @@ const MapPheedModal = ({
                     />
                   </View>
                   <View style={styles.profileInfo}>
-                    <Text style={styles.boldtext}>{pheed!.userNickname}</Text>
+                    <Text style={styles.boldtext} numberOfLines={1}>
+                      {pheed!.userNickname}
+                    </Text>
                     {/* <View style={styles.liveInfo}> */}
                     <View style={styles.dateContainer}>
                       <Icon
@@ -95,7 +99,9 @@ const MapPheedModal = ({
                         size={16}
                         style={styles.clock}
                       />
-                      <Text style={styles.text}>{pheed!.startTime}</Text>
+                      <Text style={styles.text} numberOfLines={1}>
+                        {pheed!.startTime}
+                      </Text>
                     </View>
                     <View style={styles.dateContainer}>
                       <Icon2
@@ -104,7 +110,9 @@ const MapPheedModal = ({
                         size={16}
                         style={styles.clock}
                       />
-                      <Text style={styles.text}>{pheed.location}</Text>
+                      <Text style={styles.text} numberOfLines={1}>
+                        {pheed.location}
+                      </Text>
                     </View>
                     {/* </View> */}
                   </View>
@@ -130,7 +138,7 @@ const MapPheedModal = ({
                       color={Colors.gray300}
                       size={20}
                     />
-                    <Text style={styles.text}>{userCnt}</Text>
+                    <Text style={[styles.text, {flex: 0}]}>{userCnt}</Text>
                   </View>
                   <Button
                     title="LIVE"
@@ -139,6 +147,8 @@ const MapPheedModal = ({
                     isGradient={true}
                     isOutlined={false}
                     onPress={() => {
+                      setPheedId(null);
+                      setIsModalVisible(false);
                       navigation.navigate(BottomTabScreens.Chat, {
                         screen: ChatStackScreens.MainChat,
                         params: {
@@ -175,6 +185,7 @@ const styles = StyleSheet.create({
   text: {
     color: Colors.gray300,
     fontFamily: 'NanumSquareRoundR',
+    flex: 1,
   },
   boldtext: {
     color: Colors.gray300,
@@ -234,6 +245,7 @@ const styles = StyleSheet.create({
   },
   profileInfo: {
     marginLeft: 10,
+    flex: 1,
   },
   dateContainer: {
     flexDirection: 'row',

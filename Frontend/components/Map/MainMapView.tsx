@@ -47,6 +47,7 @@ const MainMapView = () => {
   const [pheedId, setPheedId] = useState<number | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const {socket} = useContext(ChatContext);
+  const [userCnt, setUserCnt] = useState(0);
 
   useEffect(() => {
     if (Platform.OS === 'android') {
@@ -165,9 +166,8 @@ const MainMapView = () => {
           showsUserLocation={true}
           showsMyLocationButton={true}>
           {pheeds.map(pheed => {
-            let cnt = 1;
             socket!.on('total user cnt', (num: number) => {
-              cnt = num;
+              setUserCnt(num);
             });
             socket!.emit('total user cnt', pheed.userId);
 
@@ -184,7 +184,7 @@ const MainMapView = () => {
                       setIsModalVisible(true);
                     }}>
                     {/* todo: 채팅에서 받은 인원 추가하기  */}
-                    <StarImg chatCnt={cnt} />
+                    <StarImg chatCnt={userCnt} />
                   </Marker>
                 </View>
                 <View style={[styles.profile]}>
