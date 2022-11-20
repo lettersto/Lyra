@@ -52,17 +52,6 @@ const PheedContent = ({width}: {width: number}) => {
   const {userRegionCode} = useContext(MapContext);
   const navigation = useNavigation<navigationType>();
   const queryClient = useQueryClient();
-  const goChat = () => {
-    navigation.navigate(BottomTabScreens.Chat, {
-      screen: ChatStackScreens.MainChat,
-      params: {
-        buskerId: 1,
-        buskerNickname: '12345',
-        buskerImg: '',
-      },
-    });
-  };
-
   const [currentCategory, SetCurrentCategory] = useState('all');
 
   const handleRefresh = () => {
@@ -162,6 +151,17 @@ const PheedContent = ({width}: {width: number}) => {
         isLike = true;
       }
     });
+
+    const goChat = () => {
+      navigation.navigate(BottomTabScreens.Chat, {
+        screen: ChatStackScreens.MainChat,
+        params: {
+          buskerId: item.userId,
+          buskerNickname: item.userNickname,
+          buskerImg: item.userImage_url,
+        },
+      });
+    };
 
     return currentCategory === item.category ? (
       <View>
