@@ -46,6 +46,7 @@ const MainMapView = () => {
   // const [zoomLv, setZoomLv] = useState(18);
   const [pheedId, setPheedId] = useState<number | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+
   const {socket} = useContext(ChatContext);
   const [userCnt, setUserCnt] = useState(0);
 
@@ -175,6 +176,7 @@ const MainMapView = () => {
               <View key={uuidv4()}>
                 <View style={[styles.profile]}>
                   <Marker
+                    tracksViewChanges={false}
                     coordinate={{
                       latitude: pheed.latitude,
                       longitude: pheed.longitude,
@@ -189,6 +191,7 @@ const MainMapView = () => {
                 </View>
                 <View style={[styles.profile]}>
                   <Marker
+                    tracksViewChanges={false}
                     coordinate={{
                       latitude: pheed.latitude,
                       longitude: pheed.longitude,
@@ -202,12 +205,6 @@ const MainMapView = () => {
                     />
                     <View style={{height: 50}} />
                   </Marker>
-                  {/* <View style={{position: 'absolute'}}>
-                  <Image
-                    style={styles.star}
-                    source={require('../../assets/image/fourstars.png')}
-                  />
-                </View> */}
                 </View>
               </View>
             );
