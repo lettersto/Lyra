@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: 'center',
     justifyContent: 'center',
+    marginBottom: 30,
   },
 });
 
