@@ -83,7 +83,6 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
   const [totalDonation, setTotalDonation] = useState(0);
   const [isDonationLoading, setIsDonationLoading] = useState(false);
   const isFocused = useIsFocused();
-
   // 채팅 전송
   const onSend = (messages: IMessage[]) => {
     const message = messages[0];
@@ -195,6 +194,7 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
     // 채팅방에 들어오면 채팅 참여!
     const start = async () => {
       setIsLoading(true);
+      setMessages([]);
       participateChat();
       // 지갑 잔액 받아오기
       if (walletAddress) {
