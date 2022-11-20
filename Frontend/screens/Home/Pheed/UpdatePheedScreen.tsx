@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   pheedcategory: {
-    marginLeft: '4%',
+    marginHorizontal: '5%',
   },
   modal: {
     flex: 1,
