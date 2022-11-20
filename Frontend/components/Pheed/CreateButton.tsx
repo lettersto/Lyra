@@ -25,12 +25,12 @@ const CreateButton = () => {
     setActive(false);
     navigation.navigate(PheedStackScreens.CreatePheed);
   };
-  const goChat = () => {
-    setActive(false);
-    navigation.navigate(BottomTabScreens.Chat, {
-      screen: ChatStackScreens.MainChat,
-    });
-  };
+  // const goChat = () => {
+  //   setActive(false);
+  //   navigation.navigate(BottomTabScreens.Chat, {
+  //     screen: ChatStackScreens.MainChat,
+  //   });
+  // };
   const pressHandler = () => {
     if (active) {
       setActive(false);
@@ -83,7 +83,7 @@ const CreateButton = () => {
         </Pressable>
       ) : (
         <View style={styles.buttonContainer}>
-          <Pressable onPress={goChat}>
+          {/* <Pressable onPress={goChat}>
             <LinearGradient
               start={{x: 0, y: 0}}
               end={{x: 0, y: 1}}
@@ -94,7 +94,7 @@ const CreateButton = () => {
               style={styles.button2}>
               <Text style={styles.pheedText}>채팅</Text>
             </LinearGradient>
-          </Pressable>
+          </Pressable> */}
           <Pressable onPress={openPicker}>
             <LinearGradient
               start={{x: 0, y: 0}}
