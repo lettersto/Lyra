@@ -138,43 +138,87 @@
 ##### ✔ MAP
 
 - 위치 기반 내 주변 공연을 탐색합니다.
+
+
 <img title="" src="assets/map.gif" width="200" alt="[video-to-gif output image]">
 
 ##### ✔ PHEED
 
+<table>
+<tr>
+<td>
 - 피드에 받아보고 싶은 장소를 설정합니다.
-<img title="" src="assets/location.gif" width="200" alt="[video-to-gif output image]">
+</td>
+<td>
 - 피드를 작성해 내 버스킹을 홍보할 수 있습니다.
-<img title="" src="assets/createpheed.gif" width="200" alt="[video-to-gif output image]">
+</td>
+<td>
 - 내 버스킹 현황을 스트릿(사이트 내 짧은 동영상 컨텐츠 업로드)으로 나타낼 수 있습니다.
+</td>
+</tr>
+<tr>
+<td>
+<img title="" src="assets/location.gif" width="200" alt="[video-to-gif output image]">
+</td>
+<td>
+<img title="" src="assets/createpheed.gif" width="200" alt="[video-to-gif output image]">
+</td>
+<td>
+<img title="" src="assets/createstreet.gif" width="200" alt="[video-to-gif output image]">
+</td>
+</tr>
+</table>
+
+- 피드에 받아보고 싶은 장소를 설정합니다.
+
+<img title="" src="assets/location.gif" width="200" alt="[video-to-gif output image]">
+
+- 피드를 작성해 내 버스킹을 홍보할 수 있습니다.
+
+<img title="" src="assets/createpheed.gif" width="200" alt="[video-to-gif output image]">
+
+- 내 버스킹 현황을 스트릿(사이트 내 짧은 동영상 컨텐츠 업로드)으로 나타낼 수 있습니다.
+
 <img title="" src="assets/createstreet.gif" width="200" alt="[video-to-gif output image]">
 
 ##### ✔ LIVE
 
 - 버스킹에 참여중인 사람들 간 그룹 채팅을 할 수 있습니다.
+
 <img title="" src="assets/chat.gif" width="200" alt="[video-to-gif output image]">
+
 - 채팅창 내에서 하트로 반응할 수 있습니다.
+
 <img title="" src="assets/chatheart.gif" width="200" alt="[video-to-gif output image]">
+
 - 채팅창 내에서 블록체인 토큰을 후원할 수 있습니다.
+
 <img title="" src="assets/chatsupport.gif" width="200" alt="[video-to-gif output image]">
 
 ##### ✔ MYPAGE
 
 - 지갑(후원, 충전) 현황을 확인할 수 있습니다.
+
 <img title="" src="assets/wallet.gif" width="200" alt="[video-to-gif output image]">
+
 - 나의 버스킹, 내가 좋아요 한 버스킹 등을 확인할 수 있습니다.
+
 <img title="" src="assets/mypage.gif" width="200" alt="[video-to-gif output image]">
 
 ##### ✔ SEARCH
 
 - 제목&내용, 태그, 유저 등을 검색 할 수 있습니다.
+
 <img title="" src="assets/search.gif" width="200" alt="[video-to-gif output image]">
 
 ##### ✔ ALARM
 
 - 앱 실행중이 아닐 때 내가 좋아요 한 피드의 버스킹이 시작되면 Push Alarm을 받아볼 수 있습니다.
+
 <img title="" src="assets/push.gif" width="200" alt="[video-to-gif output image]">
+
 - 앱 실행중일 때 내가 좋아요 한 피드의 버스킹이 시작되면 Alarm을 받아볼 수 있습니다.
+
 <img title="" src="assets/push2.gif" width="200" alt="[video-to-gif output image]">
 
 <br>
