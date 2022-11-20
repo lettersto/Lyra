@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   },
   list: {
     flex: 1,
-    marginBottom: '15%',
+    paddingBottom: '15%',
   },
 });
 
