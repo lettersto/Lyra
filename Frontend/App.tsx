@@ -8,12 +8,17 @@ import SplashScreen from 'react-native-splash-screen';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Config from 'react-native-config';
 import {io} from 'socket.io-client';
+import messaging from '@react-native-firebase/messaging';
 
 import {BuskerInfo, UserProfileType} from './constants/types';
 import {AuthContext} from './store/auth-context';
 import {MapContext} from './store/map-context';
 import {ChatContext} from './store/chat-context';
-import {getUserProfile, getUserWalletAddressAndCoin} from './api/profile';
+import {
+  getUserProfile,
+  getUserWalletAddressAndCoin,
+  addUserFCMToken,
+} from './api/profile';
 import NavBar from './components/Navigation/NavBar';
 import Colors from './constants/Colors';
 
@@ -40,6 +45,12 @@ const App = () => {
     }, 2000);
   }, []);
 
+  // alarm
+  const getFCMToken = useCallback(async (user_id: number) => {
+    const fcmToken = await messaging().getToken();
+    await addUserFCMToken(user_id, fcmToken);
+  }, []);
+
   const checkTokensInStorage = useCallback(async () => {
     try {
       const refreshToken = await EncryptedStorage.getItem('refreshToken');
@@ -55,6 +66,8 @@ const App = () => {
         setImageURL(userInfo.image_url);
         setUserRegionCode(userInfo.region_code);
         setUserLocationInfo(userInfo.region_name);
+
+        await getFCMToken(userInfo.id);
 
         await EncryptedStorage.setItem('refreshToken', userInfo.refresh_token);
         await EncryptedStorage.setItem('userId', `${userInfo.id}`);
@@ -79,6 +92,7 @@ const App = () => {
     setUserLocationInfo,
     setUserRegionCode,
     setWalletAddress,
+    getFCMToken,
   ]);
 
   useEffect(() => {

@@ -346,3 +346,11 @@ export const getSupportList = async (
   });
   return response.data;
 };
+
+export const addUserFCMToken = async (userId: number, fcmToken: string) => {
+  const response = await axios({
+    url: `/user/fcm/${userId}/${fcmToken}`,
+    method: 'PATCH',
+  });
+  return response.data;
+};
