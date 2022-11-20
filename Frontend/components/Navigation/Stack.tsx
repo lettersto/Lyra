@@ -120,6 +120,7 @@ export const PheedStack = () => {
             <Stack.Screen
               name={PheedStackScreens.CreatePheed}
               component={CreatePheedScreen}
+              options={{title: '피드 작성'}}
             />
             <Stack.Screen
               name={PheedStackScreens.LocationSearch}
@@ -129,6 +130,7 @@ export const PheedStack = () => {
             <Stack.Screen
               name={PheedStackScreens.UpdatePheed}
               component={UpdatePheedScreen}
+              options={{title: '피드 수정'}}
             />
             <Stack.Screen
               name={PheedStackScreens.DetailPheed}

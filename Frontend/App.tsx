@@ -1,11 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 import './global';
-import React, {useCallback, useContext, useEffect} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {
   SafeAreaView,
   StatusBar,
   LogBox,
   KeyboardAvoidingView,
+  Text,
+  StyleSheet,
 } from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
@@ -13,7 +15,9 @@ import SplashScreen from 'react-native-splash-screen';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Config from 'react-native-config';
 import {io} from 'socket.io-client';
-import messaging from '@react-native-firebase/messaging';
+import messaging, {
+  FirebaseMessagingTypes,
+} from '@react-native-firebase/messaging';
 
 import {BuskerInfo, UserProfileType} from './constants/types';
 import {AuthContext} from './store/auth-context';
@@ -26,6 +30,7 @@ import {
 } from './api/profile';
 import NavBar from './components/Navigation/NavBar';
 import Colors from './constants/Colors';
+import ModalWithButton from './components/Utils/ModalWithButton';
 
 let appStarted = false;
 
@@ -50,11 +55,27 @@ const App = () => {
     }, 2000);
   }, []);
 
+  const [isAlarmModalVisible, setIsAlarmModalVisible] = useState(false);
+  const [alarmTitle, setAlarmTitle] = useState('');
+  const [alarmContent, setAlarmContent] = useState('');
+
   // alarm
   const getFCMToken = useCallback(async (user_id: number) => {
     const fcmToken = await messaging().getToken();
     await addUserFCMToken(user_id, fcmToken);
   }, []);
+
+  // Foreground 상태인 경우
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(
+      async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
+        setAlarmTitle(remoteMessage.notification!.title!);
+        setAlarmContent(remoteMessage.notification!.body!);
+        setIsAlarmModalVisible(true);
+      },
+    );
+    return unsubscribe;
+  });
 
   const checkTokensInStorage = useCallback(async () => {
     try {
@@ -164,9 +185,34 @@ const App = () => {
           />
         </KeyboardAvoidingView>
         <NavBar />
+        <ModalWithButton
+          isModalVisible={isAlarmModalVisible}
+          setIsModalVisible={setIsAlarmModalVisible}
+          leftText={'확인'}
+          onLeftPress={() => {
+            setIsAlarmModalVisible(false);
+          }}>
+          <Text style={styles.alarmTitle}>{alarmTitle}</Text>
+          <Text style={styles.alarmContent}>{alarmContent}</Text>
+        </ModalWithButton>
       </SafeAreaView>
     </GestureHandlerRootView>
   );
 };
+
+const styles = StyleSheet.create({
+  alarmTitle: {
+    fontSize: 20,
+    textAlign: 'center',
+    color: 'white',
+    marginVertical: 10,
+  },
+  alarmContent: {
+    fontSize: 15,
+    textAlign: 'center',
+    color: 'white',
+    marginVertical: 10,
+  },
+});
 
 export default App;
