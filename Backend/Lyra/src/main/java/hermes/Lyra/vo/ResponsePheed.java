@@ -51,4 +51,6 @@ public class ResponsePheed {
 
     private String regionCode;
 
+    private int state;
+
 }
