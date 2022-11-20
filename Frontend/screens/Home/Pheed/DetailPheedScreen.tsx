@@ -73,15 +73,6 @@ const DetailPheedScreen = ({navigation: screenNavigation}: any) => {
     });
   }, [navigation, screenNavigation]);
 
-  // const isLive = data.isLive;
-
-  const goChat = () => {
-    navigation.navigate(BottomTabScreens.Chat, {
-      screen: ChatStackScreens.MainChat,
-      params: {buskerId: 1, buskerNickname: '12345', buskerImg: ''}, // busker info 필요
-    });
-  };
-
   const [registerComment, setRegisterComment] = useState('');
 
   const goHome = () => {
@@ -186,6 +177,16 @@ const DetailPheedScreen = ({navigation: screenNavigation}: any) => {
       </View>
     );
   }
+  const goChat = () => {
+    navigation.navigate(BottomTabScreens.Chat, {
+      screen: ChatStackScreens.MainChat,
+      params: {
+        buskerId: pheedData.userId,
+        buskerNickname: pheedData.userNickname,
+        buskerImg: pheedData.userImage_url,
+      }, // busker info 필요
+    });
+  };
 
   return (
     <GestureRecognizer onSwipeRight={goHome} style={styles.container}>
@@ -309,7 +310,7 @@ const DetailPheedScreen = ({navigation: screenNavigation}: any) => {
                   </View>
                 </View>
                 <View style={styles.liveContainer}>
-                  {pheedData.isLive ? (
+                  {pheedData.state ? (
                     <Button
                       title="LIVE"
                       btnSize="medium"
@@ -622,7 +623,7 @@ const DetailPheedScreen = ({navigation: screenNavigation}: any) => {
           )}
 
           <View style={styles.bottomBtnContainer}>
-            {pheedData.isLive ? (
+            {pheedData.state ? (
               <Button
                 title="채팅하기"
                 btnSize="medium"

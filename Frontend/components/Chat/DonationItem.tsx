@@ -21,7 +21,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     color: 'white',
   },
-  textRowContainer: {flexDirection: 'row', alignItems: 'center'},
+  textRowContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   gradientStyle: {
     width: 'auto',
     height: 'auto',
@@ -42,6 +45,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  coinText: {
+    marginLeft: -6,
+    fontFamily: 'DancingScript-Bold',
+    fontSize: 12,
+    color: 'white',
   },
 });
 
@@ -69,7 +78,10 @@ const DonationItem = ({donation}: Props) => {
             />
             <View>
               <Text style={styles.text}>{donation.supporterNickname}</Text>
-              <Text style={styles.text}>{donation.coin} $</Text>
+              <View style={styles.textRowContainer}>
+                <Text style={styles.text}>{donation.coin}</Text>
+                <Text style={styles.coinText}>L</Text>
+              </View>
             </View>
           </View>
         </CircleGradient>
@@ -91,7 +103,10 @@ const DonationItem = ({donation}: Props) => {
               />
               <Text style={styles.text}>{donation.supporterNickname}</Text>
             </View>
-            <Text style={styles.text}>{donation.coin} $</Text>
+            <View style={styles.textRowContainer}>
+              <Text style={styles.text}>{donation.coin}</Text>
+              <Text style={styles.coinText}>L</Text>
+            </View>
           </View>
           <Text style={styles.modalText}>{donation.content}</Text>
         </View>

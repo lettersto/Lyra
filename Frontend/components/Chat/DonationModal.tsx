@@ -73,9 +73,14 @@ const DonationModal = ({
           ) : null}
           <View style={styles.modalView}>
             <Text style={[styles.modalText, styles.titleText]}>후원하기</Text>
-            <Text style={[styles.modalText, styles.balanceText]}>
-              잔액 : {balance}
-            </Text>
+            <View style={styles.textRowContainer}>
+              <View>
+                <Text style={styles.text}>잔액 : {balance}</Text>
+              </View>
+              <View>
+                <Text style={styles.coinText}>L</Text>
+              </View>
+            </View>
             <Text style={styles.modalText}>
               금액 및 메시지가 공개적으로 표시됩니다.
             </Text>
@@ -178,9 +183,6 @@ const styles = StyleSheet.create({
   warningText: {
     color: 'orange',
   },
-  balanceText: {
-    textAlign: 'right',
-  },
   backContainer: {
     position: 'absolute',
     width: '100%',
@@ -193,6 +195,22 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: '50%',
     top: '50%',
+  },
+  coinText: {
+    fontFamily: 'DancingScript-Bold',
+    fontSize: 12,
+    color: 'white',
+    marginLeft: 5,
+  },
+  text: {
+    color: 'white',
+  },
+  textRowContainer: {
+    width: '80%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    marginBottom: 15,
   },
 });
 export default DonationModal;
