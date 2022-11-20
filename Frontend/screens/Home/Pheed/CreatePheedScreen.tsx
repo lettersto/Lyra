@@ -205,6 +205,8 @@ const CreatePheedScreen = () => {
                 customStyle={styles.inputMargin}
                 enteredValue={enteredContent}
                 setEnteredValue={setEnteredContent}
+                multiline={true}
+                inputCustomStyle={styles.textInput}
               />
             </View>
             <View style={styles.dateplace}>
@@ -303,6 +305,9 @@ const styles = StyleSheet.create({
   },
   loading: {
     marginTop: -100,
+  },
+  textInput: {
+    textAlignVertical: 'top',
   },
 });
 

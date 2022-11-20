@@ -99,6 +99,7 @@ const Tag = ({
               placeholder="#태그"
               enteredValue={enteredValue}
               setEnteredValue={setEnteredValue}
+              maxLength={10}
             />
             <View style={styles.btn}>
               <Button
