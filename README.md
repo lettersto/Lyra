@@ -1,5 +1,5 @@
 
-<p align="center"><img src="assets/logo.png"/></p>
+<p align="center"><img src="assets/Banner.png"/></p>
 
 <br>
 
