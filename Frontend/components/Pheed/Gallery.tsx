@@ -34,9 +34,7 @@ const Gallery = ({
       });
       SetImages(response);
       SetPhotos(response);
-    } catch (e) {
-      Alert.alert('error');
-    }
+    } catch {}
   };
 
   return (
