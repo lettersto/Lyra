@@ -89,15 +89,20 @@ export const updateUserImg = async ({
   const imageData = {uri: imageUri, type: imageType, name: imageName};
   image.append('image', imageData);
 
-  const response = await fetch(baseURL + `/user/updateImage/${userId}`, {
-    method: 'PATCH',
-    body: image,
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
-  const data = await response.json();
-  return data;
+  const refreshToken = await EncryptedStorage.getItem('refreshToken');
+
+  if (refreshToken) {
+    const response = await fetch(baseURL + `/user/updateImage/${userId}`, {
+      method: 'PATCH',
+      body: image,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: refreshToken,
+      },
+    });
+    const data = await response.json();
+    return data;
+  }
 };
 
 // follower & follow
