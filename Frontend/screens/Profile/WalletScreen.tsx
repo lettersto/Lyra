@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.black500,
-    marginBottom: '15%',
+    paddingBottom: '15%',
   },
   itemContainer: {
     flexDirection: 'row',

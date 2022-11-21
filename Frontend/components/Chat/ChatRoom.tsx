@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   heartBtn: {
     position: 'absolute',
     bottom: 60,
-    right: 20,
+    right: '5%',
     zIndex: 2,
   },
   inputToolbar: {
@@ -60,8 +60,8 @@ const styles = StyleSheet.create({
   heart: {
     position: 'absolute',
     width: 100,
-    right: 10,
-    bottom: '-15%',
+    right: '10%',
+    bottom: '-20%',
     height: deviceHeight,
   },
 });
@@ -168,11 +168,6 @@ const ChatRoom = ({socket, buskerId, setIsLoading}: Props) => {
   const heartUp = useCallback(() => {
     heartId.current += 1;
     heartId.current %= 5;
-    console.log(heartId.current);
-    // heartVisibles.current[heartId.current] = true;
-    // setTimeout(() => {
-    //   heartVisibles.current[heartId.current] = false;
-    // }, 3000);
     const progress = [progress1, progress2, progress3, progress4, progress5];
     const clickHeart = progress[heartId.current];
     Animated.timing(clickHeart, {

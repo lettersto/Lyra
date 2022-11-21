@@ -236,13 +236,19 @@ export const ChatStack = () => {
           fontSize: 20,
         },
       }}>
-      <Stack.Screen
-        name={ChatStackScreens.ChatList}
-        component={ChatListScreen}
-        options={{
-          title: '',
-        }}
-      />
+      <Stack.Group
+        screenOptions={{
+          headerShown: false,
+          headerBackVisible: false,
+        }}>
+        <Stack.Screen
+          name={ChatStackScreens.ChatList}
+          component={ChatListScreen}
+          options={{
+            title: '',
+          }}
+        />
+      </Stack.Group>
       <Stack.Screen
         name={ChatStackScreens.MainChat}
         component={MainChatScreen}
