@@ -1,0 +1,86 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  application:
+    name: Lyra
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    # server
+    url: jdbc:mariadb://k7c105.p.ssafy.io:3307/lyra?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true&useLegacyDatetimeCode=false
+    username: hermes
+    password: Lyra@hanam^!3
+
+#     local
+#    url: jdbc:mariadb://localhost:3307/lyra?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true&useLegacyDatetimeCode=false
+#    username: root
+#    password: yeobo
+
+
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+#      use-new-id-generator-mappings: false
+    show-sql: true
+    generate-ddl: true
+#    properties:
+#      hibernate:
+#        format_sql: true
+  profiles:
+    include: oauth
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          google:
+#            client-id: 679402942294-piour8km9qojcntfbm7h3n54qt63d1d9.apps.googleusercontent.com
+#            client-secret: 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
+#            scope: profile, email
+#          kakao:
+#            client-id: f42a76675ed8066de07e5cc3498f5c11
+#            client-secret: w0jxYoFytctR9tVqwTPh9tp90b5aEtsj
+#            client-authentication-method: post
+#            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+#            authorization-grant-type: authorization_code
+#            scope: profile_nickname, account_email, profile_image
+#            client-name: Kakao
+#
+#        provider:
+#          kakao:
+#            authorization-uri: https://kauth.kakao.com/oauth/authorize
+#            token-uri: https://kauth.kakao.com/oauth/token
+#            user-info-uri: https://kapi.kakao.com/v2/user/me
+#            user-name-attribute: id
+
+cloud:
+  aws:
+    credentials:
+      instance-profile: false
+      accessKey: AKIAU33EAFESBOV5SWWW
+      secretKey: 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
+    region:
+      auto: false
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
+
+aws:
+  s3:
+    bucket: lyra-hermes
